@@ -2,7 +2,8 @@ import 'dart:math';
 
 main() {
   Algorithm algo = new Algorithm()..initializeValue();
-  var type_freq = algo.arrangeSchedule(algo.calcFrequency());
+  var schedule = algo.arrangeSchedule(algo.calcFrequency());
+  var plan = algo.arrangePlan(schedule);
 }
 
 class Algorithm {
@@ -25,33 +26,30 @@ class Algorithm {
     int c_val = db.personalities['conscientiousness'];
     int c_mul = 5;
 
-    print('survey: $likings and $abilities');
+    print('survey: $likings & $abilities');
     // adjust user's data
     likings.forEach((k, v) => {
           if (k == 'strength_liking')
-            {likings.update(k, (value) => v - n_val * n_mul)}
+            {likings[k] = v - n_val * n_mul}
           else
-            {likings.update(k, (value) => v + n_val * n_mul)}
+            {likings[k] = v + n_val * n_mul}
         });
-    abilities
-        .forEach((k, v) => {abilities.update(k, (v) => v + c_val * c_mul)});
-    print('survey(adjust): $likings and $abilities');
+    abilities.forEach((k, v) => {abilities[k] = v + c_val * c_mul});
+    print('survey(adjust): $likings & $abilities');
   }
 
   Map calcFrequency() {
-    var n_days = db.sum_days;
-
     Map<String, int> frequencies = {};
     likings.forEach((k, v) => {
           frequencies.putIfAbsent(
-              k, () => (v / db.sum_likings * n_days).round())
+              k, () => (v / db.sum_likings * db.n_days).round())
         });
     print('settings: ${workout_days}\nfrequency: $frequencies');
     // Adjustment: the rounding step might lead to an error margin of +-1
     var sum_freq = frequencies.values.toList().fold(0, (p, c) => c + p);
-    if (n_days > sum_freq) {
+    if (db.n_days > sum_freq) {
       frequencies.update(db.most_like, (v) => v + 1);
-    } else if (n_days < sum_freq) {
+    } else if (db.n_days < sum_freq) {
       frequencies.update(db.least_like, (v) => v - 1);
     }
     print('frequency(adjust): $frequencies');
@@ -59,30 +57,76 @@ class Algorithm {
     return frequencies;
   }
 
-  Map arrangeSchedule(Map frequencies){
+  Map arrangeSchedule(Map frequencies) {
+    // turn the frequency map into a list of selectable objects
     List<String> categories = [];
     frequencies.forEach((k, v) => {
-      for (int i = 0; i < v; i++) {
-        categories.add(k.substring(0, k.indexOf('_')))
-      }
-    });
-    categories.shuffle(); // shuffle to randomly pick objects
-    Map schedule = Map<String, dynamic>.from(workout_days);
+          for (int i = 0; i < v; i++)
+            {categories.add(k.substring(0, k.indexOf('_')))}
+        });
+    // shuffle the list to randomly pick objects for non-rest days
+    categories.shuffle();
+    Map schedule = Map<String, String>.fromIterables(
+        workout_days.keys, List.generate(7, (index) => 'rest'));
     workout_days.forEach((k, v) => {
-      if (v == 1) {
-        schedule[k] = categories[0],
-        categories.removeAt(0)
-      } else {
-        schedule[k] = 'rest'
-      }
-    });
+          if (v == 1) {schedule[k] = categories[0], categories.removeAt(0)}
+        });
     print('schedule: $schedule');
 
     return schedule;
   }
 
-  // TODO: arrangeWorkout
-  void arrangeWorkout() {}
+  List arrangeWorkout(String type) {
+    // get the workouts database
+    Map workoutDB = db.getWorkoutID();
+    // get users ability and settings
+    var ability = (abilities['${type}_ability'] / 20).ceil();
+    if (type == 'cardio') {
+      ability = (abilities['${type}_ability'] / 33).ceil();
+    }
+    var n_loops = db.time_span / 15; // total rounds of the 10 min workout
+    var n_same = db.n_same; // the number of repetitions of the 10 min workout
+    var same = false;
+    if (n_same > 0) {
+      same = true;
+    }
+    print('$type: $n_loops loops ($n_same repeats) & ability $ability');
+
+    Random rand = new Random();
+    List workouts = [];
+    while (workouts.length < n_loops) {
+      // randomly select the difficulty level
+      int i = rand.nextInt(ability);
+      // randomly select five moves from the picked level
+      List l = List.generate(5, (k) => workoutDB['$type'][i][rand.nextInt(50)]);
+      while (same) {
+        for (int j = 0; j < n_same - 1; j++) {
+          // duplicate the list twice then add to the return value
+          workouts.add([...l, ...List.from(l)]);
+        }
+        same = false;
+      }
+      workouts.add([...l, ...List.from(l)]);
+    }
+
+    return workouts;
+  }
+
+  Map arrangePlan(Map schedule) {
+    Map plan = Map<String, List>.fromIterables(
+        workout_days.keys, List.generate(7, (index) => []));
+    schedule.forEach((k, v) => {
+          if (v == 'strength')
+            {plan[k] = arrangeWorkout(v)}
+          else if (v == 'cardio')
+            {plan[k] = arrangeWorkout(v)}
+          else if (v == 'yoga')
+            {plan[k] = arrangeWorkout(v)}
+        });
+    print('plan: $plan');
+
+    return schedule;
+  }
 }
 
 class Data {
@@ -90,8 +134,31 @@ class Data {
     getData();
   }
 
+  // generate workouts
+  Map<String, List> getWorkoutID() => {
+        'strength': [
+          [for (var i = 100; i <= 150; i++) 'S$i'],
+          [for (var i = 200; i <= 250; i++) 'S$i'],
+          [for (var i = 300; i <= 350; i++) 'S$i'],
+          [for (var i = 400; i <= 450; i++) 'S$i'],
+          [for (var i = 500; i <= 550; i++) 'S$i']
+        ],
+        'cardio': [
+          [for (var i = 100; i <= 150; i++) 'C$i'],
+          [for (var i = 200; i <= 250; i++) 'C$i'],
+          [for (var i = 300; i <= 350; i++) 'C$i'],
+        ],
+        'yoga': [
+          [for (var i = 100; i <= 150; i++) 'Y$i'],
+          [for (var i = 200; i <= 250; i++) 'Y$i'],
+          [for (var i = 300; i <= 350; i++) 'Y$i'],
+          [for (var i = 400; i <= 450; i++) 'Y$i'],
+          [for (var i = 500; i <= 550; i++) 'Y$i']
+        ],
+      };
+
   // generate user profile
-  Random rand = new Random(77777); // test value: 3737, 77777
+  Random rand = new Random(3737); // test value: 3737, 77777
 
   List<Map<String, dynamic>> getUsrProfile() => [
         {
@@ -120,7 +187,7 @@ class Data {
   var _time_span = 15;
   var _most_like = '', _least_like = '';
   var _best_ability = '', _worst_ability = '';
-  var _sum_likings = 0, _sum_abilities = 0, _sum_days = 0;
+  var _sum_likings = 0, _sum_abilities = 0, _n_days = 0, _n_same = 0;
 
   void getData() {
     _profile = getUsrProfile();
@@ -153,7 +220,23 @@ class Data {
 
     _sum_likings = _likings.values.toList().fold(0, (p, c) => c + p);
     _sum_abilities = _abilities.values.toList().fold(0, (p, c) => c + p);
-    _sum_days = _workout_days.values.toList().fold(0, (p, c) => c + p);
+    _n_days = _workout_days.values.toList().fold(0, (p, c) => c + p);
+
+    var openness = _personalities['openness'];
+    if (_time_span == 15) {
+      if (openness <= 2) {
+        _n_same = 2;
+      }
+    } else {
+      if (openness <= 2) {
+        _n_same = 3;
+      } else if (openness == 3) {
+        _n_same = 2;
+      }
+      if (_time_span == 60 && openness == 1) {
+        _n_same = 4;
+      }
+    }
   }
 
   get profile => _profile;
@@ -180,5 +263,7 @@ class Data {
 
   get sum_abilities => _sum_abilities;
 
-  get sum_days => _sum_days;
+  get n_days => _n_days;
+
+  get n_same => _n_same;
 }
