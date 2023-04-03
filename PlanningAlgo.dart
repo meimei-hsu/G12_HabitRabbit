@@ -1,12 +1,9 @@
 import 'dart:math';
 
 main() {
-  while (false) {
-    // flag: jia_0328_plan
-    Algorithm algo = new Algorithm()..initializeValue();
-    var schedule = algo.arrangeSchedule(algo.calcFrequency());
-    var plan = algo.arrangePlan(schedule);
-  }
+  Algorithm algo = new Algorithm()..initializeValue();
+  var schedule = algo.arrangeSchedule(algo.calcFrequency());
+  var plan = algo.arrangePlan(schedule);
 }
 
 class Algorithm {
