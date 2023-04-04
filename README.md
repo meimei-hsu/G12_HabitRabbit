@@ -1,14 +1,35 @@
-### Version Control
+# G12
 
-+ `git pull` → `git commit` → `git push`
+A fitness habit APP.
 
-+ [Feature flags](https://discuss.kotlinlang.org/t/any-plans-for-having-conditional-compiling/1041) (
-  format: id_date_description)
+## Getting Started
 
-    + Unfinished feature: id = dai \ ling \ xi \ jia \ zhen
+A few resources to get you started if this is your first Flutter project:
 
-    + Merge branch: id = frontEnd \ backEnd
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-    + Testing: id = G12
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
 
-    + Complete: remove flag
+## Version Control
+
+- `git pull` → `git commit` → `git push`
+
+- Feature flags (format: id_date_description)
+
+  - while code block test isn’t done
+  
+  - remove flag if the merging has no error
+  
+  - id = dai \ ling \ zhen \ xi \ jia \ frontEnd \ backEnd
+  
+  - example:
+  ```Flutter
+  // Flag: frontEnd_0328_buildingHomescreen
+  while false {
+    class MyApp extends StatelessWidget { … }
+    …
+  }
+  ```

@@ -1,9 +1,9 @@
 import 'dart:async';
 
 main() {
-  Date date = new Date();
+  Date date = Date();
   date.getCalendar();
-  CountdownTimer timer = new CountdownTimer();
+  CountdownTimer timer = CountdownTimer();
   timer.oneSet();
 }
 
@@ -60,7 +60,7 @@ class CountdownTimer {
     extractTime();
 
     // Reduce the duration by one second
-    final reduceSecondsBy = 1;
+    const reduceSecondsBy = 1;
     final seconds = duration.inSeconds - reduceSecondsBy;
 
     // If the timer has ended, stop the timer
@@ -83,13 +83,12 @@ class CountdownTimer {
 
   // Method to start a timer with a work period followed by a rest period
   void oneSet() {
-    CountdownTimer timer = new CountdownTimer();
     int work = 4, rest = 2;
     // Start the work period and call the rest period when it ends
     print('work');
-    timer.start(work, () {
+    start(work, () {
       print('rest');
-      timer.start(rest);
+      start(rest);
     });
   }
 }
