@@ -24,14 +24,5 @@ samples, guidance on mobile development, and a full API reference.
   - remove flag if the merging has no error
   
   - id = dai \ ling \ zhen \ xi \ jia \ frontEnd \ backEnd
-  
-  - example:
-  ```Flutter
-  // Flag: frontEnd_0328_buildingHomescreen
-  while false {
-    class MyApp extends StatelessWidget { … }
-    …
-  }
-  ```
 
 - Jolin Test
