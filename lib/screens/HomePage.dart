@@ -8,7 +8,7 @@ class Homepage extends StatefulWidget {
   final String title;
 
   @override
-  _HomepageState createState() => new _HomepageState();
+  State<Homepage> createState() => _HomepageState();
 }
 
 class _HomepageState extends State<Homepage> {
@@ -16,31 +16,8 @@ class _HomepageState extends State<Homepage> {
   // Calendar 相關設定
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay = DateTime.now();
-  DateTime getFirstDay(){
-    int today = _focusedDay.weekday;
-    DateTime _firstDay = DateTime.now().subtract(Duration(days: today));
-    return _firstDay;
-  }
-  DateTime getLastDay(){
-    int today = _focusedDay.weekday;
-    DateTime _lastDay = DateTime.now();
-    if(today == 1){
-      _lastDay = DateTime.now().add(Duration(days: 12));
-    } else if (today == 2){
-      _lastDay = DateTime.now().add(Duration(days: 11));
-    } else if (today == 3){
-      _lastDay = DateTime.now().add(Duration(days: 10));
-    } else if (today == 4){
-      _lastDay = DateTime.now().add(Duration(days: 9));
-    } else if (today == 5){
-      _lastDay = DateTime.now().add(Duration(days: 8));
-    } else if (today == 6){
-      _lastDay = DateTime.now().add(Duration(days: 7));
-    } else if (today == 7){
-      _lastDay = DateTime.now().add(Duration(days: 13));
-    }
-    return _lastDay;
-  }
+  get firstDay => DateTime.now().subtract(Duration(days: _focusedDay.weekday));
+  get lastDay => firstDay.add(const Duration(days: 14));
 
   @override
   Widget build(BuildContext context) {
@@ -67,8 +44,8 @@ class _HomepageState extends State<Homepage> {
           Container(
             color: Color(0x193598f5),
             child: TableCalendar(
-              firstDay: getFirstDay(),
-              lastDay: getLastDay(),
+              firstDay: firstDay,
+              lastDay: lastDay,
               focusedDay: _focusedDay,
               locale: 'zh_CN',
               calendarFormat: CalendarFormat.week,
