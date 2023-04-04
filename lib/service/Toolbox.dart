@@ -3,8 +3,6 @@ import 'dart:async';
 main() {
   Date date = Date();
   date.getCalendar();
-  CountdownTimer timer = CountdownTimer();
-  timer.oneSet();
 }
 
 class Date {
@@ -28,67 +26,5 @@ class Date {
     print('twoWeekCalendar: $twoWeekCalendar');
 
     return twoWeekCalendar;
-  }
-}
-
-class CountdownTimer {
-  Timer? countdownTimer;
-  Duration duration = Duration(seconds: 60);
-  bool isEnded = false;
-
-  void start(int seconds, [Function? callback]) {
-    // Set the duration of the timer and reset the isEnded flag
-    duration = Duration(seconds: seconds);
-    isEnded = false;
-
-    // Start the timer and call the setCountDown() method every second
-    countdownTimer = Timer.periodic(Duration(seconds: 1), (_) {
-      setCountDown();
-      // If the timer has ended, call the callback function (if provided)
-      if (isEnded == true) {
-        callback?.call();
-      }
-    });
-  }
-
-  void stop() {
-    countdownTimer!.cancel();
-  }
-
-  // Method to update the countdown and rebuild the page
-  void setCountDown() {
-    extractTime();
-
-    // Reduce the duration by one second
-    const reduceSecondsBy = 1;
-    final seconds = duration.inSeconds - reduceSecondsBy;
-
-    // If the timer has ended, stop the timer
-    if (seconds < 0) {
-      isEnded = true;
-      stop();
-    } else {
-      // Otherwise, update the duration with the reduced value
-      duration = Duration(seconds: seconds);
-    }
-  }
-
-  // Method to extract the hours, minutes, and seconds from the current duration
-  void extractTime() {
-    String strDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = strDigits(duration.inMinutes.remainder(60));
-    final seconds = strDigits(duration.inSeconds.remainder(60));
-    print('$minutes:$seconds');
-  }
-
-  // Method to start a timer with a work period followed by a rest period
-  void oneSet() {
-    int work = 4, rest = 2;
-    // Start the work period and call the rest period when it ends
-    print('work');
-    start(work, () {
-      print('rest');
-      start(rest);
-    });
   }
 }
