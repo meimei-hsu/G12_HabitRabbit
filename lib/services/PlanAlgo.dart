@@ -1,24 +1,28 @@
+
 import 'dart:math';
 
-main() {
-  Algorithm algo = Algorithm()..initializeValue();
-  var schedule = algo.arrangeSchedule(algo.calcFrequency());
-  var plan = algo.arrangePlan(schedule);
+import 'package:flutter/widgets.dart';
+
+import 'UserDB.dart';
+
+main() async {
+  // Avoid errors
+  WidgetsFlutterBinding.ensureInitialized();
+
+  Algorithm algo = Algorithm();
+  await algo.initializeValue();
+  var schedule = await algo.arrangeSchedule(await algo.calcFrequency());
+  await algo.arrangePlan(schedule);
 }
 
 class Algorithm {
   Data db = Data();
-  dynamic likings, abilities, workoutDays; // Map
-
-  Algorithm() {
-    // generate user's profile
-    likings = db.likings;
-    abilities = db.abilities;
-    workoutDays = db.workoutDays;
-  }
 
   // Method to initialize (and adjust) user's profile from their survey results
-  void initializeValue() {
+  Future<void> initializeValue() async {
+    // Initialize Data class
+    await db.initData();
+
     // Set modifiers
     int nVal = db.personalities['neuroticism'];
     int nMul = 10;
@@ -26,25 +30,27 @@ class Algorithm {
     int cMul = 5;
 
     // Adjust user's data
-    print('survey: $likings & $abilities');
-    likings.forEach((k, v) => {
-          if (k == 'strength_liking')
-            {likings[k] = v - nVal * nMul}
+    print('survey: ${db.likings}\n'
+        '        ${db.abilities}');
+    db.likings.forEach((k, v) => {
+          if (k == 'strengthLiking')
+            {db.likings[k] = v - nVal * nMul}
           else
-            {likings[k] = v + nVal * nMul}
+            {db.likings[k] = v + nVal * nMul}
         });
-    abilities.forEach((k, v) => {abilities[k] = v + cVal * cMul});
-    print('survey(adjust): $likings & $abilities');
+    db.abilities.forEach((k, v) => {db.abilities[k] = v + cVal * cMul});
+    print('survey(adjust): ${db.likings}\n'
+        '                ${db.abilities}');
   }
 
   // Method to calculate workout frequency based on the adjusted user data
-  Map calcFrequency() {
+  Future<Map<String, int>> calcFrequency() async {
     Map<String, int> frequencies = {};
-    likings.forEach((k, v) => {
+    db.likings.forEach((k, v) => {
           frequencies.putIfAbsent(
               k, () => (v / db.sumLikings * db.nDays).round())
         });
-    print('settings: $workoutDays\nfrequency: $frequencies');
+    print('settings: ${db.workoutDays}\nfrequency: $frequencies');
 
     // Adjust the frequency map based on the error margin of +-1
     var sumFreq = frequencies.values.toList().fold(0, (p, c) => c + p);
@@ -59,23 +65,23 @@ class Algorithm {
   }
 
   // Method to arrange a workout schedule based on the workout frequency and workout days
-  Map arrangeSchedule(Map frequencies) {
+  Future<Map<String, String>> arrangeSchedule(Map frequencies) async {
     // Turn the frequency map into a list of selectable objects
     List<String> categories = [];
     frequencies.forEach((k, v) => {
           for (int i = 0; i < v; i++)
-            {categories.add(k.substring(0, k.indexOf('_')))}
+            {categories.add(k.substring(0, k.indexOf('Liking')))}
         });
 
     // Shuffle the list to randomly pick objects for non-rest days
     categories.shuffle();
 
     // Initialize the schedule with rest days
-    Map schedule = Map<String, String>.fromIterables(
-        workoutDays.keys, List.generate(7, (index) => 'rest'));
+    Map<String, String> schedule = Map.fromIterables(
+        db.workoutDays.keys, List.generate(7, (index) => 'rest'));
 
     // Assign workouts to the non-rest days
-    workoutDays.forEach((k, v) => {
+    db.workoutDays.forEach((k, v) => {
           if (v == 1) {schedule[k] = categories[0], categories.removeAt(0)}
         });
     print('schedule: $schedule');
@@ -83,33 +89,29 @@ class Algorithm {
     return schedule;
   }
 
-  // Method to generate a 10 minutes workout
-  List getTenMinWorkout(String type) {
+  // Method to generate 10 minutes workouts
+  Future<List<List>> getTenMinWorkout(String type) async {
     // Get the workout database
     Map workoutDB = db.getWorkoutID();
 
     // Get users ability level and plan settings
-    int ability = (abilities['${type}_ability'] / 20).ceil();
-    if (type == 'cardio') {
-      ability = (abilities['${type}_ability'] / 33).ceil();
-    }
+    int ability = db.abilities['${type}Ability'];
+    ability =
+        (type == 'cardio') ? (ability / 33).ceil() : (ability / 20).ceil();
     int nLoops = (db.timeSpan / 15).toInt(); // total rounds
     int nSame = db.nSame; // number of repetitions
-    bool same = false;
-    if (nSame > 0) {
-      same = true;
-    }
-    print('$type: Lv.$ability ability'
-        ', ${db.timeSpan} min, $nLoops loop ($nSame repeat)');
+    bool same = (nSame > 0) ? true : false;
+
+    print('$type: Lv.$ability ability,'
+        ' ${db.timeSpan} min, $nLoops loop ($nSame repeat)');
 
     // Generate the list of workouts from random
     Random rand = Random();
-    List workouts = [];
+    List<List> workouts = [];
     while (workouts.length < nLoops) {
-      // Randomly select the difficulty level
-      int i = rand.nextInt(ability);
-      // Randomly select five moves from the picked level
-      List l = List.generate(5, (k) => workoutDB[type][i][rand.nextInt(50)]);
+      // Randomly select the difficulty level and pick five moves from that level
+      List l = List.generate(
+          5, (k) => workoutDB[type][rand.nextInt(ability)][rand.nextInt(50)]);
       while (same) {
         for (int j = 0; j < nSame - 1; j++) {
           // Duplicate the list twice then add to the return value
@@ -123,8 +125,8 @@ class Algorithm {
     return workouts;
   }
 
-  // Method to generate a 5 minutes workout
-  List getFiveMinWorkout(String type) {
+  // Method to generate 5 minutes workouts
+  Future<List<List>> getFiveMinWorkout(String type) async {
     // Get the workout database
     Map workoutDB = db.getWorkoutID();
 
@@ -134,7 +136,7 @@ class Algorithm {
 
     // Generate the list of workouts from random
     Random rand = Random();
-    List workouts = [];
+    List<List> workouts = [];
     for (int i = 0; i < nLoops; i++) {
       List l = List.generate(
           5, (k) => workoutDB[type][difficulty][rand.nextInt(50)]);
@@ -145,13 +147,13 @@ class Algorithm {
   }
 
   // Method to generate a list of workouts from a given workout type
-  List arrangeWorkout(String type) {
+  Future<List<List>> arrangeWorkout(String type) async {
     // Generate the list of workouts from random
-    List tenMin = getTenMinWorkout(type);
-    List fiveMin = getFiveMinWorkout(type);
+    List<List> tenMin = await getTenMinWorkout(type);
+    List<List> fiveMin = await getFiveMinWorkout(type);
 
     // Arrange different sessions into one list
-    List workouts = [];
+    List<List> workouts = [];
     workouts.add(tenMin[0]);
     for (int i = 0; i < fiveMin.length; i++) {
       workouts.add(fiveMin[i]);
@@ -162,31 +164,33 @@ class Algorithm {
   }
 
   // Method to generate a workout plan
-  Map arrangePlan(Map schedule) {
-    Map plan = Map<String, List>.fromIterables(
-        workoutDays.keys, List.generate(7, (index) => []));
+  Future<Map<String, List>> arrangePlan(Map schedule) async {
+    Map<String, List> plan =
+        Map.fromIterables(db.workoutDays.keys, List.generate(7, (index) => []));
 
     // Call arrangeWorkout() for each workout type in the workout schedule
-    schedule.forEach((k, v) => {
-          if (v == 'strength')
-            {plan[k] = arrangeWorkout(v)}
-          else if (v == 'cardio')
-            {plan[k] = arrangeWorkout(v)}
-          else if (v == 'yoga')
-            {plan[k] = arrangeWorkout(v)}
-        });
-    print('plan: $plan');
+    for (MapEntry entry in schedule.entries) {
+      if (entry.value != 'rest') {
+        plan[entry.key] = await arrangeWorkout(entry.value);
+      }
+    }
 
-    return schedule;
+    print("Plan{");
+    for (String day in plan.keys) {
+      print("  $day: {");
+      for (int i = 0; i < plan[day]!.length; i++) {
+        print("       ${plan[day]![i]}\n");
+      }
+      print("  }");
+    }
+    print("}");
+
+    return plan;
   }
 }
 
 class Data {
-  Data() {
-    getData();
-  }
-
-  // generate workouts
+  // Get workout data
   Map<String, List> getWorkoutID() => {
         'strength': [
           [for (var i = 100; i <= 150; i++) 'S$i'],
@@ -209,46 +213,28 @@ class Data {
         ],
       };
 
-  // generate user profile
-  Random rand = Random(7788); // test value: 3737, 77777, 7788
+  // Get user data
+  User? _user;
+  Map _likings = {}, _abilities = {}, _workoutDays = {}, _personalities = {};
+  num _timeSpan = 15;
+  String _mostLike = '', _leastLike = '';
+  String _bestAbility = '', _worstAbility = '';
+  num _sumLikings = 0, _sumAbilities = 0, _nDays = 0, _nSame = 0;
 
-  List<Map<String, int>> getUsrProfile() => [
-        {
-          'strength_liking': 40 + rand.nextInt(2) * 20,
-          'cardio_liking': 40 + rand.nextInt(2) * 20,
-          'yoga_liking': 40 + rand.nextInt(2) * 20
-        },
-        {
-          'strength_ability': 40 + rand.nextInt(5) * 10,
-          'cardio_ability': 40 + rand.nextInt(5) * 10,
-          'yoga_ability': 40 + rand.nextInt(5) * 10
-        },
-        Map.fromIterables(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            List.generate(7, (index) => rand.nextInt(2))),
-        {'time_span': 15 + rand.nextInt(4) * 15},
-        {
-          'neuroticism': -1 + rand.nextInt(2) * 2,
-          'conscientiousness': -1 + rand.nextInt(2) * 2,
-          'openness': 2 + rand.nextInt(2)
-        }
-      ];
+  Future<void> initData() async {
+    _user = await UserDB.getUser('mary@gmail.com');
+    print(_user.toString());
+    await getData();
+  }
 
-  // get user data
-  var _profile = [];
-  var _likings = {}, _abilities = {}, _workoutDays = {}, _personalities = {};
-  var _timeSpan = 15;
-  var _mostLike = '', _leastLike = '';
-  var _bestAbility = '', _worstAbility = '';
-  var _sumLikings = 0, _sumAbilities = 0, _nDays = 0, _nSame = 0;
+  Future<void> getData() async {
+    var profile = _user!.getDynamicData();
 
-  void getData() {
-    _profile = getUsrProfile();
-
-    _likings = _profile[0];
-    _abilities = _profile[1];
-    _workoutDays = _profile[2];
-    _timeSpan = _profile[3]['time_span'];
-    _personalities = _profile[4];
+    _timeSpan = profile[0]['timeSpan']!;
+    _workoutDays = profile[1];
+    _likings = profile[2];
+    _abilities = profile[3];
+    _personalities = _user!.getPersonality();
 
     var max = double.negativeInfinity, min = double.infinity;
     _likings.forEach((key, value) {
@@ -291,7 +277,7 @@ class Data {
     }
   }
 
-  get profile => _profile;
+  get user => _user;
 
   get likings => _likings;
 
