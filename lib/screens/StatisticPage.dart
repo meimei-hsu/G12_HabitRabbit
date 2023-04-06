@@ -6,7 +6,7 @@ class StatisticPage extends StatefulWidget {
   final String title;
 
   @override
-  _StatisticPageState createState() => new _StatisticPageState();
+  _StatisticPageState createState() => _StatisticPageState();
 }
 
 class _StatisticPageState extends State<StatisticPage> {
@@ -22,7 +22,7 @@ class _StatisticPageState extends State<StatisticPage> {
               color: Color(0xff0d3b66),
               fontSize: 32,
               letterSpacing:
-              0 /*percentages not used in flutter. defaulting to zero*/,
+                  0 /*percentages not used in flutter. defaulting to zero*/,
               fontWeight: FontWeight.bold,
               height: 1),
         ),

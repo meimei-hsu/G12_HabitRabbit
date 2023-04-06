@@ -48,7 +48,6 @@ class Authentication {
   }
 }
 
-// TODO: Survey
 class Survey {
   // Survey results to list
   List toList() {

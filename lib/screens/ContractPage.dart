@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ContractPage extends StatefulWidget {
-  const ContractPage({super.key, required this.title});
+  const ContractPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _ContractPageState createState() => new _ContractPageState();
+  _ContractPageState createState() => _ContractPageState();
 }
 
 class _ContractPageState extends State<ContractPage> {
@@ -22,7 +22,7 @@ class _ContractPageState extends State<ContractPage> {
               color: Color(0xff0d3b66),
               fontSize: 32,
               letterSpacing:
-              0 /*percentages not used in flutter. defaulting to zero*/,
+                  0 /*percentages not used in flutter. defaulting to zero*/,
               fontWeight: FontWeight.bold,
               height: 1),
         ),
@@ -31,6 +31,21 @@ class _ContractPageState extends State<ContractPage> {
       ),
       body: Column(
         children: [
+          /* Container(
+
+            padding: EdgeInsets.only(right: 280,top:50),
+            child: Text(
+              'Line暱稱 ：',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                  color: Color(0xff0d3b66),
+                  fontSize: 25,
+                  letterSpacing: 0 /*percentages not used in flutter. defaulting to zero*/,
+                  fontWeight: FontWeight.bold,
+                  height: 1),
+            ),
+          ),
+*/
           Container(
             padding: EdgeInsets.only(left: 10, right: 10),
             child: TextField(
@@ -72,6 +87,47 @@ class _ContractPageState extends State<ContractPage> {
           ),
           SizedBox(height: 10),
           Container(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: '設立目標',
+                hintText: '請輸入設立目標',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.text,
+              obscureText: false,
+              //controller: _controller,
+              onChanged: (value) {
+                //print(value);
+              },
+              onSubmitted: (value) {
+                //print('Submitted: $value');
+              },
+            ),
+          ),
+          SizedBox(height: 10),
+          Container(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: '投注金額',
+                hintText: '請輸入投注金額',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.text,
+              obscureText: false,
+              //controller: _controller,
+              onChanged: (value) {
+                //print(value);
+              },
+              onSubmitted: (value) {
+                //print('Submitted: $value');
+              },
+            ),
+          ),
+          SizedBox(height: 10),
+          Container(
+            padding: EdgeInsets.only(left: 280, right: 10, top: 20),
             child: IconButton(
               icon: const Icon(Icons.send),
               iconSize: 40,
@@ -79,7 +135,7 @@ class _ContractPageState extends State<ContractPage> {
               tooltip: "送出",
               onPressed: () {},
             ),
-          )
+          ),
         ],
       ),
     );
