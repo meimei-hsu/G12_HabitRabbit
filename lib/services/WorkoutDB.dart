@@ -13,24 +13,10 @@ class UserDB {
       join(await getDatabasesPath(), "G12.db"),
       onCreate: (db, version) {
         return db.execute("CREATE TABLE WORKOUT("
-            "email TEXT PRIMARY KEY,"
-            "password TEXT,"
-            "userName TEXT,"
-            "gender TEXT,"
-            "birthday TEXT,"
-            "neuroticism INTEGER,"
-            "conscientiousness INTEGER,"
-            "openness INTEGER,"
-            "height REAL,"
-            "weight REAL,"
-            "timeSpan INTEGER,"
-            "workoutDays TEXT,"
-            "strengthLiking INTEGER,"
-            "cardioLiking INTEGER,"
-            "yogaLiking INTEGER,"
-            "strengthAbility INTEGER,"
-            "cardioAbility INTEGER,"
-            "yogaAbility INTEGER"
+            "workoutId TEXT PRIMARY KEY,"
+            "workoutName TEXT,"
+            "workoutType TEXT,"
+            "workoutDifficulty INTEGER,"
             ")");
       },
 
@@ -39,4 +25,13 @@ class UserDB {
     );
   }
 
+  static List<String> getColumns() {
+    return [
+      "workoutId",
+      "workoutName",
+      "workoutName",
+      "workoutDifficulty",
+
+    ];
+  }
 }
