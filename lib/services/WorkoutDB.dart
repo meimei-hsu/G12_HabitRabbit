@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class UserDB {
+class WorkoutDB {
   static Database? database;
 
   static Future<Database> initDatabase() async {
@@ -34,4 +34,28 @@ class UserDB {
 
     ];
   }
+
+  // Insert
+  static Future<bool> insertWorkout(Workout workout) async {
+    final Database db = await initDatabase();
+    int row = await db.insert(
+      "WORKOUT",
+      workout.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    return (row != 0) ? true : false;
+  }
+
+  // Update
+  static Future<bool> updateUser(Workout workout) async {
+    final db = await initDatabase();
+    int count = await db.update(
+      "WORKOUT",
+      Workout.toMap(),
+      where: "email = ?",
+      whereArgs: [user.email],
+    );
+    return (count != 0) ? true : false;
+  }
 }
+
