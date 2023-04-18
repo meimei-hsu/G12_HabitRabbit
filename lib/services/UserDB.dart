@@ -66,7 +66,7 @@ class UserDB {
   }
 
   // Select
-  static Future<List<User>> getUserList() async {
+  static Future<List<User>> getUserList() async {//拿到整個database的資料
     final Database db = await initDatabase();
     final List<Map<String, dynamic>> maps = await db.query("USER");
 
@@ -94,7 +94,7 @@ class UserDB {
     });
   }
 
-  static Future<User?> getUser(String email) async {
+  static Future<User?> getUser(String email) async {//email當成primary key，拿到單一user的資料
     final List<User> users = await getUserList();
     for (User user in users) {
       if (user.email == email) {
@@ -104,7 +104,7 @@ class UserDB {
     return null;
   }
 
-  static Future<List<Map>?> getDynamicData(String email) async {
+  static Future<List<Map>?> getDynamicData(String email) async {//拿到變動資料
     final User? user = await getUser(email);
 
     if (user != null) {
