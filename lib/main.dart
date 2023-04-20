@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:g12/screens/homepage.dart';
@@ -21,7 +22,9 @@ class AppEntryPoint extends StatelessWidget {
   }
 }
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // configure firebase: https://stackoverflow.com/questions/70320263/the-term-flutterfire-is-not-recognized-as-the-name-of-a-cmdlet-function-scri
+  await Firebase.initializeApp();
   initializeDateFormatting().then((_) => runApp(AppEntryPoint()));
-  //runApp(AppEntryPoint());
 }
