@@ -35,9 +35,7 @@ class home extends StatelessWidget {
                   onPressed: () {
                     UserDB.insert(mary);
                     UserDB.insert(john);
-                    UserDB.getUserList();
-                    UserDB.delete("John");
-                    UserDB.update({"userName": "Mary", "weight": 45});
+                    UserDB.update("Mary", {"weight": 45});
                     UserDB.getUserList();
                   },
                   child: Text("test DB")),
@@ -45,7 +43,7 @@ class home extends StatelessWidget {
                   onPressed: () {
                     Algorithm.execute("Mary");
                   },
-                  child: Text("test Algo")),
+                  child: Text("test AG")),
             ],
           ),
         ),
@@ -91,7 +89,7 @@ class UserDB {
     }
   }
 
-  // Select user from user ID
+  // Select user from ID
   static Future<Map?> getUser(String id) async {
     final ref = FirebaseDatabase.instance.ref();
     final snapshot = await ref.child('users/$id').get();
@@ -103,7 +101,7 @@ class UserDB {
     }
   }
 
-  // Select dynamic data from user ID
+  // Select dynamic data from ID
   static Future<List<Map<String, dynamic>>?> getPlanVariables(String id) async {
     final Map? user = await getUser(id);
 
@@ -140,14 +138,14 @@ class UserDB {
     await ref.set(map);
   }
 
-  // Update data from data map
-  static update(Map<String, Object> map) async {
+  // Update data (using map) from ID
+  static update(String id, Map<String, Object> map) async {
     final DatabaseReference ref =
-        FirebaseDatabase.instance.ref("users/${map["userName"]}");
+        FirebaseDatabase.instance.ref("users/$id");
     await ref.update(map);
   }
 
-  // Delete data from user ID
+  // Delete data from ID
   static delete(String id) async {
     final DatabaseReference ref =
         FirebaseDatabase.instance.ref("users/$id");
