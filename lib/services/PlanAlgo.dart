@@ -1,14 +1,15 @@
 
 import 'dart:math';
 
-import 'UserDB.dart';
+import 'Database.dart';
 
 class Algorithm {
   static execute(String id) async {
     Algorithm algo = Algorithm();
     var db = await algo.initializeValue(id);
     var skd = await algo.arrangeSchedule(db);
-    await algo.arrangePlan(db, skd);
+    var plan = await algo.arrangePlan(db, skd);
+    PlanDB.insert(id, plan);
   }
 
   // Method to initialize (and adjust) user's profile from their survey results
@@ -139,26 +140,24 @@ class Algorithm {
   }
 
   // Method to generate a list of workouts from a given workout type
-  Future<List<List>> arrangeWorkout(Data db, String type) async {
+  Future<String> arrangeWorkout(Data db, String type) async {
     // Generate the list of workouts from random
     List<List> tenMin = await getTenMinWorkout(db, type);
     List<List> fiveMin = await getFiveMinWorkout(db, type);
 
     // Arrange different sessions into one list
-    List<List> workouts = [];
-    workouts.add(tenMin[0]);
+    String workouts = tenMin[0].join(", ");
     for (int i = 0; i < fiveMin.length; i++) {
-      workouts.add(fiveMin[i]);
-      workouts.add(tenMin[i]);
+      workouts += ", ${fiveMin[i].join(", ")}";
+      workouts += ", ${tenMin[i].join(", ")}";
     }
 
     return workouts;
   }
 
   // Method to generate a workout plan
-  Future<Map<String, List>> arrangePlan(Data db, Map schedule) async {
-    Map<String, List> plan =
-        Map.fromIterables(db.workoutDays.keys, List.generate(7, (index) => []));
+  Future<Map<String, String>> arrangePlan(Data db, Map schedule) async {
+    Map<String, String> plan = {};
 
     // Call arrangeWorkout() for each workout type in the workout schedule
     for (MapEntry entry in schedule.entries) {
@@ -166,17 +165,7 @@ class Algorithm {
         plan[entry.key] = await arrangeWorkout(db, entry.value);
       }
     }
-
-    print("Plan{");
-    for (String day in plan.keys) {
-      print("  $day: {");
-      for (int i = 0; i < plan[day]!.length; i++) {
-        print("       ${plan[day]![i]}\n");
-      }
-      print("  }");
-    }
-    print("}");
-
+    print("plan: $plan");
     return plan;
   }
 }
