@@ -2,20 +2,22 @@
 
 A fitness habit APP.
 
-## Getting Started
+## Class Diagram
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---CRUD.dart 
+    |---DB        (general database operations: create, read, update, delete)
+---Database.dart
+    |---Calendar  (get the days of the current and following weeks)
+    |---PlanDB    (database operations for the plan children of the schedule table)
+    |---UserDB    (database operations for the user table)
+---PlanAlgo.dart
+    |---Algorithm (generate plan from the planning algorithm)
+    |---Data      (process the data in advance of running the algorithm)
 
 ## Version Control
 
-- `git pull` → `git commit` → `git push`
+- `git pull` → (conflict) → `git stash` → `git pull` → `git stash pop`
+             → (no conflict) → `git commit` → `git push`
 
 - Feature flags (format: id_date_description)
 
