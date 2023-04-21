@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -63,6 +62,7 @@ class Home extends StatelessWidget {
                 Algorithm.execute("Mary");
                 PlanDB.getThisWeekPlan("Mary");
                 PlanDB.getHistory("Mary");
+                Algorithm.regenerate("Mary");
               },
               child: const Text("test AG")),
         ],
@@ -72,10 +72,11 @@ class Home extends StatelessWidget {
 }
 
 class Calendar {
-  static DateTime today() => DateTime.now();
-  static DateTime firstDay() =>
-      today().subtract(Duration(days: today().weekday));
+  static DateTime td() => DateTime.now();
+  static String today() => DateFormat('yyyy-MM-dd').format(DateTime.now());
+  static DateTime firstDay() => td().subtract(Duration(days: td().weekday));
 
+  // Get a number {duration} of dates from the given date {firstDay}
   static List<String> getWeekFrom(DateTime firstDay, int duration) {
     DateFormat fmt = DateFormat('yyyy-MM-dd');
     List<String> week = List.generate(duration,
@@ -85,10 +86,10 @@ class Calendar {
 
   // Get the days of week that have already passed
   static List<String> daysPassed() =>
-      getWeekFrom(firstDay(), today().weekday.toInt());
+      getWeekFrom(firstDay(), td().weekday.toInt());
   // Get the days of week that are yet to come
   static List<String> daysComing() =>
-      getWeekFrom(today(), (14 - today().weekday).toInt());
+      getWeekFrom(td(), (14 - td().weekday).toInt());
   // Get the days of week from the first day
   static List<String> thisWeek() => getWeekFrom(firstDay(), 7);
   // Get the days of week from the eighth day
@@ -131,13 +132,13 @@ class UserDB {
     return (snapshot?.value) as Map?;
   }
 
-  // Select user from name
+  // Select user from userName
   static Future<Map?> getUser(String id) async {
     return Map<String, dynamic>.from(
         await DB.select(table, id) as Map<Object?, Object?>);
   }
 
-  // Select dynamic data from name
+  // Select dynamic data from userName
   static Future<List<Map<String, dynamic>>?> getPlanVariables(String id) async {
     final Map? user = await getUser(id);
 
@@ -167,17 +168,17 @@ class UserDB {
     }
   }
 
-  // Insert data into Users
+  // Insert data {columnName: value} into Users
   static Future<bool> insert(Map map) async {
     return await DB.insert(table, map["userName"], map);
   }
 
-  // Update data (using map) from name
+  // Update data {columnName: value} from userName
   static Future<bool> update(String id, Map<String, Object> map) async {
     return await DB.update(table, id, map);
   }
 
-  // Delete data from name
+  // Delete data from userName
   static Future<bool> delete(String id) async {
     return await DB.delete(table, id);
   }
@@ -199,7 +200,7 @@ class PlanDB {
     return map;
   }
 
-  // Select this week's plan from the date of given week
+  // Select the user's plan from the dates of given week
   static Future<Map?> getPlanWhen(String userID, List datesOfWeek) async {
     Map map = {};
     for (String date in datesOfWeek) {
@@ -211,25 +212,22 @@ class PlanDB {
     return map;
   }
 
-  // Select this week's plan from userID
-  static Future<Map?> getThisWeekPlan(String userID) async {
-    var dates = Calendar.thisWeek();
-    return await getPlanWhen(userID, dates);
-  }
+  // Select user's workout plan
+  static Future<String?> getTodayPlan(String userID) async =>
+      (await getPlanWhen(userID, [Calendar.today()]))?[Calendar.today()];
+  static Future<Map?> getThisWeekPlan(String userID) async =>
+      await getPlanWhen(userID, Calendar.thisWeek());
+  static Future<Map?> getNextWeekPlan(String userID) async =>
+      await getPlanWhen(userID, Calendar.nextWeek());
 
-  // Select next week's plan from userID
-  static Future<Map?> getNextWeekPlan(String userID) async {
-    var dates = Calendar.nextWeek();
-    return await getPlanWhen(userID, dates);
-  }
-
+  // Select user's workout history
   static Future<Map?> getHistory(String userID) async {
     var daysComing = Calendar.daysComing();
     var records = await getPlanList(userID);
     return records!..removeWhere((k, v) => daysComing.contains(k));
   }
 
-  // Insert data {date: plan} into Plans
+  // Insert plan data {date: plan} into table {table/userID/date/plan}
   static Future<bool> insert(String userID, Map<String, String> map) async {
     for (MapEntry e in map.entries) {
       var success = await DB.insert("$table/$userID", e.key, {"plan": e.value});
@@ -240,8 +238,8 @@ class PlanDB {
     return true;
   }
 
-  // Update data {date: plan} from date
-  static Future<bool> update(String userID, Map<String, String> map) async {
+  // Update plan data {date: plan} from table {table/userID/date/plan}
+  static Future<bool> update(String userID, Map map) async {
     for (MapEntry e in map.entries) {
       var success = await DB.update("$table/$userID", e.key, {"plan": e.value});
       if (success == false) {
@@ -251,7 +249,7 @@ class PlanDB {
     return true;
   }
 
-  // Delete data from date
+  // Delete plan data {table/userID/date/plan}
   static Future<bool> delete(String userID, String date) async {
     return DB.delete("$table/$userID/$date", "plan");
   }

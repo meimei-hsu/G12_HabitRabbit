@@ -1,15 +1,34 @@
-
 import 'dart:math';
 
 import 'Database.dart';
 
 class Algorithm {
+  // Execute point of the planning algorithm
   static execute(String id) async {
     Algorithm algo = Algorithm();
     var db = await algo.initializeValue(id);
     var skd = await algo.arrangeSchedule(db);
     var plan = await algo.arrangePlan(db, skd);
-    PlanDB.insert(id, plan);
+    PlanDB.update(id, plan);
+  }
+
+  // Regenerate the plan for today
+  static regenerate(String id) async {
+    Algorithm algo = Algorithm();
+    var db = await algo.initializeValue(id);
+    var today = Calendar.today();
+
+    switch ((await PlanDB.getTodayPlan(id))?[0]) {
+      case 'S':
+        PlanDB.update(id, {today: await algo.arrangeWorkout(db, "strength")});
+        break;
+      case 'C':
+        PlanDB.update(id, {today: await algo.arrangeWorkout(db, "cardio")});
+        break;
+      case 'Y':
+        PlanDB.update(id, {today: await algo.arrangeWorkout(db, "yoga")});
+        break;
+    }
   }
 
   // Method to initialize (and adjust) user's profile from their survey results
@@ -45,9 +64,9 @@ class Algorithm {
     // Calculate workout frequency based on the adjusted user data
     Map<String, int> frequencies = {};
     db.likings.forEach((k, v) => {
-      frequencies.putIfAbsent(
-          k, () => (v / db.sumLikings * db.nDays).round())
-    });
+          frequencies.putIfAbsent(
+              k, () => (v / db.sumLikings * db.nDays).round())
+        });
     print('settings: ${db.workoutDays}\nfrequency: $frequencies');
 
     // Adjust the frequency map based on the error margin of +-1
@@ -145,20 +164,18 @@ class Algorithm {
     List<List> tenMin = await getTenMinWorkout(db, type);
     List<List> fiveMin = await getFiveMinWorkout(db, type);
 
-    // Arrange different sessions into one list
+    // Arrange different sessions into one string
     String workouts = tenMin[0].join(", ");
     for (int i = 0; i < fiveMin.length; i++) {
       workouts += ", ${fiveMin[i].join(", ")}";
       workouts += ", ${tenMin[i].join(", ")}";
     }
-
     return workouts;
   }
 
   // Method to generate a workout plan
   Future<Map<String, String>> arrangePlan(Data db, Map schedule) async {
     Map<String, String> plan = {};
-
     // Call arrangeWorkout() for each workout type in the workout schedule
     for (MapEntry entry in schedule.entries) {
       if (entry.value != 'rest') {
@@ -171,7 +188,7 @@ class Algorithm {
 }
 
 class Data {
-  // Get workout data
+  // TODO: Get workoutID from firebase
   Map<String, List> getWorkoutID() => {
         'strength': [
           [for (var i = 100; i <= 150; i++) 'S$i'],
@@ -194,17 +211,18 @@ class Data {
         ],
       };
 
-  // Get user data
+  // Get the decision variables for the planning algorithm
   Map _likings = {}, _abilities = {}, _workoutDays = {}, _personalities = {};
   num _timeSpan = 15;
   String _mostLike = '', _leastLike = '';
   String _bestAbility = '', _worstAbility = '';
   num _sumLikings = 0, _sumAbilities = 0, _nDays = 0, _nSame = 0;
 
+  // Setter
   Future<void> init(String id) async {
     var profile = await UserDB.getPlanVariables(id);
 
-    _timeSpan = profile![0]['timeSpan']!;
+    _timeSpan = profile![0]['timeSpan'];
     _workoutDays = profile[1];
     _likings = profile[2];
     _abilities = profile[3];
@@ -251,29 +269,18 @@ class Data {
     }
   }
 
+  // Getters
   get likings => _likings;
-
   get abilities => _abilities;
-
   get workoutDays => _workoutDays;
-
   get personalities => _personalities;
-
   get timeSpan => _timeSpan;
-
   get mostLike => _mostLike;
-
   get leastLike => _leastLike;
-
   get bestAbility => _bestAbility;
-
   get worstAbility => _worstAbility;
-
   get sumLikings => _sumLikings;
-
   get sumAbilities => _sumAbilities;
-
   get nDays => _nDays;
-
   get nSame => _nSame;
 }

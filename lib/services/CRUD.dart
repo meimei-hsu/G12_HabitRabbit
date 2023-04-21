@@ -1,8 +1,7 @@
-
 import 'package:firebase_database/firebase_database.dart';
 
 class DB {
-  // Select all entries in the {table}
+  // Select all entries in the given table {table}
   static Future<DataSnapshot?> selectAll(String table) async {
     final ref = FirebaseDatabase.instance.ref();
     final snapshot = await ref.child(table).get();
@@ -13,7 +12,7 @@ class DB {
     return null;
   }
 
-  // Select an entry from primary key
+  // Select an entry from given path {path/id}
   static Future<Object?> select(String path, String id) async {
     final ref = FirebaseDatabase.instance.ref();
     final snapshot = await ref.child(path).get();
@@ -24,7 +23,7 @@ class DB {
     return null;
   }
 
-  // Insert {data} into {table}
+  // Insert data {columnName: value} into table {path/id}
   static Future<bool> insert(String path, String id, Map data) async {
     final DatabaseReference ref = FirebaseDatabase.instance.ref("$path/$id");
     try {
@@ -36,7 +35,8 @@ class DB {
     }
   }
 
-  // Update data (using map) from ID
+  // Update data {columnName: value} into table {path/id}
+  // set vs update: https://stackoverflow.com/a/38924648
   static Future<bool> update(
       String path, String id, Map<String, Object> map) async {
     final DatabaseReference ref = FirebaseDatabase.instance.ref("$path/$id");
@@ -49,7 +49,7 @@ class DB {
     }
   }
 
-  // Delete entry from {table}
+  // Delete entry from table {path/id}
   static Future<bool> delete(String path, String id) async {
     final DatabaseReference ref = FirebaseDatabase.instance.ref("$path/$id");
     try {
