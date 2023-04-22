@@ -19,12 +19,5 @@ A fitness habit APP.
 ## Version Control
 
 - `git pull` → (conflict) → `git stash` → `git pull` → `git stash pop`
-             → (no conflict) → `git commit` → `git push`
 
-- Feature flags (format: id_date_description)
-
-  - while code block test isn’t done
-  
-  - remove flag if the merging has no error
-  
-  - id = dai \ ling \ zhen \ xi \ jia \ frontEnd \ backEnd
+- `git pull` → (no conflict) → `git commit` → `git push`
