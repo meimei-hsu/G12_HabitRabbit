@@ -254,3 +254,46 @@ class PlanDB {
     return DB.delete("$table/$userID/$date", "plan");
   }
 }
+
+class WorkoutDB {
+  static const table = "workout";
+
+  // Define the columns of the user table
+  static List<String> getColumns() {
+    return [
+      "workoutId",
+      "workoutName",
+      "workoutType",
+      "workoutDifficulty",
+    ];
+  }
+
+  // Select all workouts
+  static Future<Map?> getWorkoutList() async {
+    var snapshot = await DB.selectAll(table);
+    return (snapshot?.value) as Map?;
+  }
+
+  // Select workout from workoutId
+  static Future<Map?> getUser(String workoutId) async {
+    return Map<String, dynamic>.from(
+        await DB.select(table, workoutId) as Map<Object?, Object?>);
+  }
+
+
+  // Insert data {columnName: value} into workout
+  static Future<bool> insert(Map map) async {
+    return await DB.insert(table, map["workoutId"], map);
+  }
+
+  // Update data {columnName: value} from workoutId
+  static Future<bool> update(String workoutId, Map<String, Object> map) async {
+    return await DB.update(table, workoutId, map);
+  }
+
+  // Delete data from workoutId
+  static Future<bool> delete(String workoutId) async {
+    return await DB.delete(table, workoutId);
+  }
+}
+
