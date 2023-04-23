@@ -5,6 +5,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:g12/screens/homepage.dart';
 import 'package:g12/screens/statisticPage.dart';
 import 'package:g12/screens/ContractPage.dart';
+import 'package:g12/screens/CountdownPage.dart';
+import 'package:g12/screens/ExercisePage.dart';
 
 class AppEntryPoint extends StatelessWidget {
   @override
@@ -14,8 +16,10 @@ class AppEntryPoint extends StatelessWidget {
       initialRoute: '/', //加route
       routes: {
         '/': (context) => Homepage(title: "Homepage"),
-        '/statistic': (context) => StatisticPage(title: "Statisticpage"),
-        '/constract': (context) => ContractPage(title: "Contractpage"),
+        '/statistic': (context) => StatisticPage(title: "StatisticPage"),
+        '/constract': (context) => ContractPage(title: "ContractPage"),
+        '/countdown': (context) => CountdownPage(title: "CountdownPage"),
+        '/exercise': (context) => ExercisePage(title: "ExercisePage"),
       },
       //home: const Homepage(title: "Homepage")
     );

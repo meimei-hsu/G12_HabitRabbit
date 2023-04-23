@@ -171,7 +171,9 @@ class _HomepageState extends State<Homepage> {
                 iconSize: 80,
                 color: Color(0xff0d3b66),
                 tooltip: "開始運動",
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/countdown');
+                },
               ),
             ),
           )),
