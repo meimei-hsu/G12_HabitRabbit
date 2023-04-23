@@ -41,7 +41,16 @@ class Home extends StatelessWidget {
       50,
       40,
     ];
+    var w = [
+      'W101',
+      'Wall Sit',
+      'W',
+      1,
+    ];
     Map mary = Map.fromIterables(UserDB.getColumns(), m);
+    Map wallSit = Map.fromIterables(WorkoutDB.getColumns(), w);
+
+
 
     return Scaffold(
         body: Container(
@@ -55,6 +64,7 @@ class Home extends StatelessWidget {
                 UserDB.insert(mary);
                 UserDB.update("Mary", {"weight": 45});
                 UserDB.getUserList();
+                WorkoutDB.insert(wallSit);
               },
               child: const Text("test DB")),
           TextButton(
