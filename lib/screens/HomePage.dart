@@ -38,6 +38,7 @@ class _HomepageState extends State<Homepage> {
         actions: [],
         //Text(widget.title, style: TextStyle(color: Color(0xff0d3b66))),
         backgroundColor: Colors.white,
+        automaticallyImplyLeading: false, //關掉返回鍵
       ),
       body: Column(
         children: [
