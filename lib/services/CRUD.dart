@@ -1,5 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
-
+import 'dart:ffi';
 class DB {
   // Select all entries in the given table {table}
   static Future<DataSnapshot?> selectAll(String table) async {
@@ -19,6 +19,16 @@ class DB {
     if (snapshot.hasChild(id)) {
       print('$path/${snapshot.child(id).key}: ${snapshot.child(id).value}');
       return snapshot.child(id).value;
+    }
+    return null;
+  }
+  // Select an entry from given path {path/type/diff}
+  static Future<Object?> select2(String path, String type,int difficulty) async {
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child(path).get();
+    if (snapshot.hasChild(type)) {
+      print('$path/${snapshot.child(type).key}: ${snapshot.child(type).value}');
+      return snapshot.child(type).value;
     }
     return null;
   }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -288,6 +289,12 @@ class WorkoutDB {
   static Future<Map?> getWorkout(String workoutId) async {
     return Map<String, dynamic>.from(
         await DB.select(table, workoutId) as Map<Object?, Object?>);
+  }
+
+  // Select workoutId from workoutId by type and difficulty
+  static Future<Map?> getWorkoutIdByTD(String type, int difficulty) async {
+    return Map<String, dynamic>.from(
+        await DB.select2(table, type,difficulty) as Map<Object?, Object?>);
   }
 
 

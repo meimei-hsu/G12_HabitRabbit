@@ -191,7 +191,7 @@ class Data {
   // TODO: Get workoutID from firebase
   //var workout =  WorkoutDB.getWorkout(id);
   Map<String, List> getWorkoutID() => {
-        'strength': [
+        /*'strength': [
           [for (var i = 100; i <= 150; i++) 'S$i'],
           [for (var i = 200; i <= 250; i++) 'S$i'],
           [for (var i = 300; i <= 350; i++) 'S$i'],
@@ -209,7 +209,26 @@ class Data {
           [for (var i = 300; i <= 350; i++) 'Y$i'],
           [for (var i = 400; i <= 450; i++) 'Y$i'],
           [for (var i = 500; i <= 550; i++) 'Y$i']
-        ],
+        ],*/
+    'strength': [
+      [WorkoutDB.getWorkoutIdByTD("strength",1)],
+      [WorkoutDB.getWorkoutIdByTD("strength",2)],
+      [WorkoutDB.getWorkoutIdByTD("strength",3)],
+      [WorkoutDB.getWorkoutIdByTD("strength",4)],
+      [WorkoutDB.getWorkoutIdByTD("strength",5)]
+    ],
+    'cardio': [
+      [for (var i = 100; i <= 150; i++) 'C$i'],
+      [for (var i = 200; i <= 250; i++) 'C$i'],
+      [for (var i = 300; i <= 350; i++) 'C$i'],
+    ],
+    'yoga': [
+      [for (var i = 100; i <= 150; i++) 'Y$i'],
+      [for (var i = 200; i <= 250; i++) 'Y$i'],
+      [for (var i = 300; i <= 350; i++) 'Y$i'],
+      [for (var i = 400; i <= 450; i++) 'Y$i'],
+      [for (var i = 500; i <= 550; i++) 'Y$i']
+    ],
       };
 
   // Get the decision variables for the planning algorithm
