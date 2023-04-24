@@ -189,6 +189,7 @@ class Algorithm {
 
 class Data {
   // TODO: Get workoutID from firebase
+  //var workout =  WorkoutDB.getWorkout(id);
   Map<String, List> getWorkoutID() => {
         'strength': [
           [for (var i = 100; i <= 150; i++) 'S$i'],

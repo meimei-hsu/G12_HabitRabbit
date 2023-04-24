@@ -285,7 +285,7 @@ class WorkoutDB {
   }
 
   // Select workout from workoutId
-  static Future<Map?> getUser(String workoutId) async {
+  static Future<Map?> getWorkout(String workoutId) async {
     return Map<String, dynamic>.from(
         await DB.select(table, workoutId) as Map<Object?, Object?>);
   }
