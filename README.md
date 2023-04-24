@@ -10,10 +10,21 @@ A fitness habit APP.
 ---Database.dart
     |---Calendar  (get the days of the current and following weeks)
     |---PlanDB    (database operations for the plan children of the schedule table)
-    |---UserDB    (database operations for the user table)    
+    |---UserDB    (database operations for the users table)
+    |---WorkoutDB (database operations for the workouts table)
 ---PlanAlgo.dart
     |---Algorithm (generate plan from the planning algorithm)    
     |---Data      (process the data in advance of running the algorithm)
+```
+
+```
+---LoginPage.dart
+    |---SignupPage.dart
+---HomePage.dart
+    |---ExercisePage.dart
+        |---CountdownPage.dart
+    |---StatisticPage.dart
+    |---ContractPage.dart
 ```
 
 ## Version Control

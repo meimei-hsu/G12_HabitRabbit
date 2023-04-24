@@ -42,9 +42,9 @@ class Home extends StatelessWidget {
       40,
     ];
     var w = [
-      'W101',
+      's101',
       'Wall Sit',
-      'W',
+      'strength',
       1,
     ];
     Map mary = Map.fromIterables(UserDB.getColumns(), m);
@@ -266,12 +266,12 @@ class PlanDB {
 }
 
 class WorkoutDB {
-  static const table = "workout";
+  static const table = "workouts";
 
   // Define the columns of the user table
   static List<String> getColumns() {
     return [
-      "workoutId",
+      "workoutID",
       "workoutName",
       "workoutType",
       "workoutDifficulty",
@@ -293,7 +293,7 @@ class WorkoutDB {
 
   // Insert data {columnName: value} into workout
   static Future<bool> insert(Map map) async {
-    return await DB.insert(table, map["workoutId"], map);
+    return await DB.insert(table, map["workoutID"], map);
   }
 
   // Update data {columnName: value} from workoutId
