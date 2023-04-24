@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:g12/screens/LoginPage.dart';
+import 'package:g12/screens/SignupPage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:g12/screens/homepage.dart';
@@ -8,9 +10,8 @@ import 'package:g12/screens/ContractPage.dart';
 import 'package:g12/screens/CountdownPage.dart';
 import 'package:g12/screens/ExercisePage.dart';
 
-import 'package:g12/screens/FeedbackPage.dart';
-import 'package:g12/screens/LoginsignupPage.dart';
-import 'package:g12/screens/ForgetpasswordPage.dart';
+import 'ForgetpasswordPage.dart';
+import 'LoginsignupPage.dart';
 
 class AppEntryPoint extends StatelessWidget {
   @override
@@ -20,7 +21,6 @@ class AppEntryPoint extends StatelessWidget {
       initialRoute: '/', //加route
       routes: {
         '/': (context) => Homepage(title: "Homepage"),
-        //'/': (context) => LoginsignupPage(title: "LoginsignupPage"),
         '/statistic': (context) => StatisticPage(title: "StatisticPage"),
         '/constract': (context) => ContractPage(title: "ContractPage"),
         '/countdown': (context) => CountdownPage(title: "CountdownPage"),
