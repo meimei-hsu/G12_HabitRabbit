@@ -8,6 +8,10 @@ import 'package:g12/screens/ContractPage.dart';
 import 'package:g12/screens/CountdownPage.dart';
 import 'package:g12/screens/ExercisePage.dart';
 
+import 'package:g12/screens/FeedbackPage.dart';
+import 'package:g12/screens/LoginsignupPage.dart';
+import 'package:g12/screens/ForgetpasswordPage.dart';
+
 class AppEntryPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,10 +20,15 @@ class AppEntryPoint extends StatelessWidget {
       initialRoute: '/', //加route
       routes: {
         '/': (context) => Homepage(title: "Homepage"),
+        //'/': (context) => LoginsignupPage(title: "LoginsignupPage"),
         '/statistic': (context) => StatisticPage(title: "StatisticPage"),
         '/constract': (context) => ContractPage(title: "ContractPage"),
         '/countdown': (context) => CountdownPage(title: "CountdownPage"),
         '/exercise': (context) => ExercisePage(title: "ExercisePage"),
+        '/loginsignupPage': (context) => LoginsignupPage(title: "Loginsignuppage"),
+        '/signupPage': (context) => SignupPage(title: "Signuppage"),
+        '/loginPage': (context) => LoginPage(title: "Statisticpage"),
+        '/forgetpasswordPage': (context) => ForgetpasswordPage(title: "Forgetpasswordpage"),
       },
       //home: const Homepage(title: "Homepage")
     );

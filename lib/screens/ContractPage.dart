@@ -6,7 +6,7 @@ class ContractPage extends StatefulWidget {
   final String title;
 
   @override
-  _ContractPageState createState() => _ContractPageState();
+  _ContractPageState createState() => new _ContractPageState();
 }
 
 class _ContractPageState extends State<ContractPage> {
@@ -22,7 +22,7 @@ class _ContractPageState extends State<ContractPage> {
               color: Color(0xff0d3b66),
               fontSize: 32,
               letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
+              0 /*percentages not used in flutter. defaulting to zero*/,
               fontWeight: FontWeight.bold,
               height: 1),
         ),
@@ -65,7 +65,9 @@ class _ContractPageState extends State<ContractPage> {
               },
             ),
           ),
+
           SizedBox(height: 10),
+
           Container(
             padding: EdgeInsets.only(left: 10, right: 10),
             child: TextField(
@@ -86,6 +88,7 @@ class _ContractPageState extends State<ContractPage> {
             ),
           ),
           SizedBox(height: 10),
+
           Container(
             padding: EdgeInsets.only(left: 10, right: 10),
             child: TextField(
@@ -106,6 +109,7 @@ class _ContractPageState extends State<ContractPage> {
             ),
           ),
           SizedBox(height: 10),
+
           Container(
             padding: EdgeInsets.only(left: 10, right: 10),
             child: TextField(
@@ -126,8 +130,47 @@ class _ContractPageState extends State<ContractPage> {
             ),
           ),
           SizedBox(height: 10),
+
           Container(
-            padding: EdgeInsets.only(left: 280, right: 10, top: 20),
+            padding: EdgeInsets.only(left:20,right:20,top:15),
+            child: Text(
+              '1.本系統與LINE官方進行合作',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                //backgroundColor: Colors.yellow,
+                  color: Color(0xff0d3b66),
+                  fontSize: 25,
+                  letterSpacing:
+                  0 /*percentages not used in flutter. defaulting to zero*/,
+                  fontWeight: FontWeight.bold,
+                  height: 1),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(left:45,right:20,top:10),
+            child: Text(
+              '2.請掃描該QRCODE，再進行後續動作',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                //backgroundColor: Colors.yellow,
+                  color: Color(0xff0d3b66),
+                  fontSize: 25,
+                  letterSpacing:
+                  0 /*percentages not used in flutter. defaulting to zero*/,
+                  fontWeight: FontWeight.bold,
+                  height: 1),
+            ),
+          ),
+          Container(
+            child:
+            Image.asset(
+              'assets/images/LINE.jpg', // 相對路徑
+              width: 300,
+              height: 100,
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 280, right: 10),
             child: IconButton(
               icon: const Icon(Icons.send),
               iconSize: 40,
