@@ -303,10 +303,10 @@ class WorkoutDB {
     if (type == "strength") {
       type = "1";
     }
-    else if(type == "yoga"){
+    else if(type == "cardio"){
       type = "2";
     }
-    else if(type == "cardio"){
+    else if(type == "yoga"){
       type = "3";
     }
     for (String w in workouts!) {

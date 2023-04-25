@@ -220,7 +220,6 @@ class Data {
     'cardio': [
       WorkoutDB.getWorkoutIdByTD("cardio","1"),
       WorkoutDB.getWorkoutIdByTD("cardio","2"),
-      WorkoutDB.getWorkoutIdByTD("cardio","3"),
     ],
     'yoga': [
       WorkoutDB.getWorkoutIdByTD("yoga","1"),
