@@ -68,7 +68,7 @@ class Home extends StatelessWidget {
                 UserDB.getUserList();
                 //WorkoutDB.insert(wallSit);
                 WorkoutDB.update(wallSit);
-                WorkoutDB.getWorkoutIdByTD("strengt", 1);
+                WorkoutDB.getWorkoutIdByTD("yoga", "2");
               },
               child: const Text("test DB")),
           TextButton(
@@ -297,18 +297,24 @@ class WorkoutDB {
   }
 
   // Select workoutId from workoutId by type and difficulty
-  static Future<List?> getWorkoutIdByTD(String type, int difficulty) async {
+  static Future<List?> getWorkoutIdByTD(String type, String difficulty) async {
     var workouts = await getWorkoutList();
     var retVal = [];
     if (type == "strength") {
       type = "1";
     }
+    else if(type == "yoga"){
+      type = "2";
+    }
+    else if(type == "cardio"){
+      type = "3";
+    }
     for (String w in workouts!) {
-      if (w[0] == type) {
+      if (w[0] == type && w[1]==difficulty) {
         retVal.add(w);
       }
     }
-    print("getWorkoutID: $retVal");
+    print("getWorkoutIDByTD: $retVal");
     return retVal;
   }
 

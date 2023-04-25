@@ -211,11 +211,11 @@ class Data {
           [for (var i = 500; i <= 550; i++) 'Y$i']
         ],*/
     'strength': [
-      [WorkoutDB.getWorkoutIdByTD("strength",1)],
-      [WorkoutDB.getWorkoutIdByTD("strength",2)],
-      [WorkoutDB.getWorkoutIdByTD("strength",3)],
-      [WorkoutDB.getWorkoutIdByTD("strength",4)],
-      [WorkoutDB.getWorkoutIdByTD("strength",5)]
+      [WorkoutDB.getWorkoutIdByTD("strength","1")],
+      [WorkoutDB.getWorkoutIdByTD("strength","2")],
+      [WorkoutDB.getWorkoutIdByTD("strength","3")],
+      [WorkoutDB.getWorkoutIdByTD("strength","4")],
+      [WorkoutDB.getWorkoutIdByTD("strength","5")]
     ],
     'cardio': [
       [for (var i = 100; i <= 150; i++) 'C$i'],

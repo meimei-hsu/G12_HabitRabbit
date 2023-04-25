@@ -22,16 +22,7 @@ class DB {
     }
     return null;
   }
-  // Select an entry from given path {path/type/diff}
-  static Future<Object?> select2(String path, String type,int difficulty) async {
-    final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child(path).get();
-    if (snapshot.hasChild(type)) {
-      print('$path/${snapshot.child(type).key}: ${snapshot.child(type).value}');
-      return snapshot.child(type).value;
-    }
-    return null;
-  }
+
 
   // Insert data {columnName: value} into table {path/id}
   static Future<bool> insert(String path, String id, Map data) async {
