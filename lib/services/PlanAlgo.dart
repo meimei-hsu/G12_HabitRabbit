@@ -211,23 +211,23 @@ class Data {
           [for (var i = 500; i <= 550; i++) 'Y$i']
         ],*/
     'strength': [
-      [WorkoutDB.getWorkoutIdByTD("strength","1")],
-      [WorkoutDB.getWorkoutIdByTD("strength","2")],
-      [WorkoutDB.getWorkoutIdByTD("strength","3")],
-      [WorkoutDB.getWorkoutIdByTD("strength","4")],
-      [WorkoutDB.getWorkoutIdByTD("strength","5")]
+      WorkoutDB.getWorkoutIdByTD("strength","1"),
+      WorkoutDB.getWorkoutIdByTD("strength","2"),
+      WorkoutDB.getWorkoutIdByTD("strength","3"),
+      WorkoutDB.getWorkoutIdByTD("strength","4"),
+      WorkoutDB.getWorkoutIdByTD("strength","5"),
     ],
     'cardio': [
-      [for (var i = 100; i <= 150; i++) 'C$i'],
-      [for (var i = 200; i <= 250; i++) 'C$i'],
-      [for (var i = 300; i <= 350; i++) 'C$i'],
+      WorkoutDB.getWorkoutIdByTD("cardio","1"),
+      WorkoutDB.getWorkoutIdByTD("cardio","2"),
+      WorkoutDB.getWorkoutIdByTD("cardio","3"),
     ],
     'yoga': [
-      [for (var i = 100; i <= 150; i++) 'Y$i'],
-      [for (var i = 200; i <= 250; i++) 'Y$i'],
-      [for (var i = 300; i <= 350; i++) 'Y$i'],
-      [for (var i = 400; i <= 450; i++) 'Y$i'],
-      [for (var i = 500; i <= 550; i++) 'Y$i']
+      WorkoutDB.getWorkoutIdByTD("yoga","1"),
+      WorkoutDB.getWorkoutIdByTD("yoga","2"),
+      WorkoutDB.getWorkoutIdByTD("yoga","3"),
+      WorkoutDB.getWorkoutIdByTD("yoga","4"),
+      WorkoutDB.getWorkoutIdByTD("yoga","5"),
     ],
       };
 
