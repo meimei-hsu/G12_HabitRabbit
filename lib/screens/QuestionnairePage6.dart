@@ -6,7 +6,16 @@ class QuestionnairePage6 extends StatefulWidget {
 }
 
 class _QuestionnairePage6 extends State<QuestionnairePage6> {
-  String? radioValue = "";
+  String? radioValue_1 = "";
+  String? radioValue_2 = "";
+  String? radioValue_3 = "";
+  String? radioValue_4 = "";
+  String? radioValue_5 = "";
+  String? radioValue_6 = "";
+  String? radioValue_7 = "";
+  String? radioValue_8 = "";
+  String? radioValue_9 = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +26,8 @@ class _QuestionnairePage6 extends State<QuestionnairePage6> {
         child: Container(
           alignment: Alignment.bottomCenter,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 '1.當處於極大壓力下時，我時常感到瀕臨崩潰。',
@@ -30,20 +40,20 @@ class _QuestionnairePage6 extends State<QuestionnairePage6> {
                 children: [
                   Radio<String>(
                     value: "1",
-                    groupValue: radioValue,
+                    groupValue: radioValue_1,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_1 = value;
                       });
                     },
                   ),
                   Text("是"),
                   Radio<String>(
                     value: "2",
-                    groupValue: radioValue,
+                    groupValue: radioValue_1,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_1 = value;
                       });
                     },
                   ),
@@ -61,20 +71,20 @@ class _QuestionnairePage6 extends State<QuestionnairePage6> {
                 children: [
                   Radio<String>(
                     value: "1",
-                    groupValue: radioValue,
+                    groupValue: radioValue_2,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_2 = value;
                       });
                     },
                   ),
                   Text("是"),
                   Radio<String>(
                     value: "2",
-                    groupValue: radioValue,
+                    groupValue: radioValue_2,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_2 = value;
                       });
                     },
                   ),
@@ -92,20 +102,20 @@ class _QuestionnairePage6 extends State<QuestionnairePage6> {
                 children: [
                   Radio<String>(
                     value: "1",
-                    groupValue: radioValue,
+                    groupValue: radioValue_3,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_3 = value;
                       });
                     },
                   ),
                   Text("是"),
                   Radio<String>(
                     value: "2",
-                    groupValue: radioValue,
+                    groupValue: radioValue_3,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_3 = value;
                       });
                     },
                   ),
@@ -123,20 +133,20 @@ class _QuestionnairePage6 extends State<QuestionnairePage6> {
                 children: [
                   Radio<String>(
                     value: "1",
-                    groupValue: radioValue,
+                    groupValue: radioValue_4,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_4 = value;
                       });
                     },
                   ),
                   Text("是"),
                   Radio<String>(
                     value: "2",
-                    groupValue: radioValue,
+                    groupValue: radioValue_4,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_4 = value;
                       });
                     },
                   ),
@@ -154,20 +164,20 @@ class _QuestionnairePage6 extends State<QuestionnairePage6> {
                 children: [
                   Radio<String>(
                     value: "1",
-                    groupValue: radioValue,
+                    groupValue: radioValue_5,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_5 = value;
                       });
                     },
                   ),
                   Text("是"),
                   Radio<String>(
                     value: "2",
-                    groupValue: radioValue,
+                    groupValue: radioValue_5,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_5 = value;
                       });
                     },
                   ),
@@ -185,20 +195,20 @@ class _QuestionnairePage6 extends State<QuestionnairePage6> {
                 children: [
                   Radio<String>(
                     value: "1",
-                    groupValue: radioValue,
+                    groupValue: radioValue_6,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_6 = value;
                       });
                     },
                   ),
                   Text("是"),
                   Radio<String>(
                     value: "2",
-                    groupValue: radioValue,
+                    groupValue: radioValue_6,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_6 = value;
                       });
                     },
                   ),
@@ -216,20 +226,20 @@ class _QuestionnairePage6 extends State<QuestionnairePage6> {
                 children: [
                   Radio<String>(
                     value: "1",
-                    groupValue: radioValue,
+                    groupValue: radioValue_7,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_7 = value;
                       });
                     },
                   ),
                   Text("是"),
                   Radio<String>(
                     value: "2",
-                    groupValue: radioValue,
+                    groupValue: radioValue_7,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_7 = value;
                       });
                     },
                   ),
@@ -247,20 +257,20 @@ class _QuestionnairePage6 extends State<QuestionnairePage6> {
                 children: [
                   Radio<String>(
                     value: "1",
-                    groupValue: radioValue,
+                    groupValue: radioValue_8,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_8 = value;
                       });
                     },
                   ),
                   Text("是"),
                   Radio<String>(
                     value: "2",
-                    groupValue: radioValue,
+                    groupValue: radioValue_8,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_8 = value;
                       });
                     },
                   ),
@@ -278,20 +288,20 @@ class _QuestionnairePage6 extends State<QuestionnairePage6> {
                 children: [
                   Radio<String>(
                     value: "1",
-                    groupValue: radioValue,
+                    groupValue: radioValue_9,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_9 = value;
                       });
                     },
                   ),
                   Text("是"),
                   Radio<String>(
                     value: "2",
-                    groupValue: radioValue,
+                    groupValue: radioValue_9,
                     onChanged: (value) {
                       setState(() {
-                        radioValue = value;
+                        radioValue_9 = value;
                       }
                       );
                     },

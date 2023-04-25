@@ -39,7 +39,7 @@ class _QuestionnairePage extends StatelessWidget {
           Text('第一部分共14道題，\n'
               '問題將分成「基本資訊」、「運動習慣偏好調查」\n'
               '與「現階段運動能力及未來目標」三大項。\n\n'
-              '請依據個人狀況回來問題。',
+              '請依據個人狀況回來問題。\n',
             style: TextStyle(
               fontSize: 18,
             ),

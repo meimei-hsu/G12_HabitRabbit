@@ -20,8 +20,8 @@ class _QuestionnairePage5 extends State<QuestionnairePage5> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('第二部分共有9道題，\n'
-                  '請針對以下情況進行直覺式判斷，並在不花太多時間的條件下回答是或否。\n'
-                  '請誠實且儘可能準確地回答。\n\n',
+                  '請針對以下情況進行直覺式判斷，並在不花太多時間的條件下回答是或否。\n\n'
+                  '請誠實且儘可能準確地回答。\n',
                 style: TextStyle(
                   fontSize: 20,
                 ),
