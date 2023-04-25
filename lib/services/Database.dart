@@ -42,14 +42,15 @@ class Home extends StatelessWidget {
       50,
       40,
     ];
-    var w = [
-      's101',
-      'Wall Sit',
-      'strength',
-      1,
-    ];
+    var wallSit = {
+      //1101: 'Wall Sit',
+      '1102': 'Wall Sittt',
+      '1103': 'Wall',
+      //'strength',
+      //1,
+    };
     Map mary = Map.fromIterables(UserDB.getColumns(), m);
-    Map wallSit = Map.fromIterables(WorkoutDB.getColumns(), w);
+    //Map wallSit = Map.fromIterables(WorkoutDB.getColumns(), w);
 
 
 
@@ -65,7 +66,9 @@ class Home extends StatelessWidget {
                 UserDB.insert(mary);
                 UserDB.update("Mary", {"weight": 45});
                 UserDB.getUserList();
-                WorkoutDB.insert(wallSit);
+                //WorkoutDB.insert(wallSit);
+                WorkoutDB.update(wallSit);
+                WorkoutDB.getWorkoutIdByTD("strengt", 1);
               },
               child: const Text("test DB")),
           TextButton(
@@ -270,19 +273,21 @@ class WorkoutDB {
   static const table = "workouts";
 
   // Define the columns of the user table
-  static List<String> getColumns() {
+  /*static List<String> getColumns() {
     return [
       "workoutID",
       "workoutName",
-      "workoutType",
-      "workoutDifficulty",
+      //"workoutType",
+      //"workoutDifficulty",
     ];
-  }
+  }*/
 
   // Select all workouts
-  static Future<Map?> getWorkoutList() async {
+  static Future<List?> getWorkoutList() async {
     var snapshot = await DB.selectAll(table);
-    return (snapshot?.value) as Map?;
+    //return (snapshot?.value) as Map?;
+    var map = snapshot?.value as Map?;
+    return map?.keys.toList();
   }
 
   // Select workout from workoutId
@@ -292,20 +297,33 @@ class WorkoutDB {
   }
 
   // Select workoutId from workoutId by type and difficulty
-  static Future<Map?> getWorkoutIdByTD(String type, int difficulty) async {
-    return Map<String, dynamic>.from(
-        await DB.select2(table, type,difficulty) as Map<Object?, Object?>);
+  static Future<List?> getWorkoutIdByTD(String type, int difficulty) async {
+    var workouts = await getWorkoutList();
+    var retVal = [];
+    if (type == "strength") {
+      type = "1";
+    }
+    for (String w in workouts!) {
+      if (w[0] == type) {
+        retVal.add(w);
+      }
+    }
+    print("getWorkoutID: $retVal");
+    return retVal;
   }
 
 
   // Insert data {columnName: value} into workout
-  static Future<bool> insert(Map map) async {
+  /*static Future<bool> insert(Map map) async {
     return await DB.insert(table, map["workoutID"], map);
+  }*/
+  static Future<bool> insert(Map map) async {
+    return await DB.insert(table,"", map);
   }
 
   // Update data {columnName: value} from workoutId
-  static Future<bool> update(String workoutId, Map<String, Object> map) async {
-    return await DB.update(table, workoutId, map);
+  static Future<bool> update(Map<String, Object> map) async {
+    return await DB.update(table, "", map);
   }
 
   // Delete data from workoutId

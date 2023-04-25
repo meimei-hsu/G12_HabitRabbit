@@ -35,7 +35,8 @@ class DB {
 
   // Insert data {columnName: value} into table {path/id}
   static Future<bool> insert(String path, String id, Map data) async {
-    final DatabaseReference ref = FirebaseDatabase.instance.ref("$path/$id");
+    String p = (id == "") ? path : "$path/$id" ;
+    final DatabaseReference ref = FirebaseDatabase.instance.ref(p);
     try {
       await ref.set(data);
       return true;
@@ -49,7 +50,8 @@ class DB {
   // set vs update: https://stackoverflow.com/a/38924648
   static Future<bool> update(
       String path, String id, Map<String, Object> map) async {
-    final DatabaseReference ref = FirebaseDatabase.instance.ref("$path/$id");
+    String p = (id == "") ? path : "$path/$id" ;
+    final DatabaseReference ref = FirebaseDatabase.instance.ref(p);
     try {
       await ref.update(map);
       return true;
