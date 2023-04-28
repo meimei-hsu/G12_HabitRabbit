@@ -217,16 +217,17 @@ class Data {
       WorkoutDB.getWorkoutIdByTD("strength","4"),
       WorkoutDB.getWorkoutIdByTD("strength","5"),
     ],
-    'cardio': [
-      WorkoutDB.getWorkoutIdByTD("cardio","1"),
-      WorkoutDB.getWorkoutIdByTD("cardio","2"),
-    ],
     'yoga': [
       WorkoutDB.getWorkoutIdByTD("yoga","1"),
       WorkoutDB.getWorkoutIdByTD("yoga","2"),
       WorkoutDB.getWorkoutIdByTD("yoga","3"),
       WorkoutDB.getWorkoutIdByTD("yoga","4"),
       WorkoutDB.getWorkoutIdByTD("yoga","5"),
+    ],
+
+    'cardio': [
+      WorkoutDB.getWorkoutIdByTD("cardio","1"),
+      WorkoutDB.getWorkoutIdByTD("cardio","2"),
     ],
       };
 

@@ -44,8 +44,28 @@ class Home extends StatelessWidget {
     ];
     var wallSit = {
       //1101: 'Wall Sit',
-      '1102': 'Wall Sittt',
-      '1103': 'Wall',
+      '2301':'高舉式',
+    '2302':'八肢點地式',
+        '2303':'橋式',
+        '2304':'屈膝式',
+          '2305':'緊張式' ,
+      '2306':'蹲式',
+      '2307':'俯身式',
+      '2308':'三角前彎式',
+      '2309':'鱷魚式',
+      '2310':'馬式' ,
+
+
+
+
+
+
+
+
+
+
+    //'1102': 'Wall Sittt',
+      //'1103': 'Wall',
       //'strength',
       //1,
     };
@@ -303,10 +323,10 @@ class WorkoutDB {
     if (type == "strength") {
       type = "1";
     }
-    else if(type == "cardio"){
+    else if(type == "yoga"){
       type = "2";
     }
-    else if(type == "yoga"){
+    else if(type == "cardio"){
       type = "3";
     }
     for (String w in workouts!) {
