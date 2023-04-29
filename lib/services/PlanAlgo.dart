@@ -229,6 +229,14 @@ class Data {
       WorkoutDB.getWorkoutIdByTD("cardio","1"),
       WorkoutDB.getWorkoutIdByTD("cardio","2"),
     ],
+
+    'warmup': [
+      WorkoutDB.getWorkoutIdByTD("warmup","0"),
+    ],
+
+    'stretch': [
+      WorkoutDB.getWorkoutIdByTD("stretch","0"),
+    ],
       };
 
   // Get the decision variables for the planning algorithm
