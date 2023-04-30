@@ -1,22 +1,23 @@
 import 'dart:math';
 
-import 'Database.dart';
+import 'package:g12/services/Database.dart';
 
 class Algorithm {
   // Execute point of the planning algorithm
-  static execute(String id) async {
+  static Future<Map> execute(String id) async {
     Algorithm algo = Algorithm();
     var db = await algo.initializeValue(id);
     var skd = await algo.arrangeSchedule(db);
     var plan = await algo.arrangePlan(db, skd);
-    PlanDB.update(id, plan);
+    await PlanDB.update(id, plan);
+    return plan;
   }
 
   // Regenerate the plan for today
   static regenerate(String id) async {
     Algorithm algo = Algorithm();
     var db = await algo.initializeValue(id);
-    var today = Calendar.today();
+    var today = Calendar.toKey(DateTime.now());
 
     switch ((await PlanDB.getTodayPlan(id))?[0]) {
       case 'S':
@@ -101,10 +102,10 @@ class Algorithm {
     return schedule;
   }
 
-  // Method to generate 10 minutes workouts
+  // Method to generate all 10 minutes workouts
   Future<List<List>> getTenMinWorkout(Data db, String type) async {
     // Get the workout database
-    Map workoutDB = db.getWorkoutID();
+    List workouts = db.workoutsID[type]!;
 
     // Get users ability level and plan settings
     int ability = db.abilities['${type}Ability'];
@@ -119,28 +120,30 @@ class Algorithm {
 
     // Generate the list of workouts from random
     Random rand = Random();
-    List<List> workouts = [];
-    while (workouts.length < nLoops) {
+    List<List> tenMin = [];
+    while (tenMin.length < nLoops) {
       // Randomly select the difficulty level and pick five moves from that level
       List l = List.generate(
-          5, (k) => workoutDB[type][rand.nextInt(ability)][rand.nextInt(50)]);
+          5,
+          (k) =>
+              workouts[rand.nextInt(ability)][rand.nextInt(workouts.length)]);
       while (same) {
         for (int j = 0; j < nSame - 1; j++) {
           // Duplicate the list twice then add to the return value
-          workouts.add([...l, ...List.from(l)]);
+          tenMin.add([...l, ...List.from(l)]);
         }
         same = false;
       }
-      workouts.add([...l, ...List.from(l)]);
+      tenMin.add([...l, ...List.from(l)]);
     }
 
-    return workouts;
+    return tenMin;
   }
 
-  // Method to generate 5 minutes workouts
+  // Method to generate all 5 minutes workouts
   Future<List<List>> getFiveMinWorkout(Data db, String type) async {
     // Get the workout database
-    Map workoutDB = db.getWorkoutID();
+    List workouts = db.workoutsID[type]!;
 
     // Get difficulty level and plan settings
     int difficulty = 0; // difficulty level for 5 minute workout session: easy
@@ -148,32 +151,53 @@ class Algorithm {
 
     // Generate the list of workouts from random
     Random rand = Random();
-    List<List> workouts = [];
+    List<List> fiveMin = [];
     for (int i = 0; i < nLoops; i++) {
       List l = List.generate(
-          5, (k) => workoutDB[type][difficulty][rand.nextInt(50)]);
-      workouts.add(l);
+          5, (k) => workouts[difficulty][rand.nextInt(workouts.length)]);
+      fiveMin.add(l);
     }
 
-    return workouts;
+    return fiveMin;
+  }
+
+  // Method to generate warm-up or cool-down workouts
+  Future<List<String>> getStretchWorkout(Data db, String type) async {
+    // Get the workout database
+    List workouts = db.workoutsID[type]!;
+
+    int min = (type == "warmUp") ? 3 : 2; // warm-up 3 min, cool-down 2 min
+
+    // Generate the list of workouts from random
+    Random rand = Random();
+    List<String> stretch = [];
+    for (int i = 0; i < min; i++) {
+      stretch.add(workouts[rand.nextInt(workouts.length)]);
+    }
+
+    return stretch;
   }
 
   // Method to generate a list of workouts from a given workout type
   Future<String> arrangeWorkout(Data db, String type) async {
     // Generate the list of workouts from random
+    List<String> warmUp = await getStretchWorkout(db, "warmUp");
     List<List> tenMin = await getTenMinWorkout(db, type);
     List<List> fiveMin = await getFiveMinWorkout(db, type);
+    List<String> coolDown = await getStretchWorkout(db, "coolDown");
 
     // Arrange different sessions into one string
-    String workouts = tenMin[0].join(", ");
+    String workouts = warmUp.join(", ");
     for (int i = 0; i < fiveMin.length; i++) {
-      workouts += ", ${fiveMin[i].join(", ")}";
       workouts += ", ${tenMin[i].join(", ")}";
+      workouts += ", ${fiveMin[i].join(", ")}";
     }
+    workouts += ", ${tenMin.last.join(", ")}";
+    workouts += ", ${coolDown.join(", ")}";
     return workouts;
   }
 
-  // Method to generate a workout plan
+  // Method to generate a workout plan {"Date": "workoutIDs"}
   Future<Map<String, String>> arrangePlan(Data db, Map schedule) async {
     Map<String, String> plan = {};
     // Call arrangeWorkout() for each workout type in the workout schedule
@@ -188,66 +212,19 @@ class Algorithm {
 }
 
 class Data {
-  // TODO: Get workoutID from firebase
-  //var workout =  WorkoutDB.getWorkout(id);
-  Map<String, List> getWorkoutID() => {
-        /*'strength': [
-          [for (var i = 100; i <= 150; i++) 'S$i'],
-          [for (var i = 200; i <= 250; i++) 'S$i'],
-          [for (var i = 300; i <= 350; i++) 'S$i'],
-          [for (var i = 400; i <= 450; i++) 'S$i'],
-          [for (var i = 500; i <= 550; i++) 'S$i']
-        ],
-        'cardio': [
-          [for (var i = 100; i <= 150; i++) 'C$i'],
-          [for (var i = 200; i <= 250; i++) 'C$i'],
-          [for (var i = 300; i <= 350; i++) 'C$i'],
-        ],
-        'yoga': [
-          [for (var i = 100; i <= 150; i++) 'Y$i'],
-          [for (var i = 200; i <= 250; i++) 'Y$i'],
-          [for (var i = 300; i <= 350; i++) 'Y$i'],
-          [for (var i = 400; i <= 450; i++) 'Y$i'],
-          [for (var i = 500; i <= 550; i++) 'Y$i']
-        ],*/
-    'strength': [
-      WorkoutDB.getWorkoutIdByTD("strength","1"),
-      WorkoutDB.getWorkoutIdByTD("strength","2"),
-      WorkoutDB.getWorkoutIdByTD("strength","3"),
-      WorkoutDB.getWorkoutIdByTD("strength","4"),
-      WorkoutDB.getWorkoutIdByTD("strength","5"),
-    ],
-    'yoga': [
-      WorkoutDB.getWorkoutIdByTD("yoga","1"),
-      WorkoutDB.getWorkoutIdByTD("yoga","2"),
-      WorkoutDB.getWorkoutIdByTD("yoga","3"),
-      WorkoutDB.getWorkoutIdByTD("yoga","4"),
-      WorkoutDB.getWorkoutIdByTD("yoga","5"),
-    ],
-
-    'cardio': [
-      WorkoutDB.getWorkoutIdByTD("cardio","1"),
-      WorkoutDB.getWorkoutIdByTD("cardio","2"),
-    ],
-
-    'warmup': [
-      WorkoutDB.getWorkoutIdByTD("warmup","0"),
-    ],
-
-    'stretch': [
-      WorkoutDB.getWorkoutIdByTD("stretch","0"),
-    ],
-      };
-
   // Get the decision variables for the planning algorithm
   Map _likings = {}, _abilities = {}, _workoutDays = {}, _personalities = {};
   num _timeSpan = 15;
   String _mostLike = '', _leastLike = '';
   String _bestAbility = '', _worstAbility = '';
   num _sumLikings = 0, _sumAbilities = 0, _nDays = 0, _nSame = 0;
+  // Get the workouts ID
+  Map _workoutsID = {};
 
   // Setter
   Future<void> init(String id) async {
+    _workoutsID = (await WorkoutDB.getWorkoutID())!;
+
     var profile = await UserDB.getPlanVariables(id);
 
     _timeSpan = profile![0]['timeSpan'];
@@ -298,6 +275,7 @@ class Data {
   }
 
   // Getters
+  get workoutsID => _workoutsID;
   get likings => _likings;
   get abilities => _abilities;
   get workoutDays => _workoutDays;

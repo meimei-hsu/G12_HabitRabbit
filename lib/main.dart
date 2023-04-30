@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:g12/screens/LoginPage.dart';
-import 'package:g12/screens/SignupPage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'package:g12/screens/LoginPage.dart';
+import 'package:g12/screens/SignupPage.dart';
 import 'package:g12/screens/homepage.dart';
 import 'package:g12/screens/statisticPage.dart';
 import 'package:g12/screens/ContractPage.dart';
 import 'package:g12/screens/CountdownPage.dart';
 import 'package:g12/screens/ExercisePage.dart';
-
-import 'ForgetpasswordPage.dart';
-import 'LoginsignupPage.dart';
+import 'package:g12/screens/ForgetpasswordPage.dart';
+import 'package:g12/screens/LoginsignupPage.dart';
 
 class AppEntryPoint extends StatelessWidget {
   @override

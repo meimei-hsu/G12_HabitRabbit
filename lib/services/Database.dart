@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:g12/services/CRUD.dart';
 import 'package:g12/services/PlanAlgo.dart';
-import 'package:intl/intl.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,49 +42,32 @@ class Home extends StatelessWidget {
       40,
     ];
     var wallSit = {
-      //1101: 'Wall Sit',
-      '3101':'高膝行走',
-    '3102':'跳躍',
-        '3103':'側步',
-        '3104':'前進後退',
-          '3105':'踏步/踏板' ,
-      '3106':'跨步側跳',
-      '3107':'雙腳交替跳',
-      '3108':'踏步蹲跳',
-      '3109':'踏步抬腳',
-      '3110':'龍舞踢腿' ,
-      '3111':'模仿拳擊',
-      '3112':'緩步' ,
-
-      '3201':'快速跳躍/跑步',
-      '3202':'踩踏',
-      '3203':'穿梭',
-      '3204':'側向跳躍',
-      '3205':'高抬腿' ,
-      '3206':'半蹲跳',
-      '3207':'搖擺',
-      '3208':'快速轉身',
-      '3209':'快速交叉步',
-      '3210':'快速揮臂' ,
-      '3211':'跳躍揮臂',
-      '3212':'拍手' ,
-
-
-
-
-
-
-
-
-    //'1102': 'Wall Sittt',
-      //'1103': 'Wall',
-      //'strength',
-      //1,
+      '3101': '高膝行走',
+      '3102': '跳躍',
+      '3103': '側步',
+      '3104': '前進後退',
+      '3105': '踏步/踏板',
+      '3106': '跨步側跳',
+      '3107': '雙腳交替跳',
+      '3108': '踏步蹲跳',
+      '3109': '踏步抬腳',
+      '3110': '龍舞踢腿',
+      '3111': '模仿拳擊',
+      '3112': '緩步',
+      '3201': '快速跳躍/跑步',
+      '3202': '踩踏',
+      '3203': '穿梭',
+      '3204': '側向跳躍',
+      '3205': '高抬腿',
+      '3206': '半蹲跳',
+      '3207': '搖擺',
+      '3208': '快速轉身',
+      '3209': '快速交叉步',
+      '3210': '快速揮臂',
+      '3211': '跳躍揮臂',
+      '3212': '拍手',
     };
     Map mary = Map.fromIterables(UserDB.getColumns(), m);
-    //Map wallSit = Map.fromIterables(WorkoutDB.getColumns(), w);
-
-
 
     return Scaffold(
         body: Container(
@@ -99,9 +81,8 @@ class Home extends StatelessWidget {
                 UserDB.insert(mary);
                 UserDB.update("Mary", {"weight": 45});
                 UserDB.getUserList();
-                //WorkoutDB.insert(wallSit);
                 WorkoutDB.update(wallSit);
-                WorkoutDB.getWorkoutIdByTD("yoga", "2");
+                WorkoutDB.getWorkoutID();
               },
               child: const Text("test DB")),
           TextButton(
@@ -119,9 +100,12 @@ class Home extends StatelessWidget {
 }
 
 class Calendar {
-  static DateTime td() => DateTime.now();
-  static String today() => DateFormat('yyyy-MM-dd').format(DateTime.now());
-  static DateTime firstDay() => td().subtract(Duration(days: td().weekday));
+  static DateTime today() => DateTime.now();
+  static DateTime firstDay() =>
+      today().subtract(Duration(days: today().weekday));
+
+  // convert DateTime to String (i.e. plan's key)
+  static String toKey(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
 
   // Get a number {duration} of dates from the given date {firstDay}
   static List<String> getWeekFrom(DateTime firstDay, int duration) {
@@ -133,10 +117,10 @@ class Calendar {
 
   // Get the days of week that have already passed
   static List<String> daysPassed() =>
-      getWeekFrom(firstDay(), td().weekday.toInt());
+      getWeekFrom(firstDay(), today().weekday.toInt());
   // Get the days of week that are yet to come
   static List<String> daysComing() =>
-      getWeekFrom(td(), (14 - td().weekday).toInt());
+      getWeekFrom(today(), (14 - today().weekday).toInt());
   // Get the days of week from the first day
   static List<String> thisWeek() => getWeekFrom(firstDay(), 7);
   // Get the days of week from the eighth day
@@ -217,12 +201,12 @@ class UserDB {
 
   // Insert data {columnName: value} into Users
   static Future<bool> insert(Map map) async {
-    return await DB.insert(table, map["userName"], map);
+    return await DB.insert(map, table, map["userName"]);
   }
 
   // Update data {columnName: value} from userName
   static Future<bool> update(String id, Map<String, Object> map) async {
-    return await DB.update(table, id, map);
+    return await DB.update(map, table, id);
   }
 
   // Delete data from userName
@@ -260,8 +244,11 @@ class PlanDB {
   }
 
   // Select user's workout plan
-  static Future<String?> getTodayPlan(String userID) async =>
-      (await getPlanWhen(userID, [Calendar.today()]))?[Calendar.today()];
+  static Future<String?> getTodayPlan(String userID) async {
+    String today = Calendar.toKey(DateTime.now());
+    return (await getPlanWhen(userID, [today]))![today];
+  }
+
   static Future<Map?> getThisWeekPlan(String userID) async =>
       await getPlanWhen(userID, Calendar.thisWeek());
   static Future<Map?> getNextWeekPlan(String userID) async =>
@@ -277,7 +264,7 @@ class PlanDB {
   // Insert plan data {date: plan} into table {table/userID/date/plan}
   static Future<bool> insert(String userID, Map<String, String> map) async {
     for (MapEntry e in map.entries) {
-      var success = await DB.insert("$table/$userID", e.key, {"plan": e.value});
+      var success = await DB.insert({"plan": e.value}, "$table/$userID", e.key);
       if (success == false) {
         return false;
       }
@@ -288,7 +275,7 @@ class PlanDB {
   // Update plan data {date: plan} from table {table/userID/date/plan}
   static Future<bool> update(String userID, Map map) async {
     for (MapEntry e in map.entries) {
-      var success = await DB.update("$table/$userID", e.key, {"plan": e.value});
+      var success = await DB.update({"plan": e.value}, "$table/$userID", e.key);
       if (success == false) {
         return false;
       }
@@ -305,20 +292,9 @@ class PlanDB {
 class WorkoutDB {
   static const table = "workouts";
 
-  // Define the columns of the user table
-  /*static List<String> getColumns() {
-    return [
-      "workoutID",
-      "workoutName",
-      //"workoutType",
-      //"workoutDifficulty",
-    ];
-  }*/
-
   // Select all workouts
   static Future<List?> getWorkoutList() async {
     var snapshot = await DB.selectAll(table);
-    //return (snapshot?.value) as Map?;
     var map = snapshot?.value as Map?;
     return map?.keys.toList();
   }
@@ -330,50 +306,47 @@ class WorkoutDB {
   }
 
   // Select workoutId from workoutId by type and difficulty
-  static Future<List?> getWorkoutIdByTD(String type, String difficulty) async {
+  static Future<Map?> getWorkoutID() async {
     var workouts = await getWorkoutList();
-    var retVal = [];
-    if (type == "strength") {
-      type = "1";
-    }
-    else if(type == "yoga"){
-      type = "2";
-    }
-    else if(type == "cardio"){
-      type = "3";
-    }
-    else if(type == "warmup"){
-      type = "4";
-    }
-    else if(type == "stretch"){
-      type = "5";
-    }
-    for (String w in workouts!) {
-      if (w[0] == type && w[1]==difficulty) {
-        retVal.add(w);
-      }
-    }
-    print("getWorkoutIDByTD: $retVal");
+
+    Map retVal = {
+      'strength': [
+        List.from(workouts!.where((item) => item[0] == "1" && item[1] == "1")),
+        List.from(workouts.where((item) => item[0] == "1" && item[1] == "2")),
+        List.from(workouts.where((item) => item[0] == "1" && item[1] == "3")),
+        List.from(workouts.where((item) => item[0] == "1" && item[1] == "4")),
+        List.from(workouts.where((item) => item[0] == "1" && item[1] == "5")),
+      ],
+      'cardio': [
+        List.from(workouts.where((item) => item[0] == "2" && item[1] == "1")),
+        List.from(workouts.where((item) => item[0] == "2" && item[1] == "2")),
+      ],
+      'yoga': [
+        List.from(workouts.where((item) => item[0] == "3" && item[1] == "1")),
+        List.from(workouts.where((item) => item[0] == "3" && item[1] == "2")),
+        List.from(workouts.where((item) => item[0] == "3" && item[1] == "3")),
+        List.from(workouts.where((item) => item[0] == "3" && item[1] == "4")),
+        List.from(workouts.where((item) => item[0] == "3" && item[1] == "5")),
+      ],
+      'warmUp': List.from(workouts.where((item) => item[0] == "4")),
+      'coolDown': List.from(workouts.where((item) => item[0] == "5")),
+    };
+
+    print("getWorkoutID: $retVal");
     return retVal;
   }
 
-
-  // Insert data {columnName: value} into workout
-  /*static Future<bool> insert(Map map) async {
-    return await DB.insert(table, map["workoutID"], map);
-  }*/
   static Future<bool> insert(Map map) async {
-    return await DB.insert(table,"", map);
+    return await DB.insert(map, table);
   }
 
   // Update data {columnName: value} from workoutId
   static Future<bool> update(Map<String, Object> map) async {
-    return await DB.update(table, "", map);
+    return await DB.update(map, table);
   }
 
   // Delete data from workoutId
-  static Future<bool> delete(String workoutId) async {
-    return await DB.delete(table, workoutId);
+  static Future<bool> delete(String workoutID) async {
+    return await DB.delete(table, workoutID);
   }
 }
-
