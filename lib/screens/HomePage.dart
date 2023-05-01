@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import 'package:g12/services/PlanAlgo.dart';
 import 'package:g12/services/Database.dart';
 
 class Homepage extends StatefulWidget {
@@ -16,9 +15,9 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   final GlobalKey<ScaffoldState> _myKey = GlobalKey();
   // Calendar 相關設定
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay = DateTime.now();
-  get firstDay => DateTime.now().subtract(Duration(days: _focusedDay.weekday));
+  DateTime _focusedDay = Calendar.today();
+  DateTime? _selectedDay = Calendar.today();
+  get firstDay => Calendar.firstDay();
   get lastDay => firstDay.add(const Duration(days: 13));
 
   @override
@@ -32,8 +31,7 @@ class _HomepageState extends State<Homepage> {
           style: TextStyle(
               color: Color(0xff0d3b66),
               fontSize: 32,
-              letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
+              letterSpacing: 0, //percentages not used in flutter
               fontWeight: FontWeight.bold,
               height: 1),
         ),
@@ -102,6 +100,15 @@ class _HomepageState extends State<Homepage> {
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),
+                outsideDecoration: BoxDecoration(
+                  color: const Color(0xfffaf0ca),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                outsideTextStyle: const TextStyle(
+                  color: Color(0xff0d3b66),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                ),
               ),
               headerVisible: false,
               selectedDayPredicate: (day) {
@@ -164,7 +171,7 @@ class _HomepageState extends State<Homepage> {
           const SizedBox(height: 10),
           FutureBuilder<Map?>(
               // Exercise plan
-              future: Algorithm.execute("Mary"),
+              future: PlanDB.getThisWeekPlan("Mary"),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -173,9 +180,28 @@ class _HomepageState extends State<Homepage> {
                     if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     }
-                    // (String) plan: 3 warm-up + ? loop (10/5/10...) + 2 cool-down
-                    Map data = snapshot.data ?? {};
-                    return Text(data[Calendar.toKey(DateTime.now())]);
+                    // If snapshot has no error, return plan
+                    String plan =
+                        snapshot.data![Calendar.toKey(_selectedDay!)] ?? "";
+                    if (plan.isNotEmpty) {
+                      // Convert the String of plan into a List of workouts
+                      List content = PlanDB.toList(plan);
+                      int length = content.length;
+                      // Generate the titles
+                      List title = [
+                        for (int i = 1; i <= length - 2; i++) "Round $i"
+                      ];
+                      title.insert(0, "Warm up");
+                      title.insert(length - 1, "Cool down");
+                      // Return the plan information
+                      String retVal = "";
+                      for (int i = 0; i < length; i++) {
+                        retVal += "${title[i]}\n${content[i]}\n\n";
+                      }
+                      return Text(retVal);
+                    } else {
+                      return const Text("Rest Day");
+                    }
                 }
               }),
         ],

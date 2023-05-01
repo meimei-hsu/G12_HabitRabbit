@@ -2,15 +2,26 @@ import 'dart:math';
 
 import 'package:g12/services/Database.dart';
 
+// TODO: Debug PlanAlgo
+/*
+1. generate plan on any day if database hos no data for that week
+2. regenerate plan if there are feedback if feedback is evitable
+3. don't generate plans for the days that past
+4. generate two weeks' plan in one go
+ */
+// TODO: update workoutType and difficulty to Journal if plan is completed
+
 class Algorithm {
-  // Execute point of the planning algorithm
-  static Future<Map> execute(String id) async {
-    Algorithm algo = Algorithm();
-    var db = await algo.initializeValue(id);
-    var skd = await algo.arrangeSchedule(db);
-    var plan = await algo.arrangePlan(db, skd);
-    await PlanDB.update(id, plan);
-    return plan;
+  // Start point of the planning algorithm (execute when user login)
+  static execute(String id) async {
+    // Only generate the plan of the current week on the first day (Sunday)
+    if (Calendar.today().weekday == 1) {
+      Algorithm algo = Algorithm();
+      var db = await algo.initializeValue(id);
+      var skd = await algo.arrangeSchedule(db);
+      var plan = await algo.arrangePlan(db, skd);
+      await PlanDB.update(id, plan);
+    }
   }
 
   // Regenerate the plan for today
@@ -105,7 +116,7 @@ class Algorithm {
   // Method to generate all 10 minutes workouts
   Future<List<List>> getTenMinWorkout(Data db, String type) async {
     // Get the workout database
-    List workouts = db.workoutsID[type]!;
+    List workouts = db.workoutNames[type]!;
 
     // Get users ability level and plan settings
     int ability = db.abilities['${type}Ability'];
@@ -123,18 +134,20 @@ class Algorithm {
     List<List> tenMin = [];
     while (tenMin.length < nLoops) {
       // Randomly select the difficulty level and pick five moves from that level
-      List l = List.generate(
-          5,
-          (k) =>
-              workouts[rand.nextInt(ability)][rand.nextInt(workouts.length)]);
+      List lst = [];
+      for (int i = 0; i < 5; i++) {
+        int diff = rand.nextInt(ability);
+        int index = rand.nextInt(workouts[diff].length);
+        lst.add(workouts[diff][index]);
+      }
       while (same) {
         for (int j = 0; j < nSame - 1; j++) {
           // Duplicate the list twice then add to the return value
-          tenMin.add([...l, ...List.from(l)]);
+          tenMin.add([...lst, ...List.from(lst)]);
         }
         same = false;
       }
-      tenMin.add([...l, ...List.from(l)]);
+      tenMin.add([...lst, ...List.from(lst)]);
     }
 
     return tenMin;
@@ -143,19 +156,22 @@ class Algorithm {
   // Method to generate all 5 minutes workouts
   Future<List<List>> getFiveMinWorkout(Data db, String type) async {
     // Get the workout database
-    List workouts = db.workoutsID[type]!;
+    List workouts = db.workoutNames[type]!;
 
     // Get difficulty level and plan settings
-    int difficulty = 0; // difficulty level for 5 minute workout session: easy
+    int diff = 0; // difficulty level for 5 minute workout session: easy
     int nLoops = (db.timeSpan / 15).toInt() - 1; // total rounds
 
     // Generate the list of workouts from random
     Random rand = Random();
     List<List> fiveMin = [];
     for (int i = 0; i < nLoops; i++) {
-      List l = List.generate(
-          5, (k) => workouts[difficulty][rand.nextInt(workouts.length)]);
-      fiveMin.add(l);
+      List lst = [];
+      for (int i = 0; i < 5; i++) {
+        int index = rand.nextInt(workouts[diff].length);
+        lst.add(workouts[diff][index]);
+      }
+      fiveMin.add(lst);
     }
 
     return fiveMin;
@@ -164,7 +180,7 @@ class Algorithm {
   // Method to generate warm-up or cool-down workouts
   Future<List<String>> getStretchWorkout(Data db, String type) async {
     // Get the workout database
-    List workouts = db.workoutsID[type]!;
+    List workouts = db.workoutNames[type]!;
 
     int min = (type == "warmUp") ? 3 : 2; // warm-up 3 min, cool-down 2 min
 
@@ -219,11 +235,11 @@ class Data {
   String _bestAbility = '', _worstAbility = '';
   num _sumLikings = 0, _sumAbilities = 0, _nDays = 0, _nSame = 0;
   // Get the workouts ID
-  Map _workoutsID = {};
+  Map _workoutNames = {};
 
   // Setter
   Future<void> init(String id) async {
-    _workoutsID = (await WorkoutDB.getWorkoutID())!;
+    _workoutNames = (await WorkoutDB.getWorkoutNames())!;
 
     var profile = await UserDB.getPlanVariables(id);
 
@@ -275,7 +291,7 @@ class Data {
   }
 
   // Getters
-  get workoutsID => _workoutsID;
+  get workoutNames => _workoutNames;
   get likings => _likings;
   get abilities => _abilities;
   get workoutDays => _workoutDays;

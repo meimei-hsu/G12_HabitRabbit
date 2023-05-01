@@ -82,7 +82,7 @@ class Home extends StatelessWidget {
                 UserDB.update("Mary", {"weight": 45});
                 UserDB.getUserList();
                 WorkoutDB.update(wallSit);
-                WorkoutDB.getWorkoutID();
+                WorkoutDB.getWorkoutNames();
               },
               child: const Text("test DB")),
           TextButton(
@@ -101,8 +101,11 @@ class Home extends StatelessWidget {
 
 class Calendar {
   static DateTime today() => DateTime.now();
-  static DateTime firstDay() =>
-      today().subtract(Duration(days: today().weekday));
+
+  static DateTime firstDay() {
+    var td = today();
+    return (td.weekday == 7) ? td : td.subtract(Duration(days: td.weekday));
+  }
 
   // convert DateTime to String (i.e. plan's key)
   static String toKey(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
@@ -110,8 +113,8 @@ class Calendar {
   // Get a number {duration} of dates from the given date {firstDay}
   static List<String> getWeekFrom(DateTime firstDay, int duration) {
     DateFormat fmt = DateFormat('yyyy-MM-dd');
-    List<String> week = List.generate(duration,
-        (index) => fmt.format(firstDay.add(Duration(days: index + 1))));
+    List<String> week = List.generate(
+        duration, (index) => fmt.format(firstDay.add(Duration(days: index))));
     return week;
   }
 
@@ -218,6 +221,27 @@ class UserDB {
 class PlanDB {
   static const table = "journal";
 
+  // Format the String of plan into List of workouts
+  static List toList(String planStr) {
+    List plan = planStr.split(", ");
+
+    // (String) plan: 3 warm-up + n loops (10/5/...) + 10 min + 2 cool-down
+    int nLoop = (plan.length - 5) ~/ 15;
+    List fmtPlan = [
+      [for (int i = 0; i < 3; i++) plan[i]],
+    ];
+    for (int i = 0; i < nLoop; i++) {
+      fmtPlan
+          .add([for (int n = fmtPlan.length, i = n; i < n + 10; i++) plan[i]]);
+      fmtPlan
+          .add([for (int n = fmtPlan.length, i = n; i < n + 5; i++) plan[i]]);
+    }
+    fmtPlan.add([for (int n = fmtPlan.length, i = n; i < n + 10; i++) plan[i]]);
+    fmtPlan.add([for (int n = fmtPlan.length, i = n; i < n + 2; i++) plan[i]]);
+
+    return fmtPlan;
+  }
+
   // Select all plans
   static Future<Map?> getPlanList(String userID) async {
     Map map = {};
@@ -293,47 +317,45 @@ class WorkoutDB {
   static const table = "workouts";
 
   // Select all workouts
-  static Future<List?> getWorkoutList() async {
+  static Future<Map?> getWorkoutList() async {
     var snapshot = await DB.selectAll(table);
-    var map = snapshot?.value as Map?;
-    return map?.keys.toList();
+    return snapshot?.value as Map?;
   }
 
-  // Select workout from workoutId
-  static Future<Map?> getWorkout(String workoutId) async {
-    return Map<String, dynamic>.from(
-        await DB.select(table, workoutId) as Map<Object?, Object?>);
-  }
-
-  // Select workoutId from workoutId by type and difficulty
-  static Future<Map?> getWorkoutID() async {
+  // Select workoutNames from workoutID
+  static Future<Map?> getWorkoutNames() async {
     var workouts = await getWorkoutList();
+    List ids = workouts!.keys.toList();
 
-    Map retVal = {
-      'strength': [
-        List.from(workouts!.where((item) => item[0] == "1" && item[1] == "1")),
-        List.from(workouts.where((item) => item[0] == "1" && item[1] == "2")),
-        List.from(workouts.where((item) => item[0] == "1" && item[1] == "3")),
-        List.from(workouts.where((item) => item[0] == "1" && item[1] == "4")),
-        List.from(workouts.where((item) => item[0] == "1" && item[1] == "5")),
-      ],
-      'cardio': [
-        List.from(workouts.where((item) => item[0] == "2" && item[1] == "1")),
-        List.from(workouts.where((item) => item[0] == "2" && item[1] == "2")),
-      ],
-      'yoga': [
-        List.from(workouts.where((item) => item[0] == "3" && item[1] == "1")),
-        List.from(workouts.where((item) => item[0] == "3" && item[1] == "2")),
-        List.from(workouts.where((item) => item[0] == "3" && item[1] == "3")),
-        List.from(workouts.where((item) => item[0] == "3" && item[1] == "4")),
-        List.from(workouts.where((item) => item[0] == "3" && item[1] == "5")),
-      ],
-      'warmUp': List.from(workouts.where((item) => item[0] == "4")),
-      'coolDown': List.from(workouts.where((item) => item[0] == "5")),
+    Map names = {
+      "strength": [[], [], [], [], []],
+      "cardio": [[], []],
+      "yoga": [[], [], [], [], []],
+      "warmUp": [],
+      "coolDown": []
     };
+    List key = names.keys.toList();
 
-    print("getWorkoutID: $retVal");
-    return retVal;
+    for (int type = 1; type <= 3; type++) {
+      for (int diff = 1; diff <= ((type == 2) ? 2 : 5); diff++) {
+        // Get the list of workoutID from the given type and difficulty
+        List tmp = List.from(
+            ids.where((item) => item[0] == "$type" && item[1] == "$diff"));
+        // Insert the list of names from the given ID
+        names[key[type - 1]][diff - 1] =
+            List.generate(tmp.length, (index) => workouts[tmp[index]]);
+      }
+    }
+
+    for (int type = 4; type <= 5; type++) {
+      // Get the list of workoutID from the given type
+      List tmp = List.from(ids.where((item) => item[0] == "$type"));
+      // Insert the list of names from the given ID
+      names[key[type - 1]] =
+          List.generate(tmp.length, (index) => workouts[tmp[index]]);
+    }
+
+    return names;
   }
 
   static Future<bool> insert(Map map) async {
