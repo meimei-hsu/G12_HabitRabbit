@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'package:g12/screens/LoginPage.dart';
-import 'package:g12/screens/SignupPage.dart';
 import 'package:g12/screens/homepage.dart';
 import 'package:g12/screens/statisticPage.dart';
 import 'package:g12/screens/ContractPage.dart';
 import 'package:g12/screens/CountdownPage.dart';
 import 'package:g12/screens/ExercisePage.dart';
-import 'package:g12/screens/ForgetpasswordPage.dart';
+
 import 'package:g12/screens/LoginsignupPage.dart';
 
 class AppEntryPoint extends StatelessWidget {
@@ -24,10 +22,7 @@ class AppEntryPoint extends StatelessWidget {
         '/constract': (context) => ContractPage(title: "ContractPage"),
         '/countdown': (context) => CountdownPage(title: "CountdownPage"),
         '/exercise': (context) => ExercisePage(title: "ExercisePage"),
-        '/loginsignupPage': (context) => LoginsignupPage(title: "Loginsignuppage"),
-        '/signupPage': (context) => SignupPage(title: "Signuppage"),
-        '/loginPage': (context) => LoginPage(title: "Statisticpage"),
-        '/forgetpasswordPage': (context) => ForgetpasswordPage(title: "Forgetpasswordpage"),
+        '/loginsignupPage': (context) => LoginsignupPage(title: "Loginsignuppage", isLoginPage: true),
       },
       //home: const Homepage(title: "Homepage")
     );
