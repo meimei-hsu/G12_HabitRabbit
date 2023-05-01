@@ -15,6 +15,9 @@ A fitness habit APP.
 ---PlanAlgo.dart
     |---Algorithm (generate plan from the planning algorithm)    
     |---Data      (process the data in advance of running the algorithm)
+---Authentication.dart
+    |---FireAuth  (user authentication by firebase)
+    |---Validate  (check if the users' input are correct)
 ```
 
 ```
