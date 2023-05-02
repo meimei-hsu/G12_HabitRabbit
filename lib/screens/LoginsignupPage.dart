@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:g12/screens/Homepage.dart';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -347,6 +348,12 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                           userData.add(_accountController.text);
                           userData.add(_passwordController.text);
                           print(userData);
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => Homepage(title: "Homepage")),
+                            ModalRoute.withName('/'),
+                          );
+
                         },
                       ),
                     ),
@@ -518,6 +525,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                           userData.add(_accountController.text);
                           userData.add(_passwordController.text);
                           print(userData);
+                          Navigator.pushNamed(context, '/questionnaire');
                         },
                       ),
                     ),
@@ -690,6 +698,14 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                 userData.add(_passwordController.text);
                 userData.add(_passwordConfirmController.text);
                 print(userData);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        _buildLoginForm(context),
+                  ),
+                );
+                //Navigator.popAndPushNamed(context, '/loginsignupPage');
               },
             ),
           ),

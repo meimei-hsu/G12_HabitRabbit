@@ -47,6 +47,13 @@ class _ExercisePageState extends State<ExercisePage> {
     startTimer();
   }
 
+  void _showFeedbackDialog() async {
+    await showDialog<double>(
+      context: context,
+      builder: (context) => FeedbackDialog(),
+    );
+  }
+
   void startTimer(){
     if (ifStart){
       ifStart = false;
@@ -56,7 +63,7 @@ class _ExercisePageState extends State<ExercisePage> {
 
     Timer.periodic(period, (timer) {
       if (seconds < 1) {
-        showAlertDialog(context);//彈出回饋框
+        _showFeedbackDialog();
         timer.cancel();
         dispose();
         //ifStart = true;
@@ -180,26 +187,126 @@ class _ExercisePageState extends State<ExercisePage> {
   }
 }
 
-//回饋框框
-showAlertDialog(BuildContext context) {
-  // Init
-  AlertDialog dialog = AlertDialog(
-    title: Text("恭喜完成運動！"),
-    actions: [
-      ElevatedButton(
-          child: Text("讚"),
-          onPressed: () {
-            Navigator.pushNamed(context, '/');
-          }
-      ),
-    ],
-  );
+class FeedbackDialog extends StatefulWidget {
 
-  // Show the dialog
-  showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return dialog;
-      }
-  );
+  @override
+  _FeedbackDialogState createState() => new _FeedbackDialogState();
+}
+
+class _FeedbackDialogState extends State<FeedbackDialog> {
+  double _currentValue1 = 1;
+  double _selectedValue1 = 1;
+  double _currentValue2 = 1;
+  double _selectedValue2 = 1;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+          '每週運動回饋',
+          style: TextStyle(
+            backgroundColor: Colors.yellow,
+            color: Color(0xff0d3b66),
+          )
+      ),
+      content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children:[
+            Container(
+              padding: EdgeInsets.only(top:1),
+              child: Text(
+                '運動項目是否滿意?',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  //backgroundColor: Colors.yellow,
+                    color: Color(0xff0d3b66),
+                    fontSize: 25,
+                    letterSpacing:
+                    0 /*percentages not used in flutter. defaulting to zero*/,
+                    fontWeight: FontWeight.bold,
+                    height: 1),
+              ),
+            ),
+            Container(
+                child: Slider(
+                  value: _currentValue1,
+                  min: 1,
+                  max: 5,
+                  divisions: 4,
+                  label: _currentValue1.round().toString(),
+                  onChanged: (value) {
+                    setState(() {
+                      _currentValue1 = value;
+                      _selectedValue1 = value;
+                    });
+                  },
+                )
+            ),
+            Text(
+              '1                                    5',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                //backgroundColor: Colors.yellow,
+                  color: Color(0xff0d3b66),
+                  fontSize: 20,
+                  letterSpacing:
+                  0 /*percentages not used in flutter. defaulting to zero*/,
+                  fontWeight: FontWeight.bold,
+                  height: 1),
+            ),
+            Container(
+              padding: EdgeInsets.only(top:25),
+              child: Text(
+                '運動過程是否滿意?',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  //backgroundColor: Colors.yellow,
+                    color: Color(0xff0d3b66),
+                    fontSize: 25,
+                    letterSpacing:
+                    0 /*percentages not used in flutter. defaulting to zero*/,
+                    fontWeight: FontWeight.bold,
+                    height: 1),
+              ),
+            ),
+            Container(
+                child: Slider(
+                  value: _currentValue2,
+                  min: 1,
+                  max: 5,
+                  divisions: 4,
+                  label: _currentValue2.round().toString(),
+                  onChanged: (value) {
+                    setState(() {
+                      _currentValue2 = value;
+                      _selectedValue2 = value;
+                    });
+                  },
+                )
+            ),
+            Text(
+              '1                                    5',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                //backgroundColor: Colors.yellow,
+                  color: Color(0xff0d3b66),
+                  fontSize: 20,
+                  letterSpacing:
+                  0 /*percentages not used in flutter. defaulting to zero*/,
+                  fontWeight: FontWeight.bold,
+                  height: 1),
+            ),
+          ]
+      ),
+
+      actions: [
+        ElevatedButton(
+            child: Text("Submit"),
+            onPressed: () { //存input?
+              Navigator.pushNamedAndRemoveUntil(context, '/',  (Route<dynamic> route) => false);
+            }
+        ),
+      ],
+    );
+  }
 }

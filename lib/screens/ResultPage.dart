@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:g12/screens/homepage.dart';
 
 class ResultPage extends StatefulWidget {
   @override
@@ -87,8 +88,11 @@ class _ResultPage extends State<ResultPage> {
               ElevatedButton(
                 child: Text("確認"),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ResultPage()));
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => Homepage(title: "Homepage")),
+                    ModalRoute.withName('/'),
+                  );
                 },
               ),
               SizedBox(height: 20),
