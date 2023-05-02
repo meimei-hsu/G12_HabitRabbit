@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math.dart' as math;
 
@@ -17,6 +19,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   double _selectedValue2 = 1;
 
   void _showAlertDialog(BuildContext context) {
+    List<Double> FeedbackData = [];
     AlertDialog dialog = AlertDialog(
       title: Text(
           '每週運動回饋',
@@ -119,6 +122,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
         ElevatedButton(
             child: Text("Submit"),
             onPressed: () {
+              FeedbackData.add(_selectedValue1 as Double);
+              FeedbackData.add(_selectedValue2 as Double);
+
               Navigator.pop(context);
             }
         ),

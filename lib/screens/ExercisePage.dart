@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -201,6 +202,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
 
   @override
   Widget build(BuildContext context) {
+    List<double> FeedbackData = [];
     return AlertDialog(
       title: Text(
           '每週運動回饋',
@@ -238,6 +240,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
                     setState(() {
                       _currentValue1 = value;
                       _selectedValue1 = value;
+                      FeedbackData.add(_selectedValue1);
                     });
                   },
                 )
@@ -270,6 +273,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
               ),
             ),
             Container(
+
                 child: Slider(
                   value: _currentValue2,
                   min: 1,
@@ -280,6 +284,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
                     setState(() {
                       _currentValue2 = value;
                       _selectedValue2 = value;
+                      FeedbackData.add(_selectedValue2);
                     });
                   },
                 )
@@ -303,6 +308,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
         ElevatedButton(
             child: Text("Submit"),
             onPressed: () { //存input?
+              print(FeedbackData);
               Navigator.pushNamedAndRemoveUntil(context, '/',  (Route<dynamic> route) => false);
             }
         ),
