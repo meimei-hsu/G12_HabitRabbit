@@ -70,7 +70,14 @@ class _ResultPage extends State<ResultPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('測驗結果'),
+        title: Text('測驗結果',
+          style: TextStyle(
+            color: Color(0xFF0D3B66),
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+        backgroundColor: Color(0xFFFAF0CA),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -81,12 +88,20 @@ class _ResultPage extends State<ResultPage> {
               SizedBox(height: 20),
               Text('以下為您所對應的人格角色：\n',
                 style: TextStyle(
+                  color: Color(0xFF0D3B66),
                   fontSize: 20,
                 ),
                 textAlign: TextAlign.center,
               ),
               ElevatedButton(
-                child: Text("確認"),
+                child: Text("確認",
+                    style: TextStyle(
+                      color: Color(0xFF0D3B66),
+                    )
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Color(0xFFFFA493),
+                ),
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                     context,
