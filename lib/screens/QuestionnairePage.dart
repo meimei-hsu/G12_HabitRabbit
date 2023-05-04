@@ -2031,6 +2031,7 @@ class _SixthPage extends State<SixthPage> {
                           conscientiousness_3 = value!;
                         });
                       },
+                      activeColor: Color(0xFFFFA493),
                     ),
                     Text("是",
                         style: TextStyle(
@@ -2208,87 +2209,92 @@ class _SixthPage extends State<SixthPage> {
                   ],
                 ),
               ),
-              ElevatedButton(
-                child: Text("確定送出",
-                  style: TextStyle(
-                    color: Color(0xFF0D3B66),
+              Container(
+                alignment: Alignment.bottomCenter,
+                padding: EdgeInsets.only(bottom: 20),
+                child: ElevatedButton(
+                  child: Text("確定送出",
+                    style: TextStyle(
+                      color: Color(0xFF0D3B66),
+                    ),
                   ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFFFA493),
-                ),
-                onPressed: () {
-                  if (neuroticism_1.isEmpty || neuroticism_2.isEmpty || neuroticism_3.isEmpty ||
-                      conscientiousness_1.isEmpty || conscientiousness_2.isEmpty || conscientiousness_3.isEmpty ||
-                      openness_1.isEmpty || openness_2.isEmpty || openness_3.isEmpty) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text("尚有未作答題目"),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: Text("確定"),
-                              style: ElevatedButton.styleFrom(
-                                primary: Color(0xFFFFA493),
-                                onPrimary: Color(0xFF0D3B66),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xFFFFA493),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                  ),
+                  onPressed: () {
+                    if (neuroticism_1.isEmpty || neuroticism_2.isEmpty || neuroticism_3.isEmpty ||
+                        conscientiousness_1.isEmpty || conscientiousness_2.isEmpty || conscientiousness_3.isEmpty ||
+                        openness_1.isEmpty || openness_2.isEmpty || openness_3.isEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text("尚有未作答題目"),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text("確定"),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Color(0xFFFFA493),
+                                  onPrimary: Color(0xFF0D3B66),
+                                ),
                               ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }else{
-                    int neuroticismSum = 0;
-                    if (neuroticism_1 == "1") {
-                      neuroticismSum += 1;
+                            ],
+                          );
+                        },
+                      );
+                    }else{
+                      int neuroticismSum = 0;
+                      if (neuroticism_1 == "1") {
+                        neuroticismSum += 1;
+                      }
+                      if (neuroticism_2 == "1") {
+                        neuroticismSum += 1;
+                      }
+                      if (neuroticism_3 == "1") {
+                        neuroticismSum += 1;
+                      }
+                      if (neuroticismSum == 2 || neuroticismSum == 3) {
+                        print("neuroticism: 1");
+                      } else {
+                        print("neuroticism: -1");
+                      }
+                      int conscientiousnessSum = 0;
+                      if (conscientiousness_1 == "1") {
+                        conscientiousnessSum += 1;
+                      }
+                      if (conscientiousness_2 == "1") {
+                        conscientiousnessSum += 1;
+                      }
+                      if (conscientiousness_3 == "1") {
+                        conscientiousnessSum += 1;
+                      }
+                      if (conscientiousnessSum == 2 || conscientiousnessSum == 3) {
+                        print("conscientiousness: 1");
+                      } else {
+                        print("conscientiousness: -1");
+                      }
+                      int opennessSum = 0;
+                      if (openness_1 == "1") {
+                        opennessSum += 1;
+                      }
+                      if (openness_2 == "1") {
+                        opennessSum += 1;
+                      }
+                      if (openness_3 == "1") {
+                        opennessSum += 1;
+                      }
+                      if (opennessSum == 2 || opennessSum == 3) {
+                        print("opennessness: 3");
+                      } else {
+                        print("ness: 2");
+                      }
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => ResultPage()));
                     }
-                    if (neuroticism_2 == "1") {
-                      neuroticismSum += 1;
-                    }
-                    if (neuroticism_3 == "1") {
-                      neuroticismSum += 1;
-                    }
-                    if (neuroticismSum == 2 || neuroticismSum == 3) {
-                      print("neuroticism: 1");
-                    } else {
-                      print("neuroticism: -1");
-                    }
-                    int conscientiousnessSum = 0;
-                    if (conscientiousness_1 == "1") {
-                      conscientiousnessSum += 1;
-                    }
-                    if (conscientiousness_2 == "1") {
-                      conscientiousnessSum += 1;
-                    }
-                    if (conscientiousness_3 == "1") {
-                      conscientiousnessSum += 1;
-                    }
-                    if (conscientiousnessSum == 2 || conscientiousnessSum == 3) {
-                      print("conscientiousness: 1");
-                    } else {
-                      print("conscientiousness: -1");
-                    }
-                    int opennessSum = 0;
-                    if (openness_1 == "1") {
-                      opennessSum += 1;
-                    }
-                    if (openness_2 == "1") {
-                      opennessSum += 1;
-                    }
-                    if (openness_3 == "1") {
-                      opennessSum += 1;
-                    }
-                    if (opennessSum == 2 || opennessSum == 3) {
-                      print("opennessness: 3");
-                    } else {
-                      print("ness: 2");
-                    }
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => ResultPage()));
-                  }
-                },
+                  },
+                ),
               ),
               SizedBox(height: 20),
             ],
