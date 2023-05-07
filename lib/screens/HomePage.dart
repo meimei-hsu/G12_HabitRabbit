@@ -20,6 +20,35 @@ class _HomepageState extends State<Homepage> {
   get firstDay => Calendar.firstDay();
   get lastDay => firstDay.add(const Duration(days: 13));
 
+  List<Widget> _getSportList(List content, List title){
+    int length = content.length;
+
+    List<ExpansionTile> expansionTitleList = [];
+    for (int i = 0; i < length; i++){
+      List<ListTile> itemList = [
+        for (int j = 0; j < content[i].length; j++) ListTile(title: Text('${content[i][j]}'))
+      ];
+
+      // TODO: make prettier
+      expansionTitleList.add(
+        ExpansionTile(
+          title: Text(
+            '${title[i]}',
+            style: TextStyle(
+              color: Color(0xff0d3b66),
+              fontSize: 22,
+              letterSpacing: 0, //percentages not used in flutter
+              fontWeight: FontWeight.bold,
+              height: 1),
+          ),
+          children: itemList,
+        ),
+      );
+    }
+
+    return expansionTitleList;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,6 +164,7 @@ class _HomepageState extends State<Homepage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  /*
                   Container(
                     child: Ink(
                       decoration: const ShapeDecoration(
@@ -149,7 +179,7 @@ class _HomepageState extends State<Homepage> {
                         onPressed: () {},
                       ),
                     ),
-                  ),
+                  ),*/
                   const SizedBox(width: 10),
                   Container(
                     child: Ink(
@@ -167,43 +197,71 @@ class _HomepageState extends State<Homepage> {
                     ),
                   )
                 ],
-              )),
+              )
+          ),
           const SizedBox(height: 10),
           FutureBuilder<Map?>(
               // Exercise plan
-              future: PlanDB.getThisWeekPlan("Mary"),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return const Text('Loading....');
-                  default:
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
-                    // If snapshot has no error, return plan
-                    String plan =
-                        snapshot.data![Calendar.toKey(_selectedDay!)] ?? "";
-                    if (plan.isNotEmpty) {
-                      // Convert the String of plan into a List of workouts
-                      List content = PlanDB.toList(plan);
-                      int length = content.length;
-                      // Generate the titles
-                      List title = [
-                        for (int i = 1; i <= length - 2; i++) "Round $i"
-                      ];
-                      title.insert(0, "Warm up");
-                      title.insert(length - 1, "Cool down");
-                      // Return the plan information
-                      String retVal = "";
-                      for (int i = 0; i < length; i++) {
-                        retVal += "${title[i]}\n${content[i]}\n\n";
+                future: PlanDB.getThisWeekPlan("Mary"),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return const Text('Loading....');
+                    default:
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
                       }
-                      return Text(retVal);
-                    } else {
-                      return const Text("Rest Day");
-                    }
+                      // If snapshot has no error, return plan
+                      String plan =
+                          snapshot.data![Calendar.toKey(_selectedDay!)] ?? "";
+                      if (plan.isNotEmpty) {
+                        // Convert the String of plan into a List of workouts
+                        List content = PlanDB.toList(plan);
+                        int length = content.length;
+                        // Generate the titles
+                        List title = [
+                          for (int i = 1; i <= length - 2; i++) "Round $i"
+                        ];
+                        title.insert(0, "Warm up");
+                        title.insert(length - 1, "Cool down");
+                        // Return the plan information
+                        String retVal = "";
+                        for (int i = 0; i < length; i++) {
+                          retVal += "${title[i]}\n${content[i]}\n\n";
+                        }
+                        return Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10, left: 10),
+                            child: ListView(
+                              children: _getSportList(content, title),
+                            ),
+                          ),
+                        );
+                        //return Text(retVal);
+                      } else { //ExpansionTile List
+                        List content = [
+                          ["A","B","C"],["D","E","F"],["G","H","I"],["J","K","L"],
+                        ];
+                        int length = content.length;
+                        // Generate the titles
+                        List title = [
+                          for (int i = 1; i <= length - 2; i++) "Round $i"
+                        ];
+                        title.insert(0, "Warm up");
+                        title.insert(length - 1, "Cool down");
+                        return Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 10, left: 10),
+                              child: ListView(
+                                children: _getSportList(content, title),
+                              ),
+                            ),
+                        );
+                        //return const Text("Rest Day");
+                      }
+                  }
                 }
-              }),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton.large(
