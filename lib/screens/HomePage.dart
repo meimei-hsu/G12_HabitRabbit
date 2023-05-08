@@ -224,40 +224,37 @@ class _HomepageState extends State<Homepage> {
                         ];
                         title.insert(0, "Warm up");
                         title.insert(length - 1, "Cool down");
+
+                        int umcompletedPercentage = 50;
                         // Return the plan information
-                        String retVal = "";
-                        for (int i = 0; i < length; i++) {
-                          retVal += "${title[i]}\n${content[i]}\n\n";
-                        }
                         return Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 10, left: 10),
-                            child: ListView(
-                              children: _getSportList(content, title),
-                            ),
-                          ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "今天還有 $umcompletedPercentage% 的運動還沒完成噢~加油加油！",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      color: Color(0xffffa493),
+                                      fontSize: 18,
+                                      letterSpacing: 0, //percentages not used in flutter
+                                      fontWeight: FontWeight.bold,
+                                      height: 1
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 10, left: 10),
+                                    child: ListView(
+                                      children: _getSportList(content, title),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
                         );
-                        //return Text(retVal);
-                      } else { //ExpansionTile List
-                        List content = [
-                          ["A","B","C"],["D","E","F"],["G","H","I"],["J","K","L"],
-                        ];
-                        int length = content.length;
-                        // Generate the titles
-                        List title = [
-                          for (int i = 1; i <= length - 2; i++) "Round $i"
-                        ];
-                        title.insert(0, "Warm up");
-                        title.insert(length - 1, "Cool down");
-                        return Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 10, left: 10),
-                              child: ListView(
-                                children: _getSportList(content, title),
-                              ),
-                            ),
-                        );
-                        //return const Text("Rest Day");
+                      } else {
+                        return const Text("Rest Day");
                       }
                   }
                 }
@@ -323,7 +320,7 @@ class _HomepageState extends State<Homepage> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
-              const UserAccountsDrawerHeader(
+              UserAccountsDrawerHeader(
                 //require email
                 decoration: BoxDecoration(
                   //to be better
@@ -359,6 +356,9 @@ class _HomepageState extends State<Homepage> {
                     color: Color(0xffCCCCCC),
                   ),
                 ),
+                onDetailsPressed: (){
+                  Navigator.popAndPushNamed(context, '/customized');
+                },
               ),
               ListTile(
                 title: const Text(

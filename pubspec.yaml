@@ -68,6 +68,7 @@ flutter:
   assets:
     - images/testPic.gif
     - images/videoTest.mp4
+    - images/Logo.jpg
     - assets/images/lazy.png
     - assets/images/LINE.jpg
   # To add assets to your application, add an assets section, like this:

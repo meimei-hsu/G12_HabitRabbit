@@ -9,8 +9,7 @@ import 'package:g12/screens/StatisticPage.dart';
 import 'package:g12/screens/ContractPage.dart';
 import 'package:g12/screens/CountdownPage.dart';
 import 'package:g12/screens/ExercisePage.dart';
-
-
+import 'package:g12/screens/CustomizedPage.dart';
 
 class AppEntryPoint extends StatelessWidget {
   @override
@@ -26,6 +25,7 @@ class AppEntryPoint extends StatelessWidget {
         '/exercise': (context) => ExercisePage(title: "ExercisePage"),
         '/loginsignupPage': (context) => LoginsignupPage(title: "Loginsignuppage", isLoginPage: true),
         '/questionnaire': (context) => QuestionnairePage(),
+        '/customized': (context) => CustomizedPage(),
       },
       //home: const Homepage(title: "Homepage")
     );
