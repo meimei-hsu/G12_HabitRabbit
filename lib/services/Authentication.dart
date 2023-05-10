@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// TODO: return FirebaseAuthException for the alert dialog
 class FireAuth {
   // For registering a new user
   static Future<User?> register({
@@ -118,6 +119,7 @@ class FireAuth {
   }
 }
 
+// TODO: validate inputs in the RegisterPage
 class Validator {
   static String? validateName({required String? name}) {
     if (name == null) {

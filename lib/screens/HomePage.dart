@@ -3,6 +3,8 @@ import 'package:table_calendar/table_calendar.dart';
 
 import 'package:g12/services/Database.dart';
 
+import '../services/PlanAlgo.dart';
+
 class Homepage extends StatefulWidget {
   const Homepage({super.key, required this.title});
 
@@ -20,13 +22,14 @@ class _HomepageState extends State<Homepage> {
   get firstDay => Calendar.firstDay();
   get lastDay => firstDay.add(const Duration(days: 13));
 
-  List<Widget> _getSportList(List content, List title){
+  List<Widget> _getSportList(List content, List title) {
     int length = content.length;
 
     List<ExpansionTile> expansionTitleList = [];
-    for (int i = 0; i < length; i++){
+    for (int i = 0; i < length; i++) {
       List<ListTile> itemList = [
-        for (int j = 0; j < content[i].length; j++) ListTile(title: Text('${content[i][j]}'))
+        for (int j = 0; j < content[i].length; j++)
+          ListTile(title: Text('${content[i][j]}'))
       ];
 
       // TODO: make prettier
@@ -35,11 +38,11 @@ class _HomepageState extends State<Homepage> {
           title: Text(
             '${title[i]}',
             style: TextStyle(
-              color: Color(0xff0d3b66),
-              fontSize: 22,
-              letterSpacing: 0, //percentages not used in flutter
-              fontWeight: FontWeight.bold,
-              height: 1),
+                color: Color(0xff0d3b66),
+                fontSize: 22,
+                letterSpacing: 0, //percentages not used in flutter
+                fontWeight: FontWeight.bold,
+                height: 1),
           ),
           children: itemList,
         ),
@@ -192,73 +195,72 @@ class _HomepageState extends State<Homepage> {
                         iconSize: 40,
                         color: const Color(0xff0d3b66),
                         tooltip: "重新計畫",
-                        onPressed: () {},
+                        onPressed: () {
+                          Algorithm.regenerate("Mary", _selectedDay!);
+                        },
                       ),
                     ),
                   )
                 ],
-              )
-          ),
+              )),
           const SizedBox(height: 10),
-          FutureBuilder<Map?>(
+          FutureBuilder<String?>(
               // Exercise plan
-                future: PlanDB.getThisWeekPlan("Mary"),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return const Text('Loading....');
-                    default:
-                      if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      }
-                      // If snapshot has no error, return plan
-                      String plan =
-                          snapshot.data![Calendar.toKey(_selectedDay!)] ?? "";
-                      if (plan.isNotEmpty) {
-                        // Convert the String of plan into a List of workouts
-                        List content = PlanDB.toList(plan);
-                        int length = content.length;
-                        // Generate the titles
-                        List title = [
-                          for (int i = 1; i <= length - 2; i++) "Round $i"
-                        ];
-                        title.insert(0, "Warm up");
-                        title.insert(length - 1, "Cool down");
+              future: PlanDB.getPlanFromDate("Mary", _selectedDay!),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return const CircularProgressIndicator();
+                  default:
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    // If snapshot has no error, return plan
+                    String plan = snapshot.data ?? "";
+                    if (plan.isNotEmpty) {
+                      // Convert the String of plan into a List of workouts
+                      List content = PlanDB.toList(plan);
+                      int length = content.length;
+                      // Generate the titles
+                      List title = [
+                        for (int i = 1; i <= length - 2; i++) "Round $i"
+                      ];
+                      title.insert(0, "Warm up");
+                      title.insert(length - 1, "Cool down");
 
-                        int umcompletedPercentage = 50;
-                        // Return the plan information
-                        return Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  "今天還有 $umcompletedPercentage% 的運動還沒完成噢~加油加油！",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      color: Color(0xffffa493),
-                                      fontSize: 18,
-                                      letterSpacing: 0, //percentages not used in flutter
-                                      fontWeight: FontWeight.bold,
-                                      height: 1
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 10, left: 10),
-                                    child: ListView(
-                                      children: _getSportList(content, title),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                        );
-                      } else {
-                        return const Text("Rest Day");
-                      }
-                  }
+                      int umcompletedPercentage = 50;
+                      // Return the plan information
+                      return Expanded(
+                          child: Column(
+                        children: [
+                          Text(
+                            "今天還有 $umcompletedPercentage% 的運動還沒完成噢~加油加油！",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                color: Color(0xffffa493),
+                                fontSize: 18,
+                                letterSpacing:
+                                    0, //percentages not used in flutter
+                                fontWeight: FontWeight.bold,
+                                height: 1),
+                          ),
+                          const SizedBox(height: 10),
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 10, left: 10),
+                              child: ListView(
+                                children: _getSportList(content, title),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ));
+                    } else {
+                      return const Text("Rest Day");
+                    }
                 }
-          ),
+              }),
         ],
       ),
       floatingActionButton: FloatingActionButton.large(
@@ -356,7 +358,7 @@ class _HomepageState extends State<Homepage> {
                     color: Color(0xffCCCCCC),
                   ),
                 ),
-                onDetailsPressed: (){
+                onDetailsPressed: () {
                   Navigator.popAndPushNamed(context, '/customized');
                 },
               ),

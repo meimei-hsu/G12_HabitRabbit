@@ -38,7 +38,7 @@ class _ExercisePageState extends State<ExercisePage> {
   @override
   void initState(){
     // Create and store the VideoPlayerController.
-    _controller = VideoPlayerController.asset('images/videoTest.mp4');
+    _controller = VideoPlayerController.asset('assets/videos/videoTest.mp4');
     // Initialize the controller and store the Future for later use.
     _initializeVideoPlayerFuture = _controller.initialize();
     // Use the controller to loop the video.

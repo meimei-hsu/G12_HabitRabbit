@@ -4,12 +4,11 @@ import 'package:g12/services/Database.dart';
 
 // TODO: Debug PlanAlgo
 /*
+0. generate plan by workoutID rather than workoutName
 1. generate plan on any day if database hos no data for that week
-2. regenerate plan if there are feedback if feedback is evitable
+2. generate plan on the last day that is scheduled
 3. don't generate plans for the days that past
-4. generate two weeks' plan in one go
- */
-// TODO: update workoutType and difficulty to Journal if plan is completed
+*/
 
 class Algorithm {
   // Start point of the planning algorithm (execute when user login)
@@ -25,20 +24,20 @@ class Algorithm {
   }
 
   // Regenerate the plan for today
-  static regenerate(String id) async {
+  static regenerate(String id, DateTime dateTime) async {
     Algorithm algo = Algorithm();
     var db = await algo.initializeValue(id);
-    var today = Calendar.toKey(DateTime.now());
+    var date = Calendar.toKey(dateTime);
 
-    switch ((await PlanDB.getTodayPlan(id))?[0]) {
+    switch ((await PlanDB.getPlanFromDate(id, dateTime))[0]) {
       case 'S':
-        PlanDB.update(id, {today: await algo.arrangeWorkout(db, "strength")});
+        await PlanDB.update(id, {date: await algo.arrangeWorkout(db, "strength")});
         break;
       case 'C':
-        PlanDB.update(id, {today: await algo.arrangeWorkout(db, "cardio")});
+        await PlanDB.update(id, {date: await algo.arrangeWorkout(db, "cardio")});
         break;
       case 'Y':
-        PlanDB.update(id, {today: await algo.arrangeWorkout(db, "yoga")});
+        await PlanDB.update(id, {date: await algo.arrangeWorkout(db, "yoga")});
         break;
     }
   }

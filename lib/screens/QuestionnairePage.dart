@@ -13,18 +13,16 @@ class _QuestionnairePage extends State<QuestionnairePage> {
         title: 'Change Page',
         home: Scaffold(
           appBar: AppBar(
-            title: Text('問卷介面',
+            title: Text(
+              '問卷介面',
               style: TextStyle(
                   color: Color(0xFF0D3B66),
                   fontWeight: FontWeight.bold,
-                  fontSize: 25
-              ),
+                  fontSize: 25),
             ),
             backgroundColor: Color(0xFFFAF0CA),
           ),
-          body: _FirstPage(
-
-          ),
+          body: _FirstPage(),
         ),
         routes: <String, WidgetBuilder>{'/second': (_) => new SecondPage()});
   }
@@ -39,9 +37,10 @@ class _FirstPage extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(left: 10, top: 200),
-            child: Text('第一部分共14道題，問題將分成：\n\n'
-                '1.基本資訊\n2.運動習慣偏好調查\n3.現階段運動能力及未來目標\n\n'
-                '共三個部分，\n每道題目均為必填，\n請依據個人狀況回來問題。\n',
+            child: Text(
+              '第一部分共14道題，問題將分成：\n\n'
+              '1.基本資訊\n2.運動習慣偏好調查\n3.現階段運動能力及未來目標\n\n'
+              '共三個部分，\n每道題目均為必填，\n請依據個人狀況回來問題。\n',
               style: TextStyle(
                 color: Color(0xFF0D3B66),
                 fontSize: 20,
@@ -51,23 +50,23 @@ class _FirstPage extends StatelessWidget {
           ),
           Expanded(
               child: Align(
-                alignment: Alignment.topCenter,
-                child: ElevatedButton(
-                  child: Text("開始作答",
-                    style: TextStyle(
-                      color: Color(0xFF0D3B66),
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFFFA493),
-                  ),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SecondPage()));
-                  },
+            alignment: Alignment.topCenter,
+            child: ElevatedButton(
+              child: Text(
+                "開始作答",
+                style: TextStyle(
+                  color: Color(0xFF0D3B66),
                 ),
-              )
-          ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFFFA493),
+              ),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SecondPage()));
+              },
+            ),
+          )),
           SizedBox(height: 20),
         ],
       ),
@@ -99,7 +98,8 @@ class _SecondPageState extends State<SecondPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Part1：基本資訊',
+          title: Text(
+            'Part1：基本資訊',
             style: TextStyle(
               color: Color(0xFF0D3B66),
               fontWeight: FontWeight.bold,
@@ -117,7 +117,7 @@ class _SecondPageState extends State<SecondPage> {
                 //第一題
                 SizedBox(height: 30),
                 Padding(
-                  padding: EdgeInsets.only(left:20),
+                  padding: EdgeInsets.only(left: 20),
                   child: Text(
                     '1.您的性別?',
                     style: TextStyle(
@@ -141,7 +141,8 @@ class _SecondPageState extends State<SecondPage> {
                         },
                         activeColor: Color(0xFFFFA493),
                       ),
-                      Text("男",
+                      Text(
+                        "男",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                         ),
@@ -156,7 +157,8 @@ class _SecondPageState extends State<SecondPage> {
                         },
                         activeColor: Color(0xFFFFA493),
                       ),
-                      Text("女",
+                      Text(
+                        "女",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                         ),
@@ -192,19 +194,20 @@ class _SecondPageState extends State<SecondPage> {
                             });
                           }
                         },
-                        child: const Text('選擇',
+                        child: const Text(
+                          '選擇',
                           style: TextStyle(
                             color: Color(0xFF0D3B66),
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xFFFFA493),
+                          backgroundColor: Color(0xFFFFA493),
                         ),
                       ),
                       SizedBox(width: 10),
                       if (selectedDateTime != null)
                         Text(
-                          '\n ${selectedDateTime?.toString()?.substring(0, 10) ?? ""}',
+                          '\n ${selectedDateTime?.toString().substring(0, 10) ?? ""}',
                           style: TextStyle(
                             color: Color(0xFF0D3B66),
                             fontSize: 18,
@@ -258,7 +261,7 @@ class _SecondPageState extends State<SecondPage> {
                   ),
                 ),
                 Padding(
-                  padding:EdgeInsets.only(left: 20),
+                  padding: EdgeInsets.only(left: 20),
                   child: Container(
                     width: 300,
                     child: TextField(
@@ -281,13 +284,14 @@ class _SecondPageState extends State<SecondPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      child: Text("返回",
+                      child: Text(
+                        "返回",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFFFFA493),
+                        backgroundColor: Color(0xFFFFA493),
                       ),
                       onPressed: () {
                         Navigator.pop(context);
@@ -296,16 +300,20 @@ class _SecondPageState extends State<SecondPage> {
                     SizedBox(height: 20),
                     SizedBox(width: 20),
                     ElevatedButton(
-                        child: Text("確定",
+                        child: Text(
+                          "確定",
                           style: TextStyle(
                             color: Color(0xFF0D3B66),
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          primary: Color(0xFFFFA493),
+                          backgroundColor: Color(0xFFFFA493),
                         ),
                         onPressed: () {
-                          if (gender == null || selectedDateTime == null || height.isEmpty || weight.isEmpty) {
+                          if (gender == null ||
+                              selectedDateTime == null ||
+                              height.isEmpty ||
+                              weight.isEmpty) {
                             showDialog(
                               context: context,
                               builder: (context) {
@@ -313,36 +321,37 @@ class _SecondPageState extends State<SecondPage> {
                                   title: Text("尚有未作答題目"),
                                   actions: [
                                     ElevatedButton(
-                                      onPressed: () => Navigator.of(context).pop(),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
                                       child: Text("確定"),
                                       style: ElevatedButton.styleFrom(
-                                        primary: Color(0xFFFFA493),
-                                        onPrimary: Color(0xFF0D3B66),
+                                        foregroundColor: Color(0xFF0D3B66),
+                                        backgroundColor: Color(0xFFFFA493),
                                       ),
                                     ),
                                   ],
                                 );
                               },
                             );
-                          }else{
+                          } else {
                             //呼叫存起來的東西
                             print('$gender');
                             print('$selectedDateTime');
                             print('$height');
                             print('$weight');
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => ThirdPage()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ThirdPage()));
                           }
-                        }
-                    ),SizedBox(height: 20),
+                        }),
+                    SizedBox(height: 20),
                   ],
                 ),
               ]),
-        )
-    );
+        ));
   }
 }
-
 
 class ThirdPage extends StatefulWidget {
   @override
@@ -379,7 +388,8 @@ class _ThirdPage extends State<ThirdPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Part1：運動習慣偏好',
+        title: Text(
+          'Part1：運動習慣偏好',
           style: TextStyle(
             color: Color(0xFF0D3B66),
             fontWeight: FontWeight.bold,
@@ -425,8 +435,7 @@ class _ThirdPage extends State<ThirdPage> {
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Radio<String>(
                       value: "30分鐘",
                       groupValue: timeSpan,
@@ -441,8 +450,7 @@ class _ThirdPage extends State<ThirdPage> {
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Radio<String>(
                       value: "45分鐘",
                       groupValue: timeSpan,
@@ -457,8 +465,7 @@ class _ThirdPage extends State<ThirdPage> {
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Radio<String>(
                       value: "60分鐘",
                       groupValue: timeSpan,
@@ -473,8 +480,7 @@ class _ThirdPage extends State<ThirdPage> {
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                   ],
                 ),
               ),
@@ -508,8 +514,7 @@ class _ThirdPage extends State<ThirdPage> {
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Checkbox(
                       value: tuesday,
                       onChanged: (value) {
@@ -524,8 +529,7 @@ class _ThirdPage extends State<ThirdPage> {
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Checkbox(
                       value: wednesday,
                       onChanged: (value) {
@@ -536,7 +540,8 @@ class _ThirdPage extends State<ThirdPage> {
                       activeColor: Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("星期三",
+                    Text(
+                      "星期三",
                       style: TextStyle(
                         color: Color(0xFF0D3B66),
                         fontSize: 15,
@@ -556,8 +561,7 @@ class _ThirdPage extends State<ThirdPage> {
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                   ],
                 ),
               ),
@@ -579,8 +583,7 @@ class _ThirdPage extends State<ThirdPage> {
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Checkbox(
                       value: saturday,
                       onChanged: (value) {
@@ -595,8 +598,7 @@ class _ThirdPage extends State<ThirdPage> {
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Checkbox(
                       value: sunday,
                       onChanged: (value) {
@@ -611,8 +613,7 @@ class _ThirdPage extends State<ThirdPage> {
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                   ],
                 ),
               ),
@@ -630,8 +631,7 @@ class _ThirdPage extends State<ThirdPage> {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 20),
-                child:
-                Row(
+                child: Row(
                   children: [
                     Checkbox(
                       value: strengthLiking,
@@ -643,7 +643,8 @@ class _ThirdPage extends State<ThirdPage> {
                       activeColor: Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("肌耐力訓練 (如重量訓練)",
+                    Text(
+                      "肌耐力訓練 (如重量訓練)",
                       style: TextStyle(
                         color: Color(0xFF0D3B66),
                         fontSize: 15,
@@ -666,7 +667,8 @@ class _ThirdPage extends State<ThirdPage> {
                       activeColor: Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("有氧訓練 (如有氧舞蹈、慢跑等)",
+                    Text(
+                      "有氧訓練 (如有氧舞蹈、慢跑等)",
                       style: TextStyle(
                         color: Color(0xFF0D3B66),
                         fontSize: 15,
@@ -677,8 +679,7 @@ class _ThirdPage extends State<ThirdPage> {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 20),
-                child:
-                Row(
+                child: Row(
                   children: [
                     Checkbox(
                       value: yogaLiking,
@@ -690,7 +691,8 @@ class _ThirdPage extends State<ThirdPage> {
                       activeColor: Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("伸展運動 (如瑜珈)",
+                    Text(
+                      "伸展運動 (如瑜珈)",
                       style: TextStyle(
                         color: Color(0xFF0D3B66),
                         fontSize: 15,
@@ -713,7 +715,8 @@ class _ThirdPage extends State<ThirdPage> {
                       activeColor: Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("我沒有任何偏好",
+                    Text(
+                      "我沒有任何偏好",
                       style: TextStyle(
                         color: Color(0xFF0D3B66),
                         fontSize: 15,
@@ -736,7 +739,8 @@ class _ThirdPage extends State<ThirdPage> {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 20),
-                child: Row(// 每行之間的間距
+                child: Row(
+                  // 每行之間的間距
                   children: [
                     Checkbox(
                       value: gym,
@@ -748,10 +752,8 @@ class _ThirdPage extends State<ThirdPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("健身房",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15)
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Checkbox(
                       value: house,
                       onChanged: (bool? value) {
@@ -762,11 +764,8 @@ class _ThirdPage extends State<ThirdPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("家裡",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Checkbox(
                       value: outdoor,
                       onChanged: (bool? value) {
@@ -777,11 +776,8 @@ class _ThirdPage extends State<ThirdPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("戶外",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Checkbox(
                       value: other,
                       onChanged: (bool? value) {
@@ -792,11 +788,8 @@ class _ThirdPage extends State<ThirdPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("無偏好",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                   ],
                 ),
               ),
@@ -806,7 +799,7 @@ class _ThirdPage extends State<ThirdPage> {
                 padding: EdgeInsets.only(left: 20),
                 child: Text(
                   '9.您是否有任何身體部位受過傷害,\n'
-                      '   不適合太激烈的運動？',
+                  '   不適合太激烈的運動？',
                   style: TextStyle(
                     color: Color(0xFF0D3B66),
                     fontSize: 18,
@@ -828,11 +821,8 @@ class _ThirdPage extends State<ThirdPage> {
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     Text("膝蓋",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Checkbox(
                       value: waist,
                       onChanged: (bool? value) {
@@ -844,11 +834,8 @@ class _ThirdPage extends State<ThirdPage> {
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     Text("腰部",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Checkbox(
                       value: shoulder,
                       onChanged: (bool? value) {
@@ -860,68 +847,51 @@ class _ThirdPage extends State<ThirdPage> {
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     Text("肩膀",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                   ],
                 ),
               ),
               Padding(
                 padding: EdgeInsets.only(left: 20),
-                child: Row(
-                    children: [
-                      Checkbox(
-                        value: butt,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            butt = value!;
-                          });
-                        },
-                        activeColor: Color(0xFFFFA493),
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      Text("臀部",
-                          style: TextStyle(
-                              color: Color(0xFF0D3B66),
-                              fontSize: 15
-                          )
-                      ),
-                      Checkbox(
-                        value: abd,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            abd = value!;
-                          });
-                        },
-                        activeColor: Color(0xFFFFA493),
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      Text("腹肌",
-                          style: TextStyle(
-                              color: Color(0xFF0D3B66),
-                              fontSize: 15
-                          )
-                      ),
-                      Checkbox(
-                        value: none,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            none = value!;
-                          });
-                        },
-                        activeColor: Color(0xFFFFA493),
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
-                      Text("均無",
-                          style: TextStyle(
-                              color: Color(0xFF0D3B66),
-                              fontSize: 15
-                          )
-                      ),
-                    ]
-                ),
+                child: Row(children: [
+                  Checkbox(
+                    value: butt,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        butt = value!;
+                      });
+                    },
+                    activeColor: Color(0xFFFFA493),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  Text("臀部",
+                      style: TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
+                  Checkbox(
+                    value: abd,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        abd = value!;
+                      });
+                    },
+                    activeColor: Color(0xFFFFA493),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  Text("腹肌",
+                      style: TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
+                  Checkbox(
+                    value: none,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        none = value!;
+                      });
+                    },
+                    activeColor: Color(0xFFFFA493),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  Text("均無",
+                      style: TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
+                ]),
               ),
               SizedBox(height: 20),
               Row(
@@ -931,10 +901,9 @@ class _ThirdPage extends State<ThirdPage> {
                     child: Text("返回",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
-                        )
-                    ),
+                        )),
                     style: ElevatedButton.styleFrom(
-                      primary: Color(0xFFFFA493),
+                      backgroundColor: Color(0xFFFFA493),
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -946,10 +915,9 @@ class _ThirdPage extends State<ThirdPage> {
                       child: Text("確定",
                           style: TextStyle(
                             color: Color(0xFF0D3B66),
-                          )
-                      ),
+                          )),
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFFFFA493),
+                        backgroundColor: Color(0xFFFFA493),
                       ),
                       onPressed: () {
                         if (timeSpan.isEmpty) {
@@ -960,39 +928,40 @@ class _ThirdPage extends State<ThirdPage> {
                                 title: Text("尚有未作答題目"),
                                 actions: [
                                   ElevatedButton(
-                                    onPressed: () => Navigator.of(context).pop(),
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
                                     child: Text("確定"),
                                     style: ElevatedButton.styleFrom(
-                                      primary: Color(0xFFFFA493),
-                                      onPrimary: Color(0xFF0D3B66),
+                                      foregroundColor: Color(0xFF0D3B66),
+                                      backgroundColor: Color(0xFFFFA493),
                                     ),
                                   ),
                                 ],
                               );
                             },
                           );
-                        }else{
+                        } else {
                           print('timeSpan:$timeSpan');
-                          String workoutDays =
-                              (monday ? "1" : "0") +
-                                  (tuesday ? "1" : "0") +
-                                  (wednesday ? "1" : "0") +
-                                  (thursday ? "1" : "0") +
-                                  (friday ? "1" : "0") +
-                                  (saturday ? "1" : "0") +
-                                  (sunday ? "1" : "0");
-                          print('workoutDays:'+ workoutDays);
+                          String workoutDays = (monday ? "1" : "0") +
+                              (tuesday ? "1" : "0") +
+                              (wednesday ? "1" : "0") +
+                              (thursday ? "1" : "0") +
+                              (friday ? "1" : "0") +
+                              (saturday ? "1" : "0") +
+                              (sunday ? "1" : "0");
+                          print('workoutDays:' + workoutDays);
                           Map<String, int> liking = {
                             'strengthLiking': strengthLiking ? 60 : 40,
                             'cardioLiking': cardioLiking ? 60 : 40,
                             'yogaLiking': yogaLiking ? 60 : 40,
                           };
                           print(liking);
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => ForthPage()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForthPage()));
                         }
-                      }
-                  ),
+                      }),
                   SizedBox(height: 20),
                 ],
               ),
@@ -1025,7 +994,8 @@ class _ForthPage extends State<ForthPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Part1：現階段運動能力與未來目標',
+          title: Text(
+            'Part1：現階段運動能力與未來目標',
             style: TextStyle(
               color: Color(0xFF0D3B66),
               fontWeight: FontWeight.bold,
@@ -1036,627 +1006,571 @@ class _ForthPage extends State<ForthPage> {
         ),
         body: SingleChildScrollView(
             child: Container(
-              alignment: Alignment.center,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          alignment: Alignment.center,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //第十題
+                SizedBox(height: 15),
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text(
+                    '10.您目前的運動頻率(次數/週)？',
+                    style: TextStyle(
+                      color: Color(0xFF0D3B66),
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Radio<String>(
+                        value: "1",
+                        groupValue: frequency,
+                        onChanged: (value) {
+                          setState(() {
+                            frequency = value;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text("0",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                      Radio<String>(
+                        value: "2",
+                        groupValue: frequency,
+                        onChanged: (value) {
+                          setState(() {
+                            frequency = value;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text("1-2",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                      Radio<String>(
+                        value: "3",
+                        groupValue: frequency,
+                        onChanged: (value) {
+                          setState(() {
+                            frequency = value;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text("3-4",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                      Radio<String>(
+                        value: "4",
+                        groupValue: frequency,
+                        onChanged: (value) {
+                          setState(() {
+                            frequency = value;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text("5(含以上)",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                    ],
+                  ),
+                ),
+                //第十一題
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text(
+                    '11.您運動的原因或預期目標？',
+                    style: TextStyle(
+                      color: Color(0xFF0D3B66),
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: A,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            A = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      Text("維持運動能力",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                      Checkbox(
+                        value: B,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            B = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      Text("鍛鍊肌肉變強壯",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                      Checkbox(
+                        value: C,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            C = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      Text("減重",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: D,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            D = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      Text("提升心肺耐力",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                      Checkbox(
+                        value: E,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            E = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      Text("提升身體靈敏度",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                      Checkbox(
+                        value: F,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            F = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      Text("抒解壓力",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: G,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            G = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      Text("促進身體健康",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                      Checkbox(
+                        value: H,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            H = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      Text("其他",
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                      SizedBox(width: 5),
+                      Container(
+                        width: 150,
+                        height: 20,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: '自行輸入',
+                            hintStyle: TextStyle(
+                              color: Color(0xFF0D3B66),
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                //第十二題
+                SizedBox(height: 5),
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text(
+                    '12.請為您目前做肌耐力運動的能力評分',
+                    style: TextStyle(
+                      color: Color(0xFF0D3B66),
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                  child: Row(
+                    children: [
+                      Radio<String>(
+                        value: "80",
+                        groupValue: strengthAbility,
+                        onChanged: (value) {
+                          setState(() {
+                            strengthAbility = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text(
+                          '1.高水平：'
+                          '一口氣完成20次伏地挺身等重量訓練',
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                  child: Row(
+                    children: [
+                      Radio<String>(
+                        value: "70",
+                        groupValue: strengthAbility,
+                        onChanged: (value) {
+                          setState(() {
+                            strengthAbility = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text(
+                          '2.中高水平：'
+                          '一口氣完成15次伏地挺身等重量訓練',
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                  child: Row(
+                    children: [
+                      Radio<String>(
+                        value: "60",
+                        groupValue: strengthAbility,
+                        onChanged: (value) {
+                          setState(() {
+                            strengthAbility = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text(
+                          '3.中水平：'
+                          '一口氣完成10次的深蹲、硬舉等重量訓練',
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                  child: Row(
+                    children: [
+                      Radio<String>(
+                        value: "50",
+                        groupValue: strengthAbility,
+                        onChanged: (value) {
+                          setState(() {
+                            strengthAbility = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text(
+                          '4.中低水平：'
+                          '一口氣完成3-6次深蹲、硬舉等重量訓練',
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                  child: Row(
+                    children: [
+                      Radio<String>(
+                        value: "40",
+                        groupValue: strengthAbility,
+                        onChanged: (value) {
+                          setState(() {
+                            strengthAbility = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text(
+                          '5.低水平：'
+                          '一次僅能完成1-3次深蹲、硬舉等重量訓練',
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                    ],
+                  ),
+                ),
+                //第十三題
+                SizedBox(height: 5),
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text(
+                    '13.請為您目前做有氧運動的能力評分',
+                    style: TextStyle(
+                      color: Color(0xFF0D3B66),
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                  child: Row(
+                    children: [
+                      Radio<String>(
+                        value: "80",
+                        groupValue: cardioAbility,
+                        onChanged: (value) {
+                          setState(() {
+                            cardioAbility = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text('1.高水平：能持續30分鐘以上進行慢跑、飛輪',
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                  child: Row(
+                    children: [
+                      Radio<String>(
+                        value: "60",
+                        groupValue: cardioAbility,
+                        onChanged: (value) {
+                          setState(() {
+                            cardioAbility = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text('2.中水平：能持續15-30分鐘進行快走、跳繩',
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                  child: Row(
+                    children: [
+                      Radio<String>(
+                        value: "40",
+                        groupValue: cardioAbility,
+                        onChanged: (value) {
+                          setState(() {
+                            cardioAbility = value!;
+                          });
+                        },
+                        activeColor: Color(0xFFFFA493),
+                      ),
+                      Text('3.低水平：能持續15-30分鐘散步、爬樓梯',
+                          style: TextStyle(
+                              color: Color(0xFF0D3B66), fontSize: 15)),
+                    ],
+                  ),
+                ),
+                //第十四題
+                SizedBox(height: 5),
+                Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text(
+                    '14.請為您目前做伸展運動的能力評分',
+                    style: TextStyle(
+                      color: Color(0xFF0D3B66),
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                Row(
                   children: [
-                    //第十題
-                    SizedBox(height: 15),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20),
+                    Radio<String>(
+                      value: "80",
+                      groupValue: yogaAbility,
+                      onChanged: (value) {
+                        setState(() {
+                          yogaAbility = value!;
+                        });
+                      },
+                      activeColor: Color(0xFFFFA493),
+                    ),
+                    Text(
+                        '1.高水平\n'
+                        '能夠完成多種複雜的伸展動作，\n'
+                        '保持每個動作正確姿勢並且能夠輕鬆地完成。',
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Radio<String>(
+                      value: "60",
+                      groupValue: yogaAbility,
+                      onChanged: (value) {
+                        setState(() {
+                          yogaAbility = value!;
+                        });
+                      },
+                      activeColor: Color(0xFFFFA493),
+                    ),
+                    Text(
+                        '2.中水平\n'
+                        '能夠完成基本的伸展運動，\n'
+                        '保持正確姿勢完成伸展動作，但未達高水平的要求。',
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Radio<String>(
+                      value: "40",
+                      groupValue: yogaAbility,
+                      onChanged: (value) {
+                        setState(() {
+                          yogaAbility = value!;
+                        });
+                      },
+                      activeColor: Color(0xFFFFA493),
+                    ),
+                    Text(
+                        '3.低水平\n'
+                        '只能完成一些簡單的伸展動作，\n'
+                        '難以保持正確姿勢也無法完成複雜的伸展動作。',
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
                       child: Text(
-                        '10.您目前的運動頻率(次數/週)？',
+                        "返回",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
-                          fontSize: 18,
                         ),
-                        textAlign: TextAlign.left,
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Radio<String>(
-                            value: "1",
-                            groupValue: frequency,
-                            onChanged: (value) {
-                              setState(() {
-                                frequency = value;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text("0",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                          Radio<String>(
-                            value: "2",
-                            groupValue: frequency,
-                            onChanged: (value) {
-                              setState(() {
-                                frequency = value;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text("1-2",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                          Radio<String>(
-                            value: "3",
-                            groupValue: frequency,
-                            onChanged: (value) {
-                              setState(() {
-                                frequency = value;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text("3-4",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                          Radio<String>(
-                            value: "4",
-                            groupValue: frequency,
-                            onChanged: (value) {
-                              setState(() {
-                                frequency = value;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text("5(含以上)",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                        ],
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFFFA493),
                       ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
-                    //第十一題
-                    Padding(
-                      padding: EdgeInsets.only(left: 20),
+                    SizedBox(height: 20),
+                    SizedBox(width: 20),
+                    ElevatedButton(
                       child: Text(
-                        '11.您運動的原因或預期目標？',
+                        "確定",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
-                          fontSize: 18,
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: Row(
-                        children: [
-                          Checkbox(
-                            value: A,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                A = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          Text("維持運動能力",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                          Checkbox(
-                            value: B,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                B = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          Text("鍛鍊肌肉變強壯",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                          Checkbox(
-                            value: C,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                C = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          Text("減重",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                        ],
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFFFA493),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: Row(
-                        children: [
-                          Checkbox(
-                            value: D,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                D = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          Text("提升心肺耐力",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                          Checkbox(
-                            value: E,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                E = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          Text("提升身體靈敏度",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                          Checkbox(
-                            value: F,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                F = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          Text("抒解壓力",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: Row(
-                        children: [
-                          Checkbox(
-                            value: G,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                G = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          Text("促進身體健康",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                          Checkbox(
-                            value: H,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                H = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          Text("其他",
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                          SizedBox(width: 5),
-                          Container(
-                            width: 150,
-                            height: 20,
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: '自行輸入',
-                                hintStyle: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    //第十二題
-                    SizedBox(height: 5),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: Text(
-                        '12.請為您目前做肌耐力運動的能力評分',
-                        style: TextStyle(
-                          color: Color(0xFF0D3B66),
-                          fontSize: 18,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                      child: Row(
-                        children: [
-                          Radio<String>(
-                            value: "80",
-                            groupValue: strengthAbility,
-                            onChanged: (value) {
-                              setState(() {
-                                strengthAbility = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text('1.高水平：'
-                              '一口氣完成20次伏地挺身等重量訓練',
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                      child: Row(
-                        children: [
-                          Radio<String>(
-                            value: "70",
-                            groupValue: strengthAbility,
-                            onChanged: (value) {
-                              setState(() {
-                                strengthAbility = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text('2.中高水平：'
-                              '一口氣完成15次伏地挺身等重量訓練',
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                      child: Row(
-                        children: [
-                          Radio<String>(
-                            value: "60",
-                            groupValue: strengthAbility,
-                            onChanged: (value) {
-                              setState(() {
-                                strengthAbility = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text('3.中水平：'
-                              '一口氣完成10次的深蹲、硬舉等重量訓練',
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                      child: Row(
-                        children: [
-                          Radio<String>(
-                            value: "50",
-                            groupValue: strengthAbility,
-                            onChanged: (value) {
-                              setState(() {
-                                strengthAbility = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text('4.中低水平：'
-                              '一口氣完成3-6次深蹲、硬舉等重量訓練',
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                      child: Row(
-                        children: [
-                          Radio<String>(
-                            value: "40",
-                            groupValue: strengthAbility,
-                            onChanged: (value) {
-                              setState(() {
-                                strengthAbility = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text('5.低水平：'
-                              '一次僅能完成1-3次深蹲、硬舉等重量訓練',
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                        ],
-                      ),
-                    ),
-                    //第十三題
-                    SizedBox(height: 5),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: Text(
-                        '13.請為您目前做有氧運動的能力評分',
-                        style: TextStyle(
-                          color: Color(0xFF0D3B66),
-                          fontSize: 18,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                      child: Row(
-                        children: [
-                          Radio<String>(
-                            value: "80",
-                            groupValue: cardioAbility,
-                            onChanged: (value) {
-                              setState(() {
-                                cardioAbility = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text('1.高水平：能持續30分鐘以上進行慢跑、飛輪',
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                      child: Row(
-                        children: [
-                          Radio<String>(
-                            value: "60",
-                            groupValue: cardioAbility,
-                            onChanged: (value) {
-                              setState(() {
-                                cardioAbility = value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text('2.中水平：能持續15-30分鐘進行快走、跳繩',
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 25,
-                      child: Row(
-                        children: [
-                          Radio<String>(
-                            value: "40",
-                            groupValue: cardioAbility,
-                            onChanged: (value) {
-                              setState(() {
-                                cardioAbility= value!;
-                              });
-                            },
-                            activeColor: Color(0xFFFFA493),
-                          ),
-                          Text('3.低水平：能持續15-30分鐘散步、爬樓梯',
-                              style: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                  fontSize: 15
-                              )
-                          ),
-                        ],
-                      ),
-                    ),
-                    //第十四題
-                    SizedBox(height: 5),
-                    Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: Text(
-                        '14.請為您目前做伸展運動的能力評分',
-                        style: TextStyle(
-                          color: Color(0xFF0D3B66),
-                          fontSize: 18,
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Radio<String>(
-                          value: "80",
-                          groupValue: yogaAbility,
-                          onChanged: (value) {
-                            setState(() {
-                              yogaAbility = value!;
-                            });
-                          },
-                          activeColor: Color(0xFFFFA493),
-                        ),
-                        Text('1.高水平\n'
-                            '能夠完成多種複雜的伸展動作，\n'
-                            '保持每個動作正確姿勢並且能夠輕鬆地完成。',
-                            style: TextStyle(
-                                color: Color(0xFF0D3B66),
-                                fontSize: 15
-                            )
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Radio<String>(
-                          value: "60",
-                          groupValue: yogaAbility,
-                          onChanged: (value) {
-                            setState(() {
-                              yogaAbility= value!;
-                            });
-                          },
-                          activeColor: Color(0xFFFFA493),
-                        ),
-                        Text('2.中水平\n'
-                            '能夠完成基本的伸展運動，\n'
-                            '保持正確姿勢完成伸展動作，但未達高水平的要求。',
-                            style: TextStyle(
-                                color: Color(0xFF0D3B66),
-                                fontSize: 15
-                            )
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Radio<String>(
-                          value: "40",
-                          groupValue: yogaAbility,
-                          onChanged: (value) {
-                            setState(() {
-                              yogaAbility = value!;
-                            });
-                          },
-                          activeColor: Color(0xFFFFA493),
-                        ),
-                        Text('3.低水平\n'
-                            '只能完成一些簡單的伸展動作，\n'
-                            '難以保持正確姿勢也無法完成複雜的伸展動作。',
-                            style: TextStyle(
-                                color: Color(0xFF0D3B66),
-                                fontSize: 15
-                            )
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          child: Text("返回",
-                            style: TextStyle(
-                              color: Color(0xFF0D3B66),
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            primary: Color(0xFFFFA493),
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                        SizedBox(height: 20),
-                        SizedBox(width: 20),
-                        ElevatedButton(
-                          child: Text("確定",
-                            style: TextStyle(
-                              color: Color(0xFF0D3B66),
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            primary: Color(0xFFFFA493),
-                          ),
-                          onPressed: ()  {
-                            if (strengthAbility.isEmpty || cardioAbility.isEmpty || yogaAbility.isEmpty) {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text("尚有未作答題目"),
-                                    actions: [
-                                      ElevatedButton(
-                                        onPressed: () => Navigator.of(context).pop(),
-                                        child: Text("確定"),
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Color(0xFFFFA493),
-                                          onPrimary: Color(0xFF0D3B66),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
+                      onPressed: () {
+                        if (strengthAbility.isEmpty ||
+                            cardioAbility.isEmpty ||
+                            yogaAbility.isEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("尚有未作答題目"),
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(),
+                                    child: Text("確定"),
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: Color(0xFF0D3B66),
+                                      backgroundColor: Color(0xFFFFA493),
+                                    ),
+                                  ),
+                                ],
                               );
-                            }else{
-                              print('strengthAbility:$strengthAbility');
-                              print('cardioAbility:$cardioAbility');
-                              print('yogaAbility:$yogaAbility');
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => FifthPage()));
-                            }
-                          },
-                        ),
-                        SizedBox(height: 20),
-                      ],
+                            },
+                          );
+                        } else {
+                          print('strengthAbility:$strengthAbility');
+                          print('cardioAbility:$cardioAbility');
+                          print('yogaAbility:$yogaAbility');
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FifthPage()));
+                        }
+                      },
                     ),
-                  ]),
-            )
-        )
-    );
+                    SizedBox(height: 20),
+                  ],
+                ),
+              ]),
+        )));
   }
 }
 
@@ -1670,7 +1584,8 @@ class _FifthPage extends State<FifthPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Part2：人格測驗',
+        title: Text(
+          'Part2：人格測驗',
           style: TextStyle(
             color: Color(0xFF0D3B66),
             fontWeight: FontWeight.bold,
@@ -1685,9 +1600,10 @@ class _FifthPage extends State<FifthPage> {
           children: [
             Padding(
               padding: EdgeInsets.only(left: 10, top: 200),
-              child: Text('第二部分共有9道題，\n'
-                  '請針對以下情況進行直覺式判斷，\n並在不花太多時間的條件下回答是或否。\n\n'
-                  '請誠實且儘可能準確地回答。\n',
+              child: Text(
+                '第二部分共有9道題，\n'
+                '請針對以下情況進行直覺式判斷，\n並在不花太多時間的條件下回答是或否。\n\n'
+                '請誠實且儘可能準確地回答。\n',
                 style: TextStyle(
                   color: Color(0xFF0D3B66),
                   fontSize: 18,
@@ -1697,23 +1613,23 @@ class _FifthPage extends State<FifthPage> {
             ),
             Expanded(
                 child: Align(
-                  alignment: Alignment.topCenter,
-                  child: ElevatedButton(
-                    child: Text("開始作答",
-                      style: TextStyle(
-                        color: Color(0xFF0D3B66),
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      primary: Color(0xFFFFA493),
-                    ),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => SixthPage()));
-                    },
+              alignment: Alignment.topCenter,
+              child: ElevatedButton(
+                child: Text(
+                  "開始作答",
+                  style: TextStyle(
+                    color: Color(0xFF0D3B66),
                   ),
-                )
-            ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFFFA493),
+                ),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SixthPage()));
+                },
+              ),
+            )),
             SizedBox(height: 20),
           ],
         ),
@@ -1721,6 +1637,7 @@ class _FifthPage extends State<FifthPage> {
     );
   }
 }
+
 class SixthPage extends StatefulWidget {
   @override
   _SixthPage createState() => _SixthPage();
@@ -1741,7 +1658,8 @@ class _SixthPage extends State<SixthPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Part2：人格測驗',
+        title: Text(
+          'Part2：人格測驗',
           style: TextStyle(
             color: Color(0xFF0D3B66),
             fontWeight: FontWeight.bold,
@@ -1784,11 +1702,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("是",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Radio<String>(
                       value: "2",
                       groupValue: neuroticism_1,
@@ -1800,11 +1715,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("否",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                   ],
                 ),
               ),
@@ -1834,11 +1746,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("是",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Radio<String>(
                       value: "2",
                       groupValue: neuroticism_2,
@@ -1850,11 +1759,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("否",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                   ],
                 ),
               ),
@@ -1884,11 +1790,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("是",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Radio<String>(
                       value: "2",
                       groupValue: neuroticism_3,
@@ -1900,11 +1803,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("否",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                   ],
                 ),
               ),
@@ -1934,11 +1834,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("是",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Radio<String>(
                       value: "2",
                       groupValue: conscientiousness_1,
@@ -1950,11 +1847,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("否",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                   ],
                 ),
               ),
@@ -1984,11 +1878,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("是",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Radio<String>(
                       value: "2",
                       groupValue: conscientiousness_2,
@@ -2000,11 +1891,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("否",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                   ],
                 ),
               ),
@@ -2034,11 +1922,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("是",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Radio<String>(
                       value: "2",
                       groupValue: conscientiousness_3,
@@ -2050,11 +1935,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("否",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                   ],
                 ),
               ),
@@ -2070,7 +1952,7 @@ class _SixthPage extends State<SixthPage> {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 20),
-                child:  Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Radio<String>(
@@ -2084,11 +1966,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("是",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Radio<String>(
                       value: "2",
                       groupValue: openness_1,
@@ -2100,11 +1979,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("否",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                   ],
                 ),
               ),
@@ -2134,11 +2010,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("是",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Radio<String>(
                       value: "2",
                       groupValue: openness_2,
@@ -2150,11 +2023,8 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("否",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                   ],
                 ),
               ),
@@ -2184,28 +2054,21 @@ class _SixthPage extends State<SixthPage> {
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("是",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                     Radio<String>(
                       value: "2",
                       groupValue: openness_3,
                       onChanged: (value) {
                         setState(() {
                           openness_3 = value!;
-                        }
-                        );
+                        });
                       },
                       activeColor: Color(0xFFFFA493),
                     ),
                     Text("否",
-                        style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontSize: 15
-                        )
-                    ),
+                        style:
+                            TextStyle(color: Color(0xFF0D3B66), fontSize: 15)),
                   ],
                 ),
               ),
@@ -2213,19 +2076,26 @@ class _SixthPage extends State<SixthPage> {
                 alignment: Alignment.bottomCenter,
                 padding: EdgeInsets.only(bottom: 20),
                 child: ElevatedButton(
-                  child: Text("確定送出",
+                  child: Text(
+                    "確定送出",
                     style: TextStyle(
                       color: Color(0xFF0D3B66),
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFFFA493),
+                    backgroundColor: Color(0xFFFFA493),
                     padding: EdgeInsets.symmetric(horizontal: 20),
                   ),
                   onPressed: () {
-                    if (neuroticism_1.isEmpty || neuroticism_2.isEmpty || neuroticism_3.isEmpty ||
-                        conscientiousness_1.isEmpty || conscientiousness_2.isEmpty || conscientiousness_3.isEmpty ||
-                        openness_1.isEmpty || openness_2.isEmpty || openness_3.isEmpty) {
+                    if (neuroticism_1.isEmpty ||
+                        neuroticism_2.isEmpty ||
+                        neuroticism_3.isEmpty ||
+                        conscientiousness_1.isEmpty ||
+                        conscientiousness_2.isEmpty ||
+                        conscientiousness_3.isEmpty ||
+                        openness_1.isEmpty ||
+                        openness_2.isEmpty ||
+                        openness_3.isEmpty) {
                       showDialog(
                         context: context,
                         builder: (context) {
@@ -2236,15 +2106,15 @@ class _SixthPage extends State<SixthPage> {
                                 onPressed: () => Navigator.of(context).pop(),
                                 child: Text("確定"),
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFFFFA493),
-                                  onPrimary: Color(0xFF0D3B66),
+                                  foregroundColor: Color(0xFF0D3B66),
+                                  backgroundColor: Color(0xFFFFA493),
                                 ),
                               ),
                             ],
                           );
                         },
                       );
-                    }else{
+                    } else {
                       int neuroticismSum = 0;
                       if (neuroticism_1 == "1") {
                         neuroticismSum += 1;
@@ -2270,7 +2140,8 @@ class _SixthPage extends State<SixthPage> {
                       if (conscientiousness_3 == "1") {
                         conscientiousnessSum += 1;
                       }
-                      if (conscientiousnessSum == 2 || conscientiousnessSum == 3) {
+                      if (conscientiousnessSum == 2 ||
+                          conscientiousnessSum == 3) {
                         print("conscientiousness: 1");
                       } else {
                         print("conscientiousness: -1");
@@ -2290,8 +2161,10 @@ class _SixthPage extends State<SixthPage> {
                       } else {
                         print("ness: 2");
                       }
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => ResultPage()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ResultPage()));
                     }
                   },
                 ),

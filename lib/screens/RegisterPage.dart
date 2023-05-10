@@ -1,11 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:g12/screens/Homepage.dart';
 import 'dart:io';
 import 'dart:typed_data';
 
-class LoginsignupPage extends StatefulWidget {
-  const LoginsignupPage(
-      {Key? key, required this.title, required this.isLoginPage})
+import '../services/Authentication.dart';
+
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key, required this.title, required this.isLoginPage})
       : super(key: key);
 
   //const LoginPage({super.key, required this.title});
@@ -13,33 +15,31 @@ class LoginsignupPage extends StatefulWidget {
   final bool isLoginPage;
 
   @override
-  _LoginsignupPage createState() =>
-      _LoginsignupPage(this.title, this.isLoginPage);
+  _RegisterPage createState() => _RegisterPage(this.title, this.isLoginPage);
 }
 
-class _LoginsignupPage extends State<LoginsignupPage> {
+class _RegisterPage extends State<RegisterPage> {
   late bool isLoginPage;
 
-  //late _LoginsignupPage loginPage; // 定義變量
-  //late _LoginsignupPage signupPage;
+  //late _RegisterPage loginPage; // 定義變量
+  //late _RegisterPage signupPage;
   late String title;
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfirmController =
       TextEditingController();
 
-  _LoginsignupPage(String title, bool isLoginPage) {
-    this.title = title;
-    this.isLoginPage = isLoginPage;
-  } // 定義變量
+  _RegisterPage(this.title, this.isLoginPage); // 定義變量
+
   @override
-  //_LoginsignupPageState({required this.title, required this.isLoginPage})
+  //_RegisterPageState({required this.title, required this.isLoginPage})
   void initState() {
     super.initState();
     isLoginPage = widget.isLoginPage; //初始化
     // 初始化變量
-    //loginPage = _LoginsignupPageState('Login', true);
-    //signupPage = _LoginsignupPageState('Signup', false);
+    //loginPage = _RegisterPageState('Login', true);
+    //signupPage = _RegisterPageState('Signup', false);
   }
 
   @override
@@ -51,7 +51,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
           children: [
             Image.asset(
               // Logo
-              'images/Logo.jpg', // 相對路徑
+              'assets/images/Logo.jpg', // 相對路徑
             ),
             const SizedBox(height: 10),
             Row(
@@ -67,9 +67,9 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFFFA493),
+                    backgroundColor: Color(0xFFFFA493),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -89,13 +89,13 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFFFA493),
+                    backgroundColor: Color(0xFFFFA493),
                   ),
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        //builder: (context) => LoginsignupPage(title: 'Signup', isLoginPage: false),
+                        //builder: (context) => RegisterPage(title: 'Signup', isLoginPage: false),
                         builder: (context) => _buildRegisterForm(context),
                       ),
                     );
@@ -110,7 +110,6 @@ class _LoginsignupPage extends State<LoginsignupPage> {
   Widget _buildLoginForm(BuildContext context) {
     //登錄
     //var _accountController;
-    List<String> userData = [];
     return Scaffold(
       backgroundColor: const Color(0xfffaf0ca),
       appBar: AppBar(
@@ -122,15 +121,13 @@ class _LoginsignupPage extends State<LoginsignupPage> {
               color: Color(0xff0d3b66),
               fontSize: 35,
               fontWeight: FontWeight.bold,
-              height: 1
-          ),
+              height: 1),
         ),
         actions: [],
         //Text(widget.title, style: TextStyle(color: Color(0xff0d3b66))),
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false, //關掉返回鍵
       ),
-
       body: Column(
         //mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -154,8 +151,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   letterSpacing:
                       0 /*percentages not used in flutter. defaulting to zero*/,
                   fontWeight: FontWeight.bold,
-                  height: 1
-              ),
+                  height: 1),
             ),
           ),
           const SizedBox(height: 10),
@@ -166,7 +162,10 @@ class _LoginsignupPage extends State<LoginsignupPage> {
               decoration: InputDecoration(
                 isDense: true,
                 // TODO: Let the icon change color when being selected
-                prefixIcon: Icon(Icons.account_circle, color: Color(0xff0d3b66),),
+                prefixIcon: Icon(
+                  Icons.account_circle,
+                  color: Color(0xff0d3b66),
+                ),
                 //labelText: '帳號',
                 hintText: '請輸入帳號',
                 enabledBorder: OutlineInputBorder(
@@ -213,7 +212,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
+                      0 /*percentages not used in flutter. defaulting to zero*/,
                   fontWeight: FontWeight.bold,
                   height: 1),
             ),
@@ -225,7 +224,10 @@ class _LoginsignupPage extends State<LoginsignupPage> {
               controller: _passwordController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(Icons.lock, color: Color(0xff0d3b66),),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Color(0xff0d3b66),
+                ),
                 //labelText: '密碼',
                 hintText: '請輸入密碼',
                 enabledBorder: OutlineInputBorder(
@@ -274,14 +276,13 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFFFA493),
+                  backgroundColor: Color(0xFFFFA493),
                 ),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          _buildForgetPasswordForm(context),
+                      builder: (context) => _buildForgetPasswordForm(context),
                     ),
                   );
                 },
@@ -297,18 +298,26 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFFFA493),
+                  backgroundColor: Color(0xFFFFA493),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   // 存储用戶輸入的帳號和密碼
-                  userData.add(_accountController.text);
-                  userData.add(_passwordController.text);
-                  print(userData);
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => Homepage(title: "Homepage")),
-                    ModalRoute.withName('/'),
+                  print(
+                      "${_accountController.text} : ${_passwordController.text}");
+
+                  User? user = await FireAuth.signIn(
+                    email: _accountController.text,
+                    password: _passwordController.text,
                   );
+
+                  if (user != null) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Homepage(title: "Homepage")),
+                      ModalRoute.withName('/'),
+                    );
+                  }
                 },
               ),
             ],
@@ -321,7 +330,6 @@ class _LoginsignupPage extends State<LoginsignupPage> {
   Widget _buildRegisterForm(BuildContext context) {
     //登錄
     //var _accountController;
-    List<String> userData = [];
     return Scaffold(
       backgroundColor: const Color(0xfffaf0ca),
       appBar: AppBar(
@@ -333,8 +341,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
               color: Color(0xff0d3b66),
               fontSize: 35,
               fontWeight: FontWeight.bold,
-              height: 1
-          ),
+              height: 1),
         ),
         actions: [],
         //Text(widget.title, style: TextStyle(color: Color(0xff0d3b66))),
@@ -355,6 +362,68 @@ class _LoginsignupPage extends State<LoginsignupPage> {
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(left: 20),
             child: Text(
+              '我的暱稱',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                  backgroundColor: const Color(0xfffaf0ca),
+                  color: Color(0xff0d3b66),
+                  fontSize: 25,
+                  letterSpacing:
+                      0 /*percentages not used in flutter. defaulting to zero*/,
+                  fontWeight: FontWeight.bold,
+                  height: 1),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                isDense: true,
+                prefixIcon: Icon(
+                  Icons.abc_rounded,
+                  color: Color(0xff0d3b66),
+                ),
+                //labelText: '帳號',
+                hintText: '請輸入名字',
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide(
+                    color: Color(0xff0d3b66),
+                    width: 3,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide(
+                    color: Color(0xFFFFA493),
+                    width: 3,
+                  ),
+                ),
+                //labelStyle: TextStyle(color: Colors.blueGrey),
+                hintStyle: TextStyle(color: Colors.grey),
+                filled: true,
+                fillColor: Colors.white70,
+              ),
+              cursorColor: Color(0xFFFFA493),
+              style: TextStyle(fontSize: 20),
+              keyboardType: TextInputType.text,
+              obscureText: false,
+              //controller: _controller,
+              onChanged: (value) {
+                // print(value);
+              },
+              onSubmitted: (value) {
+                // print('Submitted: $value');
+              },
+            ),
+          ),
+          const SizedBox(height: 30),
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.only(left: 20),
+            child: Text(
               '我的帳號',
               textAlign: TextAlign.left,
               style: TextStyle(
@@ -362,10 +431,9 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
+                      0 /*percentages not used in flutter. defaulting to zero*/,
                   fontWeight: FontWeight.bold,
-                  height: 1
-              ),
+                  height: 1),
             ),
           ),
           const SizedBox(height: 10),
@@ -375,7 +443,10 @@ class _LoginsignupPage extends State<LoginsignupPage> {
               controller: _accountController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(Icons.account_circle, color: Color(0xff0d3b66),),
+                prefixIcon: Icon(
+                  Icons.account_circle,
+                  color: Color(0xff0d3b66),
+                ),
                 //labelText: '帳號',
                 hintText: '請輸入帳號',
                 enabledBorder: OutlineInputBorder(
@@ -422,7 +493,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
+                      0 /*percentages not used in flutter. defaulting to zero*/,
                   fontWeight: FontWeight.bold,
                   height: 1),
             ),
@@ -434,7 +505,10 @@ class _LoginsignupPage extends State<LoginsignupPage> {
               controller: _passwordController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(Icons.lock, color: Color(0xff0d3b66),),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Color(0xff0d3b66),
+                ),
                 //labelText: '密碼',
                 hintText: '請輸入密碼',
                 enabledBorder: OutlineInputBorder(
@@ -483,7 +557,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFFFA493),
+                  backgroundColor: Color(0xFFFFA493),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -505,14 +579,22 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFFFA493),
+                  backgroundColor: Color(0xFFFFA493),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   // 存储用戶輸入的帳號和密碼
-                  userData.add(_accountController.text);
-                  userData.add(_passwordController.text);
-                  print(userData);
-                  Navigator.pushNamed(context, '/questionnaire');
+                  print(
+                      "${_accountController.text} : ${_passwordController.text}");
+
+                  User? user = await FireAuth.register(
+                    name: _nameController.text,
+                    email: _accountController.text,
+                    password: _passwordController.text,
+                  );
+
+                  if (user != null) {
+                    Navigator.pushNamed(context, '/questionnaire');
+                  }
                 },
               ),
             ],
@@ -525,7 +607,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
   Widget _buildForgetPasswordForm(BuildContext context) {
     //登錄
     //var _accountController;
-    List<String> userData = [];
+    List userData = [];
     return Scaffold(
       backgroundColor: const Color(0xfffaf0ca),
       appBar: AppBar(
@@ -537,15 +619,13 @@ class _LoginsignupPage extends State<LoginsignupPage> {
               color: Color(0xff0d3b66),
               fontSize: 35,
               fontWeight: FontWeight.bold,
-              height: 1
-          ),
+              height: 1),
         ),
         actions: [],
         //Text(widget.title, style: TextStyle(color: Color(0xff0d3b66))),
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false, //關掉返回鍵
       ),
-
       body: Column(
         //mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -567,10 +647,9 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
+                      0 /*percentages not used in flutter. defaulting to zero*/,
                   fontWeight: FontWeight.bold,
-                  height: 1
-              ),
+                  height: 1),
             ),
           ),
           const SizedBox(height: 10),
@@ -580,7 +659,10 @@ class _LoginsignupPage extends State<LoginsignupPage> {
               controller: _accountController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(Icons.account_circle, color: Color(0xff0d3b66),),
+                prefixIcon: Icon(
+                  Icons.account_circle,
+                  color: Color(0xff0d3b66),
+                ),
                 //labelText: '帳號',
                 hintText: '請輸入帳號',
                 enabledBorder: OutlineInputBorder(
@@ -627,7 +709,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
+                      0 /*percentages not used in flutter. defaulting to zero*/,
                   fontWeight: FontWeight.bold,
                   height: 1),
             ),
@@ -639,7 +721,10 @@ class _LoginsignupPage extends State<LoginsignupPage> {
               controller: _passwordController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(Icons.lock, color: Color(0xff0d3b66),),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Color(0xff0d3b66),
+                ),
                 //labelText: '新密碼',
                 hintText: '請輸入英數 6-12 位數',
                 enabledBorder: OutlineInputBorder(
@@ -686,7 +771,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
+                      0 /*percentages not used in flutter. defaulting to zero*/,
                   fontWeight: FontWeight.bold,
                   height: 1),
             ),
@@ -698,7 +783,10 @@ class _LoginsignupPage extends State<LoginsignupPage> {
               controller: _passwordController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(Icons.lock, color: Color(0xff0d3b66),),
+                prefixIcon: Icon(
+                  Icons.lock,
+                  color: Color(0xff0d3b66),
+                ),
                 //labelText: '新密碼',
                 hintText: '請確認新密碼',
                 enabledBorder: OutlineInputBorder(
@@ -748,7 +836,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFFFA493),
+                  backgroundColor: Color(0xFFFFA493),
                 ),
                 onPressed: () {
                   // 存儲用戶輸入的帳號和密碼
@@ -762,7 +850,7 @@ class _LoginsignupPage extends State<LoginsignupPage> {
                       builder: (context) => _buildLoginForm(context),
                     ),
                   );
-                  //Navigator.popAndPushNamed(context, '/loginsignupPage');
+                  //Navigator.popAndPushNamed(context, '/register');
                 },
               ),
             ],

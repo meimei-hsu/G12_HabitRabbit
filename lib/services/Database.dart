@@ -88,9 +88,8 @@ class Home extends StatelessWidget {
           TextButton(
               onPressed: () {
                 Algorithm.execute("Mary");
-                PlanDB.getThisWeekPlan("Mary");
                 PlanDB.getHistory("Mary");
-                Algorithm.regenerate("Mary");
+                Algorithm.regenerate("Mary", DateTime.now());
               },
               child: const Text("test AG")),
         ],
@@ -230,14 +229,16 @@ class PlanDB {
     List fmtPlan = [
       [for (int i = 0; i < 3; i++) plan[i]],
     ];
+    int count = 3;
     for (int i = 0; i < nLoop; i++) {
-      fmtPlan
-          .add([for (int n = fmtPlan.length, i = n; i < n + 10; i++) plan[i]]);
-      fmtPlan
-          .add([for (int n = fmtPlan.length, i = n; i < n + 5; i++) plan[i]]);
+      fmtPlan.add([for (int n = count, i = n; i < n + 10; i++) plan[i]]);
+      count += 10;
+      fmtPlan.add([for (int n = count, i = n; i < n + 5; i++) plan[i]]);
+      count += 5;
     }
-    fmtPlan.add([for (int n = fmtPlan.length, i = n; i < n + 10; i++) plan[i]]);
-    fmtPlan.add([for (int n = fmtPlan.length, i = n; i < n + 2; i++) plan[i]]);
+    fmtPlan.add([for (int n = count, i = n; i < n + 10; i++) plan[i]]);
+    count += 10;
+    fmtPlan.add([for (int n = count, i = n; i < n + 2; i++) plan[i]]);
 
     return fmtPlan;
   }
@@ -256,8 +257,9 @@ class PlanDB {
   }
 
   // Select the user's plan from the dates of given week
-  static Future<Map?> getPlanWhen(String userID, List datesOfWeek) async {
+  static Future<Map?> getThisWeekPlan(String userID) async {
     Map map = {};
+    List datesOfWeek = Calendar.thisWeek();
     for (String date in datesOfWeek) {
       var plan = await DB.select("$table/$userID/$date", "plan");
       if (plan != null) {
@@ -268,15 +270,12 @@ class PlanDB {
   }
 
   // Select user's workout plan
-  static Future<String?> getTodayPlan(String userID) async {
-    String today = Calendar.toKey(DateTime.now());
-    return (await getPlanWhen(userID, [today]))![today];
+  static Future<String> getPlanFromDate(
+      String userID, DateTime dateTime) async {
+    String date = Calendar.toKey(dateTime);
+    var plan = await DB.select("$table/$userID/$date", "plan");
+    return (plan == null) ? "" : plan as String;
   }
-
-  static Future<Map?> getThisWeekPlan(String userID) async =>
-      await getPlanWhen(userID, Calendar.thisWeek());
-  static Future<Map?> getNextWeekPlan(String userID) async =>
-      await getPlanWhen(userID, Calendar.nextWeek());
 
   // Select user's workout history
   static Future<Map?> getHistory(String userID) async {
