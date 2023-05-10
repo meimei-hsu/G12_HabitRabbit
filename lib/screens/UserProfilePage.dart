@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CustomizedPage extends StatefulWidget {
+class UserProfilePage extends StatefulWidget {
   @override
-  _CustomizedPage createState() => _CustomizedPage();
+  _UserProfilePage createState() => _UserProfilePage();
 }
 
-class _CustomizedPage extends State<CustomizedPage> {
+class _UserProfilePage extends State<UserProfilePage> {
   //暱稱
   TextEditingController nicknameController = TextEditingController();
   String nickName = "";
@@ -493,4 +493,3 @@ class _CustomizedPage extends State<CustomizedPage> {
     );
   }
 }
-
