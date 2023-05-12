@@ -2,52 +2,86 @@ import 'dart:math';
 
 import 'package:g12/services/Database.dart';
 
-// TODO: Debug PlanAlgo
-/*
-0. generate plan by workoutID rather than workoutName
-1. generate plan on any day if database hos no data for that week
-2. generate plan on the last day that is scheduled
-3. don't generate plans for the days that past
-*/
-
-class Algorithm {
+class PlanAlgo {
   // Start point of the planning algorithm (execute when user login)
-  static execute(String id) async {
-    // Only generate the plan of the current week on the first day (Sunday)
-    if (Calendar.today().weekday == 1) {
-      Algorithm algo = Algorithm();
-      var db = await algo.initializeValue(id);
+  static execute(String uid) async {
+    Algorithm algo = Algorithm();
+    Data? db;
+
+    // Conditions
+    bool isLastDay =
+        Calendar.toKey(DateTime.now()) == await UserDB.getLastWorkoutDay(uid);
+    bool noPlan = await PlanDB.getThisWeek(uid) == null;
+    bool isFinished = await PlanAlgo.calcProgress(uid) == 100;
+
+    if (isLastDay && isFinished) {
+      // Generate plan on the last day if plan is finished
+      db = await algo.initializeNextWeek(uid);
+      print("generate next week's plan");
+    } else if (noPlan) {
+      // Generate plan on any day if database hos no data for that week
+      db = await algo.initializeThisWeek(uid);
+      print("generate this week's plan");
+    } else {
+      print("not the time to generate a plan");
+    }
+
+    if (db != null) {
       var skd = await algo.arrangeSchedule(db);
       var plan = await algo.arrangePlan(db, skd);
-      await PlanDB.update(id, plan);
+      await PlanDB.update(uid, plan);
     }
   }
 
-  // Regenerate the plan for today
-  static regenerate(String id, DateTime dateTime) async {
+  // Regenerate the plan for a day in the current week
+  static regenerate(String uid, DateTime dateTime) async {
     Algorithm algo = Algorithm();
-    var db = await algo.initializeValue(id);
+    var db = await algo.initializeThisWeek(uid);
     var date = Calendar.toKey(dateTime);
 
-    switch ((await PlanDB.getPlanFromDate(id, dateTime))[0]) {
-      case 'S':
-        await PlanDB.update(id, {date: await algo.arrangeWorkout(db, "strength")});
+    // The third element of the plan is the first workout after the warmup,
+    // and its first character's index (which indicates the workout type) is 18.
+    switch ((await PlanDB.getFromDate(uid, dateTime))[18]) {
+      case '1':
+        await PlanDB.update(
+            uid, {date: await algo.arrangeWorkout(db, "strength")});
         break;
-      case 'C':
-        await PlanDB.update(id, {date: await algo.arrangeWorkout(db, "cardio")});
+      case '2':
+        await PlanDB.update(
+            uid, {date: await algo.arrangeWorkout(db, "cardio")});
         break;
-      case 'Y':
-        await PlanDB.update(id, {date: await algo.arrangeWorkout(db, "yoga")});
+      case '3':
+        await PlanDB.update(uid, {date: await algo.arrangeWorkout(db, "yoga")});
         break;
     }
   }
 
-  // Method to initialize (and adjust) user's profile from their survey results
-  Future<Data> initializeValue(String id) async {
-    // Get user's profile
-    Data db = Data();
-    await db.init(id);
+  static Future<num> calcProgress(String uid) async {
+    List? duration = await DurationDB.getToday(uid);
+    if (duration != null) {
+      return (duration[0] / duration[1] * 100).round(); // percentage
+    }
+    return 0; // percentage
+  }
+}
 
+class Algorithm {
+  // Method to initialize (and adjust) user's profile from their survey results
+  Future<Data> initializeThisWeek(String uid) async {
+    Data db = Data();
+    await db.init(uid, Calendar.daysComing());
+
+    return await initialize(db);
+  }
+
+  Future<Data> initializeNextWeek(String uid) async {
+    Data db = Data();
+    await db.init(uid, Calendar.nextWeek());
+
+    return await initialize(db);
+  }
+
+  Future<Data> initialize(Data db) async {
     // Set modifiers
     int nVal = db.personalities['neuroticism'];
     int nMul = 10;
@@ -115,7 +149,7 @@ class Algorithm {
   // Method to generate all 10 minutes workouts
   Future<List<List>> getTenMinWorkout(Data db, String type) async {
     // Get the workout database
-    List workouts = db.workoutNames[type]!;
+    List workouts = db.workoutIDs[type]!;
 
     // Get users ability level and plan settings
     int ability = db.abilities['${type}Ability'];
@@ -155,7 +189,7 @@ class Algorithm {
   // Method to generate all 5 minutes workouts
   Future<List<List>> getFiveMinWorkout(Data db, String type) async {
     // Get the workout database
-    List workouts = db.workoutNames[type]!;
+    List workouts = db.workoutIDs[type]!;
 
     // Get difficulty level and plan settings
     int diff = 0; // difficulty level for 5 minute workout session: easy
@@ -179,7 +213,7 @@ class Algorithm {
   // Method to generate warm-up or cool-down workouts
   Future<List<String>> getStretchWorkout(Data db, String type) async {
     // Get the workout database
-    List workouts = db.workoutNames[type]!;
+    List workouts = db.workoutIDs[type]!;
 
     int min = (type == "warmUp") ? 3 : 2; // warm-up 3 min, cool-down 2 min
 
@@ -228,25 +262,27 @@ class Algorithm {
 
 class Data {
   // Get the decision variables for the planning algorithm
-  Map _likings = {}, _abilities = {}, _workoutDays = {}, _personalities = {};
+  Map<String, dynamic> _likings = {}, _abilities = {};
+  Map<String, dynamic> _workoutDays = {}, _personalities = {};
   num _timeSpan = 15;
   String _mostLike = '', _leastLike = '';
   String _bestAbility = '', _worstAbility = '';
   num _sumLikings = 0, _sumAbilities = 0, _nDays = 0, _nSame = 0;
   // Get the workouts ID
-  Map _workoutNames = {};
+  Map _workoutIDs = {};
 
   // Setter
-  Future<void> init(String id) async {
-    _workoutNames = (await WorkoutDB.getWorkoutNames())!;
+  Future<void> init(String uid, List<String> weekDates) async {
+    _workoutIDs = (await WorkoutDB.getWIDs())!;
 
-    var profile = await UserDB.getPlanVariables(id);
+    var profile = await UserDB.getPlanVariables(uid);
 
-    _timeSpan = profile![0]['timeSpan'];
-    _workoutDays = profile[1];
+    _personalities = profile![0];
+    _timeSpan = profile[1]['timeSpan'];
+    _workoutDays = Map.fromIterables(
+        weekDates, profile[1]['workoutDays'].split('').map(int.parse).toList());
     _likings = profile[2];
     _abilities = profile[3];
-    _personalities = profile[0]..remove("timeSpan");
 
     var max = double.negativeInfinity, min = double.infinity;
     _likings.forEach((key, value) {
@@ -290,7 +326,7 @@ class Data {
   }
 
   // Getters
-  get workoutNames => _workoutNames;
+  get workoutIDs => _workoutIDs;
   get likings => _likings;
   get abilities => _abilities;
   get workoutDays => _workoutDays;

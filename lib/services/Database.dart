@@ -22,8 +22,6 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var m = [
-      'mary@gmail.com',
-      'mmm',
       'Mary',
       'Female',
       DateTime.utc(2001, 1, 1).toString(),
@@ -41,33 +39,29 @@ class Home extends StatelessWidget {
       50,
       40,
     ];
-    var wallSit = {
-      '3101': '高膝行走',
-      '3102': '跳躍',
-      '3103': '側步',
-      '3104': '前進後退',
-      '3105': '踏步/踏板',
-      '3106': '跨步側跳',
-      '3107': '雙腳交替跳',
-      '3108': '踏步蹲跳',
-      '3109': '踏步抬腳',
-      '3110': '龍舞踢腿',
-      '3111': '模仿拳擊',
-      '3112': '緩步',
-      '3201': '快速跳躍/跑步',
-      '3202': '踩踏',
-      '3203': '穿梭',
-      '3204': '側向跳躍',
-      '3205': '高抬腿',
-      '3206': '半蹲跳',
-      '3207': '搖擺',
-      '3208': '快速轉身',
-      '3209': '快速交叉步',
-      '3210': '快速揮臂',
-      '3211': '跳躍揮臂',
-      '3212': '拍手',
-    };
     Map mary = Map.fromIterables(UserDB.getColumns(), m);
+    var plan = [
+      "4008",
+      "4012",
+      "4006",
+      "3102",
+      "3209",
+      "3209",
+      "3103",
+      "3205",
+      "3102",
+      "3209",
+      "3209",
+      "3103",
+      "3205",
+      "3110",
+      "3103",
+      "3103",
+      "3103",
+      "3108",
+      "5005",
+      "5007"
+    ];
 
     return Scaffold(
         body: Container(
@@ -78,18 +72,16 @@ class Home extends StatelessWidget {
         children: <Widget>[
           TextButton(
               onPressed: () {
-                UserDB.insert(mary);
-                UserDB.update("Mary", {"weight": 45});
-                UserDB.getUserList();
-                WorkoutDB.update(wallSit);
-                WorkoutDB.getWorkoutNames();
+                UserDB.insert("j6QYBrgbLIQH7h8iRyslntFFKV63", mary);
+                UserDB.update("j6QYBrgbLIQH7h8iRyslntFFKV63", {"weight": 47});
+                UserDB.getAll();
+                WorkoutDB.getNames(plan);
               },
               child: const Text("test DB")),
           TextButton(
               onPressed: () {
-                Algorithm.execute("Mary");
-                PlanDB.getHistory("Mary");
-                Algorithm.regenerate("Mary", DateTime.now());
+                PlanAlgo.execute("j6QYBrgbLIQH7h8iRyslntFFKV63");
+                //Algorithm.regenerate("j6QYBrgbLIQH7h8iRyslntFFKV63", DateTime.now());
               },
               child: const Text("test AG")),
         ],
@@ -122,7 +114,7 @@ class Calendar {
       getWeekFrom(firstDay(), today().weekday.toInt());
   // Get the days of week that are yet to come
   static List<String> daysComing() =>
-      getWeekFrom(today(), (14 - today().weekday).toInt());
+      getWeekFrom(today(), (7 - today().weekday).toInt());
   // Get the days of week from the first day
   static List<String> thisWeek() => getWeekFrom(firstDay(), 7);
   // Get the days of week from the eighth day
@@ -138,8 +130,6 @@ class UserDB {
   // Define the columns of the user table
   static List<String> getColumns() {
     return [
-      "email",
-      "password",
       "userName",
       "gender",
       "birthday",
@@ -160,18 +150,18 @@ class UserDB {
   }
 
   // Select all users
-  static Future<Map?> getUserList() async {
+  static Future<Map?> getAll() async {
     var snapshot = await DB.selectAll(table);
     return (snapshot?.value) as Map?;
   }
 
-  // Select user from userName
+  // Select user from userID
   static Future<Map?> getUser(String id) async {
     return Map<String, dynamic>.from(
         await DB.select(table, id) as Map<Object?, Object?>);
   }
 
-  // Select dynamic data from userName
+  // Select dynamic data from userID
   static Future<List<Map<String, dynamic>>?> getPlanVariables(String id) async {
     final Map? user = await getUser(id);
 
@@ -181,10 +171,11 @@ class UserDB {
           'neuroticism': user["neuroticism"],
           'conscientiousness': user["conscientiousness"],
           'openness': user["openness"],
-          'timeSpan': user["timeSpan"],
         },
-        Map.fromIterables(Calendar.thisWeek(),
-            user["workoutDays"].split('').map(int.parse).toList()),
+        {
+          'timeSpan': user["timeSpan"],
+          'workoutDays': user["workoutDays"],
+        },
         {
           'strengthLiking': user["strengthLiking"],
           'cardioLiking': user["cardioLiking"],
@@ -201,12 +192,22 @@ class UserDB {
     }
   }
 
-  // Insert data {columnName: value} into Users
-  static Future<bool> insert(Map map) async {
-    return await DB.insert(map, table, map["userName"]);
+  static Future<num?> getTimeSpan(String id) async {
+    final Map? user = await getUser(id);
+    return user!["timeSpan"];
   }
 
-  // Update data {columnName: value} from userName
+  static Future<String?> getLastWorkoutDay(String id) async {
+    final Map? user = await getUser(id);
+    return Calendar.thisWeek()[user!["workoutDays"].lastIndexOf("1")];
+  }
+
+  // Insert data {columnName: value} into Users
+  static Future<bool> insert(String id, Map map) async {
+    return await DB.insert(map, table, id);
+  }
+
+  // Update data {columnName: value} from userID
   static Future<bool> update(String id, Map<String, Object> map) async {
     return await DB.update(map, table, id);
   }
@@ -222,72 +223,70 @@ class PlanDB {
 
   // Format the String of plan into List of workouts
   static List toList(String planStr) {
-    List plan = planStr.split(", ");
+    List<String> plan = planStr.split(", ");
 
     // (String) plan: 3 warm-up + n loops (10/5/...) + 10 min + 2 cool-down
     int nLoop = (plan.length - 5) ~/ 15;
-    List fmtPlan = [
-      [for (int i = 0; i < 3; i++) plan[i]],
+
+    // Split the plan into different loops
+    List<List<String>> fmtPlan = [
+      plan.sublist(0, 3),
     ];
     int count = 3;
+
     for (int i = 0; i < nLoop; i++) {
-      fmtPlan.add([for (int n = count, i = n; i < n + 10; i++) plan[i]]);
+      fmtPlan.add(plan.sublist(count, count + 10));
       count += 10;
-      fmtPlan.add([for (int n = count, i = n; i < n + 5; i++) plan[i]]);
+      fmtPlan.add(plan.sublist(count, count + 5));
       count += 5;
     }
-    fmtPlan.add([for (int n = count, i = n; i < n + 10; i++) plan[i]]);
+
+    fmtPlan.add(plan.sublist(count, count + 10));
     count += 10;
-    fmtPlan.add([for (int n = count, i = n; i < n + 2; i++) plan[i]]);
+    fmtPlan.add(plan.sublist(count, count + 2));
 
     return fmtPlan;
   }
 
   // Select all plans
-  static Future<Map?> getPlanList(String userID) async {
-    Map map = {};
-    var snapshot = await DB.selectAll("$table/$userID");
-    for (var element in snapshot!.children) {
-      if (element.child("plan").exists) {
-        map[element.key] = element.child("plan").value;
-      }
-    }
-    print("getPlanList: $map");
-    return map;
+  static Future<Map?> getAll(String userID) async {
+    var snapshot = await DB.selectAll("$table/$userID/plan");
+    return (snapshot?.value) as Map;
   }
 
   // Select the user's plan from the dates of given week
-  static Future<Map?> getThisWeekPlan(String userID) async {
-    Map map = {};
+  static Future<Map?> getThisWeek(String userID) async {
+    Map retVal = {};
     List datesOfWeek = Calendar.thisWeek();
+    Map? plan = await getAll(userID);
     for (String date in datesOfWeek) {
-      var plan = await DB.select("$table/$userID/$date", "plan");
-      if (plan != null) {
-        map[date] = plan;
+      if (plan!.containsKey(date)) {
+        retVal[date] = plan[date];
       }
     }
-    return map;
+    return retVal;
   }
 
   // Select user's workout plan
-  static Future<String> getPlanFromDate(
-      String userID, DateTime dateTime) async {
-    String date = Calendar.toKey(dateTime);
-    var plan = await DB.select("$table/$userID/$date", "plan");
+  static Future<String> getFromDate(String userID, DateTime date) async {
+    var plan = await DB.select("$table/$userID/plan", Calendar.toKey(date));
     return (plan == null) ? "" : plan as String;
   }
 
   // Select user's workout history
   static Future<Map?> getHistory(String userID) async {
     var daysComing = Calendar.daysComing();
-    var records = await getPlanList(userID);
-    return records!..removeWhere((k, v) => daysComing.contains(k));
+    var nextWeek = Calendar.nextWeek();
+    var retVal = await getAll(userID);
+    retVal!.removeWhere((k, v) => daysComing.contains(k));
+    retVal.removeWhere((k, v) => nextWeek.contains(k));
+    return retVal;
   }
 
-  // Insert plan data {date: plan} into table {table/userID/date/plan}
+  // Insert plan data {date: plan} into table {table/userID/plan/date}
   static Future<bool> insert(String userID, Map<String, String> map) async {
     for (MapEntry e in map.entries) {
-      var success = await DB.insert({"plan": e.value}, "$table/$userID", e.key);
+      var success = await DB.insert({e.key: e.value}, "$table/$userID", "plan");
       if (success == false) {
         return false;
       }
@@ -295,10 +294,10 @@ class PlanDB {
     return true;
   }
 
-  // Update plan data {date: plan} from table {table/userID/date/plan}
+  // Update plan data {date: plan} from table {table/userID/plan/date}
   static Future<bool> update(String userID, Map map) async {
     for (MapEntry e in map.entries) {
-      var success = await DB.update({"plan": e.value}, "$table/$userID", e.key);
+      var success = await DB.update({e.key: e.value}, "$table/$userID", "plan");
       if (success == false) {
         return false;
       }
@@ -306,9 +305,59 @@ class PlanDB {
     return true;
   }
 
-  // Delete plan data {table/userID/date/plan}
+  // Delete plan data {table/userID/plan/date}
   static Future<bool> delete(String userID, String date) async {
-    return DB.delete("$table/$userID/$date", "plan");
+    return DB.delete("$table/$userID/plan", date);
+  }
+}
+
+class DurationDB {
+  static const table = "journal";
+
+  // Select all durations
+  static Future<Map?> getAll(String userID) async {
+    var snapshot = await DB.selectAll("$table/$userID/duration");
+    return (snapshot?.value) as Map;
+  }
+
+  // Select the user's duration from the dates of given week
+  static Future<List?> getToday(String userID) async {
+    String today = Calendar.toKey(DateTime.now());
+    Map? durations = await getAll(userID);
+    return durations![today]?.split(', ').map(int.parse).toList();
+  }
+
+  // Select user's workout duration
+  static Future<List?> getFromDate(String userID, DateTime date) async {
+    var ret = await DB.select("$table/$userID/duration", Calendar.toKey(date));
+    return (ret as String).split(', ').map(int.parse).toList();
+  }
+
+  // Insert duration data {date: "duration, timeSpan"} into table {table/userID/duration/date}
+  static Future<bool> insert(String userID, num duration) async {
+    String key = Calendar.toKey(DateTime.now());
+    String value = "$duration, ${UserDB.getTimeSpan}";
+    var success = await DB.insert({key: value}, "$table/$userID", "duration");
+    if (success == false) {
+      return false;
+    }
+    return true;
+  }
+
+  // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
+  static Future<bool> update(String userID, num duration) async {
+    String key = Calendar.toKey(DateTime.now());
+    String value = "$duration, ${UserDB.getTimeSpan}";
+    var success = await DB.update({key: value}, "$table/$userID", "duration");
+    if (success == false) {
+      return false;
+    }
+    return true;
+  }
+
+  // Delete duration data {table/userID/duration/date}
+  static Future<bool> delete(String userID, String date) async {
+    return DB.delete("$table/$userID/duration", date);
   }
 }
 
@@ -316,45 +365,50 @@ class WorkoutDB {
   static const table = "workouts";
 
   // Select all workouts
-  static Future<Map?> getWorkoutList() async {
+  static Future<Map?> getAll() async {
     var snapshot = await DB.selectAll(table);
     return snapshot?.value as Map?;
   }
 
   // Select workoutNames from workoutID
-  static Future<Map?> getWorkoutNames() async {
-    var workouts = await getWorkoutList();
+  static Future<List?> getNames(List ids) async {
+    var workouts = await getAll();
+
+    List retVal = [];
+    for (var id in ids) {
+      retVal.add(workouts![id]);
+    }
+
+    return retVal;
+  }
+
+  // Select workoutIDs
+  static Future<Map?> getWIDs() async {
+    var workouts = await getAll();
     List ids = workouts!.keys.toList();
 
-    Map names = {
+    Map retVal = {
       "strength": [[], [], [], [], []],
       "cardio": [[], []],
       "yoga": [[], [], [], [], []],
       "warmUp": [],
       "coolDown": []
     };
-    List key = names.keys.toList();
+    List keys = retVal.keys.toList();
 
+    // Get the list of workoutID from the given type and difficulty
     for (int type = 1; type <= 3; type++) {
       for (int diff = 1; diff <= ((type == 2) ? 2 : 5); diff++) {
-        // Get the list of workoutID from the given type and difficulty
-        List tmp = List.from(
+        retVal[keys[type - 1]][diff - 1] = List.from(
             ids.where((item) => item[0] == "$type" && item[1] == "$diff"));
-        // Insert the list of names from the given ID
-        names[key[type - 1]][diff - 1] =
-            List.generate(tmp.length, (index) => workouts[tmp[index]]);
       }
     }
-
     for (int type = 4; type <= 5; type++) {
-      // Get the list of workoutID from the given type
-      List tmp = List.from(ids.where((item) => item[0] == "$type"));
-      // Insert the list of names from the given ID
-      names[key[type - 1]] =
-          List.generate(tmp.length, (index) => workouts[tmp[index]]);
+      retVal[keys[type - 1]] =
+          List.from(ids.where((item) => item[0] == "$type"));
     }
 
-    return names;
+    return retVal;
   }
 
   static Future<bool> insert(Map map) async {
