@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserProfilePage extends StatefulWidget {
+  final Map arguments;
+  //final User user;
+
+  const UserProfilePage({super.key, required this.arguments});
   @override
   _UserProfilePage createState() => _UserProfilePage();
 }
@@ -51,6 +56,7 @@ class _UserProfilePage extends State<UserProfilePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text('${widget.arguments['user'].displayName}'),
               SizedBox(height: 30),
               Padding(
                 padding: EdgeInsets.only(left:20),

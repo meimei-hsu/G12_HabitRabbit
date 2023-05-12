@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'package:g12/services/Database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../services/PlanAlgo.dart';
 
 class Homepage extends StatefulWidget {
-  const Homepage({super.key, required this.title});
-
-  final String title;
+  //final Map arguments;
+  final User user;
+  const Homepage({super.key, required this.user});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -329,7 +330,7 @@ class _HomepageState extends State<Homepage> {
                   color: Color(0x193598f5),
                 ),
                 accountName: Text(
-                  "楊翎翎",
+                  "${widget.user.displayName}",
                   style: TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 24,
@@ -340,7 +341,7 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 accountEmail: Text(
-                  "jolinyang.324@gmail.com",
+                  "${widget.user.email}",
                   style: TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,
@@ -359,7 +360,7 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 onDetailsPressed: () {
-                  Navigator.popAndPushNamed(context, '/customized');
+                  Navigator.popAndPushNamed(context, '/customized', arguments: {'user': widget.user});
                 },
               ),
               ListTile(

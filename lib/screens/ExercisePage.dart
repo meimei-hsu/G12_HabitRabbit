@@ -4,10 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class ExercisePage extends StatefulWidget {
-  const ExercisePage({super.key, required this.title});
-
-  final String title;
-
   @override
   _ExercisePageState createState() => _ExercisePageState();
 }

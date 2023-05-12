@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ContractPage extends StatefulWidget {
-  const ContractPage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _ContractPageState createState() => new _ContractPageState();
 }

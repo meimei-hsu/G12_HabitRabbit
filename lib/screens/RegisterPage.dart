@@ -314,7 +314,7 @@ class _RegisterPage extends State<RegisterPage> {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => Homepage(title: "Homepage")),
+                          builder: (context) => Homepage(user: user)),
                       ModalRoute.withName('/'),
                     );
                   }
@@ -593,7 +593,8 @@ class _RegisterPage extends State<RegisterPage> {
                   );
 
                   if (user != null) {
-                    Navigator.pushNamed(context, '/questionnaire');
+                    Navigator.pushNamed(context, '/questionnaire',
+                        arguments: {user});
                   }
                 },
               ),

@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class StatisticPage extends StatefulWidget {
-  const StatisticPage({Key? key, required this.title}) : super(key:key);
-  final String title;
-
   @override
   _StatisticPageState createState() => _StatisticPageState();
 }
