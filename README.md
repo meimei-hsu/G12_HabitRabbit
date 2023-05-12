@@ -9,10 +9,12 @@ A fitness habit APP.
     |---DB        (general database operations: create, read, update, delete)
 ---Database.dart
     |---Calendar  (get the days of the current and following weeks)
-    |---PlanDB    (database operations for the plan children of the schedule table)
+    |---PlanDB    (database operations for the plan children of the journal table)
+    |---DurationDB(database operations for the duration children of the journal table)
     |---UserDB    (database operations for the users table)
     |---WorkoutDB (database operations for the workouts table)
 ---PlanAlgo.dart
+    |---PlanAlgo  (execute point of the planning algorithm)
     |---Algorithm (generate plan from the planning algorithm)    
     |---Data      (process the data in advance of running the algorithm)
 ---Authentication.dart

@@ -197,7 +197,7 @@ class _HomepageState extends State<Homepage> {
                         color: const Color(0xff0d3b66),
                         tooltip: "重新計畫",
                         onPressed: () {
-                          Algorithm.regenerate("Mary", _selectedDay!);
+                          PlanAlgo.regenerate("Mary", _selectedDay!);
                         },
                       ),
                     ),
@@ -207,7 +207,7 @@ class _HomepageState extends State<Homepage> {
           const SizedBox(height: 10),
           FutureBuilder<String?>(
               // Exercise plan
-              future: PlanDB.getPlanFromDate("Mary", _selectedDay!),
+              future: PlanDB.getFromDate("Mary", _selectedDay!),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
