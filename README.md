@@ -23,13 +23,18 @@ A fitness habit APP.
 ```
 
 ```
----LoginPage.dart
-    |---SignupPage.dart
+---RegisterPage.dart
+    |---Login
+    |---Signup
+        |---QuestionnairePage.dart
+    |---ForgetPassword
 ---HomePage.dart
     |---ExercisePage.dart
         |---CountdownPage.dart
     |---StatisticPage.dart
     |---ContractPage.dart
+    |---UserProfilePage.dart
+---Routes.dart
 ```
 
 ## Version Control
