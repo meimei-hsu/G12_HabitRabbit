@@ -6,15 +6,14 @@ import 'package:g12/services/Authentication.dart';
 import 'package:g12/services/PlanAlgo.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key, required this.title, required this.isLoginPage})
+  const RegisterPage({Key? key, required this.isLoginPage})
       : super(key: key);
 
   //const LoginPage({super.key, required this.title});
-  final String title;
   final bool isLoginPage;
 
   @override
-  _RegisterPage createState() => _RegisterPage(this.title, this.isLoginPage);
+  _RegisterPage createState() => _RegisterPage(this.isLoginPage);
 }
 
 class _RegisterPage extends State<RegisterPage> {
@@ -22,14 +21,13 @@ class _RegisterPage extends State<RegisterPage> {
 
   //late _RegisterPage loginPage; // 定義變量
   //late _RegisterPage signupPage;
-  late String title;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfirmController =
       TextEditingController();
 
-  _RegisterPage(this.title, this.isLoginPage); // 定義變量
+  _RegisterPage(this.isLoginPage); // 定義變量
 
   @override
   //_RegisterPageState({required this.title, required this.isLoginPage})
@@ -299,12 +297,9 @@ class _RegisterPage extends State<RegisterPage> {
 
                   if (user != null) {
                     await PlanAlgo.execute(user.uid);
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Homepage(user: user)),
-                      ModalRoute.withName('/'),
-                    );
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/', (Route<dynamic> route) => false,
+                        arguments: {'user': user});
                   }
                 },
               ),
@@ -564,8 +559,16 @@ class _RegisterPage extends State<RegisterPage> {
 
                   if (user != null) {
                     await PlanAlgo.execute(user.uid);
-                    Navigator.pushNamed(context, '/questionnaire',
-                        arguments: {user});
+
+                    // FIXME: CANNOT navigate to QuestionnairePage! I'm not sure whether it's related to register process...
+                    // I tried the same code in the other page and it was able to work.
+                    // ref: https://stackoverflow.com/questions/64255643/navigation-doesnt-work-from-signup-to-home-flutter
+                    // ref: https://stackoverflow.com/questions/65543267/unable-to-navigate-to-homepage-after-register-with-firebase-flutter
+                    Navigator.pushNamedAndRemoveUntil(context, '/questionnaire/1', (Route<dynamic> route) => false, arguments: {'user': user});
+                    /*Navigator.popAndPushNamed(context, '/questionnaire/1',
+                        arguments: {'user': user});*/
+                    /*Navigator.pushNamed(context, '/questionnaire/1',
+                        arguments: {'user': user});*/
                   }
                 },
               ),

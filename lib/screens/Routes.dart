@@ -8,26 +8,34 @@ import 'package:g12/screens/ContractPage.dart';
 import 'package:g12/screens/CountdownPage.dart';
 import 'package:g12/screens/ExercisePage.dart';
 import 'package:g12/screens/UserProfilePage.dart';
-import 'package:path/path.dart';
 
 //配置路由規則
 final routes = {
-  '/': (context, {user}) => Homepage(user: user),
+  '/': (context, {arguments}) => Homepage(arguments: arguments),
+  '/register': (context) => RegisterPage(isLoginPage: true),
   '/statistic': (context) => StatisticPage(),
   '/constract': (context) => ContractPage(),
   '/countdown': (context) => CountdownPage(),
   '/exercise': (context) => ExercisePage(),
-  '/register': (context) =>
-      RegisterPage(title: "RegisterPage", isLoginPage: true),
-  '/questionnaire': (context, {user}) => QuestionnairePage(user: user),
-  '/customized': (context, {arguments}) => UserProfilePage(arguments: arguments),
+  '/customized': (context, {arguments}) =>
+      UserProfilePage(arguments: arguments),
+  /* QuestionnairePage */
+  '/questionnaire/1': (context, {arguments}) => FirstPage(arguments: arguments),
+  '/questionnaire/2': (context, {arguments}) =>
+      SecondPage(arguments: arguments),
+  '/questionnaire/3': (context, {arguments}) => ThirdPage(arguments: arguments),
+  '/questionnaire/4': (context, {arguments}) => ForthPage(arguments: arguments),
+  '/questionnaire/5': (context, {arguments}) => FifthPage(arguments: arguments),
+  '/questionnaire/6': (context, {arguments}) => SixthPage(arguments: arguments),
+  '/questionnaire/result': (context, {arguments}) => ResultPage(
+        arguments: arguments,
+      ),
 };
 
-// 如果你要把路由抽離出去，必須寫下面這一堆的程式碼，不用理解什麼意思
 var onGenerateRoute = (RouteSettings settings) {
   // 統一處理
-  final String? name = settings.name; // diff
-  final Function pageContentBuilder = routes[name] as Function; // diff
+  final String? name = settings.name;
+  final Function pageContentBuilder = routes[name] as Function;
   if (pageContentBuilder != null) {
     if (settings.arguments != null) {
       final Route route = MaterialPageRoute(

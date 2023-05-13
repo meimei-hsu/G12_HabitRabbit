@@ -6,9 +6,10 @@ import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
 
 class Homepage extends StatefulWidget {
-  //final Map arguments;
-  final User user;
-  const Homepage({super.key, required this.user});
+  final Map arguments;
+  //final User user;
+  //const Homepage({super.key, required this.user});
+  const Homepage({super.key, required this.arguments});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -196,7 +197,7 @@ class _HomepageState extends State<Homepage> {
                         color: const Color(0xff0d3b66),
                         tooltip: "重新計畫",
                         onPressed: () {
-                          PlanAlgo.regenerate(widget.user.uid, _selectedDay!);
+                          PlanAlgo.regenerate(widget.arguments['user'].uid, _selectedDay!);
                         },
                       ),
                     ),
@@ -206,7 +207,7 @@ class _HomepageState extends State<Homepage> {
           const SizedBox(height: 10),
           FutureBuilder<num?>(
               // Exercise plan
-              future: PlanAlgo.calcProgress(widget.user.uid, _selectedDay!),
+              future: PlanAlgo.calcProgress(widget.arguments['user'].uid, _selectedDay!),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -250,7 +251,7 @@ class _HomepageState extends State<Homepage> {
           const SizedBox(height: 10),
           FutureBuilder<String?>(
               // Exercise plan
-              future: PlanDB.getFromDate(widget.user.uid, _selectedDay!),
+              future: PlanDB.getFromDate(widget.arguments['user'].uid, _selectedDay!),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -354,7 +355,7 @@ class _HomepageState extends State<Homepage> {
                   color: Color(0x193598f5),
                 ),
                 accountName: Text(
-                  "${widget.user.displayName}",
+                  "${widget.arguments['user'].displayName}",
                   style: TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 24,
@@ -365,7 +366,7 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 accountEmail: Text(
-                  "${widget.user.email}",
+                  "${widget.arguments['user'].email}",
                   style: TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,
@@ -385,7 +386,7 @@ class _HomepageState extends State<Homepage> {
                 ),
                 onDetailsPressed: () {
                   Navigator.popAndPushNamed(context, '/customized',
-                      arguments: {'user': widget.user});
+                      arguments: {'user': widget.arguments['user']});
                 },
               ),
               ListTile(

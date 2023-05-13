@@ -1,92 +1,77 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:g12/screens/Homepage.dart';
 
-class QuestionnairePage extends StatefulWidget {
-  final User user;
+class FirstPage extends StatefulWidget {
+  final Map arguments;
 
-  const QuestionnairePage({super.key, required this.user});
+  const FirstPage({super.key, required this.arguments});
 
   @override
-  _QuestionnairePage createState() => _QuestionnairePage();
+  _FirstPageState createState() => _FirstPageState();
 }
 
-class _QuestionnairePage extends State<QuestionnairePage> {
+class _FirstPageState extends State<FirstPage> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Change Page',
-        home: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              '問卷介面',
-              style: TextStyle(
-                  color: Color(0xFF0D3B66),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 25),
-            ),
-            backgroundColor: Color(0xFFFAF0CA),
-            automaticallyImplyLeading: false,
-          ),
-          body: _FirstPage(user: widget.user),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          '問卷介面',
+          style: TextStyle(
+              color: Color(0xFF0D3B66),
+              fontWeight: FontWeight.bold,
+              fontSize: 25),
         ),
-        routes: <String, WidgetBuilder>{'/second': (_) => new SecondPage(user: widget.user)});
-  }
-}
-
-class _FirstPage extends StatelessWidget {
-  final User user;
-
-  const _FirstPage({super.key, required this.user});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.topCenter,
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 10, top: 200),
-            child: Text(
-              '第一部分共14道題，問題將分成：\n\n'
-              '1.基本資訊\n2.運動習慣偏好調查\n3.現階段運動能力及未來目標\n\n'
-              '共三個部分，\n每道題目均為必填，\n請依據個人狀況回來問題。\n',
-              style: TextStyle(
-                color: Color(0xFF0D3B66),
-                fontSize: 20,
-              ),
-              textAlign: TextAlign.left,
-            ),
-          ),
-          Expanded(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: ElevatedButton(
-                  child: Text("開始作答",
-                    style: TextStyle(
-                      color: Color(0xFF0D3B66),
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFFFA493),
-                  ),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SecondPage(user: user)));
-                  },
+        backgroundColor: Color(0xFFFAF0CA),
+        automaticallyImplyLeading: false,
+      ),
+      body: Container(
+        alignment: Alignment.topCenter,
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 10, top: 200),
+              child: Text(
+                '第一部分共14道題，問題將分成：\n\n'
+                '1.基本資訊\n2.運動習慣偏好調查\n3.現階段運動能力及未來目標\n\n'
+                '共三個部分，\n每道題目均為必填，\n請依據個人狀況回來問題。\n',
+                style: TextStyle(
+                  color: Color(0xFF0D3B66),
+                  fontSize: 20,
                 ),
-              )
-          ),
-          SizedBox(height: 20),
-        ],
+                textAlign: TextAlign.left,
+              ),
+            ),
+            Expanded(
+                child: Align(
+              alignment: Alignment.topCenter,
+              child: ElevatedButton(
+                child: Text(
+                  "開始作答",
+                  style: TextStyle(
+                    color: Color(0xFF0D3B66),
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Color(0xFFFFA493),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, "/questionnaire/2",
+                      arguments: {'user': widget.arguments['user']});
+                },
+              ),
+            )),
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
 }
 
 class SecondPage extends StatefulWidget {
-  final User user;
-  const SecondPage({super.key, required this.user});
+  final Map arguments;
+
+  const SecondPage({super.key, required this.arguments});
 
   @override
   _SecondPageState createState() => _SecondPageState();
@@ -314,7 +299,8 @@ class _SecondPageState extends State<SecondPage> {
                     SizedBox(height: 20),
                     SizedBox(width: 20),
                     ElevatedButton(
-                        child: Text("確定",
+                        child: Text(
+                          "確定",
                           style: TextStyle(
                             color: Color(0xFF0D3B66),
                           ),
@@ -323,7 +309,10 @@ class _SecondPageState extends State<SecondPage> {
                           primary: Color(0xFFFFA493),
                         ),
                         onPressed: () {
-                          if (gender == null || selectedDateTime == null || height.isEmpty || weight.isEmpty) {
+                          if (gender == null ||
+                              selectedDateTime == null ||
+                              height.isEmpty ||
+                              weight.isEmpty) {
                             showDialog(
                               context: context,
                               builder: (context) {
@@ -331,7 +320,8 @@ class _SecondPageState extends State<SecondPage> {
                                   title: Text("尚有未作答題目"),
                                   actions: [
                                     ElevatedButton(
-                                      onPressed: () => Navigator.of(context).pop(),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
                                       child: Text("確定"),
                                       style: ElevatedButton.styleFrom(
                                         primary: Color(0xFFFFA493),
@@ -342,7 +332,7 @@ class _SecondPageState extends State<SecondPage> {
                                 );
                               },
                             );
-                          }else{
+                          } else {
                             Map<String, dynamic> answers = {
                               'gender': gender,
                               'selectedDateTime': selectedDateTime,
@@ -350,12 +340,13 @@ class _SecondPageState extends State<SecondPage> {
                               'weight': weight,
                             };
                             print(answers);
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) => ThirdPage(answers: answers,user: widget.user)
-                                ));
+                            Navigator.pushNamed(context, "/questionnaire/3",
+                                arguments: {
+                                  'user': widget.arguments['user'],
+                                  'answers': answers
+                                });
                           }
-                        }
-                    ),
+                        }),
                     SizedBox(height: 20),
                   ],
                 ),
@@ -365,10 +356,9 @@ class _SecondPageState extends State<SecondPage> {
 }
 
 class ThirdPage extends StatefulWidget {
-  final Map<String, dynamic> answers;
-  final User user;
+  final Map arguments;
 
-  const ThirdPage({super.key, required this.user, required this.answers});
+  const ThirdPage({super.key, required this.arguments});
 
   @override
   _ThirdPage createState() => _ThirdPage();
@@ -959,15 +949,14 @@ class _ThirdPage extends State<ThirdPage> {
                               );
                             },
                           );
-                        } else{
-                          String workoutDays =
-                              (monday ? "1" : "0") +
-                                  (tuesday ? "1" : "0") +
-                                  (wednesday ? "1" : "0") +
-                                  (thursday ? "1" : "0") +
-                                  (friday ? "1" : "0") +
-                                  (saturday ? "1" : "0") +
-                                  (sunday ? "1" : "0");
+                        } else {
+                          String workoutDays = (monday ? "1" : "0") +
+                              (tuesday ? "1" : "0") +
+                              (wednesday ? "1" : "0") +
+                              (thursday ? "1" : "0") +
+                              (friday ? "1" : "0") +
+                              (saturday ? "1" : "0") +
+                              (sunday ? "1" : "0");
                           //print('workoutDays:'+ workoutDays);
                           Map<String, dynamic> data = {
                             'timeSpan': timeSpan,
@@ -979,16 +968,20 @@ class _ThirdPage extends State<ThirdPage> {
                             },
                           };
                           Map<String, dynamic> combinedData_1 = {};
-                          combinedData_1.addAll(widget.answers);
+                          combinedData_1.addAll(widget.arguments['answers']);
                           combinedData_1.addAll(data);
                           print('combinedData_1: $combinedData_1');
                           //print(data);
-                          Navigator.push(context,
+                          Navigator.pushNamed(context, "/questionnaire/4",
+                              arguments: {
+                                'user': widget.arguments['user'],
+                                'combinedData_1': combinedData_1
+                              });
+                          /*Navigator.push(context,
                               MaterialPageRoute(builder: (context) => ForthPage(combinedData_1: combinedData_1, user: widget.user)
-                              ));
+                              ));*/
                         }
-                      }
-                  ),
+                      }),
                   SizedBox(height: 20),
                 ],
               ),
@@ -997,10 +990,11 @@ class _ThirdPage extends State<ThirdPage> {
     );
   }
 }
+
 class ForthPage extends StatefulWidget {
-  final Map<String, dynamic> combinedData_1;
-  final User user;
-  const ForthPage({super.key, required this.user, required this.combinedData_1});
+  final Map arguments;
+
+  const ForthPage({super.key, required this.arguments});
 
   @override
   _ForthPage createState() => _ForthPage();
@@ -1586,19 +1580,22 @@ class _ForthPage extends State<ForthPage> {
                               );
                             },
                           );
-                        } else{
+                        } else {
                           Map<String, dynamic> Data = {
                             'strengthAbility': strengthAbility,
                             'cardioAbility': cardioAbility,
                             'yogaAbility': yogaAbility,
                           };
                           Map<String, dynamic> combinedData_2 = {};
-                          combinedData_2.addAll(widget.combinedData_1);
+                          combinedData_2
+                              .addAll(widget.arguments['combinedData_1']);
                           combinedData_2.addAll(Data);
                           print('combinedData_2: $combinedData_2');
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => FifthPage(combinedData_2:combinedData_2, user: widget.user)
-                              ));
+                          Navigator.pushNamed(context, "/questionnaire/5",
+                              arguments: {
+                                'user': widget.arguments['user'],
+                                'combinedData_2': combinedData_2
+                              });
                         }
                       },
                     ),
@@ -1606,16 +1603,14 @@ class _ForthPage extends State<ForthPage> {
                   ],
                 ),
               ]),
-            )
-        )
-    );
+        )));
   }
 }
 
 class FifthPage extends StatefulWidget {
-  final Map<String, dynamic> combinedData_2;
-  final User user;
-  const FifthPage({super.key, required this.user, required this.combinedData_2});
+  final Map arguments;
+
+  const FifthPage({super.key, required this.arguments});
 
   @override
   _FifthPage createState() => _FifthPage();
@@ -1668,8 +1663,10 @@ class _FifthPage extends State<FifthPage> {
                   primary: Color(0xFFFFA493),
                 ),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SixthPage(combinedData_2: widget.combinedData_2, user: widget.user)));
+                  Navigator.pushNamed(context, "/questionnaire/6", arguments: {
+                    'user': widget.arguments['user'],
+                    'combinedData_2': widget.arguments['combinedData_2']
+                  });
                 },
               ),
             )),
@@ -1682,9 +1679,9 @@ class _FifthPage extends State<FifthPage> {
 }
 
 class SixthPage extends StatefulWidget {
-  final Map<String, dynamic> combinedData_2;
-  final User user;
-  const SixthPage({super.key, required this.user,required this.combinedData_2});
+  final Map arguments;
+
+  const SixthPage({super.key, required this.arguments});
 
   @override
   _SixthPage createState() => _SixthPage();
@@ -2162,7 +2159,7 @@ class _SixthPage extends State<SixthPage> {
                           );
                         },
                       );
-                    } else{
+                    } else {
                       Map<String, int> personality = {};
                       int neuroticismSum = 0;
                       if (neuroticism_1 == "1") {
@@ -2189,7 +2186,8 @@ class _SixthPage extends State<SixthPage> {
                       if (conscientiousness_3 == "1") {
                         conscientiousnessSum += 1;
                       }
-                      if (conscientiousnessSum == 2 || conscientiousnessSum == 3) {
+                      if (conscientiousnessSum == 2 ||
+                          conscientiousnessSum == 3) {
                         personality['conscientiousness'] = 1;
                       } else {
                         personality['conscientiousness'] = -1;
@@ -2210,19 +2208,16 @@ class _SixthPage extends State<SixthPage> {
                         personality['openness'] = 2;
                       }
                       Map<String, dynamic> combinedData = {};
-                      combinedData.addAll(widget.combinedData_2);
+                      combinedData.addAll(widget.arguments['combinedData_2']);
                       combinedData.addAll(personality);
                       print('combinedData: $combinedData');
-                      Navigator.push(context,
-                          MaterialPageRoute(
-                              builder: (context) => ResultPage(
-                                user: widget.user,
-                                neuroticismSum: neuroticismSum,
-                                conscientiousnessSum: conscientiousnessSum,
-                                opennessSum: opennessSum,
-                              )
-                          )
-                      );
+                      Navigator.pushNamed(context, "/questionnaire/result",
+                          arguments: {
+                            'user': widget.arguments['user'],
+                            'neuroticismSum': neuroticismSum,
+                            'conscientiousnessSum': conscientiousnessSum,
+                            'opennessSum': opennessSum
+                          });
                     }
                   },
                 ),
@@ -2237,17 +2232,11 @@ class _SixthPage extends State<SixthPage> {
 }
 
 class ResultPage extends StatefulWidget {
-  final User user;
-  final int neuroticismSum;
-  final int conscientiousnessSum;
-  final int opennessSum;
+  final Map arguments;
 
   const ResultPage({
     super.key,
-    required this.user,
-    required this.neuroticismSum,
-    required this.conscientiousnessSum,
-    required this.opennessSum,
+    required this.arguments,
   });
 
   @override
@@ -2256,40 +2245,53 @@ class ResultPage extends StatefulWidget {
 
 class _ResultPage extends State<ResultPage> {
   String getPersonalityType() {
-    if ((widget.neuroticismSum == 2 || widget.neuroticismSum == 3) &&
-        (widget.conscientiousnessSum == 2 ||
-            widget.conscientiousnessSum == 3) &&
-        (widget.opennessSum == 2 || widget.opennessSum == 3)) {
+    if ((widget.arguments['neuroticismSum'] == 2 ||
+            widget.arguments['neuroticismSum'] == 3) &&
+        (widget.arguments['conscientiousnessSum'] == 2 ||
+            widget.arguments['conscientiousnessSum'] == 3) &&
+        (widget.arguments['opennessSum'] == 2 ||
+            widget.arguments['opennessSum'] == 3)) {
       return "NOC";
-    } else if ((widget.neuroticismSum == 0 || widget.neuroticismSum == 1) &&
-        (widget.conscientiousnessSum == 2 ||
-            widget.conscientiousnessSum == 3) &&
-        (widget.opennessSum == 2 || widget.opennessSum == 3)) {
+    } else if ((widget.arguments['neuroticismSum'] == 0 ||
+            widget.arguments['neuroticismSum'] == 1) &&
+        (widget.arguments['conscientiousnessSum'] == 2 ||
+            widget.arguments['conscientiousnessSum'] == 3) &&
+        (widget.arguments['opennessSum'] == 2 ||
+            widget.arguments['opennessSum'] == 3)) {
       return "S₁OC";
-    } else if ((widget.neuroticismSum == 2 || widget.neuroticismSum == 3) &&
-        (widget.conscientiousnessSum == 0 ||
-            widget.conscientiousnessSum == 1) &&
-        (widget.opennessSum == 2 || widget.opennessSum == 3)) {
+    } else if ((widget.arguments['neuroticismSum'] == 2 ||
+            widget.arguments['neuroticismSum'] == 3) &&
+        (widget.arguments['conscientiousnessSum'] == 0 ||
+            widget.arguments['conscientiousnessSum'] == 1) &&
+        (widget.arguments['opennessSum'] == 2 ||
+            widget.arguments['opennessSum'] == 3)) {
       return "NGC";
-    } else if ((widget.neuroticismSum == 0 || widget.neuroticismSum == 1) &&
-        (widget.conscientiousnessSum == 0 ||
-            widget.conscientiousnessSum == 1) &&
-        (widget.opennessSum == 2 || widget.opennessSum == 3)) {
+    } else if ((widget.arguments['neuroticismSum'] == 0 ||
+            widget.arguments['neuroticismSum'] == 1) &&
+        (widget.arguments['conscientiousnessSum'] == 0 ||
+            widget.arguments['conscientiousnessSum'] == 1) &&
+        (widget.arguments['opennessSum'] == 2 ||
+            widget.arguments['opennessSum'] == 3)) {
       return "S₁GC";
-    } else if ((widget.neuroticismSum == 2 || widget.neuroticismSum == 3) &&
-        (widget.conscientiousnessSum == 2 ||
-            widget.conscientiousnessSum == 3) &&
-        (widget.opennessSum == 0 || widget.opennessSum == 1)) {
+    } else if ((widget.arguments['neuroticismSum'] == 2 ||
+            widget.arguments['neuroticismSum'] == 3) &&
+        (widget.arguments['conscientiousnessSum'] == 2 ||
+            widget.arguments['conscientiousnessSum'] == 3) &&
+        (widget.arguments['opennessSum'] == 0 ||
+            widget.arguments['opennessSum'] == 1)) {
       return "NOS₂";
-    } else if ((widget.neuroticismSum == 0 || widget.neuroticismSum == 1) &&
-        (widget.conscientiousnessSum == 2 ||
-            widget.conscientiousnessSum == 3) &&
-        (widget.opennessSum == 0 || widget.opennessSum == 1)) {
+    } else if ((widget.arguments['neuroticismSum'] == 0 ||
+            widget.arguments['neuroticismSum'] == 1) &&
+        (widget.arguments['conscientiousnessSum'] == 2 ||
+            widget.arguments['conscientiousnessSum'] == 3) &&
+        (widget.arguments['opennessSum'] == 0 ||
+            widget.arguments['opennessSum'] == 1)) {
       return "S₁OS₂";
-    } else if ((widget.neuroticismSum == 2 || widget.neuroticismSum == 3) &&
-        (widget.conscientiousnessSum == 0 ||
-            widget.conscientiousnessSum == 1) &&
-        (widget.opennessSum == 0 || widget.opennessSum == 1)) {
+    } else if ((widget.arguments['neuroticismSum'] == 2 ||
+            widget.arguments['neuroticismSum'] == 3) &&
+        (widget.arguments['conscientiousnessSum'] == 0 ||
+            widget.arguments['conscientiousnessSum'] == 1) &&
+        (widget.arguments['opennessSum'] == 0 || widget.arguments['opennessSum'] == 1)) {
       return "NGS₂";
     } else {
       return "S₁GS₂";
@@ -2309,7 +2311,8 @@ class _ResultPage extends State<ResultPage> {
   Widget build(BuildContext context) {
     switch (personalityType) {
       case 'NOC':
-        imageWidget = Image.asset('assets/images/personality_NOC.png',
+        imageWidget = Image.asset(
+          'assets/images/personality_NOC.png',
           height: 250,
         );
         break;
@@ -2373,12 +2376,9 @@ class _ResultPage extends State<ResultPage> {
                 primary: Color(0xFFFFA493),
               ),
               onPressed: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Homepage(user: widget.user)),
-                  ModalRoute.withName('/'),
-                );
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/', (Route<dynamic> route) => false,
+                    arguments: {'user': widget.arguments['user']});
               },
             ),
             SizedBox(height: 20),
