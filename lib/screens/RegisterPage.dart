@@ -1,10 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:g12/screens/Homepage.dart';
-import 'dart:io';
-import 'dart:typed_data';
 
-import '../services/Authentication.dart';
+import 'package:g12/screens/Homepage.dart';
+import 'package:g12/services/Authentication.dart';
+import 'package:g12/services/PlanAlgo.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key, required this.title, required this.isLoginPage})
@@ -192,12 +191,6 @@ class _RegisterPage extends State<RegisterPage> {
               keyboardType: TextInputType.text,
               obscureText: false,
               //controller: _controller,
-              onChanged: (value) {
-                print(value);
-              },
-              onSubmitted: (value) {
-                print('Submitted: $value');
-              },
             ),
           ),
           const SizedBox(height: 30),
@@ -254,12 +247,6 @@ class _RegisterPage extends State<RegisterPage> {
               keyboardType: TextInputType.text,
               obscureText: true,
               //controller: _controller,
-              onChanged: (value) {
-                //print(value);
-              },
-              onSubmitted: (value) {
-                //print('Submitted: $value');
-              },
             ),
           ),
           const SizedBox(height: 30),
@@ -311,6 +298,7 @@ class _RegisterPage extends State<RegisterPage> {
                   );
 
                   if (user != null) {
+                    await PlanAlgo.execute(user.uid);
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -411,12 +399,6 @@ class _RegisterPage extends State<RegisterPage> {
               keyboardType: TextInputType.text,
               obscureText: false,
               //controller: _controller,
-              onChanged: (value) {
-                // print(value);
-              },
-              onSubmitted: (value) {
-                // print('Submitted: $value');
-              },
             ),
           ),
           const SizedBox(height: 30),
@@ -473,12 +455,6 @@ class _RegisterPage extends State<RegisterPage> {
               keyboardType: TextInputType.text,
               obscureText: false,
               //controller: _controller,
-              onChanged: (value) {
-                print(value);
-              },
-              onSubmitted: (value) {
-                print('Submitted: $value');
-              },
             ),
           ),
           const SizedBox(height: 30),
@@ -535,12 +511,6 @@ class _RegisterPage extends State<RegisterPage> {
               keyboardType: TextInputType.text,
               obscureText: true,
               //controller: _controller,
-              onChanged: (value) {
-                //print(value);
-              },
-              onSubmitted: (value) {
-                //print('Submitted: $value');
-              },
             ),
           ),
           const SizedBox(height: 30),
@@ -593,6 +563,7 @@ class _RegisterPage extends State<RegisterPage> {
                   );
 
                   if (user != null) {
+                    await PlanAlgo.execute(user.uid);
                     Navigator.pushNamed(context, '/questionnaire',
                         arguments: {user});
                   }

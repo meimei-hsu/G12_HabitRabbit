@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-import 'package:g12/services/Database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../services/PlanAlgo.dart';
+import 'package:g12/services/Database.dart';
+import 'package:g12/services/PlanAlgo.dart';
 
 class Homepage extends StatefulWidget {
   //final Map arguments;
@@ -58,8 +57,8 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: const Text(
-          'Today',
+        title: Text(
+          '${_selectedDay!.month}/${_selectedDay!.day} Plan',
           textAlign: TextAlign.left,
           style: TextStyle(
               color: Color(0xff0d3b66),
@@ -197,7 +196,7 @@ class _HomepageState extends State<Homepage> {
                         color: const Color(0xff0d3b66),
                         tooltip: "重新計畫",
                         onPressed: () {
-                          PlanAlgo.regenerate("Mary", _selectedDay!);
+                          PlanAlgo.regenerate(widget.user.uid, _selectedDay!);
                         },
                       ),
                     ),
@@ -205,9 +204,53 @@ class _HomepageState extends State<Homepage> {
                 ],
               )),
           const SizedBox(height: 10),
+          FutureBuilder<num?>(
+              // Exercise plan
+              future: PlanAlgo.calcProgress(widget.user.uid, _selectedDay!),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return const CircularProgressIndicator();
+                  default:
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    // If snapshot has no error, return plan
+                    num? uncompletedPercentage = snapshot.data;
+                    if (uncompletedPercentage != null) {
+                      // Return the plan information
+                      if (uncompletedPercentage < 100) {
+                        return Text(
+                          "今天還有 $uncompletedPercentage% 的運動還沒完成噢~加油加油！",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              color: Color(0xffffa493),
+                              fontSize: 18,
+                              letterSpacing: 0, //percentages not used in flutter
+                              fontWeight: FontWeight.bold,
+                              height: 1),
+                        );
+                      } else {
+                        return Text(
+                          "今天的運動完成噢~很棒很棒！",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              color: Color(0xff5dbb63),
+                              fontSize: 18,
+                              letterSpacing: 0, //percentages not used in flutter
+                              fontWeight: FontWeight.bold,
+                              height: 1),
+                        );
+                      }
+                    } else {
+                      return const Text("Rest Day");
+                    }
+                }
+              }),
+          const SizedBox(height: 10),
           FutureBuilder<String?>(
               // Exercise plan
-              future: PlanDB.getFromDate("Mary", _selectedDay!),
+              future: PlanDB.getFromDate(widget.user.uid, _selectedDay!),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -229,36 +272,17 @@ class _HomepageState extends State<Homepage> {
                       title.insert(0, "Warm up");
                       title.insert(length - 1, "Cool down");
 
-                      int umcompletedPercentage = 50;
                       // Return the plan information
                       return Expanded(
-                          child: Column(
-                        children: [
-                          Text(
-                            "今天還有 $umcompletedPercentage% 的運動還沒完成噢~加油加油！",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                color: Color(0xffffa493),
-                                fontSize: 18,
-                                letterSpacing:
-                                    0, //percentages not used in flutter
-                                fontWeight: FontWeight.bold,
-                                height: 1),
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10, left: 10),
+                          child: ListView(
+                            children: _getSportList(content, title),
                           ),
-                          const SizedBox(height: 10),
-                          Expanded(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 10, left: 10),
-                              child: ListView(
-                                children: _getSportList(content, title),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ));
+                        ),
+                      );
                     } else {
-                      return const Text("Rest Day");
+                      return const Text("Generate Workout Button");
                     }
                 }
               }),
@@ -360,7 +384,8 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 onDetailsPressed: () {
-                  Navigator.popAndPushNamed(context, '/customized', arguments: {'user': widget.user});
+                  Navigator.popAndPushNamed(context, '/customized',
+                      arguments: {'user': widget.user});
                 },
               ),
               ListTile(

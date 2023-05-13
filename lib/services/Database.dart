@@ -80,7 +80,7 @@ class Home extends StatelessWidget {
               child: const Text("test DB")),
           TextButton(
               onPressed: () {
-                PlanAlgo.execute("j6QYBrgbLIQH7h8iRyslntFFKV63");
+                PlanAlgo.execute("pk80ghfLICRtGhVaOlAOzlcGU4S2");
                 //Algorithm.regenerate("j6QYBrgbLIQH7h8iRyslntFFKV63", DateTime.now());
               },
               child: const Text("test AG")),
@@ -98,7 +98,7 @@ class Calendar {
     return (td.weekday == 7) ? td : td.subtract(Duration(days: td.weekday));
   }
 
-  // convert DateTime to String (i.e. plan's key)
+  // Convert DateTime to String (i.e. plan's key)
   static String toKey(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
 
   // Get a number {duration} of dates from the given date {firstDay}
@@ -157,8 +157,7 @@ class UserDB {
 
   // Select user from userID
   static Future<Map?> getUser(String id) async {
-    return Map<String, dynamic>.from(
-        await DB.select(table, id) as Map<Object?, Object?>);
+    return Map<String, dynamic>.from(await DB.select(table, id) as Map);
   }
 
   // Select dynamic data from userID
@@ -251,26 +250,33 @@ class PlanDB {
   // Select all plans
   static Future<Map?> getAll(String userID) async {
     var snapshot = await DB.selectAll("$table/$userID/plan");
-    return (snapshot?.value) as Map;
+    return (snapshot != null) ? (snapshot.value) as Map : null;
   }
 
   // Select the user's plan from the dates of given week
-  static Future<Map?> getThisWeek(String userID) async {
+  static Future<Map?> getThisWeek(String userID) async =>
+      getFromDates(userID, Calendar.thisWeek());
+
+  static Future<Map?> getNextWeek(String userID) async =>
+      getFromDates(userID, Calendar.nextWeek());
+
+  // Select user's workout plan from given dates
+  static Future<Map?> getFromDates(String userID, List<String> dates) async {
     Map retVal = {};
-    List datesOfWeek = Calendar.thisWeek();
     Map? plan = await getAll(userID);
-    for (String date in datesOfWeek) {
-      if (plan!.containsKey(date)) {
-        retVal[date] = plan[date];
+    if (plan != null) {
+      for (String date in dates) {
+        if (plan.containsKey(date)) {
+          retVal[date] = plan[date];
+        }
       }
     }
-    return retVal;
+    return retVal.isNotEmpty ? retVal : null;
   }
 
-  // Select user's workout plan
   static Future<String> getFromDate(String userID, DateTime date) async {
     var plan = await DB.select("$table/$userID/plan", Calendar.toKey(date));
-    return (plan == null) ? "" : plan as String;
+    return (plan != null) ? plan as String : "";
   }
 
   // Select user's workout history
@@ -278,8 +284,8 @@ class PlanDB {
     var daysComing = Calendar.daysComing();
     var nextWeek = Calendar.nextWeek();
     var retVal = await getAll(userID);
-    retVal!.removeWhere((k, v) => daysComing.contains(k));
-    retVal.removeWhere((k, v) => nextWeek.contains(k));
+    retVal?.removeWhere((k, v) => daysComing.contains(k));
+    retVal?.removeWhere((k, v) => nextWeek.contains(k));
     return retVal;
   }
 
@@ -317,40 +323,46 @@ class DurationDB {
   // Select all durations
   static Future<Map?> getAll(String userID) async {
     var snapshot = await DB.selectAll("$table/$userID/duration");
-    return (snapshot?.value) as Map;
+    return (snapshot != null) ? (snapshot.value) as Map : null;
   }
 
   // Select the user's duration from the dates of given week
   static Future<List?> getToday(String userID) async {
     String today = Calendar.toKey(DateTime.now());
     Map? durations = await getAll(userID);
-    return durations![today]?.split(', ').map(int.parse).toList();
+    return (durations != null)
+        ? durations[today]?.split(', ').map(int.parse).toList()
+        : null;
   }
 
   // Select user's workout duration
   static Future<List?> getFromDate(String userID, DateTime date) async {
-    var ret = await DB.select("$table/$userID/duration", Calendar.toKey(date));
-    return (ret as String).split(', ').map(int.parse).toList();
+    var dur = await DB.select("$table/$userID/duration", Calendar.toKey(date));
+    return (dur != null)
+        ? (dur as String).split(', ').map(int.parse).toList()
+        : null;
   }
 
   // Insert duration data {date: "duration, timeSpan"} into table {table/userID/duration/date}
-  static Future<bool> insert(String userID, num duration) async {
-    String key = Calendar.toKey(DateTime.now());
-    String value = "$duration, ${UserDB.getTimeSpan}";
-    var success = await DB.insert({key: value}, "$table/$userID", "duration");
-    if (success == false) {
-      return false;
+  static Future<bool> insert(String userID, Map<String, String> map) async {
+    for (MapEntry e in map.entries) {
+      var success =
+          await DB.insert({e.key: e.value}, "$table/$userID", "duration");
+      if (success == false) {
+        return false;
+      }
     }
     return true;
   }
 
   // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
-  static Future<bool> update(String userID, num duration) async {
-    String key = Calendar.toKey(DateTime.now());
-    String value = "$duration, ${UserDB.getTimeSpan}";
-    var success = await DB.update({key: value}, "$table/$userID", "duration");
-    if (success == false) {
-      return false;
+  static Future<bool> update(String userID, Map map) async {
+    for (MapEntry e in map.entries) {
+      var success =
+          await DB.update({e.key: e.value}, "$table/$userID", "duration");
+      if (success == false) {
+        return false;
+      }
     }
     return true;
   }
