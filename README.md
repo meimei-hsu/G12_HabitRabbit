@@ -34,6 +34,12 @@ A fitness habit APP.
 
 ## Version Control
 
+General situations:
+
 - `git pull` → (conflict) → `git stash` → `git pull` → `git stash pop`
 
 - `git pull` → (no conflict) → `git commit` → `git push`
+
+If you forgot to pull before commit: 
+
+- `git commit` → (conflict) → `git reset --soft HEAD~1` → `git stash` → `git pull` → `git stash pop`
