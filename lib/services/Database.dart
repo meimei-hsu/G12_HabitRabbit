@@ -76,6 +76,8 @@ class Home extends StatelessWidget {
                 UserDB.update("j6QYBrgbLIQH7h8iRyslntFFKV63", {"weight": 47});
                 UserDB.getAll();
                 WorkoutDB.getNames(plan);
+                WeightDB.insert("j6QYBrgbLIQH7h8iRyslntFFKV63", {"2023-05-14": "47"});
+                WeightDB.insert("pk80ghfLICRtGhVaOlAOzlcGU4S2", {"2023-05-14": "70"});
               },
               child: const Text("test DB")),
           TextButton(
@@ -317,6 +319,7 @@ class PlanDB {
   }
 }
 
+
 class DurationDB {
   static const table = "journal";
 
@@ -373,6 +376,71 @@ class DurationDB {
   }
 }
 
+class WeightDB {
+  static const table = "journal";
+
+
+  // Select all weight
+  static Future<Map?> getAll(String userID) async {
+    var snapshot = await DB.selectAll("$table/$userID/weight");
+    return (snapshot != null) ? (snapshot.value) as Map : null;
+  }
+
+  // Select the user's weight from the dates of given week
+  static Future<Map?> getThisWeek(String userID) async =>
+      getFromDates(userID, Calendar.thisWeek());
+
+  static Future<Map?> getNextWeek(String userID) async =>
+      getFromDates(userID, Calendar.nextWeek());
+
+  // Select user's weight from given dates
+  static Future<Map?> getFromDates(String userID, List<String> dates) async {
+    Map retVal = {};
+    Map? weight = await getAll(userID);
+    if (weight != null) {
+      for (String date in dates) {
+        if (weight.containsKey(date)) {
+          retVal[date] = weight[date];
+        }
+      }
+    }
+    return retVal.isNotEmpty ? retVal : null;
+  }
+
+  static Future<String> getFromDate(String userID, DateTime date) async {
+    var weight = await DB.select("$table/$userID/weight", Calendar.toKey(date));
+    return (weight != null) ? weight as String : "";
+  }
+
+
+
+  // Insert weight data {date: weight} into table {table/userID/weight/date}
+  static Future<bool> insert(String userID, Map<String, String> map) async {
+    for (MapEntry e in map.entries) {
+      var success = await DB.insert({e.key: e.value}, "$table/$userID", "weight");
+      if (success == false) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Update weight data {date: weight} from table {table/userID/weight/date}
+  static Future<bool> update(String userID, Map map) async {
+    for (MapEntry e in map.entries) {
+      var success = await DB.update({e.key: e.value}, "$table/$userID", "weight");
+      if (success == false) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Delete weight data {table/userID/weight/date}
+  static Future<bool> delete(String userID, String date) async {
+    return DB.delete("$table/$userID/weight", date);
+  }
+}
 class WorkoutDB {
   static const table = "workouts";
 
