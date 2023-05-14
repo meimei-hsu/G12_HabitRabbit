@@ -4,20 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class ExercisePage extends StatefulWidget {
+  final Map arguments;
+
+  const ExercisePage({super.key, required this.arguments});
+
   @override
   _ExercisePageState createState() => _ExercisePageState();
 }
 
 class _ExercisePageState extends State<ExercisePage> {
   String sport = "運動項目";
-  int seconds = 5;
+  late int totalTime;
+  int countDown = 5;
   bool ifStart = false;
   var period = const Duration(seconds: 1);
 
-  late VideoPlayerController _controller;
-  late Future<void> _initializeVideoPlayerFuture;
-
-  //時間格式化，根據總秒數轉換為對應的 hh:mm:ss 格式
+  /* 計時器時間設定 */
+  // 時間格式化，根據總秒數轉換為對應的 hh:mm:ss 格式
   String constructTime(int seconds) {
     //int hour = seconds ~/ 3600;
     int minute = seconds % 3600 ~/ 60;
@@ -26,58 +29,150 @@ class _ExercisePageState extends State<ExercisePage> {
     //return formatTime(hour) + ":" + formatTime(minute) + ":" + formatTime(second);
   }
 
-  //時間格式化，將 0~9 的時間轉換為 00~09
+  // 時間格式化，將 0~9 的時間轉換為 00~09
   String formatTime(int timeNum) {
     return timeNum < 10 ? "0" + timeNum.toString() : timeNum.toString();
   }
 
-  @override
-  void initState(){
-    // Create and store the VideoPlayerController.
-    _controller = VideoPlayerController.asset('assets/videos/videoTest.mp4');
-    // Initialize the controller and store the Future for later use.
-    _initializeVideoPlayerFuture = _controller.initialize();
-    // Use the controller to loop the video.
-    _controller.setLooping(true);
+  /* 計時器時間設定 */
 
-    super.initState();
-    startTimer();
+  /* 播放影片 delete??? */
+  late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
+
+  /* 播放影片 delete??? */
+
+  /*  GIF 輪播 */
+  late PageController _pageController; //輪播圖 PageView 使用的控制器
+  int currentIndex = 0; //當前顯示的索引
+
+  Widget buildVideoBanner(List videoList) {
+    return Container(
+      height: 200,
+      width: double.infinity,
+      child: Stack(
+        children: [
+          //輪播圖片
+          buildVideoBannerWidget(videoList),
+        ],
+      ),
+    );
   }
+
+  buildVideoBannerWidget(List videoList) {
+    // 懶載入方式構建
+    return PageView.builder(
+      // 構建每一個子Item的佈局
+      itemBuilder: (BuildContext context, int index) {
+        return buildPageViewItemWidget(index, videoList);
+      },
+      controller: _pageController, // 控制器
+      itemCount: videoList.length * 10000, // 輪播個數 無限輪播 ??
+    );
+  }
+
+  // 輪播顯示圖片
+  buildPageViewItemWidget(int index, List videoList) {
+    //return VideoPlayerController.asset('assets/videos/videoTest.mp4');
+    return Image.asset(
+      videoList[index % videoList.length],
+      fit: BoxFit.fill,
+    );
+  }
+
+  // Get Gif List to play.
+  List<String> _getVideoList(List exerciseItem) {
+    List exerciseItemList = exerciseItem;
+    List<String> videoList = [
+      for (int i = 0; i < exerciseItemList.length; i++)
+        "assets/videos/${exerciseItem[i]}.gif"
+    ];
+    return videoList;
+  }
+
+  // Get exerciseItem name List.
+  List _getExerciseItemNameList() {
+    List exerciseItemList = widget.arguments['exerciseItem'];
+    /*List<String> nameList = [
+      for (int i = 0; i < exerciseItemList.length; i++)
+        "${exerciseItem[i]}"
+    ];*/
+    return exerciseItemList;
+  }
+
+  /*  GIF 輪播 */
 
   void _showFeedbackDialog() async {
     await showDialog<double>(
       context: context,
-      builder: (context) => FeedbackDialog(),
+      builder: (context) => FeedbackDialog(arguments: {'user': widget.arguments['user']}),
     );
   }
 
-  void startTimer(){
-    if (ifStart){
+  void startTimer() {
+    if (ifStart) {
       ifStart = false;
-    }else{
+    } else {
       ifStart = true;
     }
 
     Timer.periodic(period, (timer) {
-      if (seconds < 1) {
+      if (totalTime < 1) {
         _showFeedbackDialog();
         timer.cancel();
         dispose();
         //ifStart = true;
         //Navigator.pushNamed(context, '/exercise');
-      } else if (ifStart == false){
+      } else if (ifStart == false) {
+        // TODO: .gif 暫停播放(偏難)
         timer.cancel();
-        _controller.pause();
-      } else{
-        seconds--;
-        _controller.play();
+        //_controller.pause();
+      } else {
+        // Appbar timer
+        totalTime--;
+        //_controller.play();
+
+        // Video timer
+        countDown--;
+        if (countDown < 1 && totalTime >= 1) {
+          countDown = 5;
+          currentIndex++;
+          _pageController.animateToPage(currentIndex,
+              duration: Duration(milliseconds: 300), curve: Curves.ease);
+          sport = _getExerciseItemNameList()[currentIndex];
+        }
       }
       setState(() {});
+      print("totalTime: $totalTime");
     });
   }
 
-  void dispose() {  //銷毀 controller
-    _controller.dispose();
+  @override
+  void initState() {
+    // Create and store the VideoPlayerController.
+    //_controller = VideoPlayerController.asset('assets/videos/videoTest.mp4');
+    // Initialize the controller and store the Future for later use.
+    //_initializeVideoPlayerFuture = _controller.initialize();
+    // Use the controller to loop the video.
+    //_controller.setLooping(true);
+
+    super.initState();
+    totalTime = widget.arguments['exerciseTime']; // initial totalTime
+    // initial first exercise's name
+    sport = _getExerciseItemNameList()[currentIndex];
+    _pageController = PageController(initialPage: currentIndex);
+
+    ///當前頁面繪製完第一幀後回撥
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      startTimer();
+    });
+  }
+
+  @override
+  void dispose() {
+    //銷毀 controller
+    _pageController.dispose();
+    //_controller.dispose();
     super.dispose();
   }
 
@@ -93,7 +188,7 @@ class _ExercisePageState extends State<ExercisePage> {
             width: MediaQuery.of(context).size.width,
             color: Color(0xfffaf0ca),
             child: Text(
-              constructTime(seconds),
+              constructTime(totalTime),
               //'$seconds',
               textAlign: TextAlign.left,
               style: TextStyle(
@@ -101,26 +196,27 @@ class _ExercisePageState extends State<ExercisePage> {
                   fontSize: 32,
                   letterSpacing: 0,
                   fontWeight: FontWeight.bold,
-                  height: 1
-              ),
+                  height: 1),
             ),
           ),
           SizedBox(height: 10),
           Container(
-            decoration: BoxDecoration(color: Color(0x193598f5),borderRadius: const BorderRadius.all(Radius.circular(13))),
+            decoration: BoxDecoration(
+                color: Color(0x193598f5),
+                borderRadius: const BorderRadius.all(Radius.circular(13))),
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(left: 10),
             height: 60,
             width: MediaQuery.of(context).size.width - 20,
-            child: Text("$sport",
+            child: Text(
+              "$sport",
               textAlign: TextAlign.left,
               style: TextStyle(
                   color: Color(0xff0d3b66),
                   fontSize: 32,
                   letterSpacing: 0,
                   fontWeight: FontWeight.bold,
-                  height: 1
-              ),
+                  height: 1),
             ),
           ),
           SizedBox(height: 10),
@@ -131,7 +227,9 @@ class _ExercisePageState extends State<ExercisePage> {
           ),*/
           Container(
             width: MediaQuery.of(context).size.width - 20,
-            child: FutureBuilder(
+            child: buildVideoBanner(
+                _getVideoList(widget.arguments['exerciseItem'])),
+            /*child: FutureBuilder(
               future: _initializeVideoPlayerFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
@@ -148,7 +246,7 @@ class _ExercisePageState extends State<ExercisePage> {
                   return Center(child: CircularProgressIndicator());
                 }
               },
-            ),
+            ),*/
           ),
           Container(
               padding: EdgeInsets.only(right: 10),
@@ -159,16 +257,18 @@ class _ExercisePageState extends State<ExercisePage> {
                   Container(
                     child: ElevatedButton.icon(
                       onPressed: () => startTimer(),
-                      icon: Icon(ifStart?Icons.pause:Icons.play_arrow_rounded, color: Color(0xff0d3b66),),
+                      icon: Icon(
+                        ifStart ? Icons.pause : Icons.play_arrow_rounded,
+                        color: Color(0xff0d3b66),
+                      ),
                       label: Text(
-                        ifStart?'暫停':'繼續',
+                        ifStart ? '暫停' : '繼續',
                         style: TextStyle(
-                          color: Color(0xff0d3b66),
-                          fontSize: 24,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.bold,
-                          height: 1
-                        ),
+                            color: Color(0xff0d3b66),
+                            fontSize: 24,
+                            letterSpacing: 0,
+                            fontWeight: FontWeight.bold,
+                            height: 1),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xffffa493),
@@ -176,8 +276,7 @@ class _ExercisePageState extends State<ExercisePage> {
                     ),
                   ),
                 ],
-              )
-          ),
+              )),
         ],
       ),
     );
@@ -185,7 +284,9 @@ class _ExercisePageState extends State<ExercisePage> {
 }
 
 class FeedbackDialog extends StatefulWidget {
+  final Map arguments;
 
+  const FeedbackDialog({super.key, required this.arguments});
   @override
   _FeedbackDialogState createState() => new _FeedbackDialogState();
 }
@@ -200,114 +301,107 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
   Widget build(BuildContext context) {
     List<double> FeedbackData = [];
     return AlertDialog(
-      title: Text(
-          '每週運動回饋',
+      title: Text('每週運動回饋',
           style: TextStyle(
             backgroundColor: Colors.yellow,
             color: Color(0xff0d3b66),
-          )
-      ),
-      content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children:[
-            Container(
-              padding: EdgeInsets.only(top:1),
-              child: Text(
-                '運動項目是否滿意?',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  //backgroundColor: Colors.yellow,
-                    color: Color(0xff0d3b66),
-                    fontSize: 25,
-                    letterSpacing:
-                    0 /*percentages not used in flutter. defaulting to zero*/,
-                    fontWeight: FontWeight.bold,
-                    height: 1),
-              ),
-            ),
-            Container(
-                child: Slider(
-                  value: _currentValue1,
-                  min: 1,
-                  max: 5,
-                  divisions: 4,
-                  label: _currentValue1.round().toString(),
-                  onChanged: (value) {
-                    setState(() {
-                      _currentValue1 = value;
-                      _selectedValue1 = value;
-                      FeedbackData.add(_selectedValue1);
-                    });
-                  },
-                )
-            ),
-            Text(
-              '1                                    5',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                //backgroundColor: Colors.yellow,
-                  color: Color(0xff0d3b66),
-                  fontSize: 20,
-                  letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
-                  fontWeight: FontWeight.bold,
-                  height: 1),
-            ),
-            Container(
-              padding: EdgeInsets.only(top:25),
-              child: Text(
-                '運動過程是否滿意?',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  //backgroundColor: Colors.yellow,
-                    color: Color(0xff0d3b66),
-                    fontSize: 25,
-                    letterSpacing:
-                    0 /*percentages not used in flutter. defaulting to zero*/,
-                    fontWeight: FontWeight.bold,
-                    height: 1),
-              ),
-            ),
-            Container(
-
-                child: Slider(
-                  value: _currentValue2,
-                  min: 1,
-                  max: 5,
-                  divisions: 4,
-                  label: _currentValue2.round().toString(),
-                  onChanged: (value) {
-                    setState(() {
-                      _currentValue2 = value;
-                      _selectedValue2 = value;
-                      FeedbackData.add(_selectedValue2);
-                    });
-                  },
-                )
-            ),
-            Text(
-              '1                                    5',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                //backgroundColor: Colors.yellow,
-                  color: Color(0xff0d3b66),
-                  fontSize: 20,
-                  letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
-                  fontWeight: FontWeight.bold,
-                  height: 1),
-            ),
-          ]
-      ),
-
+          )),
+      content: Column(mainAxisSize: MainAxisSize.min, children: [
+        Container(
+          padding: EdgeInsets.only(top: 1),
+          child: Text(
+            '運動項目是否滿意?',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              //backgroundColor: Colors.yellow,
+                color: Color(0xff0d3b66),
+                fontSize: 25,
+                letterSpacing:
+                0 /*percentages not used in flutter. defaulting to zero*/,
+                fontWeight: FontWeight.bold,
+                height: 1),
+          ),
+        ),
+        Container(
+            child: Slider(
+              value: _currentValue1,
+              min: 1,
+              max: 5,
+              divisions: 4,
+              label: _currentValue1.round().toString(),
+              onChanged: (value) {
+                setState(() {
+                  _currentValue1 = value;
+                  _selectedValue1 = value;
+                  FeedbackData.add(_selectedValue1);
+                });
+              },
+            )),
+        Text(
+          '1                                    5',
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            //backgroundColor: Colors.yellow,
+              color: Color(0xff0d3b66),
+              fontSize: 20,
+              letterSpacing:
+              0 /*percentages not used in flutter. defaulting to zero*/,
+              fontWeight: FontWeight.bold,
+              height: 1),
+        ),
+        Container(
+          padding: EdgeInsets.only(top: 25),
+          child: Text(
+            '運動過程是否滿意?',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              //backgroundColor: Colors.yellow,
+                color: Color(0xff0d3b66),
+                fontSize: 25,
+                letterSpacing:
+                0 /*percentages not used in flutter. defaulting to zero*/,
+                fontWeight: FontWeight.bold,
+                height: 1),
+          ),
+        ),
+        Container(
+            child: Slider(
+              value: _currentValue2,
+              min: 1,
+              max: 5,
+              divisions: 4,
+              label: _currentValue2.round().toString(),
+              onChanged: (value) {
+                setState(() {
+                  _currentValue2 = value;
+                  _selectedValue2 = value;
+                  FeedbackData.add(_selectedValue2);
+                });
+              },
+            )),
+        Text(
+          '1                                    5',
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            //backgroundColor: Colors.yellow,
+              color: Color(0xff0d3b66),
+              fontSize: 20,
+              letterSpacing:
+              0 /*percentages not used in flutter. defaulting to zero*/,
+              fontWeight: FontWeight.bold,
+              height: 1),
+        ),
+      ]),
       actions: [
         ElevatedButton(
             child: Text("Submit"),
-            onPressed: () { //存input?
+            onPressed: () {
+              //存input?
               print(FeedbackData);
-              Navigator.pushNamedAndRemoveUntil(context, '/',  (Route<dynamic> route) => false);
-            }
-        ),
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/', (Route<dynamic> route) => false,
+                  arguments: {'user': widget.arguments['user']});
+            }),
       ],
     );
   }
