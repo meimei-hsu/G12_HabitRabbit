@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:g12/services/Database.dart';
 
 class ExercisePage extends StatefulWidget {
   @override
@@ -306,6 +307,11 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
             onPressed: () { //存input?
               print(FeedbackData);
               Navigator.pushNamedAndRemoveUntil(context, '/',  (Route<dynamic> route) => false);
+              String userID="j6QYBrgbLIQH7h8iRyslntFFKV63";
+              //UserDB.
+              if(FeedbackData[0]==1) {
+                UserDB.update(userID, {"strengthAbility": 69});
+              }
             }
         ),
       ],
