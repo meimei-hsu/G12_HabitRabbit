@@ -16,6 +16,7 @@ class RegisterPage extends StatefulWidget {
   _RegisterPage createState() => _RegisterPage(this.isLoginPage);
 }
 
+// TODO: 將各頁面改為 class 並加入路徑(參考小戴做的頁面)
 class _RegisterPage extends State<RegisterPage> {
   late bool isLoginPage;
 

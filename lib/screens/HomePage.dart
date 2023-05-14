@@ -7,6 +7,7 @@ import 'package:g12/services/PlanAlgo.dart';
 
 class Homepage extends StatefulWidget {
   final Map arguments;
+
   //final User user;
   //const Homepage({super.key, required this.user});
   const Homepage({super.key, required this.arguments});
@@ -17,10 +18,13 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final GlobalKey<ScaffoldState> _myKey = GlobalKey();
+
   // Calendar 相關設定
   DateTime _focusedDay = Calendar.today();
   DateTime? _selectedDay = Calendar.today();
+
   get firstDay => Calendar.firstDay();
+
   get lastDay => firstDay.add(const Duration(days: 13));
 
   List<Widget> _getSportList(List content, List title) {
@@ -41,7 +45,8 @@ class _HomepageState extends State<Homepage> {
             style: TextStyle(
                 color: Color(0xff0d3b66),
                 fontSize: 22,
-                letterSpacing: 0, //percentages not used in flutter
+                letterSpacing: 0,
+                //percentages not used in flutter
                 fontWeight: FontWeight.bold,
                 height: 1),
           ),
@@ -64,7 +69,8 @@ class _HomepageState extends State<Homepage> {
           style: TextStyle(
               color: Color(0xff0d3b66),
               fontSize: 32,
-              letterSpacing: 0, //percentages not used in flutter
+              letterSpacing: 0,
+              //percentages not used in flutter
               fontWeight: FontWeight.bold,
               height: 1),
         ),
@@ -197,7 +203,8 @@ class _HomepageState extends State<Homepage> {
                         color: const Color(0xff0d3b66),
                         tooltip: "重新計畫",
                         onPressed: () {
-                          PlanAlgo.regenerate(widget.arguments['user'].uid, _selectedDay!);
+                          PlanAlgo.regenerate(
+                              widget.arguments['user'].uid, _selectedDay!);
                         },
                       ),
                     ),
@@ -207,7 +214,8 @@ class _HomepageState extends State<Homepage> {
           const SizedBox(height: 10),
           FutureBuilder<num?>(
               // Exercise plan
-              future: PlanAlgo.calcProgress(widget.arguments['user'].uid, _selectedDay!),
+              future: PlanAlgo.calcProgress(
+                  widget.arguments['user'].uid, _selectedDay!),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -227,7 +235,8 @@ class _HomepageState extends State<Homepage> {
                           style: TextStyle(
                               color: Color(0xffffa493),
                               fontSize: 18,
-                              letterSpacing: 0, //percentages not used in flutter
+                              letterSpacing: 0,
+                              //percentages not used in flutter
                               fontWeight: FontWeight.bold,
                               height: 1),
                         );
@@ -238,7 +247,8 @@ class _HomepageState extends State<Homepage> {
                           style: TextStyle(
                               color: Color(0xff5dbb63),
                               fontSize: 18,
-                              letterSpacing: 0, //percentages not used in flutter
+                              letterSpacing: 0,
+                              //percentages not used in flutter
                               fontWeight: FontWeight.bold,
                               height: 1),
                         );
@@ -251,7 +261,8 @@ class _HomepageState extends State<Homepage> {
           const SizedBox(height: 10),
           FutureBuilder<String?>(
               // Exercise plan
-              future: PlanDB.getFromDate(widget.arguments['user'].uid, _selectedDay!),
+              future: PlanDB.getFromDate(
+                  widget.arguments['user'].uid, _selectedDay!),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -304,7 +315,13 @@ class _HomepageState extends State<Homepage> {
                 color: const Color(0xff0d3b66),
                 tooltip: "開始運動",
                 onPressed: () {
-                  Navigator.pushNamed(context, '/countdown');
+                  //Navigator.pushNamed(context, '/countdown');
+                  // TODO: 傳運動項目(名稱、對應影片)和運動總時長到 ExercisePage
+                  Navigator.pushNamed(context, '/countdown', arguments: {
+                    'user': widget.arguments['user'],
+                    'exerciseTime': 15,
+                    'exerciseItem': ['v1', 'v2', 'v3']
+                  });
                 },
               ),
             ),
@@ -326,7 +343,7 @@ class _HomepageState extends State<Homepage> {
                       color: const Color(0xff0d3b66),
                       tooltip: "統計資料",
                       onPressed: () {
-                        Navigator.pushNamed(context, '/statistic');
+                        Navigator.pushNamed(context, '/statistic', arguments: {'user': widget.arguments['user']});
                       },
                     ),
                   ),
@@ -417,7 +434,8 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 onTap: () {
-                  Navigator.popAndPushNamed(context, '/constract');
+                  // TODO: 判斷是否有立過合約，有 -> /constract；沒有 -> /constract/initial
+                  Navigator.popAndPushNamed(context, '/constract/initial', arguments: {'user': widget.arguments['user']});
                   //點擊後做什麼事
                   //切換頁面
                   //收合drawer

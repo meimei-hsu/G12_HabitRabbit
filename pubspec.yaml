@@ -67,6 +67,9 @@ flutter:
 
   assets:
     - assets/videos/videoTest.mp4
+    - assets/videos/v1.gif
+    - assets/videos/v2.gif
+    - assets/videos/v3.gif
     - assets/images/testPic.gif
     - assets/images/Logo.jpg
     - assets/images/lazy.png

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class StatisticPage extends StatefulWidget {
+  final Map arguments;
+
+  const StatisticPage({super.key, required this.arguments});
   @override
   _StatisticPageState createState() => _StatisticPageState();
 }
@@ -48,7 +51,7 @@ class _StatisticPageState extends State<StatisticPage> {
                 color: Color(0xff0d3b66),
                 tooltip: "返回",
                 onPressed: () {
-                  Navigator.pushNamed(context, '/');
+                  Navigator.pushNamed(context, '/', arguments: {'user': widget.arguments['user']});
                 },
               ),
             ),

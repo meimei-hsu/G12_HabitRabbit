@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:g12/screens/HomePage.dart';
 
-class ContractPage extends StatefulWidget {
+class FirstContractPage extends StatefulWidget {
+  final Map arguments;
+
+  const FirstContractPage({super.key, required this.arguments});
+
   @override
-  _ContractPage createState() => new _ContractPage();
+  _FirstContractPage createState() => new _FirstContractPage();
 }
 
-class _ContractPage extends State<ContractPage> {
+class _FirstContractPage extends State<FirstContractPage> {
   late Widget image;
   String plan = "5週4旗";
   String dropdownValue = '100';
@@ -14,7 +19,8 @@ class _ContractPage extends State<ContractPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('承諾合約',
+        title: Text(
+          '承諾合約',
           style: TextStyle(
             color: Color(0xFF0D3B66),
             fontWeight: FontWeight.bold,
@@ -29,7 +35,8 @@ class _ContractPage extends State<ContractPage> {
             Container(
               height: 1000,
               width: 600,
-              child: Image.asset('assets/images/scroll.png',
+              child: Image.asset(
+                'assets/images/scroll.png',
                 fit: BoxFit.contain,
               ),
             ),
@@ -49,12 +56,12 @@ class _ContractPage extends State<ContractPage> {
               left: 65,
               child: Text(
                 '使用者立定契約時，已瞭解並同意本'
-                    '\n契約內容。依照自身狀況選擇契約方'
-                    '\n案及金額後，將會遵守自己設定的運'
-                    '\n動模式來養成運動習慣，一旦開始契'
-                    '\n約內容，將不能取消或修改。目標達'
-                    '\n成時投入金額將全數退回；目標失敗'
-                    '\n將由管理員將費用全數捐出。',
+                '\n契約內容。依照自身狀況選擇契約方'
+                '\n案及金額後，將會遵守自己設定的運'
+                '\n動模式來養成運動習慣，一旦開始契'
+                '\n約內容，將不能取消或修改。目標達'
+                '\n成時投入金額將全數退回；目標失敗'
+                '\n將由管理員將費用全數捐出。',
                 style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 18,
@@ -88,7 +95,8 @@ class _ContractPage extends State<ContractPage> {
                     },
                     activeColor: Colors.grey[700],
                   ),
-                  Text("5週4旗",
+                  Text(
+                    "5週4旗",
                     style: TextStyle(
                       color: Colors.grey[700],
                       fontSize: 15,
@@ -104,7 +112,8 @@ class _ContractPage extends State<ContractPage> {
                     },
                     activeColor: Colors.grey[700],
                   ),
-                  Text("12週8旗",
+                  Text(
+                    "12週8旗",
                     style: TextStyle(
                       color: Colors.grey[700],
                       fontSize: 15,
@@ -120,7 +129,8 @@ class _ContractPage extends State<ContractPage> {
                     },
                     activeColor: Colors.grey[700],
                   ),
-                  Text("18週12旗",
+                  Text(
+                    "18週12旗",
                     style: TextStyle(
                       color: Colors.grey[700],
                       fontSize: 15,
@@ -141,7 +151,8 @@ class _ContractPage extends State<ContractPage> {
                       fontSize: 18,
                     ),
                   ),
-                  SizedBox(height: 8), // add some space between the text and the dropdown button
+                  SizedBox(height: 8),
+                  // add some space between the text and the dropdown button
                   DropdownButton<String>(
                     value: dropdownValue,
                     onChanged: (newValue) {
@@ -149,8 +160,21 @@ class _ContractPage extends State<ContractPage> {
                         dropdownValue = newValue!;
                       });
                     },
-                    items: <String>['100', '125', '150', '175', '200', '215', '250', '275', '300', '350', '400', '450', '500']
-                        .map<DropdownMenuItem<String>>((String value) {
+                    items: <String>[
+                      '100',
+                      '125',
+                      '150',
+                      '175',
+                      '200',
+                      '215',
+                      '250',
+                      '275',
+                      '300',
+                      '350',
+                      '400',
+                      '450',
+                      '500'
+                    ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
@@ -179,20 +203,17 @@ class _ContractPage extends State<ContractPage> {
                         title: Text("您確定要執行此動作嗎？",
                             style: TextStyle(
                               color: Color(0xFF0D3B66),
-                            )
-                        ),
+                            )),
                         content: Text("確認後將執行契約且不能反悔",
                             style: TextStyle(
                               color: Color(0xFF0D3B66),
-                            )
-                        ),
+                            )),
                         actions: <Widget>[
                           ElevatedButton(
                             child: Text("取消",
                                 style: TextStyle(
                                   color: Color(0xFF0D3B66),
-                                )
-                            ),
+                                )),
                             style: ElevatedButton.styleFrom(
                               primary: Color(0xFFFFA493),
                             ),
@@ -204,8 +225,7 @@ class _ContractPage extends State<ContractPage> {
                             child: Text("確定",
                                 style: TextStyle(
                                   color: Color(0xFF0D3B66),
-                                )
-                            ),
+                                )),
                             style: ElevatedButton.styleFrom(
                               primary: Color(0xFFFFA493),
                             ),
@@ -222,18 +242,14 @@ class _ContractPage extends State<ContractPage> {
                                 builder: (BuildContext context) {
                                   Future.delayed(Duration(seconds: 3), () {
                                     Navigator.of(context).pop();
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>  SecondContractPage(contractData: contractData)
-                                        ));
+                                    Navigator.pushNamed(context, '/constract', arguments: {'contractData':
+                                    contractData,'user': widget.arguments['user']});
                                   });
                                   return AlertDialog(
                                     title: Text("已確定契約並開始執行！",
                                         style: TextStyle(
                                           color: Color(0xFF0D3B66),
-                                        )
-                                    ),
+                                        )),
                                   );
                                 },
                               );
@@ -255,21 +271,21 @@ class _ContractPage extends State<ContractPage> {
 }
 
 class SecondContractPage extends StatefulWidget {
-  final Map<String, String> contractData;
-  SecondContractPage({required this.contractData});
+  final Map arguments;
+  const SecondContractPage({super.key, required this.arguments});
+
 
   @override
   _SecondContractPageState createState() => _SecondContractPageState();
 }
 
 class _SecondContractPageState extends State<SecondContractPage> {
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('承諾合約',
+        title: Text(
+          '承諾合約',
           style: TextStyle(
             color: Color(0xFF0D3B66),
             fontWeight: FontWeight.bold,
@@ -285,7 +301,8 @@ class _SecondContractPageState extends State<SecondContractPage> {
             Container(
               height: 1000,
               width: 600,
-              child: Image.asset('assets/images/scroll.png',
+              child: Image.asset(
+                'assets/images/scroll.png',
                 fit: BoxFit.contain,
               ),
             ),
@@ -305,9 +322,9 @@ class _SecondContractPageState extends State<SecondContractPage> {
               left: 65,
               child: Text(
                 '使用者立定契約將遵守自己設定的運'
-                    '\n動模式來養成運動習慣，目標達成時'
-                    '\n投入金額將全數退回；目標失敗將由'
-                    '\n管理員將費用全數捐出。',
+                '\n動模式來養成運動習慣，目標達成時'
+                '\n投入金額將全數退回；目標失敗將由'
+                '\n管理員將費用全數捐出。',
                 style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 18,
@@ -318,7 +335,7 @@ class _SecondContractPageState extends State<SecondContractPage> {
               top: 400,
               left: 65,
               child: Text(
-                '您選擇的方案：${widget.contractData['plan']}',
+                '您選擇的方案：${widget.arguments['contractData']['plan']}',
                 style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 18,
@@ -329,7 +346,7 @@ class _SecondContractPageState extends State<SecondContractPage> {
               top: 430,
               left: 65,
               child: Text(
-                '您所投入的金額(元)：${widget.contractData['投入金額']}',
+                '您所投入的金額(元)：${widget.arguments['contractData']['投入金額']}',
                 style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 18,
@@ -370,9 +387,7 @@ class _SecondContractPageState extends State<SecondContractPage> {
                   primary: Color(0xFFFFA493),
                 ),
                 onPressed: () {
-                  //這裡應該要回到 HomePage
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ContractPage()));
+                  Navigator.pushNamed(context, '/', arguments: {'user': widget.arguments['user']});
                 },
               ),
             ),

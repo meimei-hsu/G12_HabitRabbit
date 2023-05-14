@@ -13,12 +13,16 @@ import 'package:g12/screens/UserProfilePage.dart';
 final routes = {
   '/': (context, {arguments}) => Homepage(arguments: arguments),
   '/register': (context) => RegisterPage(isLoginPage: true),
-  '/statistic': (context) => StatisticPage(),
-  '/constract': (context) => ContractPage(),
-  '/countdown': (context) => CountdownPage(),
-  '/exercise': (context) => ExercisePage(),
+  '/statistic': (context, {arguments}) => StatisticPage(arguments: arguments),
+  '/countdown': (context, {arguments}) => CountdownPage(arguments: arguments),
+  '/exercise': (context, {arguments}) => ExercisePage(arguments: arguments),
   '/customized': (context, {arguments}) =>
       UserProfilePage(arguments: arguments),
+  /* ContractPage */
+  '/constract/initial': (context, {arguments}) =>
+      FirstContractPage(arguments: arguments),
+  '/constract': (context, {arguments}) =>
+      SecondContractPage(arguments: arguments),
   /* QuestionnairePage */
   '/questionnaire/1': (context, {arguments}) => FirstPage(arguments: arguments),
   '/questionnaire/2': (context, {arguments}) =>
