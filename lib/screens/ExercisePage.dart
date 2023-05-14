@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+
+import 'package:g12/services/Database.dart';
 
 class ExercisePage extends StatefulWidget {
   final Map arguments;
@@ -37,8 +38,8 @@ class _ExercisePageState extends State<ExercisePage> {
   /* 計時器時間設定 */
 
   /* 播放影片 delete??? */
-  late VideoPlayerController _controller;
-  late Future<void> _initializeVideoPlayerFuture;
+  //late VideoPlayerController _controller;
+  //late Future<void> _initializeVideoPlayerFuture;
 
   /* 播放影片 delete??? */
 
@@ -105,7 +106,8 @@ class _ExercisePageState extends State<ExercisePage> {
   void _showFeedbackDialog() async {
     await showDialog<double>(
       context: context,
-      builder: (context) => FeedbackDialog(arguments: {'user': widget.arguments['user']}),
+      builder: (context) =>
+          FeedbackDialog(arguments: {'user': widget.arguments['user']}),
     );
   }
 
@@ -287,6 +289,7 @@ class FeedbackDialog extends StatefulWidget {
   final Map arguments;
 
   const FeedbackDialog({super.key, required this.arguments});
+
   @override
   _FeedbackDialogState createState() => new _FeedbackDialogState();
 }
@@ -313,39 +316,37 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
             '運動項目是否滿意?',
             textAlign: TextAlign.left,
             style: TextStyle(
-              //backgroundColor: Colors.yellow,
+                //backgroundColor: Colors.yellow,
                 color: Color(0xff0d3b66),
                 fontSize: 25,
-                letterSpacing:
-                0 /*percentages not used in flutter. defaulting to zero*/,
+                letterSpacing: 0,
                 fontWeight: FontWeight.bold,
                 height: 1),
           ),
         ),
         Container(
             child: Slider(
-              value: _currentValue1,
-              min: 1,
-              max: 5,
-              divisions: 4,
-              label: _currentValue1.round().toString(),
-              onChanged: (value) {
-                setState(() {
-                  _currentValue1 = value;
-                  _selectedValue1 = value;
-                  FeedbackData.add(_selectedValue1);
-                });
-              },
-            )),
+          value: _currentValue1,
+          min: 1,
+          max: 5,
+          divisions: 4,
+          label: _currentValue1.round().toString(),
+          onChanged: (value) {
+            setState(() {
+              _currentValue1 = value;
+              _selectedValue1 = value;
+              FeedbackData.add(_selectedValue1);
+            });
+          },
+        )),
         Text(
           '1                                    5',
           textAlign: TextAlign.left,
           style: TextStyle(
-            //backgroundColor: Colors.yellow,
+              //backgroundColor: Colors.yellow,
               color: Color(0xff0d3b66),
               fontSize: 20,
-              letterSpacing:
-              0 /*percentages not used in flutter. defaulting to zero*/,
+              letterSpacing: 0,
               fontWeight: FontWeight.bold,
               height: 1),
         ),
@@ -355,39 +356,38 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
             '運動過程是否滿意?',
             textAlign: TextAlign.left,
             style: TextStyle(
-              //backgroundColor: Colors.yellow,
+                //backgroundColor: Colors.yellow,
                 color: Color(0xff0d3b66),
                 fontSize: 25,
-                letterSpacing:
-                0 /*percentages not used in flutter. defaulting to zero*/,
+                letterSpacing: 0,
                 fontWeight: FontWeight.bold,
                 height: 1),
           ),
         ),
         Container(
             child: Slider(
-              value: _currentValue2,
-              min: 1,
-              max: 5,
-              divisions: 4,
-              label: _currentValue2.round().toString(),
-              onChanged: (value) {
-                setState(() {
-                  _currentValue2 = value;
-                  _selectedValue2 = value;
-                  FeedbackData.add(_selectedValue2);
-                });
-              },
-            )),
+          value: _currentValue2,
+          min: 1,
+          max: 5,
+          divisions: 4,
+          label: _currentValue2.round().toString(),
+          onChanged: (value) {
+            setState(() {
+              _currentValue2 = value;
+              _selectedValue2 = value;
+              FeedbackData.add(_selectedValue2);
+            });
+          },
+        )),
         Text(
           '1                                    5',
           textAlign: TextAlign.left,
           style: TextStyle(
-            //backgroundColor: Colors.yellow,
+              //backgroundColor: Colors.yellow,
               color: Color(0xff0d3b66),
               fontSize: 20,
               letterSpacing:
-              0 /*percentages not used in flutter. defaulting to zero*/,
+                  0 /*percentages not used in flutter. defaulting to zero*/,
               fontWeight: FontWeight.bold,
               height: 1),
         ),
@@ -397,10 +397,15 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
             child: Text("Submit"),
             onPressed: () {
               //存input?
-              print(FeedbackData);
+              print("FeedbackData: $FeedbackData");
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false,
                   arguments: {'user': widget.arguments['user']});
+              String userID = "j6QYBrgbLIQH7h8iRyslntFFKV63";
+              //UserDB.
+              if (FeedbackData[0] == 1) {
+                UserDB.update(userID, {"strengthAbility": 69});
+              }
             }),
       ],
     );
