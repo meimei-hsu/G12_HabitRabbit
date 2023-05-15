@@ -350,6 +350,7 @@ class PlanData {
     }
   }
 
+
   // Getters
   get workoutIDs => _workoutIDs;
   get likings => _likings;

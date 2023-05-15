@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:g12/services/Database.dart';
+import 'package:g12/services/PlanAlgo.dart';
 
 class ExercisePage extends StatefulWidget {
   final Map arguments;
@@ -430,10 +431,17 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
                   context, '/', (Route<dynamic> route) => false,
                   arguments: {'user': widget.arguments['user']});
               String userID = "j6QYBrgbLIQH7h8iRyslntFFKV63";
-              //UserDB.
-              if (FeedbackData[0] == 1) {
+              UserDB.changeLiking(userID, 1, FeedbackData[0]);
+              UserDB.changeAbility(userID, 1, FeedbackData[1]);
+
+              //var profile = await UserDB.getPlanVariables(userID);
+             // Map<String, dynamic> _likings = {}, _abilities = {};
+             // _likings = profile[2];
+             // _abilities = profile[3];
+
+             /* if (FeedbackData[0] == 1) {
                 UserDB.update(userID, {"strengthAbility": 69});
-              }
+              }*/
             }),
       ],
     );

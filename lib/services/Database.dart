@@ -198,6 +198,110 @@ class UserDB {
     return user!["timeSpan"];
   }
 
+  static Future<num?> changeLiking(String id, int type, double feedBack) async {
+    final Map? user = await getUser(id);
+    //int liking=getPlanVariables(id)[2][type-1];
+    int liking=0;
+    if(type==1) {
+      liking=0;//初始值
+      if (feedBack == 1) {
+        update(id, {"strengthLiking": liking - 5});
+      }
+      else if (feedBack == 2) {
+        update(id, {"strengthLiking": liking - 2});
+      }
+      else if (feedBack == 4) {
+        update(id, {"strengthLiking": liking + 2});
+      }
+      else if (feedBack == 5) {
+        update(id, {"strengthLiking": liking + 5});
+      }
+    }
+    else if(type==2) {
+      liking=0;//初始值
+      if (feedBack == 1) {
+        update(id, {"cardioLiking": liking - 5});
+      }
+      else if (feedBack == 2) {
+        update(id, {"cardioLiking": liking - 2});
+      }
+      else if (feedBack == 4) {
+        update(id, {"cardioLiking": liking + 2});
+      }
+      else if (feedBack == 5) {
+        update(id, {"cardioLiking": liking + 5});
+      }
+    }
+    else if(type==3) {
+      liking=0;//初始值
+      if (feedBack == 1) {
+        update(id, {"yogaLiking": liking - 5});
+      }
+      else if (feedBack == 2) {
+        update(id, {"yogaLiking": liking - 2});
+      }
+      else if (feedBack == 4) {
+        update(id, {"yogaLiking": liking + 2});
+      }
+      else if (feedBack == 5) {
+        update(id, {"yogaLiking": liking + 5});
+      }
+    }
+    //return user!["timeSpan"];
+  }
+  static Future<num?> changeAbility(String id, int type, double feedBack) async {
+    final Map? user = await getUser(id);
+    //int liking=getPlanVariables(id)[2][type-1];
+    int ability=0;
+    if(type==1) {
+      ability=0;//初始值
+      if (feedBack == 1) {
+        update(id, {"strengthAbility": ability - 5});
+      }
+      else if (feedBack == 2) {
+        update(id, {"strengthAbility": ability - 2});
+      }
+      else if (feedBack == 4) {
+        update(id, {"strengthAbility": ability + 2});
+      }
+      else if (feedBack == 5) {
+        update(id, {"strengthAbility": ability + 5});
+      }
+    }
+    else if(type==2) {
+      ability=0;//初始值
+      if (feedBack == 1) {
+        update(id, {"cardioAbility": ability - 5});
+      }
+      else if (feedBack == 2) {
+        update(id, {"cardioAbility": ability - 2});
+      }
+      else if (feedBack == 4) {
+        update(id, {"cardioAbility": ability + 2});
+      }
+      else if (feedBack == 5) {
+        update(id, {"cardioAbility": ability + 5});
+      }
+    }
+    else if(type==3) {
+      ability=0;//初始值
+      if (feedBack == 1) {
+        update(id, {"yogaAbility": ability - 5});
+      }
+      else if (feedBack == 2) {
+        update(id, {"yogaAbility": ability - 2});
+      }
+      else if (feedBack == 4) {
+        update(id, {"yogaAbility": ability + 2});
+      }
+      else if (feedBack == 5) {
+        update(id, {"yogaAbility": ability + 5});
+      }
+    }
+    //return user!["timeSpan"];
+  }
+
+
   static Future<String?> getLastWorkoutDay(String id) async {
     final Map? user = await getUser(id);
     return Calendar.thisWeek()[user!["workoutDays"].lastIndexOf("1")];
