@@ -315,12 +315,27 @@ class _HomepageState extends State<Homepage> {
                 color: const Color(0xff0d3b66),
                 tooltip: "開始運動",
                 onPressed: () {
-                  //Navigator.pushNamed(context, '/countdown');
                   // TODO: 傳運動項目(名稱、對應影片)和運動總時長到 ExercisePage
                   Navigator.pushNamed(context, '/countdown', arguments: {
                     'user': widget.arguments['user'],
-                    'exerciseTime': 15,
-                    'exerciseItem': ['v1', 'v2', 'v3']
+                    'exerciseTime': 60, // (6暖身 + 5運動 + 4伸展) = 60
+                    'exerciseItem': [
+                      'v1',
+                      'v2',
+                      'v3',
+                      'v1',
+                      'v2',
+                      'v3',
+                      'v1',
+                      'v2',
+                      'v3',
+                      'v1',
+                      'v2',
+                      'v3',
+                      'v1',
+                      'v2',
+                      'v3',
+                    ]
                   });
                 },
               ),
@@ -343,7 +358,8 @@ class _HomepageState extends State<Homepage> {
                       color: const Color(0xff0d3b66),
                       tooltip: "統計資料",
                       onPressed: () {
-                        Navigator.pushNamed(context, '/statistic', arguments: {'user': widget.arguments['user']});
+                        Navigator.pushNamed(context, '/statistic',
+                            arguments: {'user': widget.arguments['user']});
                       },
                     ),
                   ),
@@ -435,7 +451,8 @@ class _HomepageState extends State<Homepage> {
                 ),
                 onTap: () {
                   // TODO: 判斷是否有立過合約，有 -> /constract；沒有 -> /constract/initial
-                  Navigator.popAndPushNamed(context, '/constract/initial', arguments: {'user': widget.arguments['user']});
+                  Navigator.popAndPushNamed(context, '/constract/initial',
+                      arguments: {'user': widget.arguments['user']});
                   //點擊後做什麼事
                   //切換頁面
                   //收合drawer

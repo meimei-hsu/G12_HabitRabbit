@@ -16,7 +16,7 @@ class ExercisePage extends StatefulWidget {
 class _ExercisePageState extends State<ExercisePage> {
   String sport = "運動項目";
   late int totalTime;
-  int countDown = 5;
+  int countDown = 3;
   bool ifStart = false;
   var period = const Duration(seconds: 1);
 
@@ -68,7 +68,7 @@ class _ExercisePageState extends State<ExercisePage> {
         return buildPageViewItemWidget(index, videoList);
       },
       controller: _pageController, // 控制器
-      itemCount: videoList.length * 10000, // 輪播個數 無限輪播 ??
+      itemCount: videoList.length, // 輪播個數 無限輪播 ??
     );
   }
 
@@ -88,6 +88,7 @@ class _ExercisePageState extends State<ExercisePage> {
       for (int i = 0; i < exerciseItemList.length; i++)
         "assets/videos/${exerciseItem[i]}.gif"
     ];
+    videoList.add("assets/images/testPic.gif");
     return videoList;
   }
 
@@ -137,15 +138,38 @@ class _ExercisePageState extends State<ExercisePage> {
         // Video timer
         countDown--;
         if (countDown < 1 && totalTime >= 1) {
-          countDown = 5;
-          currentIndex++;
-          _pageController.animateToPage(currentIndex,
-              duration: Duration(milliseconds: 300), curve: Curves.ease);
-          sport = _getExerciseItemNameList()[currentIndex];
+          List nameList = _getExerciseItemNameList();
+          // 暖身 & 伸展 : (運動 + 休息)
+          countDown =
+              (currentIndex < 5 || currentIndex >= nameList.length - 5) ? 3 : 6;
+
+          if (countDown == 6) {
+            currentIndex++;
+            _pageController.animateToPage(currentIndex,
+                duration: Duration(milliseconds: 300), curve: Curves.ease);
+            sport = "運動：${nameList[currentIndex]}";
+
+            // 運動 4 秒後休息 2 秒
+            Timer(Duration(seconds: 4), () {
+              _pageController.animateToPage(nameList.length + 1,
+                  duration: Duration(milliseconds: 5), curve: Curves.ease);
+              sport = "休息：${nameList[currentIndex]}";
+            });
+          } else {
+            currentIndex++;
+            _pageController.animateToPage(currentIndex,
+                duration: Duration(milliseconds: 300), curve: Curves.ease);
+            sport = (currentIndex <= 5) ? "暖身：" : "伸展：";
+            sport += nameList[currentIndex];
+          }
+          print("currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
         }
       }
       setState(() {});
-      print("totalTime: $totalTime");
+      /*print("totalTime: $totalTime");
+      print("countDown: $countDown");
+      print("currentIndex: $currentIndex");
+      print("--------------------");*/
     });
   }
 
@@ -161,9 +185,13 @@ class _ExercisePageState extends State<ExercisePage> {
     super.initState();
     totalTime = widget.arguments['exerciseTime']; // initial totalTime
     // initial first exercise's name
-    sport = _getExerciseItemNameList()[currentIndex];
+    sport = "暖身：${_getExerciseItemNameList()[currentIndex]}";
     _pageController = PageController(initialPage: currentIndex);
-
+    print("currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
+    /*print("totalTime: $totalTime");
+    print("countDown: $countDown");
+    print("currentIndex: $currentIndex");
+    print("--------------------");*/
     ///當前頁面繪製完第一幀後回撥
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       startTimer();
