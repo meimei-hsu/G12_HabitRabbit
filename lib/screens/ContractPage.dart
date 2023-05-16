@@ -234,6 +234,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                               Map<String, String> contractData = {
                                 'plan': plan,
                                 '投入金額': dropdownValue,
+                                // TODO:回傳選取的合約內容
                               };
                               print(contractData);
                               // do something with the contract data, such as sending it to a server or storing it locally
@@ -357,7 +358,7 @@ class _SecondContractPageState extends State<SecondContractPage> {
               top: 460,
               left: 65,
               child: Text(
-                '距離成功已完成：',
+                '距離成功已完成：', // TODO:獲取運動進度
                 style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 18,
@@ -368,7 +369,7 @@ class _SecondContractPageState extends State<SecondContractPage> {
               top: 490,
               left: 65,
               child: Text(
-                '承諾合約終止日：',
+                '承諾合約終止日：', // TODO:這個要自己算還是從後端取資料？
                 style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 18,
