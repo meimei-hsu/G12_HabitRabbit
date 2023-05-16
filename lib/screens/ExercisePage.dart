@@ -333,7 +333,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
   Widget build(BuildContext context) {
     List<double> FeedbackData = [];
     return AlertDialog(
-      title: Text('每週運動回饋',
+      title: Text('每日運動回饋',
           style: TextStyle(
             backgroundColor: Colors.yellow,
             color: Color(0xff0d3b66),
