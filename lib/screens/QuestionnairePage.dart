@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../services/PlanAlgo.dart';
+
 class FirstPage extends StatefulWidget {
   final Map arguments;
 
@@ -2216,7 +2218,8 @@ class _SixthPage extends State<SixthPage> {
                             'user': widget.arguments['user'],
                             'neuroticismSum': neuroticismSum,
                             'conscientiousnessSum': conscientiousnessSum,
-                            'opennessSum': opennessSum
+                            'opennessSum': opennessSum,
+                            'resultMap': combinedData,
                           });
                     }
                   },
@@ -2375,12 +2378,16 @@ class _ResultPage extends State<ResultPage> {
               style: ElevatedButton.styleFrom(
                 primary: Color(0xFFFFA493),
               ),
-              onPressed: () {
+              onPressed: () async {
+                // TODO: insertUser()
+                // widget.arguments['resultMap']
+                // await PlanAlgo.execute(widget.arguments['user'].uid);
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/', (Route<dynamic> route) => false,
                     arguments: {'user': widget.arguments['user']});
               },
             ),
+            Text("Map: ${widget.arguments['resultMap']}"),
             SizedBox(height: 20),
           ],
         ),

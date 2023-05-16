@@ -559,17 +559,11 @@ class _RegisterPage extends State<RegisterPage> {
                   );
 
                   if (user != null) {
-                    await PlanAlgo.execute(user.uid);
-
                     // FIXME: CANNOT navigate to QuestionnairePage! I'm not sure whether it's related to register process...
                     // I tried the same code in the other page and it was able to work.
                     // ref: https://stackoverflow.com/questions/64255643/navigation-doesnt-work-from-signup-to-home-flutter
                     // ref: https://stackoverflow.com/questions/65543267/unable-to-navigate-to-homepage-after-register-with-firebase-flutter
                     Navigator.pushNamedAndRemoveUntil(context, '/questionnaire/1', (Route<dynamic> route) => false, arguments: {'user': user});
-                    /*Navigator.popAndPushNamed(context, '/questionnaire/1',
-                        arguments: {'user': user});*/
-                    /*Navigator.pushNamed(context, '/questionnaire/1',
-                        arguments: {'user': user});*/
                   }
                 },
               ),
