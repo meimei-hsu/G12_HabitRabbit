@@ -430,9 +430,9 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false,
                   arguments: {'user': widget.arguments['user']});
-              String userID = "j6QYBrgbLIQH7h8iRyslntFFKV63";
-              UserDB.changeLiking(userID, 1, FeedbackData[0]);
-              UserDB.changeAbility(userID, 1, FeedbackData[1]);
+              String uid = widget.arguments['user'].uid;
+              UserDB.changeLiking(uid, await PlanDB.getType(uid), FeedbackData[0]);
+              UserDB.changeAbility(uid, await PlanDB.getType(uid), FeedbackData[1]);
 
               //var profile = await UserDB.getPlanVariables(userID);
              // Map<String, dynamic> _likings = {}, _abilities = {};

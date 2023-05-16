@@ -198,7 +198,7 @@ class UserDB {
     return user!["timeSpan"];
   }
 
-  static Future<num?> changeLiking(String id, int type, double feedBack) async {
+  static Future<num?> changeLiking(String id, String type, double feedBack) async {
     final Map? user = await getUser(id);
     //int liking=getPlanVariables(id)[2][type-1];
     int liking=0;
@@ -249,7 +249,7 @@ class UserDB {
     }
     //return user!["timeSpan"];
   }
-  static Future<num?> changeAbility(String id, int type, double feedBack) async {
+  static Future<num?> changeAbility(String id, String type, double feedBack) async {
     final Map? user = await getUser(id);
     //int liking=getPlanVariables(id)[2][type-1];
     int ability=0;
@@ -383,6 +383,19 @@ class PlanDB {
   static Future<String> getFromDate(String userID, DateTime date) async {
     var plan = await DB.select("$table/$userID/plan", Calendar.toKey(date));
     return (plan != null) ? plan as String : "";
+  }
+
+  static Future<String> getType(String userID) async {
+    switch ((await PlanDB.getFromDate(userID, DateTime.now()))[18]) {
+      case '1':
+        return "strength";
+      case '2':
+        return "cardio";
+      case '3':
+        return "yoga";
+      default:
+        return "";
+    }
   }
 
   // Select user's workout history
