@@ -200,10 +200,11 @@ class UserDB {
 
   static Future<num?> changeLiking(String id, String type, double feedBack) async {
     final Map? user = await getUser(id);
+    final Map? data = (await getPlanVariables(id)) as Map?;
     //int liking=getPlanVariables(id)[2][type-1];
     int liking=0;
-    if(type==1) {
-      liking=0;//初始值
+    if(type=="strength") {
+      liking=data?[2][0];//初始值
       if (feedBack == 1) {
         update(id, {"strengthLiking": liking - 5});
       }
@@ -217,8 +218,8 @@ class UserDB {
         update(id, {"strengthLiking": liking + 5});
       }
     }
-    else if(type==2) {
-      liking=0;//初始值
+    else if(type=="cardio") {
+      liking=data?[2][1];//初始值
       if (feedBack == 1) {
         update(id, {"cardioLiking": liking - 5});
       }
@@ -232,8 +233,8 @@ class UserDB {
         update(id, {"cardioLiking": liking + 5});
       }
     }
-    else if(type==3) {
-      liking=0;//初始值
+    else if(type=="yoga") {
+      liking=data?[2][2];//初始值
       if (feedBack == 1) {
         update(id, {"yogaLiking": liking - 5});
       }
@@ -251,10 +252,10 @@ class UserDB {
   }
   static Future<num?> changeAbility(String id, String type, double feedBack) async {
     final Map? user = await getUser(id);
-    //int liking=getPlanVariables(id)[2][type-1];
+    final Map? data = (await getPlanVariables(id)) as Map?;
     int ability=0;
-    if(type==1) {
-      ability=0;//初始值
+    if(type=="strength") {
+      ability=data?[3][0];//初始值
       if (feedBack == 1) {
         update(id, {"strengthAbility": ability - 5});
       }
@@ -268,8 +269,8 @@ class UserDB {
         update(id, {"strengthAbility": ability + 5});
       }
     }
-    else if(type==2) {
-      ability=0;//初始值
+    else if(type=="cardio") {
+      ability=data?[3][1];//初始值
       if (feedBack == 1) {
         update(id, {"cardioAbility": ability - 5});
       }
@@ -283,8 +284,8 @@ class UserDB {
         update(id, {"cardioAbility": ability + 5});
       }
     }
-    else if(type==3) {
-      ability=0;//初始值
+    else if(type=="yoga") {
+      ability=data?[3][2];//初始值
       if (feedBack == 1) {
         update(id, {"yogaAbility": ability - 5});
       }

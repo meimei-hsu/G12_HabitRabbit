@@ -342,7 +342,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
         Container(
           padding: EdgeInsets.only(top: 1),
           child: Text(
-            '運動項目是否滿意?',
+            '運動是否滿意?',
             textAlign: TextAlign.left,
             style: TextStyle(
                 //backgroundColor: Colors.yellow,
@@ -382,7 +382,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
         Container(
           padding: EdgeInsets.only(top: 25),
           child: Text(
-            '運動過程是否滿意?',
+            '運動是否疲憊?',
             textAlign: TextAlign.left,
             style: TextStyle(
                 //backgroundColor: Colors.yellow,
@@ -424,7 +424,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
       actions: [
         ElevatedButton(
             child: Text("Submit"),
-            onPressed: () {
+            onPressed: () async {
               //存input?
               print("FeedbackData: $FeedbackData");
               Navigator.pushNamedAndRemoveUntil(
