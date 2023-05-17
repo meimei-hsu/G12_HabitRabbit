@@ -73,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                             controller: _emailTextController,
                             focusNode: _focusEmail,
                             validator: (value) => Validator.validateEmail(
-                              email: value,
+                              value,
                             ),
                             decoration: InputDecoration(
                               hintText: "Email",
@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                             focusNode: _focusPassword,
                             obscureText: true,
                             validator: (value) => Validator.validatePassword(
-                              password: value,
+                              value,
                             ),
                             decoration: InputDecoration(
                               hintText: "Password (at least 6 characters)",
@@ -249,7 +249,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: _nameTextController,
                         focusNode: _focusName,
                         validator: (value) => Validator.validateName(
-                          name: value,
+                          value,
                         ),
                         decoration: InputDecoration(
                           hintText: "Name",
@@ -266,7 +266,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: _emailTextController,
                         focusNode: _focusEmail,
                         validator: (value) => Validator.validateEmail(
-                          email: value,
+                          value,
                         ),
                         decoration: InputDecoration(
                           hintText: "Email",
@@ -284,7 +284,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         focusNode: _focusPassword,
                         obscureText: true,
                         validator: (value) => Validator.validatePassword(
-                          password: value,
+                          value,
                         ),
                         decoration: InputDecoration(
                           hintText: "Password (at least 6 characters)",

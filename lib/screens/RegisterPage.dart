@@ -1,13 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:g12/screens/Homepage.dart';
 import 'package:g12/services/Authentication.dart';
 import 'package:g12/services/PlanAlgo.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key, required this.isLoginPage})
-      : super(key: key);
+  const RegisterPage({Key? key, required this.isLoginPage}) : super(key: key);
 
   //const LoginPage({super.key, required this.title});
   final bool isLoginPage;
@@ -291,16 +289,19 @@ class _RegisterPage extends State<RegisterPage> {
                   print(
                       "${_accountController.text} : ${_passwordController.text}");
 
-                  User? user = await FireAuth.signIn(
-                    email: _accountController.text,
-                    password: _passwordController.text,
-                  );
-
-                  if (user != null) {
-                    await PlanAlgo.execute(user.uid);
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/', (Route<dynamic> route) => false,
-                        arguments: {'user': user});
+                  try {
+                    User? user = await FireAuth.signIn(
+                      email: _accountController.text,
+                      password: _passwordController.text,
+                    );
+                    if (user != null) {
+                      await PlanAlgo.execute(user.uid);
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/', (Route<dynamic> route) => false,
+                          arguments: {'user': user});
+                    }
+                  } catch (e) {
+                    print("exception: $e");
                   }
                 },
               ),
@@ -482,7 +483,7 @@ class _RegisterPage extends State<RegisterPage> {
                   color: Color(0xff0d3b66),
                 ),
                 //labelText: '密碼',
-                hintText: '請輸入密碼',
+                hintText: '請輸入密碼 (至少六位字元)',
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(
@@ -549,21 +550,35 @@ class _RegisterPage extends State<RegisterPage> {
                 ),
                 onPressed: () async {
                   // 存储用戶輸入的帳號和密碼
-                  print(
-                      "${_accountController.text} : ${_passwordController.text}");
+                  String name = _nameController.text;
+                  String email = _accountController.text;
+                  String password = _passwordController.text;
 
-                  User? user = await FireAuth.register(
-                    name: _nameController.text,
-                    email: _accountController.text,
-                    password: _passwordController.text,
-                  );
+                  print("$email : $password");
 
-                  if (user != null) {
-                    // FIXME: CANNOT navigate to QuestionnairePage! I'm not sure whether it's related to register process...
-                    // I tried the same code in the other page and it was able to work.
-                    // ref: https://stackoverflow.com/questions/64255643/navigation-doesnt-work-from-signup-to-home-flutter
-                    // ref: https://stackoverflow.com/questions/65543267/unable-to-navigate-to-homepage-after-register-with-firebase-flutter
-                    Navigator.pushNamedAndRemoveUntil(context, '/questionnaire/1', (Route<dynamic> route) => false, arguments: {'user': user});
+                  String errMsg = "";
+                  errMsg += Validator.validateName(name) ?? "";
+                  errMsg += Validator.validateEmail(email) ?? "";
+                  errMsg += Validator.validatePassword(password) ?? "";
+
+                  if (errMsg.isEmpty) {
+                    try {
+                      User? user = await FireAuth.register(
+                        name: _nameController.text,
+                        email: _accountController.text,
+                        password: _passwordController.text,
+                      );
+
+                      if (user != null) {
+                        Navigator.pushNamedAndRemoveUntil(context,
+                            '/questionnaire/1', (Route<dynamic> route) => false,
+                            arguments: {'user': user});
+                      }
+                    } catch (e) {
+                      print("exception: $e");
+                    }
+                  } else {
+                    print("exception: $errMsg");
                   }
                 },
               ),

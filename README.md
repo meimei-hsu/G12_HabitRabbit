@@ -11,6 +11,7 @@ A fitness habit APP.
     |---Calendar  (get the days of the current and following weeks)
     |---PlanDB    (database operations for the plan children of the journal table)
     |---DurationDB(database operations for the duration children of the journal table)
+    |---WeightDB  (database operations for the weight children of the journal table)
     |---UserDB    (database operations for the users table)
     |---WorkoutDB (database operations for the workouts table)
 ---PlanAlgo.dart

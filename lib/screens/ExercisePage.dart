@@ -163,7 +163,8 @@ class _ExercisePageState extends State<ExercisePage> {
             sport = (currentIndex <= 5) ? "暖身：" : "伸展：";
             sport += nameList[currentIndex];
           }
-          print("currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
+          print(
+              "currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
         }
       }
       setState(() {});
@@ -188,7 +189,8 @@ class _ExercisePageState extends State<ExercisePage> {
     // initial first exercise's name
     sport = "暖身：${_getExerciseItemNameList()[currentIndex]}";
     _pageController = PageController(initialPage: currentIndex);
-    print("currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
+    print(
+        "currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
     /*print("totalTime: $totalTime");
     print("countDown: $countDown");
     print("currentIndex: $currentIndex");
@@ -431,15 +433,19 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
                   context, '/', (Route<dynamic> route) => false,
                   arguments: {'user': widget.arguments['user']});
               String uid = widget.arguments['user'].uid;
-              UserDB.changeLiking(uid, await PlanDB.getType(uid), FeedbackData[0]);
-              UserDB.changeAbility(uid, await PlanDB.getType(uid), FeedbackData[1]);
+              DateTime today = DateTime.now();
+              UserDB.changeLiking(
+                  uid, await PlanDB.getWorkoutType(uid, today), FeedbackData[0]);
+              UserDB.changeAbility(
+                  uid, await PlanDB.getWorkoutType(uid, today), FeedbackData[1]);
+              await PlanAlgo.execute(uid);
 
               //var profile = await UserDB.getPlanVariables(userID);
-             // Map<String, dynamic> _likings = {}, _abilities = {};
-             // _likings = profile[2];
-             // _abilities = profile[3];
+              // Map<String, dynamic> _likings = {}, _abilities = {};
+              // _likings = profile[2];
+              // _abilities = profile[3];
 
-             /* if (FeedbackData[0] == 1) {
+              /* if (FeedbackData[0] == 1) {
                 UserDB.update(userID, {"strengthAbility": 69});
               }*/
             }),
