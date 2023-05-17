@@ -50,7 +50,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// TODO: return FirebaseAuthException for the alert dialog
 class FireAuth {
   // For registering a new user
   static Future<User?> register({
@@ -73,12 +72,12 @@ class FireAuth {
       user = auth.currentUser;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        return Future.error('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        return Future.error('The account already exists for that email.');
       }
     } catch (e) {
-      print(e);
+      return Future.error(e);
     }
 
     return user;
@@ -100,10 +99,14 @@ class FireAuth {
       user = userCredential.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        // print('No user found for that email.');
+        return Future.error('No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided.');
+        // print('Wrong password provided.');
+        return Future.error('Wrong password provided.');
       }
+    } catch (e) {
+      return Future.error(e);
     }
 
     return user;
@@ -119,21 +122,20 @@ class FireAuth {
   }
 }
 
-// TODO: validate inputs in the RegisterPage
 class Validator {
-  static String? validateName({required String? name}) {
+  static String? validateName(String? name) {
     if (name == null) {
       return null;
     }
 
     if (name.isEmpty) {
-      return 'Name can\'t be empty';
+      return 'Name can\'t be empty.\n';
     }
 
     return null;
   }
 
-  static String? validateEmail({required String? email}) {
+  static String? validateEmail(String? email) {
     if (email == null) {
       return null;
     }
@@ -142,23 +144,23 @@ class Validator {
         r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
 
     if (email.isEmpty) {
-      return 'Email can\'t be empty';
+      return 'Email can\'t be empty.\n';
     } else if (!emailRegExp.hasMatch(email)) {
-      return 'Enter a correct email';
+      return 'Enter a correct email.\n';
     }
 
     return null;
   }
 
-  static String? validatePassword({required String? password}) {
+  static String? validatePassword(String? password) {
     if (password == null) {
       return null;
     }
 
     if (password.isEmpty) {
-      return 'Password can\'t be empty';
+      return 'Password can\'t be empty.\n';
     } else if (password.length < 6) {
-      return 'Enter a password with length at least 6';
+      return 'Enter a password with length at least 6.\n';
     }
 
     return null;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../services/PlanAlgo.dart';
+import 'package:g12/services/Database.dart';
+import 'package:g12/services/PlanAlgo.dart';
 
 class FirstPage extends StatefulWidget {
   final Map arguments;
@@ -337,9 +338,9 @@ class _SecondPageState extends State<SecondPage> {
                           } else {
                             Map<String, dynamic> answers = {
                               'gender': gender,
-                              'selectedDateTime': selectedDateTime,
-                              'height': height,
-                              'weight': weight,
+                              'birthday': selectedDateTime.toString(),
+                              'height': double.parse(height),
+                              'weight': double.parse(weight),
                             };
                             print(answers);
                             Navigator.pushNamed(context, "/questionnaire/3",
@@ -961,13 +962,11 @@ class _ThirdPage extends State<ThirdPage> {
                               (sunday ? "1" : "0");
                           //print('workoutDays:'+ workoutDays);
                           Map<String, dynamic> data = {
-                            'timeSpan': timeSpan,
+                            'timeSpan': int.parse(timeSpan.substring(0, 2)),
                             'workoutDays': workoutDays,
-                            'liking': {
-                              'strengthLiking': strengthLiking ? 60 : 40,
-                              'cardioLiking': cardioLiking ? 60 : 40,
-                              'yogaLiking': yogaLiking ? 60 : 40,
-                            },
+                            'strengthLiking': strengthLiking ? 60 : 40,
+                            'cardioLiking': cardioLiking ? 60 : 40,
+                            'yogaLiking': yogaLiking ? 60 : 40,
                           };
                           Map<String, dynamic> combinedData_1 = {};
                           combinedData_1.addAll(widget.arguments['answers']);
@@ -1584,9 +1583,9 @@ class _ForthPage extends State<ForthPage> {
                           );
                         } else {
                           Map<String, dynamic> Data = {
-                            'strengthAbility': strengthAbility,
-                            'cardioAbility': cardioAbility,
-                            'yogaAbility': yogaAbility,
+                            'strengthAbility': int.parse(strengthAbility),
+                            'cardioAbility': int.parse(cardioAbility),
+                            'yogaAbility': int.parse(yogaAbility),
                           };
                           Map<String, dynamic> combinedData_2 = {};
                           combinedData_2
@@ -2133,7 +2132,7 @@ class _SixthPage extends State<SixthPage> {
                     primary: Color(0xFFFFA493),
                     padding: EdgeInsets.symmetric(horizontal: 20),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     if (neuroticism_1.isEmpty ||
                         neuroticism_2.isEmpty ||
                         neuroticism_3.isEmpty ||
@@ -2212,8 +2211,13 @@ class _SixthPage extends State<SixthPage> {
                       Map<String, dynamic> combinedData = {};
                       combinedData.addAll(widget.arguments['combinedData_2']);
                       combinedData.addAll(personality);
-                      // TODO:回傳所有問卷內容
+                      combinedData["userName"] =
+                          widget.arguments['user'].displayName;
                       print('combinedData: $combinedData');
+
+                      String uid = widget.arguments['user'].uid;
+                      await UserDB.insert(uid, combinedData);
+                      await PlanAlgo.execute(uid);
                       Navigator.pushNamed(context, "/questionnaire/result",
                           arguments: {
                             'user': widget.arguments['user'],
@@ -2380,9 +2384,6 @@ class _ResultPage extends State<ResultPage> {
                 primary: Color(0xFFFFA493),
               ),
               onPressed: () async {
-                // TODO: insertUser()
-                // widget.arguments['resultMap']
-                // await PlanAlgo.execute(widget.arguments['user'].uid);
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/', (Route<dynamic> route) => false,
                     arguments: {'user': widget.arguments['user']});

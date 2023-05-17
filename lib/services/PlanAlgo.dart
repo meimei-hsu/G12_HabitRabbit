@@ -16,7 +16,7 @@ class PlanAlgo {
     int lastDay = lastWorkoutDay.weekday;
     bool noThisWeekPlan = await PlanDB.getThisWeek(uid) == null;
     bool noNextWeekPlan = await PlanDB.getNextWeek(uid) == null;
-    bool isFinished = await PlanAlgo.calcProgress(uid, lastWorkoutDay) == 100;
+    bool isFinished = await DurationDB.calcProgress(uid, lastWorkoutDay) == 100;
 
     // Start generating the plan
     // Generate next week's plan if:
@@ -52,67 +52,24 @@ class PlanAlgo {
     var db = await algo.initializeThisWeek(uid);
     var date = Calendar.toKey(dateTime);
 
-    // The third element of the plan is the first workout after the warmup,
-    // and its first character's index (which indicates the workout type) is 18.
-    switch ((await PlanDB.getFromDate(uid, dateTime))[18]) {
-      case '1':
-        await PlanDB.update(
-            uid, {date: await algo.arrangeWorkout(db, "strength")});
-        break;
-      case '2':
-        await PlanDB.update(
-            uid, {date: await algo.arrangeWorkout(db, "cardio")});
-        break;
-      case '3':
-        await PlanDB.update(uid, {date: await algo.arrangeWorkout(db, "yoga")});
-        break;
+    var workoutType = await PlanDB.getWorkoutType(uid, dateTime);
+    if (workoutType != "") {
+      await PlanDB.update(
+          uid, {date: await algo.arrangeWorkout(db, workoutType)});
     }
-  }
-
-  static Future<num?> calcProgress(String uid, DateTime date) async {
-    List? duration = await DurationDB.getFromDate(uid, date);
-    return (duration != null)
-        ? (duration[0] / duration[1] * 100).round() // percentage
-        : null;
   }
 }
 
 class Algorithm {
-  // Method to initialize (and adjust) user's profile from their survey results
   Future<PlanData> initializeThisWeek(String uid) async {
     PlanData db = PlanData();
     await db.init(uid, Calendar.thisWeek());
-
-    return await initialize(db);
+    return db;
   }
 
   Future<PlanData> initializeNextWeek(String uid) async {
     PlanData db = PlanData();
     await db.init(uid, Calendar.nextWeek());
-
-    return await initialize(db);
-  }
-
-  Future<PlanData> initialize(PlanData db) async {
-    // Set modifiers
-    int nVal = db.personalities['neuroticism'];
-    int nMul = 10;
-    int cVal = db.personalities['conscientiousness'];
-    int cMul = 5;
-
-    // Adjust user's data
-    print('survey: ${db.likings}\n'
-        '        ${db.abilities}');
-    db.likings.forEach((k, v) => {
-          if (k == 'strengthLiking')
-            {db.likings[k] = v - nVal * nMul}
-          else
-            {db.likings[k] = v + nVal * nMul}
-        });
-    db.abilities.forEach((k, v) => {db.abilities[k] = v + cVal * cMul});
-    print('survey(adjust): ${db.likings}\n'
-        '                ${db.abilities}');
-
     return db;
   }
 
@@ -349,7 +306,6 @@ class PlanData {
       }
     }
   }
-
 
   // Getters
   get workoutIDs => _workoutIDs;

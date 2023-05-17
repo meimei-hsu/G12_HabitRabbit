@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
@@ -22,10 +21,11 @@ class _HomepageState extends State<Homepage> {
   // Calendar 相關設定
   DateTime _focusedDay = Calendar.today();
   DateTime? _selectedDay = Calendar.today();
-
   get firstDay => Calendar.firstDay();
-
   get lastDay => firstDay.add(const Duration(days: 13));
+
+  // Local variable: workoutPlan
+  String workoutPlan = "";
 
   List<Widget> _getSportList(List content, List title) {
     int length = content.length;
@@ -214,7 +214,7 @@ class _HomepageState extends State<Homepage> {
           const SizedBox(height: 10),
           FutureBuilder<num?>(
               // Exercise plan
-              future: PlanAlgo.calcProgress(
+              future: DurationDB.calcProgress(
                   widget.arguments['user'].uid, _selectedDay!),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -261,7 +261,7 @@ class _HomepageState extends State<Homepage> {
           const SizedBox(height: 10),
           FutureBuilder<String?>(
               // Exercise plan
-              future: PlanDB.getFromDate(
+              future: PlanDB.getByName(
                   widget.arguments['user'].uid, _selectedDay!),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -272,10 +272,10 @@ class _HomepageState extends State<Homepage> {
                       return Text('Error: ${snapshot.error}');
                     }
                     // If snapshot has no error, return plan
-                    String plan = snapshot.data ?? "";
-                    if (plan.isNotEmpty) {
+                    workoutPlan = snapshot.data ?? "";
+                    if (workoutPlan.isNotEmpty) {
                       // Convert the String of plan into a List of workouts
-                      List content = PlanDB.toList(plan);
+                      List content = PlanDB.toList(workoutPlan);
                       int length = content.length;
                       // Generate the titles
                       List title = [
@@ -315,27 +315,11 @@ class _HomepageState extends State<Homepage> {
                 color: const Color(0xff0d3b66),
                 tooltip: "開始運動",
                 onPressed: () {
-                  // TODO: 傳運動項目(名稱、對應影片)和運動總時長到 ExercisePage
+                  List items = workoutPlan.split(", ");
                   Navigator.pushNamed(context, '/countdown', arguments: {
                     'user': widget.arguments['user'],
-                    'exerciseTime': 60, // (6暖身 + 5運動 + 4伸展) = 60
-                    'exerciseItem': [
-                      'v1',
-                      'v2',
-                      'v3',
-                      'v1',
-                      'v2',
-                      'v3',
-                      'v1',
-                      'v2',
-                      'v3',
-                      'v1',
-                      'v2',
-                      'v3',
-                      'v1',
-                      'v2',
-                      'v3',
-                    ]
+                    'exerciseTime': items.length, // (6暖身 + 5運動 + 4伸展) = 60
+                    'exerciseItem': items
                   });
                 },
               ),

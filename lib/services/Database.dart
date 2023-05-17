@@ -76,13 +76,15 @@ class Home extends StatelessWidget {
                 UserDB.update("j6QYBrgbLIQH7h8iRyslntFFKV63", {"weight": 47});
                 UserDB.getAll();
                 WorkoutDB.getNames(plan);
-                WeightDB.insert("j6QYBrgbLIQH7h8iRyslntFFKV63", {"2023-05-14": "47"});
-                WeightDB.insert("pk80ghfLICRtGhVaOlAOzlcGU4S2", {"2023-05-14": "70"});
+                WeightDB.insert(
+                    "j6QYBrgbLIQH7h8iRyslntFFKV63", {"2023-05-14": "47"});
+                WeightDB.insert(
+                    "1UFfKQ4ONxf5rGQIro8vpcyUM9z1", {"2023-05-14": "70"});
               },
               child: const Text("test DB")),
           TextButton(
               onPressed: () {
-                PlanAlgo.execute("pk80ghfLICRtGhVaOlAOzlcGU4S2");
+                PlanAlgo.execute("1UFfKQ4ONxf5rGQIro8vpcyUM9z1");
                 //Algorithm.regenerate("j6QYBrgbLIQH7h8iRyslntFFKV63", DateTime.now());
               },
               child: const Text("test AG")),
@@ -198,110 +200,88 @@ class UserDB {
     return user!["timeSpan"];
   }
 
-  static Future<num?> changeLiking(String id, String type, double feedBack) async {
-    final Map? user = await getUser(id);
+  static Future<num?> changeLiking(
+      String id, String type, double feedBack) async {
     final Map? data = (await getPlanVariables(id)) as Map?;
     //int liking=getPlanVariables(id)[2][type-1];
-    int liking=0;
-    if(type=="strength") {
-      liking=data?[2][0];//初始值
+    int liking = 0;
+    if (type == "strength") {
+      liking = data?[2][0]; //初始值
       if (feedBack == 1) {
         update(id, {"strengthLiking": liking - 5});
-      }
-      else if (feedBack == 2) {
+      } else if (feedBack == 2) {
         update(id, {"strengthLiking": liking - 2});
-      }
-      else if (feedBack == 4) {
+      } else if (feedBack == 4) {
         update(id, {"strengthLiking": liking + 2});
-      }
-      else if (feedBack == 5) {
+      } else if (feedBack == 5) {
         update(id, {"strengthLiking": liking + 5});
       }
-    }
-    else if(type=="cardio") {
-      liking=data?[2][1];//初始值
+    } else if (type == "cardio") {
+      liking = data?[2][1]; //初始值
       if (feedBack == 1) {
         update(id, {"cardioLiking": liking - 5});
-      }
-      else if (feedBack == 2) {
+      } else if (feedBack == 2) {
         update(id, {"cardioLiking": liking - 2});
-      }
-      else if (feedBack == 4) {
+      } else if (feedBack == 4) {
         update(id, {"cardioLiking": liking + 2});
-      }
-      else if (feedBack == 5) {
+      } else if (feedBack == 5) {
         update(id, {"cardioLiking": liking + 5});
       }
-    }
-    else if(type=="yoga") {
-      liking=data?[2][2];//初始值
+    } else if (type == "yoga") {
+      liking = data?[2][2]; //初始值
       if (feedBack == 1) {
         update(id, {"yogaLiking": liking - 5});
-      }
-      else if (feedBack == 2) {
+      } else if (feedBack == 2) {
         update(id, {"yogaLiking": liking - 2});
-      }
-      else if (feedBack == 4) {
+      } else if (feedBack == 4) {
         update(id, {"yogaLiking": liking + 2});
-      }
-      else if (feedBack == 5) {
+      } else if (feedBack == 5) {
         update(id, {"yogaLiking": liking + 5});
       }
     }
-    //return user!["timeSpan"];
+    return null;
   }
-  static Future<num?> changeAbility(String id, String type, double feedBack) async {
-    final Map? user = await getUser(id);
+
+  static Future<num?> changeAbility(
+      String id, String type, double feedBack) async {
     final Map? data = (await getPlanVariables(id)) as Map?;
-    int ability=0;
-    if(type=="strength") {
-      ability=data?[3][0];//初始值
+    int ability = 0;
+    if (type == "strength") {
+      ability = data?[3][0]; //初始值
       if (feedBack == 1) {
         update(id, {"strengthAbility": ability - 5});
-      }
-      else if (feedBack == 2) {
+      } else if (feedBack == 2) {
         update(id, {"strengthAbility": ability - 2});
-      }
-      else if (feedBack == 4) {
+      } else if (feedBack == 4) {
         update(id, {"strengthAbility": ability + 2});
-      }
-      else if (feedBack == 5) {
+      } else if (feedBack == 5) {
         update(id, {"strengthAbility": ability + 5});
       }
-    }
-    else if(type=="cardio") {
-      ability=data?[3][1];//初始值
+    } else if (type == "cardio") {
+      ability = data?[3][1]; //初始值
       if (feedBack == 1) {
         update(id, {"cardioAbility": ability - 5});
-      }
-      else if (feedBack == 2) {
+      } else if (feedBack == 2) {
         update(id, {"cardioAbility": ability - 2});
-      }
-      else if (feedBack == 4) {
+      } else if (feedBack == 4) {
         update(id, {"cardioAbility": ability + 2});
-      }
-      else if (feedBack == 5) {
+      } else if (feedBack == 5) {
         update(id, {"cardioAbility": ability + 5});
       }
-    }
-    else if(type=="yoga") {
-      ability=data?[3][2];//初始值
+    } else if (type == "yoga") {
+      ability = data?[3][2]; //初始值
       if (feedBack == 1) {
         update(id, {"yogaAbility": ability - 5});
-      }
-      else if (feedBack == 2) {
+      } else if (feedBack == 2) {
         update(id, {"yogaAbility": ability - 2});
-      }
-      else if (feedBack == 4) {
+      } else if (feedBack == 4) {
         update(id, {"yogaAbility": ability + 2});
-      }
-      else if (feedBack == 5) {
+      } else if (feedBack == 5) {
         update(id, {"yogaAbility": ability + 5});
       }
     }
-    //return user!["timeSpan"];
+    return null;
   }
-
 
   static Future<String?> getLastWorkoutDay(String id) async {
     final Map? user = await getUser(id);
@@ -310,6 +290,22 @@ class UserDB {
 
   // Insert data {columnName: value} into Users
   static Future<bool> insert(String id, Map map) async {
+    // Set modifiers
+    int nMul = 10;
+    int cMul = 5;
+    List types = ["strength", "cardio", "yoga"];
+
+    // Adjust survey results with user's personalities
+    for (var item in types) {
+      if (item == "strength") {
+        map[item + "Liking"] -= map["neuroticism"] * nMul;
+      } else {
+        map[item + "Liking"] += map["neuroticism"] * nMul;
+      }
+      map[item + "Ability"] += map["conscientiousness"] * cMul;
+    }
+
+    // Insert user into database
     return await DB.insert(map, table, id);
   }
 
@@ -386,8 +382,19 @@ class PlanDB {
     return (plan != null) ? plan as String : "";
   }
 
-  static Future<String> getType(String userID) async {
-    switch ((await PlanDB.getFromDate(userID, DateTime.now()))[18]) {
+  static Future<String?> getByName(String userID, DateTime date) async {
+    var plan = await PlanDB.getFromDate(userID, date);
+    if (plan.isNotEmpty) {
+      var ids = plan.split(", ");
+      return (await WorkoutDB.getNames(ids))?.join(", ");
+    }
+    return null;
+  }
+
+  static Future<String> getWorkoutType(String userID, DateTime date) async {
+    // The third element of the plan is the first workout after the warmup,
+    // and its first character's index (which indicates the workout type) is 18.
+    switch ((await PlanDB.getFromDate(userID, date))[18]) {
       case '1':
         return "strength";
       case '2':
@@ -437,7 +444,6 @@ class PlanDB {
   }
 }
 
-
 class DurationDB {
   static const table = "journal";
 
@@ -461,6 +467,13 @@ class DurationDB {
     var dur = await DB.select("$table/$userID/duration", Calendar.toKey(date));
     return (dur != null)
         ? (dur as String).split(', ').map(int.parse).toList()
+        : null;
+  }
+
+  static Future<num?> calcProgress(String uid, DateTime date) async {
+    List? duration = await DurationDB.getFromDate(uid, date);
+    return (duration != null)
+        ? (duration[0] / duration[1] * 100).round() // percentage
         : null;
   }
 
@@ -497,7 +510,6 @@ class DurationDB {
 class WeightDB {
   static const table = "journal";
 
-
   // Select all weight
   static Future<Map?> getAll(String userID) async {
     var snapshot = await DB.selectAll("$table/$userID/weight");
@@ -530,12 +542,11 @@ class WeightDB {
     return (weight != null) ? weight as String : "";
   }
 
-
-
   // Insert weight data {date: weight} into table {table/userID/weight/date}
   static Future<bool> insert(String userID, Map<String, String> map) async {
     for (MapEntry e in map.entries) {
-      var success = await DB.insert({e.key: e.value}, "$table/$userID", "weight");
+      var success =
+          await DB.insert({e.key: e.value}, "$table/$userID", "weight");
       if (success == false) {
         return false;
       }
@@ -546,7 +557,8 @@ class WeightDB {
   // Update weight data {date: weight} from table {table/userID/weight/date}
   static Future<bool> update(String userID, Map map) async {
     for (MapEntry e in map.entries) {
-      var success = await DB.update({e.key: e.value}, "$table/$userID", "weight");
+      var success =
+          await DB.update({e.key: e.value}, "$table/$userID", "weight");
       if (success == false) {
         return false;
       }
@@ -559,6 +571,7 @@ class WeightDB {
     return DB.delete("$table/$userID/weight", date);
   }
 }
+
 class WorkoutDB {
   static const table = "workouts";
 
@@ -569,7 +582,7 @@ class WorkoutDB {
   }
 
   // Select workoutNames from workoutID
-  static Future<List?> getNames(List ids) async {
+  static Future<List?> getNames(List<String> ids) async {
     var workouts = await getAll();
 
     List retVal = [];
