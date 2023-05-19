@@ -327,13 +327,12 @@ class FeedbackDialog extends StatefulWidget {
 
 class _FeedbackDialogState extends State<FeedbackDialog> {
   double _currentValue1 = 1;
-  double _selectedValue1 = 1;
   double _currentValue2 = 1;
-  double _selectedValue2 = 1;
+  List<double> FeedbackData = [];
 
   @override
   Widget build(BuildContext context) {
-    List<double> FeedbackData = [];
+
     return AlertDialog(
       title: Text('每日運動回饋',
           style: TextStyle(
@@ -365,8 +364,6 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
           onChanged: (value) {
             setState(() {
               _currentValue1 = value;
-              _selectedValue1 = value;
-              FeedbackData.add(_selectedValue1);
             });
           },
         )),
@@ -405,8 +402,6 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
           onChanged: (value) {
             setState(() {
               _currentValue2 = value;
-              _selectedValue2 = value;
-              FeedbackData.add(_selectedValue2);
             });
           },
         )),
@@ -428,6 +423,8 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
             child: Text("Submit"),
             onPressed: () async {
               //存input?
+              FeedbackData.add(_currentValue1);
+              FeedbackData.add(_currentValue2);
               print("FeedbackData: $FeedbackData");
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false,
