@@ -21,7 +21,9 @@ class _HomepageState extends State<Homepage> {
   // Calendar 相關設定
   DateTime _focusedDay = Calendar.today();
   DateTime? _selectedDay = Calendar.today();
+
   get firstDay => Calendar.firstDay();
+
   get lastDay => firstDay.add(const Duration(days: 13));
 
   // Local variable: workoutPlan
@@ -56,6 +58,18 @@ class _HomepageState extends State<Homepage> {
     }
 
     return expansionTitleList;
+  }
+
+  void refresh() {
+    setState(() {});
+  }
+
+  void _showExerciseDialog() async {
+    await showDialog<double>(
+      context: context,
+      builder: (context) =>
+          AddExerciseDialog(arguments: {'user': widget.arguments['user']}),
+    );
   }
 
   @override
@@ -205,6 +219,7 @@ class _HomepageState extends State<Homepage> {
                         onPressed: () {
                           PlanAlgo.regenerate(
                               widget.arguments['user'].uid, _selectedDay!);
+                          refresh();
                         },
                       ),
                     ),
@@ -242,7 +257,7 @@ class _HomepageState extends State<Homepage> {
                         );
                       } else {
                         return Text(
-                          "今天的運動完成噢~很棒很棒！",
+                          "今天的運動都完成囉~很棒很棒！",
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               color: Color(0xff5dbb63),
@@ -261,8 +276,8 @@ class _HomepageState extends State<Homepage> {
           const SizedBox(height: 10),
           FutureBuilder<String?>(
               // Exercise plan
-              future: PlanDB.getByName(
-                  widget.arguments['user'].uid, _selectedDay!),
+              future:
+                  PlanDB.getByName(widget.arguments['user'].uid, _selectedDay!),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -294,7 +309,22 @@ class _HomepageState extends State<Homepage> {
                         ),
                       );
                     } else {
-                      return const Text("Generate Workout Button");
+                      return ElevatedButton(
+                        child: Text(
+                          "新增運動",
+                          style: TextStyle(
+                            color: Color(0xFF0D3B66),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xfffaf0ca),
+                        ),
+                        onPressed: () {
+                          _showExerciseDialog();
+                        },
+                      );
+                      //return const Text("Generate Workout Button");
                     }
                 }
               }),
@@ -478,6 +508,59 @@ class _HomepageState extends State<Homepage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class AddExerciseDialog extends StatefulWidget {
+  final Map arguments;
+
+  const AddExerciseDialog({super.key, required this.arguments});
+
+  @override
+  _AddExerciseDialogState createState() => new _AddExerciseDialogState();
+}
+
+class _AddExerciseDialogState extends State<AddExerciseDialog> {
+  double _currentValue1 = 1;
+  double _currentValue2 = 1;
+  List<double> FeedbackData = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [], // TODO: 內容?
+      ),
+      actions: [
+        OutlinedButton(
+            child: Text(
+              "取消",
+              style: TextStyle(
+                color: Color(0xff0d3b66),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        ElevatedButton(
+            child: Text(
+              "新增運動",
+              style: TextStyle(
+                color: Color(0xff0d3b66),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xfffbb87f),
+            ),
+            onPressed: () {
+              // TODO: 新增運動
+              Navigator.pop(context);
+            }),
+      ],
     );
   }
 }
