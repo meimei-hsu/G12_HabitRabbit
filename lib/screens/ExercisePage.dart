@@ -330,7 +330,6 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
 
   @override
   Widget build(BuildContext context) {
-
     return AlertDialog(
       title: Text('每日運動回饋',
           style: TextStyle(
@@ -429,10 +428,8 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
                   arguments: {'user': widget.arguments['user']});
               String uid = widget.arguments['user'].uid;
               DateTime today = DateTime.now();
-              UserDB.changeLiking(
-                  uid, await PlanDB.getWorkoutType(uid, today), FeedbackData[0]);
-              UserDB.changeAbility(
-                  uid, await PlanDB.getWorkoutType(uid, today), FeedbackData[1]);
+              UserDB.updateByFeedback(
+                  uid, await PlanDB.getWorkoutType(uid, today), FeedbackData);
               await PlanAlgo.execute(uid);
 
               //var profile = await UserDB.getPlanVariables(userID);

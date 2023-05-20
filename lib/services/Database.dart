@@ -200,89 +200,6 @@ class UserDB {
     return user!["timeSpan"];
   }
 
-  static Future<num?> changeLiking(
-      String id, String type, double feedBack) async {
-    final Map? data = (await getPlanVariables(id)) as Map?;
-    //int liking=getPlanVariables(id)[2][type-1];
-    int liking = 0;
-    if (type == "strength") {
-      liking = data?[2][0]; //初始值
-      if (feedBack == 1) {
-        update(id, {"strengthLiking": liking - 5});
-      } else if (feedBack == 2) {
-        update(id, {"strengthLiking": liking - 2});
-      } else if (feedBack == 4) {
-        update(id, {"strengthLiking": liking + 2});
-      } else if (feedBack == 5) {
-        update(id, {"strengthLiking": liking + 5});
-      }
-    } else if (type == "cardio") {
-      liking = data?[2][1]; //初始值
-      if (feedBack == 1) {
-        update(id, {"cardioLiking": liking - 5});
-      } else if (feedBack == 2) {
-        update(id, {"cardioLiking": liking - 2});
-      } else if (feedBack == 4) {
-        update(id, {"cardioLiking": liking + 2});
-      } else if (feedBack == 5) {
-        update(id, {"cardioLiking": liking + 5});
-      }
-    } else if (type == "yoga") {
-      liking = data?[2][2]; //初始值
-      if (feedBack == 1) {
-        update(id, {"yogaLiking": liking - 5});
-      } else if (feedBack == 2) {
-        update(id, {"yogaLiking": liking - 2});
-      } else if (feedBack == 4) {
-        update(id, {"yogaLiking": liking + 2});
-      } else if (feedBack == 5) {
-        update(id, {"yogaLiking": liking + 5});
-      }
-    }
-    return null;
-  }
-
-  static Future<num?> changeAbility(
-      String id, String type, double feedBack) async {
-    final Map? data = (await getPlanVariables(id)) as Map?;
-    int ability = 0;
-    if (type == "strength") {
-      ability = data?[3][0]; //初始值
-      if (feedBack == 1) {
-        update(id, {"strengthAbility": ability - 5});
-      } else if (feedBack == 2) {
-        update(id, {"strengthAbility": ability - 2});
-      } else if (feedBack == 4) {
-        update(id, {"strengthAbility": ability + 2});
-      } else if (feedBack == 5) {
-        update(id, {"strengthAbility": ability + 5});
-      }
-    } else if (type == "cardio") {
-      ability = data?[3][1]; //初始值
-      if (feedBack == 1) {
-        update(id, {"cardioAbility": ability - 5});
-      } else if (feedBack == 2) {
-        update(id, {"cardioAbility": ability - 2});
-      } else if (feedBack == 4) {
-        update(id, {"cardioAbility": ability + 2});
-      } else if (feedBack == 5) {
-        update(id, {"cardioAbility": ability + 5});
-      }
-    } else if (type == "yoga") {
-      ability = data?[3][2]; //初始值
-      if (feedBack == 1) {
-        update(id, {"yogaAbility": ability - 5});
-      } else if (feedBack == 2) {
-        update(id, {"yogaAbility": ability - 2});
-      } else if (feedBack == 4) {
-        update(id, {"yogaAbility": ability + 2});
-      } else if (feedBack == 5) {
-        update(id, {"yogaAbility": ability + 5});
-      }
-    }
-    return null;
-  }
-
   static Future<String?> getLastWorkoutDay(String id) async {
     final Map? user = await getUser(id);
     return Calendar.thisWeek()[user!["workoutDays"].lastIndexOf("1")];
@@ -312,6 +229,38 @@ class UserDB {
   // Update data {columnName: value} from userID
   static Future<bool> update(String id, Map<String, Object> map) async {
     return await DB.update(map, table, id);
+  }
+
+  // Update plan variables by user's feedback [滿意度, 疲憊度]
+  static Future<bool> updateByFeedback(
+      String id, String type, List feedback) async {
+    final Map? data = (await getPlanVariables(id)) as Map?;
+
+    if (data != null) {
+      int typeIndex = (type == "strength")
+          ? 0
+          : (type == "cardio")
+              ? 1
+              : (type == "yoga")
+                  ? 2
+                  : -1;
+
+      num liking = 0, ability = 0;
+      if (typeIndex != -1) {
+        liking = data[2][typeIndex];
+        ability = data[3][typeIndex];
+      }
+
+      if (liking != 0 && ability != 0) {
+        List adjVal = [-5, -2, 0, 2, 5];
+        liking += adjVal[feedback[0] - 1];
+        ability += adjVal[feedback[0] - 1];
+
+        return await update(
+            id, {"${type}Liking": liking, "${type}Ability": ability});
+      }
+    }
+    return false;
   }
 
   // Delete data from userName
@@ -436,6 +385,16 @@ class PlanDB {
       }
     }
     return true;
+  }
+
+  // Update the plan's date to the coming days of current week
+  static Future<bool> updateDate(
+      String userID, DateTime original, DateTime modified) async {
+    // The update data is constituted by the modified date and the original plan
+    Map map = {Calendar.toKey(modified): await getFromDate(userID, original)};
+    // Delete the original record, and update with the modified date
+    return await delete(userID, Calendar.toKey(original)) &&
+        await update(userID, map);
   }
 
   // Delete plan data {table/userID/plan/date}

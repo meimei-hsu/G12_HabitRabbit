@@ -60,7 +60,7 @@ class _HomepageState extends State<Homepage> {
     return expansionTitleList;
   }
 
-  void _showAddExerciseDialog() async {
+  void _showExerciseDialog() async {
     await showDialog<double>(
       context: context,
       builder: (context) =>
@@ -75,7 +75,7 @@ class _HomepageState extends State<Homepage> {
         'user': widget.arguments['user'],
         "selectedDay": _selectedDay
       }),
-    ).then((_)=>setState((){}));
+    );
   }
 
   void refresh() {
@@ -332,7 +332,7 @@ class _HomepageState extends State<Homepage> {
                           backgroundColor: Color(0xfffaf0ca),
                         ),
                         onPressed: () {
-                          _showAddExerciseDialog();
+                          _showExerciseDialog();
                         },
                       );
                       //return const Text("Generate Workout Button");
@@ -592,28 +592,22 @@ class ChangeExerciseDayDialog extends StatefulWidget {
 }
 
 class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
-  late DateTime selectedDay;
-  late DateTime today;
+  late int selectedDay;
 
   String changedDayWeekday = "";
-  DateTime changedDayDate = DateTime.now();
+  late DateTime changedDayDate;
 
   @override
   void initState() {
-    selectedDay = getDateOnly(widget.arguments['selectedDay']);
-    today = getDateOnly(Calendar.today());
-  }
-
-  DateTime getDateOnly(DateTime day) {
-    return DateTime(day.year, day.month, day.day);
+    selectedDay = widget.arguments['selectedDay'].weekday;
   }
 
   List<Widget> _getAllowedDayList() {
     List<OutlinedButton> allowedDayList = [];
     List weekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
 
-    OutlinedButton getDayBtn(int i) {
-      OutlinedButton dayBtn = OutlinedButton(
+    for (int i = (selectedDay == 7) ? 1 : selectedDay + 1; i <= 6; i++) {
+      allowedDayList.add(OutlinedButton(
         child: Text(
           weekdayNameList[i],
           style: TextStyle(
@@ -633,79 +627,13 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
         onPressed: () {
           setState(() {
             changedDayWeekday = weekdayNameList[i];
-            changedDayDate = widget.arguments['selectedDay'].add(Duration(
-                days:
-                    (selectedDay.weekday == 7) ? 1 : i - selectedDay.weekday));
+            changedDayDate = widget.arguments['selectedDay']
+                .add(Duration(days: (selectedDay == 7) ? i : i - selectedDay));
           });
         },
-      );
-      return dayBtn;
-    }
-
-    if (selectedDay.weekday == 7) {
-      for (int i = 1; i <= 6; i++) {
-        allowedDayList.add(getDayBtn(i));
-      }
-    } else if (selectedDay == today) {
-      for (int i = selectedDay.weekday + 1; i <= 6; i++) {
-        allowedDayList.add(getDayBtn(i));
-      }
-    } else {
-      for (int i = selectedDay.weekday + 1; i <= 6; i++) {
-        allowedDayList.add(getDayBtn(i));
-      }
-      for (int i = selectedDay.weekday - 1; i >= 0; i--) {
-        allowedDayList.insert(0, getDayBtn(i));
-      }
+      ));
     }
     return allowedDayList;
-  }
-
-  List<Widget> _getButtonList() {
-    List<ElevatedButton> btnList = [];
-
-    ElevatedButton cancelBtn = ElevatedButton(
-        child: Text(
-          "取消",
-          style: TextStyle(
-            color: Color(0xff0d3b66),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-        ),
-        onPressed: () {
-          Navigator.pop(context);
-        });
-    ElevatedButton confirmBtn = ElevatedButton(
-        child: Text(
-          "確定",
-          style: TextStyle(
-            color: Color(0xff0d3b66),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xfffbb87f),
-        ),
-        onPressed: () {
-          // TODO: (backend) 修改運動天數
-          print("Change $selectedDay to $changedDayDate 星期$changedDayWeekday.");
-          Navigator.pop(context);
-        });
-
-    if (selectedDay.isBefore(today)) {
-      btnList.add(confirmBtn);
-    } else {
-      if (!selectedDay.isAfter(today) && selectedDay.weekday == 6) {
-        btnList.add(confirmBtn);
-      } else {
-        btnList.add(cancelBtn);
-        btnList.add(confirmBtn);
-      }
-    }
-    return btnList;
   }
 
   @override
@@ -719,29 +647,68 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
         ),
       ),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
-        if (selectedDay.isBefore(today)) ...[
-          Text(
-            "逝者已矣，來者可追......\n認真運動吧！",
-            textAlign: TextAlign.center,
-          ),
+        if (selectedDay == 6) ...[
+          Text("今天已經星期六囉~無法再換到別天了！")
         ] else ...[
-          if (!selectedDay.isAfter(today) && selectedDay.weekday == 6) ...[
-            Text("今天已經星期六囉~無法再換到別天了！")
-          ] else ...[
-            Text("你要將 ${widget.arguments['selectedDay'].month}/"
-                "${widget.arguments['selectedDay'].day} 的運動計畫移到哪天呢？"),
-            SizedBox(height: 20),
-            Container(
-              height: MediaQuery.of(context).size.width * 0.1,
-              width: double.maxFinite,
-              child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: _getAllowedDayList()),
-            ),
-          ]
+          Text("你要將 ${widget.arguments['selectedDay'].month}/"
+              "${widget.arguments['selectedDay'].day} 的運動計畫移到哪天呢？"),
+          SizedBox(height: 20),
+          Container(
+            height: MediaQuery.of(context).size.width * 0.1,
+            width: double.maxFinite,
+            child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: _getAllowedDayList()),
+          ),
         ]
       ]),
-      actions: _getButtonList(),
+      actions: [
+        if (selectedDay == 6) ...[
+          ElevatedButton(
+              child: Text(
+                "確定",
+                style: TextStyle(
+                  color: Color(0xff0d3b66),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xfffbb87f),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              })
+        ] else ...[
+          OutlinedButton(
+              child: Text(
+                "取消",
+                style: TextStyle(
+                  color: Color(0xff0d3b66),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          ElevatedButton(
+              child: Text(
+                "確定",
+                style: TextStyle(
+                  color: Color(0xff0d3b66),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xfffbb87f),
+              ),
+              onPressed: () {
+                // TODO: (backend) 修改運動日
+                // 只能換到沒運動的日子嗎？
+                print("Change to $changedDayDate 星期$changedDayWeekday");
+                Navigator.pop(context);
+              }),
+        ]
+      ],
     );
   }
 }
