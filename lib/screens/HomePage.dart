@@ -701,9 +701,12 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xfffbb87f),
               ),
-              onPressed: () {
+              onPressed: () async {
                 // TODO: (backend) 修改運動日
                 // 只能換到沒運動的日子嗎？
+                String uid = widget.arguments['user'].uid;
+                DateTime originalDate = widget.arguments['selectedDay'];
+                await PlanDB.updateDate(uid, originalDate, changedDayDate);
                 print("Change to $changedDayDate 星期$changedDayWeekday");
                 Navigator.pop(context);
               }),
