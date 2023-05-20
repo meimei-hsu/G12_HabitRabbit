@@ -75,7 +75,7 @@ class _HomepageState extends State<Homepage> {
         'user': widget.arguments['user'],
         "selectedDay": _selectedDay
       }),
-    ).then((_)=>setState((){}));
+    ).then((_) => refresh());
   }
 
   void refresh() {
@@ -192,54 +192,78 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           const SizedBox(height: 10),
-          Container(
-              padding: const EdgeInsets.only(right: 10),
-              height: 60,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    child: Ink(
-                      decoration: const ShapeDecoration(
-                        color: Color(0xfffaf0ca),
-                        shape: CircleBorder(),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.edit_calendar_outlined),
-                        iconSize: 40,
-                        color: const Color(0xff0d3b66),
-                        tooltip: "修改運動日",
-                        onPressed: () {
-                          _showChangeExerciseDayDialog();
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    child: Ink(
-                      decoration: const ShapeDecoration(
-                        color: Color(0xffffa493),
-                        shape: CircleBorder(),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.cached),
-                        iconSize: 40,
-                        color: const Color(0xff0d3b66),
-                        tooltip: "重新計畫",
-                        onPressed: () {
-                          PlanAlgo.regenerate(
-                              widget.arguments['user'].uid, _selectedDay!);
-                          refresh();
-                        },
-                      ),
-                    ),
-                  )
-                ],
-              )),
+          // TODO: To be better.....程式碼重複
+          FutureBuilder<String?>(
+              // Exercise plan
+              future:
+                  PlanDB.getByName(widget.arguments['user'].uid, _selectedDay!),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return const CircularProgressIndicator();
+                  default:
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    // If snapshot has no error, return plan
+                    workoutPlan = snapshot.data ?? "";
+                    if (workoutPlan.isNotEmpty) {
+                      return Container(
+                          padding: const EdgeInsets.only(right: 10),
+                          height: 60,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Container(
+                                child: Ink(
+                                  decoration: const ShapeDecoration(
+                                    color: Color(0xfffaf0ca),
+                                    shape: CircleBorder(),
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                        Icons.edit_calendar_outlined),
+                                    iconSize: 40,
+                                    color: const Color(0xff0d3b66),
+                                    tooltip: "修改運動日",
+                                    onPressed: () {
+                                      _showChangeExerciseDayDialog();
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Container(
+                                child: Ink(
+                                  decoration: const ShapeDecoration(
+                                    color: Color(0xffffa493),
+                                    shape: CircleBorder(),
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(Icons.cached),
+                                    iconSize: 40,
+                                    color: const Color(0xff0d3b66),
+                                    tooltip: "重新計畫",
+                                    onPressed: () {
+                                      PlanAlgo.regenerate(
+                                          widget.arguments['user'].uid,
+                                          _selectedDay!);
+                                      refresh();
+                                    },
+                                  ),
+                                ),
+                              )
+                            ],
+                          ));
+                    } else {
+                      return Container();
+                    }
+                }
+              }),
           const SizedBox(height: 10),
+          // FIXME: 修改運動日後未更新
           FutureBuilder<num?>(
-            // Exercise plan
+              // Exercise plan
               future: DurationDB.calcProgress(
                   widget.arguments['user'].uid, _selectedDay!),
               builder: (context, snapshot) {
@@ -285,10 +309,11 @@ class _HomepageState extends State<Homepage> {
                 }
               }),
           const SizedBox(height: 10),
+          // FIXME: 若運動都完成後 or 過期，不應該顯示新增運動按鈕？
           FutureBuilder<String?>(
-            // Exercise plan
+              // Exercise plan
               future:
-              PlanDB.getByName(widget.arguments['user'].uid, _selectedDay!),
+                  PlanDB.getByName(widget.arguments['user'].uid, _selectedDay!),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -418,7 +443,7 @@ class _HomepageState extends State<Homepage> {
                     color: Color(0xff0d3b66),
                     fontSize: 24,
                     letterSpacing:
-                    0 /*percentages not used in flutter. defaulting to zero*/,
+                        0 /*percentages not used in flutter. defaulting to zero*/,
                     fontWeight: FontWeight.bold,
                     height: 1,
                   ),
@@ -429,7 +454,7 @@ class _HomepageState extends State<Homepage> {
                     color: Color(0xff0d3b66),
                     fontSize: 16,
                     letterSpacing:
-                    0 /*percentages not used in flutter. defaulting to zero*/,
+                        0 /*percentages not used in flutter. defaulting to zero*/,
                     height: 1,
                   ),
                 ),
@@ -635,7 +660,7 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
             changedDayWeekday = weekdayNameList[i];
             changedDayDate = widget.arguments['selectedDay'].add(Duration(
                 days:
-                (selectedDay.weekday == 7) ? 1 : i - selectedDay.weekday));
+                    (selectedDay.weekday == 7) ? 1 : i - selectedDay.weekday));
           });
         },
       );
