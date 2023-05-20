@@ -318,7 +318,7 @@ class _HomepageState extends State<Homepage> {
                   List items = workoutPlan.split(", ");
                   Navigator.pushNamed(context, '/countdown', arguments: {
                     'user': widget.arguments['user'],
-                    'exerciseTime': items.length, // (6暖身 + 5運動 + 4伸展) = 60
+                    'exerciseTime': items.length * 6, // should be 60s
                     'exerciseItem': items
                   });
                 },

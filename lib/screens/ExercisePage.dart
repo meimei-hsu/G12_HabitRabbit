@@ -17,7 +17,7 @@ class ExercisePage extends StatefulWidget {
 class _ExercisePageState extends State<ExercisePage> {
   String sport = "運動項目";
   late int totalTime;
-  int countDown = 3;
+  int countDown = 6; // 60s
   bool ifStart = false;
   var period = const Duration(seconds: 1);
 
@@ -140,28 +140,26 @@ class _ExercisePageState extends State<ExercisePage> {
         countDown--;
         if (countDown < 1 && totalTime >= 1) {
           List nameList = _getExerciseItemNameList();
-          // 暖身 & 伸展 : (運動 + 休息)
-          countDown =
-              (currentIndex < 5 || currentIndex >= nameList.length - 5) ? 3 : 6;
 
-          if (countDown == 6) {
+          countDown = 6; // 60s
+          if (currentIndex < 2 || currentIndex >= nameList.length - 3) {
+            currentIndex++;
+            _pageController.animateToPage(currentIndex,
+                duration: Duration(milliseconds: 300), curve: Curves.ease);
+            sport = (currentIndex <= 2) ? "暖身：" : "伸展：";
+            sport += nameList[currentIndex];
+          } else {
             currentIndex++;
             _pageController.animateToPage(currentIndex,
                 duration: Duration(milliseconds: 300), curve: Curves.ease);
             sport = "運動：${nameList[currentIndex]}";
 
-            // 運動 4 秒後休息 2 秒
-            Timer(Duration(seconds: 4), () {
+            // 運動 5 秒後休息 1 秒
+            Timer(Duration(seconds: 5), () {
               _pageController.animateToPage(nameList.length + 1,
                   duration: Duration(milliseconds: 5), curve: Curves.ease);
               sport = "休息：${nameList[currentIndex]}";
             });
-          } else {
-            currentIndex++;
-            _pageController.animateToPage(currentIndex,
-                duration: Duration(milliseconds: 300), curve: Curves.ease);
-            sport = (currentIndex <= 5) ? "暖身：" : "伸展：";
-            sport += nameList[currentIndex];
           }
           print(
               "currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
