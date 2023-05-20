@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:g12/services/CRUD.dart';
-import 'package:g12/services/PlanAlgo.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +38,7 @@ class Home extends StatelessWidget {
       50,
       40,
     ];
-    Map mary = Map.fromIterables(UserDB.getColumns(), m);
+    Map maryProfile = Map.fromIterables(UserDB.getColumns(), m);
     var plan = [
       "4008",
       "4012",
@@ -63,6 +62,9 @@ class Home extends StatelessWidget {
       "5007"
     ];
 
+    String mary = "j6QYBrgbLIQH7h8iRyslntFFKV63";
+    String john = "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";
+
     return Scaffold(
         body: Container(
       padding: const EdgeInsets.all(50),
@@ -72,20 +74,19 @@ class Home extends StatelessWidget {
         children: <Widget>[
           TextButton(
               onPressed: () {
-                UserDB.insert("j6QYBrgbLIQH7h8iRyslntFFKV63", mary);
-                UserDB.update("j6QYBrgbLIQH7h8iRyslntFFKV63", {"weight": 47});
+                UserDB.insert(mary, maryProfile);
+                // UserDB.update(mary, {"weight": 47});
+                UserDB.updateByFeedback(mary, "cardio", [1, 1]);
                 UserDB.getAll();
                 WorkoutDB.getNames(plan);
-                WeightDB.insert(
-                    "j6QYBrgbLIQH7h8iRyslntFFKV63", {"2023-05-14": "47"});
-                WeightDB.insert(
-                    "1UFfKQ4ONxf5rGQIro8vpcyUM9z1", {"2023-05-14": "70"});
+                // WeightDB.insert(mary, {"2023-05-14": "47"});
               },
               child: const Text("test DB")),
           TextButton(
               onPressed: () {
-                PlanAlgo.execute("1UFfKQ4ONxf5rGQIro8vpcyUM9z1");
-                //Algorithm.regenerate("j6QYBrgbLIQH7h8iRyslntFFKV63", DateTime.now());
+                // PlanAlgo.execute(john);
+                PlanDB.updateDate(john, DateTime.parse("2023-05-23"), DateTime.parse("2023-05-22"));
+                // PlanAlgo.regenerate(mary, DateTime.now());
               },
               child: const Text("test AG")),
         ],
@@ -114,11 +115,13 @@ class Calendar {
   }
 
   // Get the days of week that have already passed
-  static List<String> daysPassed() =>
-      getWeekFrom(firstDay(), today().weekday.toInt());
+  static List<String> daysPassed() => (firstDay().weekday != 7)
+      ? getWeekFrom(firstDay(), today().weekday.toInt())
+      : [];
   // Get the days of week that are yet to come
-  static List<String> daysComing() =>
-      getWeekFrom(today(), (7 - today().weekday).toInt());
+  static List<String> daysComing() => (firstDay().weekday != 6)
+      ? getWeekFrom(today(), (7 - today().weekday).toInt())
+      : [];
   // Get the days of week from the first day
   static List<String> thisWeek() => getWeekFrom(firstDay(), 7);
   // Get the days of week from the eighth day
@@ -234,31 +237,17 @@ class UserDB {
   // Update plan variables by user's feedback [滿意度, 疲憊度]
   static Future<bool> updateByFeedback(
       String id, String type, List feedback) async {
-    final Map? data = (await getPlanVariables(id)) as Map?;
+    final List? data = await getPlanVariables(id);
 
     if (data != null) {
-      int typeIndex = (type == "strength")
-          ? 0
-          : (type == "cardio")
-              ? 1
-              : (type == "yoga")
-                  ? 2
-                  : -1;
+      String index1 = "${type}Liking", index2 = "${type}Ability";
+      num liking = data[2][index1], ability = data[3][index2];
 
-      num liking = 0, ability = 0;
-      if (typeIndex != -1) {
-        liking = data[2][typeIndex];
-        ability = data[3][typeIndex];
-      }
+      List adjVal = [-5, -2, 0, 2, 5];
+      liking += adjVal[feedback[0] - 1];
+      ability += adjVal[feedback[0] - 1];
 
-      if (liking != 0 && ability != 0) {
-        List adjVal = [-5, -2, 0, 2, 5];
-        liking += adjVal[feedback[0] - 1];
-        ability += adjVal[feedback[0] - 1];
-
-        return await update(
-            id, {"${type}Liking": liking, "${type}Ability": ability});
-      }
+      return await update(id, {index1: liking, index2: ability});
     }
     return false;
   }

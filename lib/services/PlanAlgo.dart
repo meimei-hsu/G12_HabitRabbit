@@ -23,7 +23,8 @@ class PlanAlgo {
     //   1. on the last day & feedback is given
     //   2. on days after last day & no feedback given from the last day
     // else, generate this week's plan on any day if database has no data.
-    if ((today == lastDay && isFinished) || (today > lastDay && !isFinished)) {
+    if ((today == lastDay && isFinished) ||
+        (today > lastDay && !isFinished && today != 7)) {
       if (noNextWeekPlan) {
         db = await algo.initializeNextWeek(uid);
         print("Generate next week's plan.");
