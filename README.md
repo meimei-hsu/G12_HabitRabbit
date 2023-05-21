@@ -1,23 +1,24 @@
 # G12
 
-A fitness habit APP.
+A milestone habit App.
 
 ## Class Diagram
 
 ```
 ---CRUD.dart 
     |---DB        (general database operations: create, read, update, delete)
+    |---JournalDB (database operations for JournalDB)
 ---Database.dart
     |---Calendar  (get the days of the current and following weeks)
+    |---UserDB    (database operations for the users table)
+    |---WorkoutDB (database operations for the workouts table)
     |---PlanDB    (database operations for the plan children of the journal table)
     |---DurationDB(database operations for the duration children of the journal table)
     |---WeightDB  (database operations for the weight children of the journal table)
-    |---UserDB    (database operations for the users table)
-    |---WorkoutDB (database operations for the workouts table)
 ---PlanAlgo.dart
     |---PlanAlgo  (execute point of the planning algorithm)
     |---Algorithm (generate plan from the planning algorithm)    
-    |---Data      (process the data in advance of running the algorithm)
+    |---PlanData  (process the data in advance of running the algorithm)
 ---Authentication.dart
     |---FireAuth  (user authentication by firebase)
     |---Validate  (check if the users' input are correct)
