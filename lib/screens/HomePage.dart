@@ -63,9 +63,11 @@ class _HomepageState extends State<Homepage> {
   void _showAddExerciseDialog() async {
     await showDialog<double>(
       context: context,
-      builder: (context) =>
-          AddExerciseDialog(arguments: {'user': widget.arguments['user']}),
-    );
+      builder: (context) => AddExerciseDialog(arguments: {
+        'user': widget.arguments['user'],
+        "selectedDay": _selectedDay
+      }),
+    ).then((_) => refresh());
   }
 
   void _showChangeExerciseDayDialog() async {
@@ -99,7 +101,6 @@ class _HomepageState extends State<Homepage> {
               height: 1),
         ),
         actions: [],
-        //Text(widget.title, style: TextStyle(color: Color(0xff0d3b66))),
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false, //關掉返回鍵
       ),
@@ -111,6 +112,7 @@ class _HomepageState extends State<Homepage> {
               firstDay: firstDay,
               lastDay: lastDay,
               focusedDay: _focusedDay,
+              //startingDayOfWeek: StartingDayOfWeek.monday,
               locale: 'zh_CN',
               calendarFormat: CalendarFormat.week,
               daysOfWeekHeight: 24,
@@ -559,6 +561,39 @@ class AddExerciseDialog extends StatefulWidget {
 }
 
 class _AddExerciseDialogState extends State<AddExerciseDialog> {
+  int exerciseTime = 0;
+
+  List<Widget> _getTimeBtnList() {
+    List<OutlinedButton> btnList = [];
+
+    for (int i = 1; i <= 4; i++) {
+      int choice = 15 * i;
+      btnList.add(OutlinedButton(
+        child: Text(
+          "$choice",
+          style: TextStyle(
+            color: Color(0xff0d3b66),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        style: OutlinedButton.styleFrom(
+          shape: const CircleBorder(),
+          side: const BorderSide(
+            color: Color(0xff0d3b66),
+          ),
+          backgroundColor:
+              (exerciseTime == choice) ? Color(0xffffa493) : Colors.white70,
+        ),
+        onPressed: () {
+          setState(() {
+            exerciseTime = choice;
+          });
+        },
+      ));
+    }
+    return btnList;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -571,7 +606,17 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [], // TODO: 內容?
+        children: [
+          Text("你要在 ${widget.arguments['selectedDay'].month}/"
+              "${widget.arguments['selectedDay'].day} 新增幾分鐘的運動計畫呢？"),
+          SizedBox(height: 20),
+          Container(
+            height: MediaQuery.of(context).size.width * 0.1,
+            width: double.maxFinite,
+            child: ListView(
+                scrollDirection: Axis.horizontal, children: _getTimeBtnList()),
+          ),
+        ],
       ),
       actions: [
         OutlinedButton(
@@ -597,7 +642,9 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
               backgroundColor: Color(0xfffbb87f),
             ),
             onPressed: () {
-              // TODO: 新增運動
+              // TODO: (backend) 新增運動
+              print(
+                  "${widget.arguments['selectedDay']} add $exerciseTime minutes exercise plan.");
               Navigator.pop(context);
             }),
       ],
