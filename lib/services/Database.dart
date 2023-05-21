@@ -21,6 +21,14 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var mc=[
+      DateTime.utc(2023, 5, 1).toString(),
+      DateTime.utc(2023, 10, 1).toString(),
+      500,
+      '12345678',
+      '0,4',
+      false,
+    ];
     var m = [
       'Mary',
       'Female',
@@ -40,6 +48,7 @@ class Home extends StatelessWidget {
       40,
     ];
     Map maryProfile = Map.fromIterables(UserDB.getColumns(), m);
+    Map maryContract = Map.fromIterables(ContractDB.getColumns(), mc);
     var plan = [
       "4008",
       "4012",
@@ -80,6 +89,7 @@ class Home extends StatelessWidget {
                 UserDB.updateByFeedback(mary, "cardio", [1, 1]);
                 UserDB.getAll();
                 WorkoutDB.toNames(plan);
+                ContractDB.insert(mary, maryContract);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
               },
               child: const Text("test DB")),
@@ -257,6 +267,90 @@ class UserDB {
     }
     return false;
   }
+
+  // Delete data from userName
+  static Future<bool> delete(String id) async {
+    return await DB.delete(db, id);
+  }
+}
+class ContractDB {
+  static const db = "contract";
+
+  // Define the columns of the user table
+  static List<String> getColumns() {
+    return [
+      "startDay",
+      "endDay",
+      "money",
+      "bankAccount",
+      "flag",
+      "result",
+
+    ];
+  }
+
+
+
+  // Select contract from userID
+  static Future<Map?> getContract(String id) async {
+    return Map<String, dynamic>.from(await DB.select(db, id) as Map);
+  }
+
+  // Select dynamic data from userID
+  static Future<List<Map<String, dynamic>>?> getContractDetails(String id) async {
+    final Map? contract = await getContract(id);
+
+    if (contract != null) {
+      return [
+        {
+          'startDay': contract["startDay"],
+          'endDay': contract["endDay"],
+          'money': contract["money"],
+          'flag': contract["flag"],
+        },
+
+      ];
+    } else {
+      return null;
+    }
+  }
+
+  static Future<num?> getStartDay(String id) async {
+    final Map? user = await getContract(id);
+    return user!["startDay"];
+  }
+
+  static Future<num?> getEndDay(String id) async {
+    final Map? user = await getContract(id);
+    return user!["endDay"];
+  }
+
+  static Future<num?> getMoney(String id) async {
+    final Map? user = await getContract(id);
+    return user!["money"];
+  }
+
+  static Future<num?> getFlag(String id) async {
+    final Map? user = await getContract(id);
+    return user!["flag"];
+  }
+
+
+
+  // Insert data {columnName: value} into Users
+  static Future<bool> insert(String id, Map map) async {
+
+
+    // Insert contract into database
+    return await DB.insert("$db/$id/", map);
+  }
+
+  // Update data {columnName: value} from userID
+  static Future<bool> update(String id, Map<String, Object> map) async {
+    return await DB.update("$db/$id/", map);
+  }
+
+
 
   // Delete data from userName
   static Future<bool> delete(String id) async {
@@ -516,3 +610,7 @@ class WeightDB {
   static Future<bool> delete(String userID, String date) async =>
       await JournalDB.delete(userID, date, table);
 }
+
+
+
+
