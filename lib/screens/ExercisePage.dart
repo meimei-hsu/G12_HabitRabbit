@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+//import 'package:video_player/video_player.dart';
 
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
@@ -11,10 +11,10 @@ class ExercisePage extends StatefulWidget {
   const ExercisePage({super.key, required this.arguments});
 
   @override
-  _ExercisePageState createState() => _ExercisePageState();
+  ExercisePageState createState() => ExercisePageState();
 }
 
-class _ExercisePageState extends State<ExercisePage> {
+class ExercisePageState extends State<ExercisePage> {
   String sport = "運動項目";
   late int totalTime;
   int countDown = 6; // 60s
@@ -27,13 +27,13 @@ class _ExercisePageState extends State<ExercisePage> {
     //int hour = seconds ~/ 3600;
     int minute = seconds % 3600 ~/ 60;
     int second = seconds % 60;
-    return formatTime(minute) + ":" + formatTime(second);
+    return "${formatTime(minute)}:${formatTime(second)}";
     //return formatTime(hour) + ":" + formatTime(minute) + ":" + formatTime(second);
   }
 
   // 時間格式化，將 0~9 的時間轉換為 00~09
   String formatTime(int timeNum) {
-    return timeNum < 10 ? "0" + timeNum.toString() : timeNum.toString();
+    return timeNum < 10 ? "0$timeNum" : timeNum.toString();
   }
 
   /* 計時器時間設定 */
@@ -49,7 +49,7 @@ class _ExercisePageState extends State<ExercisePage> {
   int currentIndex = 0; //當前顯示的索引
 
   Widget buildVideoBanner(List videoList) {
-    return Container(
+    return SizedBox(
       height: 200,
       width: double.infinity,
       child: Stack(
@@ -145,19 +145,22 @@ class _ExercisePageState extends State<ExercisePage> {
           if (currentIndex < 2 || currentIndex >= nameList.length - 3) {
             currentIndex++;
             _pageController.animateToPage(currentIndex,
-                duration: Duration(milliseconds: 300), curve: Curves.ease);
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.ease);
             sport = (currentIndex <= 2) ? "暖身：" : "伸展：";
             sport += nameList[currentIndex];
           } else {
             currentIndex++;
             _pageController.animateToPage(currentIndex,
-                duration: Duration(milliseconds: 300), curve: Curves.ease);
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.ease);
             sport = "運動：${nameList[currentIndex]}";
 
             // 運動 5 秒後休息 1 秒
-            Timer(Duration(seconds: 5), () {
+            Timer(const Duration(seconds: 5), () {
               _pageController.animateToPage(nameList.length + 1,
-                  duration: Duration(milliseconds: 5), curve: Curves.ease);
+                  duration: const Duration(milliseconds: 5),
+                  curve: Curves.ease);
               sport = "休息：${nameList[currentIndex]}";
             });
           }
@@ -193,6 +196,7 @@ class _ExercisePageState extends State<ExercisePage> {
     print("countDown: $countDown");
     print("currentIndex: $currentIndex");
     print("--------------------");*/
+
     ///當前頁面繪製完第一幀後回撥
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       startTimer();
@@ -214,15 +218,15 @@ class _ExercisePageState extends State<ExercisePage> {
         children: [
           Container(
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(left: 10),
             height: 60,
             width: MediaQuery.of(context).size.width,
-            color: Color(0xfffaf0ca),
+            color: const Color(0xfffaf0ca),
             child: Text(
               constructTime(totalTime),
               //'$seconds',
               textAlign: TextAlign.left,
-              style: TextStyle(
+              style: const TextStyle(
                   color: Color(0xff0d3b66),
                   fontSize: 32,
                   letterSpacing: 0,
@@ -230,19 +234,19 @@ class _ExercisePageState extends State<ExercisePage> {
                   height: 1),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 color: Color(0x193598f5),
-                borderRadius: const BorderRadius.all(Radius.circular(13))),
+                borderRadius: BorderRadius.all(Radius.circular(13))),
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(left: 10),
             height: 60,
             width: MediaQuery.of(context).size.width - 20,
             child: Text(
-              "$sport",
+              sport,
               textAlign: TextAlign.left,
-              style: TextStyle(
+              style: const TextStyle(
                   color: Color(0xff0d3b66),
                   fontSize: 32,
                   letterSpacing: 0,
@@ -250,13 +254,13 @@ class _ExercisePageState extends State<ExercisePage> {
                   height: 1),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           /*Container(
             child: Image(
               image: AssetImage('images/testPic.gif'),//video
             ),
           ),*/
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width - 20,
             child: buildVideoBanner(
                 _getVideoList(widget.arguments['exerciseItem'])),
@@ -280,30 +284,28 @@ class _ExercisePageState extends State<ExercisePage> {
             ),*/
           ),
           Container(
-              padding: EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.only(right: 10),
               height: 60,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
-                    child: ElevatedButton.icon(
-                      onPressed: () => startTimer(),
-                      icon: Icon(
-                        ifStart ? Icons.pause : Icons.play_arrow_rounded,
-                        color: Color(0xff0d3b66),
-                      ),
-                      label: Text(
-                        ifStart ? '暫停' : '繼續',
-                        style: TextStyle(
-                            color: Color(0xff0d3b66),
-                            fontSize: 24,
-                            letterSpacing: 0,
-                            fontWeight: FontWeight.bold,
-                            height: 1),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xffffa493),
-                      ),
+                  ElevatedButton.icon(
+                    onPressed: () => startTimer(),
+                    icon: Icon(
+                      ifStart ? Icons.pause : Icons.play_arrow_rounded,
+                      color: const Color(0xff0d3b66),
+                    ),
+                    label: Text(
+                      ifStart ? '暫停' : '繼續',
+                      style: const TextStyle(
+                          color: Color(0xff0d3b66),
+                          fontSize: 24,
+                          letterSpacing: 0,
+                          fontWeight: FontWeight.bold,
+                          height: 1),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xffffa493),
                     ),
                   ),
                 ],
@@ -320,26 +322,26 @@ class FeedbackDialog extends StatefulWidget {
   const FeedbackDialog({super.key, required this.arguments});
 
   @override
-  _FeedbackDialogState createState() => new _FeedbackDialogState();
+  FeedbackDialogState createState() => FeedbackDialogState();
 }
 
-class _FeedbackDialogState extends State<FeedbackDialog> {
+class FeedbackDialogState extends State<FeedbackDialog> {
   double _currentValue1 = 1;
   double _currentValue2 = 1;
-  List<double> FeedbackData = [];
+  List<double> feedbackData = [];
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('每日運動回饋',
+      title: const Text('每日運動回饋',
           style: TextStyle(
             backgroundColor: Colors.yellow,
             color: Color(0xff0d3b66),
           )),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         Container(
-          padding: EdgeInsets.only(top: 1),
-          child: Text(
+          padding: const EdgeInsets.only(top: 1),
+          child: const Text(
             '運動是否滿意?',
             textAlign: TextAlign.left,
             style: TextStyle(
@@ -351,8 +353,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
                 height: 1),
           ),
         ),
-        Container(
-            child: Slider(
+        Slider(
           value: _currentValue1,
           min: 1,
           max: 5,
@@ -363,8 +364,8 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
               _currentValue1 = value;
             });
           },
-        )),
-        Text(
+        ),
+        const Text(
           '1                                    5',
           textAlign: TextAlign.left,
           style: TextStyle(
@@ -376,8 +377,8 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
               height: 1),
         ),
         Container(
-          padding: EdgeInsets.only(top: 25),
-          child: Text(
+          padding: const EdgeInsets.only(top: 25),
+          child: const Text(
             '運動是否疲憊?',
             textAlign: TextAlign.left,
             style: TextStyle(
@@ -389,8 +390,7 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
                 height: 1),
           ),
         ),
-        Container(
-            child: Slider(
+        Slider(
           value: _currentValue2,
           min: 1,
           max: 5,
@@ -401,8 +401,8 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
               _currentValue2 = value;
             });
           },
-        )),
-        Text(
+        ),
+        const Text(
           '1                                    5',
           textAlign: TextAlign.left,
           style: TextStyle(
@@ -417,19 +417,19 @@ class _FeedbackDialogState extends State<FeedbackDialog> {
       ]),
       actions: [
         ElevatedButton(
-            child: Text("Submit"),
+            child: const Text("Submit"),
             onPressed: () async {
               //存input?
-              FeedbackData.add(_currentValue1);
-              FeedbackData.add(_currentValue2);
-              print("FeedbackData: $FeedbackData");
+              feedbackData.add(_currentValue1);
+              feedbackData.add(_currentValue2);
+              print("FeedbackData: $feedbackData");
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false,
                   arguments: {'user': widget.arguments['user']});
               String uid = widget.arguments['user'].uid;
               DateTime today = DateTime.now();
               UserDB.updateByFeedback(
-                  uid, await PlanDB.getWorkoutType(uid, today), FeedbackData);
+                  uid, await PlanDB.getWorkoutType(uid, today), feedbackData);
               await PlanAlgo.execute(uid);
 
               //var profile = await UserDB.getPlanVariables(userID);

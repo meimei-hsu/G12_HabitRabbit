@@ -124,7 +124,7 @@ class _HomepageState extends State<Homepage> {
       body: Column(
         children: [
           Container(
-            color: Color(0x193598f5),
+            color: const Color(0x193598f5),
             child: TableCalendar(
               firstDay: firstDay,
               lastDay: lastDay,
@@ -233,43 +233,39 @@ class _HomepageState extends State<Homepage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Container(
-                                child: Ink(
-                                  decoration: const ShapeDecoration(
-                                    color: Color(0xfffaf0ca),
-                                    shape: CircleBorder(),
-                                  ),
-                                  child: IconButton(
-                                    icon: const Icon(
-                                        Icons.edit_calendar_outlined),
-                                    iconSize: 40,
-                                    color: const Color(0xff0d3b66),
-                                    tooltip: "修改運動日",
-                                    onPressed: () {
-                                      _showChangeExerciseDayDialog();
-                                    },
-                                  ),
+                              Ink(
+                                decoration: const ShapeDecoration(
+                                  color: Color(0xfffaf0ca),
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  icon:
+                                      const Icon(Icons.edit_calendar_outlined),
+                                  iconSize: 40,
+                                  color: const Color(0xff0d3b66),
+                                  tooltip: "修改運動日",
+                                  onPressed: () {
+                                    _showChangeExerciseDayDialog();
+                                  },
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              Container(
-                                child: Ink(
-                                  decoration: const ShapeDecoration(
-                                    color: Color(0xffffa493),
-                                    shape: CircleBorder(),
-                                  ),
-                                  child: IconButton(
-                                    icon: const Icon(Icons.cached),
-                                    iconSize: 40,
-                                    color: const Color(0xff0d3b66),
-                                    tooltip: "重新計畫",
-                                    onPressed: () {
-                                      PlanAlgo.regenerate(
-                                          widget.arguments['user'].uid,
-                                          _selectedDay!);
-                                      refresh();
-                                    },
-                                  ),
+                              Ink(
+                                decoration: const ShapeDecoration(
+                                  color: Color(0xffffa493),
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.cached),
+                                  iconSize: 40,
+                                  color: const Color(0xff0d3b66),
+                                  tooltip: "重新計畫",
+                                  onPressed: () {
+                                    PlanAlgo.regenerate(
+                                        widget.arguments['user'].uid,
+                                        _selectedDay!);
+                                    refresh();
+                                  },
                                 ),
                               )
                             ],
@@ -333,7 +329,7 @@ class _HomepageState extends State<Homepage> {
                       return (isWorkoutDay == true)
                           ? const Text(
                               "這天要運動噢！",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Color(0xffffa493),
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -416,29 +412,28 @@ class _HomepageState extends State<Homepage> {
               }),
         ],
       ),
+      // FIXME: 開始運動的運動清單應為 today 的，而不是 _selectedDay 的
       floatingActionButton: FloatingActionButton.large(
           onPressed: () {},
           backgroundColor: const Color(0xffffa493),
-          child: Container(
-            child: Ink(
-              decoration: const ShapeDecoration(
-                //color: Color(0xffffa493),
-                shape: CircleBorder(),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.play_arrow_rounded),
-                iconSize: 80,
-                color: const Color(0xff0d3b66),
-                tooltip: "開始運動",
-                onPressed: () {
-                  List items = workoutPlan.split(", ");
-                  Navigator.pushNamed(context, '/countdown', arguments: {
-                    'user': widget.arguments['user'],
-                    'exerciseTime': items.length * 6, // should be 60s
-                    'exerciseItem': items
-                  });
-                },
-              ),
+          child: Ink(
+            decoration: const ShapeDecoration(
+              //color: Color(0xffffa493),
+              shape: CircleBorder(),
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.play_arrow_rounded),
+              iconSize: 80,
+              color: const Color(0xff0d3b66),
+              tooltip: "開始運動",
+              onPressed: () {
+                List items = workoutPlan.split(", ");
+                Navigator.pushNamed(context, '/countdown', arguments: {
+                  'user': widget.arguments['user'],
+                  'exerciseTime': items.length * 6, // should be 60s
+                  'exerciseItem': items
+                });
+              },
             ),
           )),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -451,31 +446,27 @@ class _HomepageState extends State<Homepage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    child: IconButton(
-                      icon: const Icon(Icons.insights),
-                      iconSize: 60,
-                      color: const Color(0xff0d3b66),
-                      tooltip: "統計資料",
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/statistic',
-                            arguments: {'user': widget.arguments['user']});
-                      },
-                    ),
+                  IconButton(
+                    icon: const Icon(Icons.insights),
+                    iconSize: 60,
+                    color: const Color(0xff0d3b66),
+                    tooltip: "統計資料",
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/statistic',
+                          arguments: {'user': widget.arguments['user']});
+                    },
                   ),
-                  Container(
-                    child: IconButton(
-                      icon: const Icon(Icons.menu),
-                      iconSize: 60,
-                      color: const Color(0xff0d3b66),
-                      tooltip: "選單",
-                      onPressed: () => _myKey.currentState!.openEndDrawer(),
-                    ),
+                  IconButton(
+                    icon: const Icon(Icons.menu),
+                    iconSize: 60,
+                    color: const Color(0xff0d3b66),
+                    tooltip: "選單",
+                    onPressed: () => _myKey.currentState!.openEndDrawer(),
                   ),
                 ],
               ))),
       key: _myKey,
-      endDrawer: Container(
+      endDrawer: SizedBox(
         width: MediaQuery.of(context).size.width * 0.55,
         child: Drawer(
           child: ListView(
@@ -550,8 +541,8 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 onTap: () {
-                  // TODO: 判斷是否有立過合約，有 -> /constract；沒有 -> /constract/initial
-                  Navigator.popAndPushNamed(context, '/constract/initial',
+                  // TODO: 判斷是否有立過合約，有 -> /contract；沒有 -> /contract/initial
+                  Navigator.popAndPushNamed(context, '/contract/initial',
                       arguments: {'user': widget.arguments['user']});
                   //點擊後做什麼事
                   //切換頁面
@@ -605,10 +596,10 @@ class AddExerciseDialog extends StatefulWidget {
   const AddExerciseDialog({super.key, required this.arguments});
 
   @override
-  _AddExerciseDialogState createState() => new _AddExerciseDialogState();
+  AddExerciseDialogState createState() => AddExerciseDialogState();
 }
 
-class _AddExerciseDialogState extends State<AddExerciseDialog> {
+class AddExerciseDialogState extends State<AddExerciseDialog> {
   int exerciseTime = 0;
 
   List<Widget> _getTimeBtnList() {
@@ -659,7 +650,7 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
           Text("你要在 ${widget.arguments['selectedDay'].month}/"
               "${widget.arguments['selectedDay'].day} 新增幾分鐘的運動計畫呢？"),
           const SizedBox(height: 20),
-          Container(
+          SizedBox(
             height: MediaQuery.of(context).size.width * 0.1,
             width: double.maxFinite,
             child: ListView(
@@ -708,11 +699,10 @@ class ChangeExerciseDayDialog extends StatefulWidget {
   const ChangeExerciseDayDialog({super.key, required this.arguments});
 
   @override
-  _ChangeExerciseDayDialogState createState() =>
-      new _ChangeExerciseDayDialogState();
+  ChangeExerciseDayDialogState createState() => ChangeExerciseDayDialogState();
 }
 
-class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
+class ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
   late DateTime selectedDay;
   late DateTime today;
 
@@ -723,6 +713,8 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
   void initState() {
     selectedDay = getDateOnly(widget.arguments['selectedDay']);
     today = getDateOnly(Calendar.today());
+
+    super.initState();
   }
 
   DateTime getDateOnly(DateTime day) {
@@ -803,7 +795,7 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
         ));
     ElevatedButton confirmBtn = ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xfffbb87f),
+          backgroundColor: const Color(0xfffbb87f),
         ),
         onPressed: () async {
           // TODO: (backend) 修改運動天數
@@ -857,7 +849,7 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
             Text("你要將 ${widget.arguments['selectedDay'].month}/"
                 "${widget.arguments['selectedDay'].day} 的運動計畫移到哪天呢？"),
             const SizedBox(height: 20),
-            Container(
+            SizedBox(
               height: MediaQuery.of(context).size.width * 0.1,
               width: double.maxFinite,
               child: ListView(

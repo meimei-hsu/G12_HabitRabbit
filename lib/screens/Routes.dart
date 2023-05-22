@@ -12,16 +12,16 @@ import 'package:g12/screens/UserProfilePage.dart';
 //配置路由規則
 final routes = {
   '/': (context, {arguments}) => Homepage(arguments: arguments),
-  '/register': (context) => RegisterPage(isLoginPage: true),
+  '/register': (context) => const RegisterPage(isLoginPage: true),
   '/statistic': (context, {arguments}) => StatisticPage(arguments: arguments),
   '/countdown': (context, {arguments}) => CountdownPage(arguments: arguments),
   '/exercise': (context, {arguments}) => ExercisePage(arguments: arguments),
   '/customized': (context, {arguments}) =>
       UserProfilePage(arguments: arguments),
   /* ContractPage */
-  '/constract/initial': (context, {arguments}) =>
+  '/contract/initial': (context, {arguments}) =>
       FirstContractPage(arguments: arguments),
-  '/constract': (context, {arguments}) =>
+  '/contract': (context, {arguments}) =>
       SecondContractPage(arguments: arguments),
   /* QuestionnairePage */
   '/questionnaire/1': (context, {arguments}) => FirstPage(arguments: arguments),

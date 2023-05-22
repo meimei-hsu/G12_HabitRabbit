@@ -7,10 +7,10 @@ class CountdownPage extends StatefulWidget {
   const CountdownPage({super.key, required this.arguments});
 
   @override
-  _CountdownPageState createState() => _CountdownPageState();
+  CountdownPageState createState() => CountdownPageState();
 }
 
-class _CountdownPageState extends State<CountdownPage> {
+class CountdownPageState extends State<CountdownPage> {
   int time = 3;
   bool ifEnd = false;
 
@@ -40,10 +40,10 @@ class _CountdownPageState extends State<CountdownPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xfffaf0ca),
+        backgroundColor: const Color(0xfffaf0ca),
         body: Center(
           child: Text('$time',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Color(0xff0d3b66),
                 fontSize: 100,
                 fontWeight: FontWeight.bold,

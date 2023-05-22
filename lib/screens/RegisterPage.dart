@@ -54,16 +54,8 @@ class _RegisterPage extends State<RegisterPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  child: Text(
-                    "登入",
-                    style: TextStyle(
-                      color: Color(0xFF0D3B66),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFFA493),
+                    backgroundColor: const Color(0xFFFFA493),
                   ),
                   onPressed: () async {
                     Navigator.push(
@@ -73,19 +65,19 @@ class _RegisterPage extends State<RegisterPage> {
                       ),
                     );
                   },
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  child: Text(
-                    "註冊新帳號",
+                  child: const Text(
+                    "登入",
                     style: TextStyle(
                       color: Color(0xFF0D3B66),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFFA493),
+                    backgroundColor: const Color(0xFFFFA493),
                   ),
                   onPressed: () {
                     Navigator.push(
@@ -96,6 +88,14 @@ class _RegisterPage extends State<RegisterPage> {
                       ),
                     );
                   },
+                  child: const Text(
+                    "註冊新帳號",
+                    style: TextStyle(
+                      color: Color(0xFF0D3B66),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -119,7 +119,7 @@ class _RegisterPage extends State<RegisterPage> {
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        actions: [],
+        actions: const [],
         //Text(widget.title, style: TextStyle(color: Color(0xff0d3b66))),
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false, //關掉返回鍵
@@ -137,11 +137,11 @@ class _RegisterPage extends State<RegisterPage> {
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(left: 20),
-            child: Text(
+            child: const Text(
               '我的帳號',
               textAlign: TextAlign.left,
               style: TextStyle(
-                  backgroundColor: const Color(0xfffaf0ca),
+                  backgroundColor: Color(0xfffaf0ca),
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
@@ -158,7 +158,7 @@ class _RegisterPage extends State<RegisterPage> {
               decoration: InputDecoration(
                 isDense: true,
                 // TODO: Let the icon change color when being selected
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.account_circle,
                   color: Color(0xff0d3b66),
                 ),
@@ -166,25 +166,25 @@ class _RegisterPage extends State<RegisterPage> {
                 hintText: '請輸入帳號',
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xff0d3b66),
                     width: 3,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xFFFFA493),
                     width: 3,
                   ),
                 ),
                 //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white70,
               ),
-              cursorColor: Color(0xFFFFA493),
-              style: TextStyle(fontSize: 20),
+              cursorColor: const Color(0xFFFFA493),
+              style: const TextStyle(fontSize: 20),
               keyboardType: TextInputType.text,
               obscureText: false,
               //controller: _controller,
@@ -194,11 +194,11 @@ class _RegisterPage extends State<RegisterPage> {
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Text(
+            child: const Text(
               '我的密碼',
               textAlign: TextAlign.left,
               style: TextStyle(
-                  backgroundColor: const Color(0xfffaf0ca),
+                  backgroundColor: Color(0xfffaf0ca),
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
@@ -214,7 +214,7 @@ class _RegisterPage extends State<RegisterPage> {
               controller: _passwordController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.lock,
                   color: Color(0xff0d3b66),
                 ),
@@ -222,25 +222,25 @@ class _RegisterPage extends State<RegisterPage> {
                 hintText: '請輸入密碼',
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xff0d3b66),
                     width: 3,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xFFFFA493),
                     width: 3,
                   ),
                 ),
                 //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white70,
               ),
-              cursorColor: Color(0xFFFFA493),
-              style: TextStyle(fontSize: 20),
+              cursorColor: const Color(0xFFFFA493),
+              style: const TextStyle(fontSize: 20),
               keyboardType: TextInputType.text,
               obscureText: true,
               //controller: _controller,
@@ -251,16 +251,8 @@ class _RegisterPage extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                child: Text(
-                  "忘記密碼",
-                  style: TextStyle(
-                    color: Color(0xFF0D3B66),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFFA493),
+                  backgroundColor: const Color(0xFFFFA493),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -270,19 +262,19 @@ class _RegisterPage extends State<RegisterPage> {
                     ),
                   );
                 },
-              ),
-              const SizedBox(width: 10),
-              ElevatedButton(
-                child: Text(
-                  "登入",
+                child: const Text(
+                  "忘記密碼",
                   style: TextStyle(
                     color: Color(0xFF0D3B66),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFFA493),
+                  backgroundColor: const Color(0xFFFFA493),
                 ),
                 onPressed: () async {
                   // 存储用戶輸入的帳號和密碼
@@ -304,6 +296,14 @@ class _RegisterPage extends State<RegisterPage> {
                     print("exception: $e");
                   }
                 },
+                child: const Text(
+                  "登入",
+                  style: TextStyle(
+                    color: Color(0xFF0D3B66),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
@@ -328,7 +328,7 @@ class _RegisterPage extends State<RegisterPage> {
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        actions: [],
+        actions: const [],
         //Text(widget.title, style: TextStyle(color: Color(0xff0d3b66))),
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false, //關掉返回鍵
@@ -346,11 +346,11 @@ class _RegisterPage extends State<RegisterPage> {
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(left: 20),
-            child: Text(
+            child: const Text(
               '我的暱稱',
               textAlign: TextAlign.left,
               style: TextStyle(
-                  backgroundColor: const Color(0xfffaf0ca),
+                  backgroundColor: Color(0xfffaf0ca),
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
@@ -366,7 +366,7 @@ class _RegisterPage extends State<RegisterPage> {
               controller: _nameController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.abc_rounded,
                   color: Color(0xff0d3b66),
                 ),
@@ -374,25 +374,25 @@ class _RegisterPage extends State<RegisterPage> {
                 hintText: '請輸入名字',
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xff0d3b66),
                     width: 3,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xFFFFA493),
                     width: 3,
                   ),
                 ),
                 //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white70,
               ),
-              cursorColor: Color(0xFFFFA493),
-              style: TextStyle(fontSize: 20),
+              cursorColor: const Color(0xFFFFA493),
+              style: const TextStyle(fontSize: 20),
               keyboardType: TextInputType.text,
               obscureText: false,
               //controller: _controller,
@@ -402,11 +402,11 @@ class _RegisterPage extends State<RegisterPage> {
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(left: 20),
-            child: Text(
+            child: const Text(
               '我的帳號',
               textAlign: TextAlign.left,
               style: TextStyle(
-                  backgroundColor: const Color(0xfffaf0ca),
+                  backgroundColor: Color(0xfffaf0ca),
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
@@ -422,7 +422,7 @@ class _RegisterPage extends State<RegisterPage> {
               controller: _accountController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.account_circle,
                   color: Color(0xff0d3b66),
                 ),
@@ -430,25 +430,25 @@ class _RegisterPage extends State<RegisterPage> {
                 hintText: '請輸入帳號',
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xff0d3b66),
                     width: 3,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xFFFFA493),
                     width: 3,
                   ),
                 ),
                 //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white70,
               ),
-              cursorColor: Color(0xFFFFA493),
-              style: TextStyle(fontSize: 20),
+              cursorColor: const Color(0xFFFFA493),
+              style: const TextStyle(fontSize: 20),
               keyboardType: TextInputType.text,
               obscureText: false,
               //controller: _controller,
@@ -458,11 +458,11 @@ class _RegisterPage extends State<RegisterPage> {
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Text(
+            child: const Text(
               '我的密碼',
               textAlign: TextAlign.left,
               style: TextStyle(
-                  backgroundColor: const Color(0xfffaf0ca),
+                  backgroundColor: Color(0xfffaf0ca),
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
@@ -478,7 +478,7 @@ class _RegisterPage extends State<RegisterPage> {
               controller: _passwordController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.lock,
                   color: Color(0xff0d3b66),
                 ),
@@ -486,25 +486,25 @@ class _RegisterPage extends State<RegisterPage> {
                 hintText: '請輸入密碼 (至少六位字元)',
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xff0d3b66),
                     width: 3,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xFFFFA493),
                     width: 3,
                   ),
                 ),
                 //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white70,
               ),
-              cursorColor: Color(0xFFFFA493),
-              style: TextStyle(fontSize: 20),
+              cursorColor: const Color(0xFFFFA493),
+              style: const TextStyle(fontSize: 20),
               keyboardType: TextInputType.text,
               obscureText: true,
               //controller: _controller,
@@ -515,16 +515,8 @@ class _RegisterPage extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                child: Text(
-                  "我要登入",
-                  style: TextStyle(
-                    color: Color(0xFF0D3B66),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFFA493),
+                  backgroundColor: const Color(0xFFFFA493),
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -534,19 +526,19 @@ class _RegisterPage extends State<RegisterPage> {
                     ),
                   );
                 },
-              ),
-              const SizedBox(width: 10),
-              ElevatedButton(
-                child: Text(
-                  "註冊",
+                child: const Text(
+                  "我要登入",
                   style: TextStyle(
                     color: Color(0xFF0D3B66),
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFFA493),
+                  backgroundColor: const Color(0xFFFFA493),
                 ),
                 onPressed: () async {
                   // 存储用戶輸入的帳號和密碼
@@ -581,6 +573,14 @@ class _RegisterPage extends State<RegisterPage> {
                     print("exception: $errMsg");
                   }
                 },
+                child: const Text(
+                  "註冊",
+                  style: TextStyle(
+                    color: Color(0xFF0D3B66),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),
@@ -606,7 +606,7 @@ class _RegisterPage extends State<RegisterPage> {
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        actions: [],
+        actions: const [],
         //Text(widget.title, style: TextStyle(color: Color(0xff0d3b66))),
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false, //關掉返回鍵
@@ -624,11 +624,11 @@ class _RegisterPage extends State<RegisterPage> {
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(left: 20),
-            child: Text(
+            child: const Text(
               '我的帳號',
               textAlign: TextAlign.left,
               style: TextStyle(
-                  backgroundColor: const Color(0xfffaf0ca),
+                  backgroundColor: Color(0xfffaf0ca),
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
@@ -644,7 +644,7 @@ class _RegisterPage extends State<RegisterPage> {
               controller: _accountController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.account_circle,
                   color: Color(0xff0d3b66),
                 ),
@@ -652,25 +652,25 @@ class _RegisterPage extends State<RegisterPage> {
                 hintText: '請輸入帳號',
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xff0d3b66),
                     width: 3,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xFFFFA493),
                     width: 3,
                   ),
                 ),
                 //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white70,
               ),
-              cursorColor: Color(0xFFFFA493),
-              style: TextStyle(fontSize: 20),
+              cursorColor: const Color(0xFFFFA493),
+              style: const TextStyle(fontSize: 20),
               keyboardType: TextInputType.text,
               obscureText: false,
               //controller: _controller,
@@ -686,11 +686,11 @@ class _RegisterPage extends State<RegisterPage> {
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Text(
+            child: const Text(
               '我的新密碼',
               textAlign: TextAlign.left,
               style: TextStyle(
-                  backgroundColor: const Color(0xfffaf0ca),
+                  backgroundColor: Color(0xfffaf0ca),
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
@@ -706,7 +706,7 @@ class _RegisterPage extends State<RegisterPage> {
               controller: _passwordController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.lock,
                   color: Color(0xff0d3b66),
                 ),
@@ -714,25 +714,25 @@ class _RegisterPage extends State<RegisterPage> {
                 hintText: '請輸入英數 6-12 位數',
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xff0d3b66),
                     width: 3,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xFFFFA493),
                     width: 3,
                   ),
                 ),
                 //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white70,
               ),
-              cursorColor: Color(0xFFFFA493),
-              style: TextStyle(fontSize: 20),
+              cursorColor: const Color(0xFFFFA493),
+              style: const TextStyle(fontSize: 20),
               keyboardType: TextInputType.text,
               obscureText: true,
               //controller: _controller,
@@ -748,11 +748,11 @@ class _RegisterPage extends State<RegisterPage> {
           Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Text(
+            child: const Text(
               '確認新密碼',
               textAlign: TextAlign.left,
               style: TextStyle(
-                  backgroundColor: const Color(0xfffaf0ca),
+                  backgroundColor: Color(0xfffaf0ca),
                   color: Color(0xff0d3b66),
                   fontSize: 25,
                   letterSpacing:
@@ -768,7 +768,7 @@ class _RegisterPage extends State<RegisterPage> {
               controller: _passwordController,
               decoration: InputDecoration(
                 isDense: true,
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.lock,
                   color: Color(0xff0d3b66),
                 ),
@@ -776,25 +776,25 @@ class _RegisterPage extends State<RegisterPage> {
                 hintText: '請確認新密碼',
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xff0d3b66),
                     width: 3,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
+                  borderSide: const BorderSide(
                     color: Color(0xFFFFA493),
                     width: 3,
                   ),
                 ),
                 //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
                 fillColor: Colors.white70,
               ),
-              cursorColor: Color(0xFFFFA493),
-              style: TextStyle(fontSize: 20),
+              cursorColor: const Color(0xFFFFA493),
+              style: const TextStyle(fontSize: 20),
               keyboardType: TextInputType.text,
               obscureText: true,
               //controller: _controller,
@@ -812,16 +812,8 @@ class _RegisterPage extends State<RegisterPage> {
             children: [
               const SizedBox(width: 10),
               ElevatedButton(
-                child: Text(
-                  "重設密碼",
-                  style: TextStyle(
-                    color: Color(0xFF0D3B66),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFFA493),
+                  backgroundColor: const Color(0xFFFFA493),
                 ),
                 onPressed: () {
                   // 存儲用戶輸入的帳號和密碼
@@ -837,6 +829,14 @@ class _RegisterPage extends State<RegisterPage> {
                   );
                   //Navigator.popAndPushNamed(context, '/register');
                 },
+                child: const Text(
+                  "重設密碼",
+                  style: TextStyle(
+                    color: Color(0xFF0D3B66),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ],
           ),

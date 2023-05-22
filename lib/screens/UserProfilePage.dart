@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class UserProfilePage extends StatefulWidget {
   final Map arguments;
+
   //final User user;
 
   const UserProfilePage({super.key, required this.arguments});
+
   @override
   _UserProfilePage createState() => _UserProfilePage();
 }
@@ -15,8 +16,10 @@ class _UserProfilePage extends State<UserProfilePage> {
   //暱稱
   TextEditingController nicknameController = TextEditingController();
   String nickName = "";
+
   //運動時間
   String timeSpan = "";
+
   //運動日
   bool monday = false;
   bool tuesday = false;
@@ -25,6 +28,7 @@ class _UserProfilePage extends State<UserProfilePage> {
   bool friday = false;
   bool saturday = false;
   bool sunday = false;
+
   //運動偏好
   bool strengthLiking = false;
   bool cardioLiking = false;
@@ -39,17 +43,17 @@ class _UserProfilePage extends State<UserProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('客製計畫',
+        title: const Text(
+          '客製計畫',
           style: TextStyle(
             color: Color(0xFF0D3B66),
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
-        backgroundColor: Color(0xFFFAF0CA),
+        backgroundColor: const Color(0xFFFAF0CA),
       ),
       body: Container(
         alignment: Alignment.center,
@@ -58,9 +62,9 @@ class _UserProfilePage extends State<UserProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('${widget.arguments['user'].displayName}'),
-              SizedBox(height: 30),
-              Padding(
-                padding: EdgeInsets.only(left:20),
+              const SizedBox(height: 30),
+              const Padding(
+                padding: EdgeInsets.only(left: 20),
                 child: Text(
                   '修改暱稱：',
                   style: TextStyle(
@@ -70,12 +74,12 @@ class _UserProfilePage extends State<UserProfilePage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 25),
-                child: Container(
+                padding: const EdgeInsets.only(left: 25),
+                child: SizedBox(
                   width: 200,
                   child: TextField(
                     controller: nicknameController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       //hintText: '修改暱稱',
                       hintStyle: TextStyle(
                         color: Color(0xFF0D3B66),
@@ -89,9 +93,9 @@ class _UserProfilePage extends State<UserProfilePage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
-              Padding(
-                padding: EdgeInsets.only(left:20),
+              const SizedBox(height: 20),
+              const Padding(
+                padding: EdgeInsets.only(left: 20),
                 child: Text(
                   '更改運動時長：',
                   style: TextStyle(
@@ -101,7 +105,7 @@ class _UserProfilePage extends State<UserProfilePage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 20),
+                padding: const EdgeInsets.only(left: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -113,14 +117,13 @@ class _UserProfilePage extends State<UserProfilePage> {
                           timeSpan = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                     ),
-                    Text("15分鐘",
+                    const Text("15分鐘",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Radio<String>(
                       value: "30分鐘",
                       groupValue: timeSpan,
@@ -129,14 +132,13 @@ class _UserProfilePage extends State<UserProfilePage> {
                           timeSpan = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                     ),
-                    Text("30分鐘",
+                    const Text("30分鐘",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Radio<String>(
                       value: "45分鐘",
                       groupValue: timeSpan,
@@ -145,14 +147,13 @@ class _UserProfilePage extends State<UserProfilePage> {
                           timeSpan = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                     ),
-                    Text("45分鐘",
+                    const Text("45分鐘",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Radio<String>(
                       value: "60分鐘",
                       groupValue: timeSpan,
@@ -161,20 +162,19 @@ class _UserProfilePage extends State<UserProfilePage> {
                           timeSpan = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                     ),
-                    Text("60分鐘",
+                    const Text("60分鐘",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
-              Padding(
-                padding: EdgeInsets.only(left:20),
+              const SizedBox(height: 20),
+              const Padding(
+                padding: EdgeInsets.only(left: 20),
                 child: Text(
                   '更改每週運動日：',
                   style: TextStyle(
@@ -184,7 +184,7 @@ class _UserProfilePage extends State<UserProfilePage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 20),
+                padding: const EdgeInsets.only(left: 20),
                 child: Row(
                   children: [
                     Checkbox(
@@ -194,15 +194,14 @@ class _UserProfilePage extends State<UserProfilePage> {
                           monday = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("星期一",
+                    const Text("星期一",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Checkbox(
                       value: tuesday,
                       onChanged: (value) {
@@ -210,15 +209,14 @@ class _UserProfilePage extends State<UserProfilePage> {
                           tuesday = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("星期二",
+                    const Text("星期二",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Checkbox(
                       value: wednesday,
                       onChanged: (value) {
@@ -226,10 +224,11 @@ class _UserProfilePage extends State<UserProfilePage> {
                           wednesday = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("星期三",
+                    const Text(
+                      "星期三",
                       style: TextStyle(
                         color: Color(0xFF0D3B66),
                         fontSize: 15,
@@ -242,20 +241,19 @@ class _UserProfilePage extends State<UserProfilePage> {
                           thursday = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("星期四",
+                    const Text("星期四",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 20),
+                padding: const EdgeInsets.only(left: 20),
                 child: Row(
                   children: [
                     Checkbox(
@@ -265,15 +263,14 @@ class _UserProfilePage extends State<UserProfilePage> {
                           friday = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("星期五",
+                    const Text("星期五",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Checkbox(
                       value: saturday,
                       onChanged: (value) {
@@ -281,15 +278,14 @@ class _UserProfilePage extends State<UserProfilePage> {
                           saturday = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("星期六",
+                    const Text("星期六",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                     Checkbox(
                       value: sunday,
                       onChanged: (value) {
@@ -297,21 +293,20 @@ class _UserProfilePage extends State<UserProfilePage> {
                           sunday = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("星期日",
+                    const Text("星期日",
                         style: TextStyle(
                           color: Color(0xFF0D3B66),
                           fontSize: 15,
-                        )
-                    ),
+                        )),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
-              Padding(
-                padding: EdgeInsets.only(left:20),
+              const SizedBox(height: 20),
+              const Padding(
+                padding: EdgeInsets.only(left: 20),
                 child: Text(
                   '更改個人運動偏好：',
                   style: TextStyle(
@@ -321,9 +316,8 @@ class _UserProfilePage extends State<UserProfilePage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 20),
-                child:
-                Row(
+                padding: const EdgeInsets.only(left: 20),
+                child: Row(
                   children: [
                     Checkbox(
                       value: strengthLiking,
@@ -332,10 +326,11 @@ class _UserProfilePage extends State<UserProfilePage> {
                           strengthLiking = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("肌耐力訓練 (如重量訓練)",
+                    const Text(
+                      "肌耐力訓練 (如重量訓練)",
                       style: TextStyle(
                         color: Color(0xFF0D3B66),
                         fontSize: 15,
@@ -345,7 +340,7 @@ class _UserProfilePage extends State<UserProfilePage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 20),
+                padding: const EdgeInsets.only(left: 20),
                 child: Row(
                   children: [
                     Checkbox(
@@ -355,10 +350,11 @@ class _UserProfilePage extends State<UserProfilePage> {
                           cardioLiking = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("有氧訓練 (如有氧舞蹈、慢跑等)",
+                    const Text(
+                      "有氧訓練 (如有氧舞蹈、慢跑等)",
                       style: TextStyle(
                         color: Color(0xFF0D3B66),
                         fontSize: 15,
@@ -368,9 +364,8 @@ class _UserProfilePage extends State<UserProfilePage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 20),
-                child:
-                Row(
+                padding: const EdgeInsets.only(left: 20),
+                child: Row(
                   children: [
                     Checkbox(
                       value: yogaLiking,
@@ -379,10 +374,11 @@ class _UserProfilePage extends State<UserProfilePage> {
                           yogaLiking = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("伸展運動 (如瑜珈)",
+                    const Text(
+                      "伸展運動 (如瑜珈)",
                       style: TextStyle(
                         color: Color(0xFF0D3B66),
                         fontSize: 15,
@@ -392,7 +388,7 @@ class _UserProfilePage extends State<UserProfilePage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 20),
+                padding: const EdgeInsets.only(left: 20),
                 child: Row(
                   children: [
                     Checkbox(
@@ -402,10 +398,11 @@ class _UserProfilePage extends State<UserProfilePage> {
                           none = value!;
                         });
                       },
-                      activeColor: Color(0xFFFFA493),
+                      activeColor: const Color(0xFFFFA493),
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
-                    Text("我沒有任何偏好",
+                    const Text(
+                      "我沒有任何偏好",
                       style: TextStyle(
                         color: Color(0xFF0D3B66),
                         fontSize: 15,
@@ -414,59 +411,47 @@ class _UserProfilePage extends State<UserProfilePage> {
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 alignment: Alignment.bottomCenter,
-                padding: EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.only(bottom: 20),
                 child: ElevatedButton(
-                  child: Text("確認",
-                      style: TextStyle(
-                        color: Color(0xFF0D3B66),
-                      )
-                  ),
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFFFFA493),
+                    backgroundColor: const Color(0xFFFFA493),
                   ),
                   onPressed: () {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('修改確認',
+                          title: const Text('修改確認',
                               style: TextStyle(
                                 color: Color(0xFF0D3B66),
-                              )
-                          ),
-                          content: Text('你確定要執行此操作嗎?',
+                              )),
+                          content: const Text('你確定要執行此操作嗎?',
                               style: TextStyle(
                                 color: Color(0xFF0D3B66),
-                              )
-                          ),
+                              )),
                           actions: <Widget>[
                             TextButton(
-                              child: Text('取消',
-                                  style: TextStyle(
-                                    color: Color(0xFF0D3B66),
-                                  )
-                              ),
                               style: ElevatedButton.styleFrom(
-                                primary: Color(0xFFFFA493),
-                                onPrimary: Color(0xFF0D3B66),
+                                foregroundColor: const Color(0xFF0D3B66),
+                                backgroundColor: const Color(0xFFFFA493),
                               ),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                            ),
-                            TextButton(
-                              child: Text('確認',
+                              child: const Text('取消',
                                   style: TextStyle(
                                     color: Color(0xFF0D3B66),
-                                  )
-                              ),
+                                  )),
+                            ),
+                            TextButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Color(0xFFFFA493),
-                                onPrimary: Color(0xFF0D3B66),
-                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                foregroundColor: const Color(0xFF0D3B66),
+                                backgroundColor: const Color(0xFFFFA493),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
                               ),
                               onPressed: () {
                                 print('nickName:$nickName');
@@ -478,7 +463,7 @@ class _UserProfilePage extends State<UserProfilePage> {
                                     (friday ? "1" : "0") +
                                     (saturday ? "1" : "0") +
                                     (sunday ? "1" : "0");
-                                print('workoutDays:' + workoutDays);
+                                print('workoutDays: $workoutDays');
                                 Map<String, int> liking = {
                                   'strengthLiking': strengthLiking ? 60 : 40,
                                   'cardioLiking': cardioLiking ? 60 : 40,
@@ -488,12 +473,21 @@ class _UserProfilePage extends State<UserProfilePage> {
                                 // TODO:回傳客製計畫修改的內容
                                 Navigator.of(context).pop();
                               },
-                            ), SizedBox(height: 20),
+                              child: const Text('確認',
+                                  style: TextStyle(
+                                    color: Color(0xFF0D3B66),
+                                  )),
+                            ),
+                            const SizedBox(height: 20),
                           ],
                         );
                       },
                     );
                   },
+                  child: const Text("確認",
+                      style: TextStyle(
+                        color: Color(0xFF0D3B66),
+                      )),
                 ),
               ),
             ]),
