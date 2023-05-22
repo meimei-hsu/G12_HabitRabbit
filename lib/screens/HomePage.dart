@@ -334,9 +334,10 @@ class _HomepageState extends State<Homepage> {
                           ? const Text(
                               "這天要運動噢！",
                               style: const TextStyle(
-                                  color: Color(0xffffa493),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,),
+                                color: Color(0xffffa493),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             )
                           : const Text("Rest Day");
                     } else {
@@ -775,7 +776,9 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
         allowedDayList.add(getDayBtn(i));
       }
       for (int i = selectedDay.weekday - 1; i >= 0; i--) {
-        allowedDayList.insert(0, getDayBtn(i));
+        if (i >= today.weekday) {
+          allowedDayList.insert(0, getDayBtn(i));
+        }
       }
     }
     return allowedDayList;
