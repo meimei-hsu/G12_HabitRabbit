@@ -13,7 +13,7 @@ import 'package:g12/screens/UserProfilePage.dart';
 final routes = {
   '/': (context, {arguments}) => Homepage(arguments: arguments),
   '/register': (context) => const RegisterPage(isLoginPage: true),
-  '/statistic': (context, {arguments}) => StatisticPage(arguments: arguments),
+  '/statistic': (context, {arguments}) => StatisticPage(arguments: arguments,title:"StatisticPage"),
   '/countdown': (context, {arguments}) => CountdownPage(arguments: arguments),
   '/exercise': (context, {arguments}) => ExercisePage(arguments: arguments),
   '/customized': (context, {arguments}) =>

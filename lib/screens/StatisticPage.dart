@@ -1,279 +1,246 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 
 class StatisticPage extends StatefulWidget {
   final Map arguments;
+  final String title;
 
-  const StatisticPage({super.key, required this.arguments});
+  const StatisticPage({Key? key, required this.arguments, required this.title}) : super(key: key);
+
   @override
   _StatisticPageState createState() => _StatisticPageState();
 }
 
 class _StatisticPageState extends State<StatisticPage> {
-  List<List<double>> res = [];
-  List<double> list1= [ ];
-  List<double> list2= [ ];
-  List<double> list3= [ ];
+  List<List<double>> res = [[0.0]];
+  List<double> list1 = [0.0];
+
+  final Map<DateTime, int> datasets = {
+    DateTime(2023, 5, 6): 1,
+    DateTime(2023, 5, 7): 2,
+    DateTime(2023, 5, 12): 2,
+    DateTime(2023, 5, 24): 3,
+  };
+
+  final Map<int, Color> colorsets = {
+    1: Colors.red.shade300,
+    2: Colors.yellow.shade400,
+    3: Colors.green.shade300,
+  };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: const Text(
-          '統計資料',
-          textAlign: TextAlign.left,
-          style: TextStyle(
+        appBar: AppBar(
+          elevation: 0,
+          title: const Text(
+            '統計資料',
+            textAlign: TextAlign.left,
+            style: TextStyle(
               color: Color(0xff0d3b66),
               fontSize: 32,
-              letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
+              letterSpacing: 0,
               fontWeight: FontWeight.bold,
-              height: 1),
+              height: 1,
+            ),
+          ),
+          actions: [],
+          backgroundColor: Colors.white,
         ),
-        actions: [],
-        //Text(widget.title, style: TextStyle(color: Color(0xff0d3b66))),
-        backgroundColor: Colors.white,
-      ),
-
-      floatingActionButton: FloatingActionButton.large(
-          onPressed: () {},
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _showAddWeightDialog(); // Show dialog to add weight
+          },
           backgroundColor: Color(0xffffa493),
-          child: Container(
-            child: Ink(
-              decoration: const ShapeDecoration(
-                //color: Color(0xffffa493),
-                shape: CircleBorder(),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                iconSize: 80,
-                color: Color(0xff0d3b66),
-                tooltip: "返回",
-                onPressed: () {
-                  Navigator.pushNamed(context, '/', arguments: {'user': widget.arguments['user']});
-                },
-              ),
-            ),
-          )),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Statistics:',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            Expanded(
-                child: LineChart(
-                  LineChartData(
-                    lineTouchData: LineTouchData(
-                      touchCallback: (LineTouchResponse touchResponse) {},
-                      handleBuiltInTouches: true,
-                      touchTooltipData: LineTouchTooltipData(
-                        tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
-                      ),
+          child: Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+        body: Padding(
+          padding: EdgeInsets.all(16),
+          //ListView可各分配空間給兩張圖
+          child: ListView(
+              children:[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Statistics:',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                    gridData: FlGridData(
-                      show: true,
-                    ),
-                    titlesData: FlTitlesData(
-                      bottomTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 22,
-                        getTextStyles: (value) =>
-                        const TextStyle(color: Colors.black, fontSize: 10),
-                        getTitles: (value) {
-                          switch (value.toInt()) {
-                            case 1:
-                              return 'JAN';
-                            case 2:
-                              return 'FEB';
-                            case 3:
-                              return 'MAR';
-                            case 4:
-                              return 'APR';
-                            case 5:
-                              return 'MAY';
-                            case 6:
-                              return 'JUN';
-                            case 7:
-                              return 'JUL';
-                            case 8:
-                              return 'AUG';
-                            case 9:
-                              return 'SEP';
-                            case 10:
-                              return 'OCT';
-                            case 11:
-                              return 'NOV';
-                            case 12:
-                              return 'DEC';
-                            default:
-                              return '';
-                          }
-                        },
-                        margin: 8,
-                      ),
-                      leftTitles: SideTitles(
-                        showTitles: true,
-                        getTextStyles: (value) =>
-                        const TextStyle(color: Colors.black, fontSize: 10),
-                        getTitles: (value) {
-                          return '${value.toInt()}';
-                          //return '${value.toInt()}00';
-                        },
-                        margin: 8,
-                      ),
-                    ),
-                    borderData: FlBorderData(
-                      show: true,
-                    ),
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: _mockData1()[0],
-                        isCurved: true,
-                        colors: [
-                          Colors.blue,
-                        ],
-                        barWidth: 2,
-                        isStrokeCapRound: true,
-                        dotData: FlDotData(
-                          show: true,
-                          getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
-                            color: Colors.black,
-                            radius: 3,
+                    Container(
+                      height: 380,
+                      child: LineChart(
+                        LineChartData(
+
+                          lineTouchData: LineTouchData(
+                            touchCallback: (LineTouchResponse touchResponse) {},
+                            handleBuiltInTouches: true,
+                            touchTooltipData: LineTouchTooltipData(
+                              tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
+                            ),
                           ),
+                          gridData: FlGridData(show: true),
+                          titlesData: FlTitlesData(
+                            bottomTitles: SideTitles(
+                              showTitles: true,
+                              reservedSize: 22,
+                              getTextStyles: (value) =>
+                              const TextStyle(color: Colors.black, fontSize: 10),
+                              getTitles: (value) {
+                                int index = value.toInt();
+                                if (index >= 0 && index < res.length) {
+                                  int timestamp = res[index][0].toInt();
+                                  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+                                  return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+                                }
+                                return '';
+                              },
+                              margin: 8,
+                            ),
+                            leftTitles: SideTitles(
+                              showTitles: true,
+                              getTextStyles: (value) =>
+                              const TextStyle(color: Colors.black, fontSize: 10),
+                              getTitles: (value) {
+                                return '${value.toInt()}';
+                              },
+                              margin: 8,
+                            ),
+                          ),
+                          borderData: FlBorderData(show: true),
+                          lineBarsData: [
+                            LineChartBarData(
+                              spots: _getWeightData(),
+                              isCurved: true,
+                              colors: [Colors.blue],
+                              barWidth: 2,
+                              isStrokeCapRound: true,
+                              dotData: FlDotData(
+                                show: true,
+                                getDotPainter: (spot, percent, barData, index) =>
+                                    FlDotCirclePainter(
+                                      color: Colors.black,
+                                      radius: 3,
+                                    ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      /*LineChartBarData(
-                      spots: _mockData1()[1],
-                      isCurved: true,
-                      colors: [
-                        Colors.red,
-                      ],
-                      barWidth: 2,
-                      isStrokeCapRound: true,
-                      dotData: FlDotData(
-                        show: true,
-                        //color: Colors.red,
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(right: 80, left: 80, top: 20),
+                      child :Text(
+                        '熱圖介面',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            backgroundColor: Colors.yellow,
+                            color: Color(0xff0d3b66),
+                            fontSize: 32,
+                            letterSpacing:
+                            0 /*percentages not used in flutter. defaulting to zero*/,
+                            fontWeight: FontWeight.bold,
+                            height: 1),
                       ),
-                    ),*/
-                    ],
-                  ),
-                )
-            ),
-          ],
-        ),
-      ),
+                    ),
+                    Container(
+                      height:200,
+                      child: HeatMapCalendar(
+                        defaultColor: Colors.white,
+                        flexible: true,
+                        colorMode: ColorMode.color,
+                        datasets: datasets,
+                        colorsets: colorsets,
+                        onClick: (value) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(value.toString())),
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ]
+          ),
+        )
     );
   }
-}
 
-List<LineChartBarData> statistics() {
-  List<List<double>> res = [];
-  //List<double> list1 =[];
-  //List<double> list2 =[];
-  //List<double> list3 =[];
+  void _showAddWeightDialog() {
+    TextEditingController weightController = TextEditingController();
+    TextEditingController dateController = TextEditingController();
 
-  return [
-    LineChartBarData(
-      spots: [        for (int i = 0; i < res[0].length; i++)
-        FlSpot(i.toDouble(), res[0][i]),
-      ],
-      isCurved: true,
-      colors: [Colors.greenAccent],
-      barWidth: 2,
-      belowBarData: FlBarBelowData(
-        show: true,
-        colors: [Colors.greenAccent.withOpacity(0.3)],
-      ),
-      dotData: FlDotData(
-        show: true,
-        getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
-          color: Colors.black,
-          radius: 3,
-        ),
-      ),
-    ),
-    LineChartBarData(
-      spots: [
-        for (int i = 0; i < res[1].length; i++)
-          FlSpot(i.toDouble(), res[1][i]),
-      ],
-      isCurved: true,
-      colors: [Colors.orangeAccent],
-      barWidth: 2,
-      belowBarData: FlBarBelowData(
-        show: true,
-        colors: [Colors.orangeAccent.withOpacity(0.3)],
-      ),
-      dotData: FlDotData(
-        show: true,
-        getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
-          color: Colors.black,
-          radius: 3,
-        ),
-      ),
-    ),
-    LineChartBarData(
-      spots: [
-        for (int i = 0; i < res[2].length; i++)
-          FlSpot(i.toDouble(), res[2][i]),
-      ],
-      isCurved: true,
-      colors: [Colors.blueAccent],
-      barWidth: 2,
-      belowBarData: FlBarBelowData(
-        show: true,
-        colors: [Colors.blueAccent.withOpacity(0.3)],
-      ),
-      dotData: FlDotData(
-        show: true,
-        getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
-          color: Colors.black,
-          radius: 3,
-        ),
-      ),
-    ),
-  ];
-}
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add Weight'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: weightController,
+                decoration: InputDecoration(
+                  labelText: 'Weight',
+                ),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                controller: dateController,
+                decoration: InputDecoration(
+                  labelText: 'Date (YYYY-MM-DD)',
+                ),
+                keyboardType: TextInputType.datetime,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                double weight = double.tryParse(weightController.text) ?? 0;
+                String date = dateController.text;
+                if (weight > 0 && date.isNotEmpty) {
+                  setState(() {
+                    // Add the weight data to the chart
+                    list1.add(weight);
+                    // Add the date to the chart
+                    // You can handle the conversion and formatting of the date here if needed
+                    // For simplicity, I'm assuming the date input is in the format 'YYYY-MM-DD'
+                    // and directly adding it as a label to the bottom axis of the chart
+                    res.add([DateTime.parse(date).millisecondsSinceEpoch.toDouble()]);
+                  });
+                }
+                weightController.clear(); // Clear weight text field
+                dateController.clear(); // Clear date text field
+                Navigator.of(context).pop();
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-FlBarBelowData({required bool show, required List<Color> colors}) {
-}
+  List<FlSpot> _getWeightData() {
+    print('res length: ${res.length}');
+    print('list1 length: ${list1.length}');
 
-List _mockData1() {
-  var list1 = <FlSpot>[];
-  var res = [];
-  list1.add(FlSpot(1, 50));
-  list1.add(FlSpot(2, 55));
-  list1.add(FlSpot(3, 45));
-  list1.add(FlSpot(4, 57));
-  list1.add(FlSpot(5, 54));
-  list1.add(FlSpot(6, 50));
-
-  res.add(list1);
-
-  //var list2 = <FlSpot>[];
-  //list2.add(FlSpot(1, 80));
-  //list2.add(FlSpot(2, 100));
-  //list2.add(FlSpot(3, 120));
-  //list2.add(FlSpot(4, 130));
-  //list2.add(FlSpot(5, 140));
-  //list2.add(FlSpot(6, 155));
-  //res.add(list2);
-
-  //var list3 = <FlSpot>[];
-  //list3.add(FlSpot(1, 90));
-  //list3.add(FlSpot(2, 110));
-  //list3.add(FlSpot(3, 130));
-  //list3.add(FlSpot(4, 140));
-  //list3.add(FlSpot(5, 150));
-  //list3.add(FlSpot(6, 170));
-  //res.add(list3);
-
-  return res;
+    if (res.isEmpty || list1.isEmpty) {
+      return [];
+    }
+    return List.generate(
+        list1.length,
+            (index) => FlSpot(index.toDouble(), list1[index])
+    );
+  }
 }
 
