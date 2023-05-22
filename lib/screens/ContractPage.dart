@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:g12/screens/HomePage.dart';
+import 'package:g12/services/Database.dart';
 
 class FirstContractPage extends StatefulWidget {
   final Map arguments;
@@ -234,8 +235,35 @@ class _FirstContractPage extends State<FirstContractPage> {
                               Map<String, String> contractData = {
                                 'plan': plan,
                                 '投入金額': dropdownValue,
+
                                 // TODO:回傳選取的合約內容
                               };
+                              String endDay ="";
+                              String flag ="";
+                              if(plan=="5週4旗"){
+                                endDay="加5週";
+                                flag="0, 4";
+                              }
+                              else if(plan=="12週8旗"){
+                                endDay="加12週";
+                                flag="0, 8";
+                              }
+                              else if(plan=="18週12旗"){
+                                endDay="加18週";
+                                flag="0, 12";
+                              }
+                              var c=[
+                                Calendar.today().toString(),
+                                endDay,
+                                dropdownValue,
+                                '1111111',
+                                flag,
+                                false,
+                              ];
+                              Map contract=Map.fromIterables(ContractDB.getColumns(),c);
+                              print(contract);
+                              ContractDB.insert(widget.arguments['user'].uid, contract);
+
                               print(contractData);
                               // do something with the contract data, such as sending it to a server or storing it locally
                               showDialog(
@@ -358,6 +386,7 @@ class _SecondContractPageState extends State<SecondContractPage> {
               top: 460,
               left: 65,
               child: Text(
+
                 '距離成功已完成：', // TODO:獲取運動進度
                 style: TextStyle(
                   color: Colors.grey[700],
