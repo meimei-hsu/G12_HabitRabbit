@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'package:g12/services/Database.dart';
@@ -29,6 +30,23 @@ class _HomepageState extends State<Homepage> {
   // Local variable: workoutPlan
   String workoutPlan = "";
 
+  bool isThisWeek() {
+    DateFormat fmt = DateFormat('yyyy-MM-dd');
+    String selectedDayDate = fmt.format(
+        DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day));
+    return (Calendar.thisWeek().contains(selectedDayDate)) ? true : false;
+  }
+
+  Future<bool> getWorkoutDay(int weekday) async {
+    Map workoutDaysMap = {};
+    Map? user = await UserDB.getUser(widget.arguments["user"].uid);
+    List workoutDays = user!["workoutDays"].split('');
+    for (int i = 0; i < workoutDays.length; i++) {
+      workoutDaysMap["${i + 1}"] = workoutDays[i];
+    }
+    return (workoutDaysMap[weekday.toString()] == "1") ? true : false;
+  }
+
   List<Widget> _getSportList(List content, List title) {
     int length = content.length;
 
@@ -44,7 +62,7 @@ class _HomepageState extends State<Homepage> {
         ExpansionTile(
           title: Text(
             '${title[i]}',
-            style: TextStyle(
+            style: const TextStyle(
                 color: Color(0xff0d3b66),
                 fontSize: 22,
                 letterSpacing: 0,
@@ -56,7 +74,6 @@ class _HomepageState extends State<Homepage> {
         ),
       );
     }
-
     return expansionTitleList;
   }
 
@@ -92,7 +109,7 @@ class _HomepageState extends State<Homepage> {
         title: Text(
           '${_selectedDay!.month}/${_selectedDay!.day} Plan',
           textAlign: TextAlign.left,
-          style: TextStyle(
+          style: const TextStyle(
               color: Color(0xff0d3b66),
               fontSize: 32,
               letterSpacing: 0,
@@ -100,7 +117,7 @@ class _HomepageState extends State<Homepage> {
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        actions: [],
+        actions: const [],
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false, //關掉返回鍵
       ),
@@ -194,7 +211,7 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           const SizedBox(height: 10),
-          // TODO: To be better.....程式碼重複
+          // TODO: To be better.....程式碼重複，maybe 參考 getWorkoutDay()?
           FutureBuilder<String?>(
               // Exercise plan
               future:
@@ -257,17 +274,24 @@ class _HomepageState extends State<Homepage> {
                               )
                             ],
                           ));
-                    } else {
+                    }
+                    /*else if (ifThisWeek()) {
+                      return Container();
+                    }*/
+                    else {
                       return Container();
                     }
                 }
               }),
           const SizedBox(height: 10),
           // FIXME: 修改運動日後未更新
-          FutureBuilder<num?>(
+          FutureBuilder(
               // Exercise plan
-              future: DurationDB.calcProgress(
-                  widget.arguments['user'].uid, _selectedDay!),
+              future: Future.wait([
+                DurationDB.calcProgress(
+                    widget.arguments['user'].uid, _selectedDay!),
+                getWorkoutDay(_selectedDay!.weekday)
+              ]),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -277,34 +301,44 @@ class _HomepageState extends State<Homepage> {
                       return Text('Error: ${snapshot.error}');
                     }
                     // If snapshot has no error, return plan
-                    num? uncompletedPercentage = snapshot.data;
+                    // num? uncompletedPercentage = snapshot.data;
+                    num? uncompletedPercentage = snapshot.data?[0] as num?;
+                    bool? isWorkoutDay = snapshot.data?[1] as bool?;
                     if (uncompletedPercentage != null) {
                       // Return the plan information
                       if (uncompletedPercentage < 100) {
                         return Text(
                           "今天還有 $uncompletedPercentage% 的運動還沒完成噢~加油加油！",
                           textAlign: TextAlign.left,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Color(0xffffa493),
                               fontSize: 18,
                               letterSpacing: 0,
-                              //percentages not used in flutter
                               fontWeight: FontWeight.bold,
                               height: 1),
                         );
                       } else {
-                        return Text(
+                        return const Text(
                           "今天的運動都完成囉~很棒很棒！",
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               color: Color(0xff5dbb63),
                               fontSize: 18,
                               letterSpacing: 0,
-                              //percentages not used in flutter
                               fontWeight: FontWeight.bold,
                               height: 1),
                         );
                       }
+                    } else if (!isThisWeek()) {
+                      return (isWorkoutDay == true)
+                          ? const Text(
+                              "這天要運動噢！",
+                              style: const TextStyle(
+                                  color: Color(0xffffa493),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,),
+                            )
+                          : const Text("Rest Day");
                     } else {
                       return const Text("Rest Day");
                     }
@@ -312,10 +346,14 @@ class _HomepageState extends State<Homepage> {
               }),
           const SizedBox(height: 10),
           // FIXME: 若運動都完成後 or 過期，不應該顯示新增運動按鈕？
-          FutureBuilder<String?>(
+          FutureBuilder(
               // Exercise plan
-              future:
-                  PlanDB.getByName(widget.arguments['user'].uid, _selectedDay!),
+              future: Future.wait([
+                PlanDB.getByName(widget.arguments['user'].uid, _selectedDay!),
+                getWorkoutDay(_selectedDay!.weekday)
+              ]),
+              /*future:
+                  PlanDB.getByName(widget.arguments['user'].uid, _selectedDay!),*/
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -325,7 +363,26 @@ class _HomepageState extends State<Homepage> {
                       return Text('Error: ${snapshot.error}');
                     }
                     // If snapshot has no error, return plan
-                    workoutPlan = snapshot.data ?? "";
+                    String? plan = snapshot.data?[0] as String?;
+                    workoutPlan = plan ?? "";
+                    bool? isWorkoutDay = snapshot.data?[1] as bool?;
+
+                    ElevatedButton addExerciseBtn = ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xfffaf0ca),
+                      ),
+                      onPressed: () {
+                        _showAddExerciseDialog();
+                      },
+                      child: const Text(
+                        "新增運動",
+                        style: TextStyle(
+                          color: Color(0xFF0D3B66),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+
                     if (workoutPlan.isNotEmpty) {
                       // Convert the String of plan into a List of workouts
                       List content = PlanDB.toList(workoutPlan);
@@ -346,22 +403,12 @@ class _HomepageState extends State<Homepage> {
                           ),
                         ),
                       );
+                    } else if (!isThisWeek()) {
+                      return (isWorkoutDay == true)
+                          ? Container()
+                          : addExerciseBtn;
                     } else {
-                      return ElevatedButton(
-                        child: Text(
-                          "新增運動",
-                          style: TextStyle(
-                            color: Color(0xFF0D3B66),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xfffaf0ca),
-                        ),
-                        onPressed: () {
-                          _showAddExerciseDialog();
-                        },
-                      );
+                      return addExerciseBtn;
                       //return const Text("Generate Workout Button");
                     }
                 }
@@ -419,7 +466,7 @@ class _HomepageState extends State<Homepage> {
                     child: IconButton(
                       icon: const Icon(Icons.menu),
                       iconSize: 60,
-                      color: Color(0xff0d3b66),
+                      color: const Color(0xff0d3b66),
                       tooltip: "選單",
                       onPressed: () => _myKey.currentState!.openEndDrawer(),
                     ),
@@ -435,13 +482,13 @@ class _HomepageState extends State<Homepage> {
             children: <Widget>[
               UserAccountsDrawerHeader(
                 //require email
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   //to be better
                   color: Color(0x193598f5),
                 ),
                 accountName: Text(
                   "${widget.arguments['user'].displayName}",
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 24,
                     letterSpacing:
@@ -452,7 +499,7 @@ class _HomepageState extends State<Homepage> {
                 ),
                 accountEmail: Text(
                   "${widget.arguments['user'].email}",
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,
                     letterSpacing:
@@ -460,7 +507,7 @@ class _HomepageState extends State<Homepage> {
                     height: 1,
                   ),
                 ),
-                currentAccountPicture: CircleAvatar(
+                currentAccountPicture: const CircleAvatar(
                   //backgroundImage: NetworkImage(
                   //"https://avatars2.githubusercontent.com/u/18156421?s=400&u=1f91dcf74134827fde071751f95522845223ed6a&v=4",
                   //),
@@ -569,26 +616,27 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
     for (int i = 1; i <= 4; i++) {
       int choice = 15 * i;
       btnList.add(OutlinedButton(
-        child: Text(
-          "$choice",
-          style: TextStyle(
-            color: Color(0xff0d3b66),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
         style: OutlinedButton.styleFrom(
           shape: const CircleBorder(),
           side: const BorderSide(
             color: Color(0xff0d3b66),
           ),
-          backgroundColor:
-              (exerciseTime == choice) ? Color(0xffffa493) : Colors.white70,
+          backgroundColor: (exerciseTime == choice)
+              ? const Color(0xffffa493)
+              : Colors.white70,
         ),
         onPressed: () {
           setState(() {
             exerciseTime = choice;
           });
         },
+        child: Text(
+          "$choice",
+          style: const TextStyle(
+            color: Color(0xff0d3b66),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ));
     }
     return btnList;
@@ -597,7 +645,7 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(
+      title: const Text(
         "新增運動",
         style: TextStyle(
           color: Color(0xff0d3b66),
@@ -609,7 +657,7 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
         children: [
           Text("你要在 ${widget.arguments['selectedDay'].month}/"
               "${widget.arguments['selectedDay'].day} 新增幾分鐘的運動計畫呢？"),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Container(
             height: MediaQuery.of(context).size.width * 0.1,
             width: double.maxFinite,
@@ -620,7 +668,7 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
       ),
       actions: [
         OutlinedButton(
-            child: Text(
+            child: const Text(
               "取消",
               style: TextStyle(
                 color: Color(0xff0d3b66),
@@ -631,22 +679,22 @@ class _AddExerciseDialogState extends State<AddExerciseDialog> {
               Navigator.pop(context);
             }),
         ElevatedButton(
-            child: Text(
-              "確定",
-              style: TextStyle(
-                color: Color(0xff0d3b66),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xfffbb87f),
+              backgroundColor: const Color(0xfffbb87f),
             ),
             onPressed: () {
               // TODO: (backend) 新增運動
               print(
                   "${widget.arguments['selectedDay']} add $exerciseTime minutes exercise plan.");
               Navigator.pop(context);
-            }),
+            },
+            child: const Text(
+              "確定",
+              style: TextStyle(
+                color: Color(0xff0d3b66),
+                fontWeight: FontWeight.bold,
+              ),
+            )),
       ],
     );
   }
@@ -686,20 +734,13 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
 
     OutlinedButton getDayBtn(int i) {
       OutlinedButton dayBtn = OutlinedButton(
-        child: Text(
-          weekdayNameList[i],
-          style: TextStyle(
-            color: Color(0xff0d3b66),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
         style: OutlinedButton.styleFrom(
           shape: const CircleBorder(),
           side: const BorderSide(
             color: Color(0xff0d3b66),
           ),
           backgroundColor: (changedDayWeekday == weekdayNameList[i])
-              ? Color(0xffffa493)
+              ? const Color(0xffffa493)
               : Colors.white70,
         ),
         onPressed: () {
@@ -710,6 +751,13 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
                     (selectedDay.weekday == 7) ? 1 : i - selectedDay.weekday));
           });
         },
+        child: Text(
+          weekdayNameList[i],
+          style: const TextStyle(
+            color: Color(0xff0d3b66),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       );
       return dayBtn;
     }
@@ -737,27 +785,20 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
     List<ElevatedButton> btnList = [];
 
     ElevatedButton cancelBtn = ElevatedButton(
-        child: Text(
-          "取消",
-          style: TextStyle(
-            color: Color(0xff0d3b66),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
         ),
         onPressed: () {
           Navigator.pop(context);
-        });
-    ElevatedButton confirmBtn = ElevatedButton(
-        child: Text(
-          "確定",
+        },
+        child: const Text(
+          "取消",
           style: TextStyle(
             color: Color(0xff0d3b66),
             fontWeight: FontWeight.bold,
           ),
-        ),
+        ));
+    ElevatedButton confirmBtn = ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: Color(0xfffbb87f),
         ),
@@ -768,7 +809,14 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
           await PlanDB.updateDate(uid, originalDate, changedDayDate);
           print("Change $selectedDay to $changedDayDate 星期$changedDayWeekday.");
           Navigator.pop(context);
-        });
+        },
+        child: const Text(
+          "確定",
+          style: TextStyle(
+            color: Color(0xff0d3b66),
+            fontWeight: FontWeight.bold,
+          ),
+        ));
 
     if (selectedDay.isBefore(today)) {
       btnList.add(confirmBtn);
@@ -786,7 +834,7 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(
+      title: const Text(
         "修改運動日",
         style: TextStyle(
           color: Color(0xff0d3b66),
@@ -795,17 +843,17 @@ class _ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
       ),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         if (selectedDay.isBefore(today)) ...[
-          Text(
+          const Text(
             "逝者已矣，來者可追......\n認真運動吧！",
             textAlign: TextAlign.center,
           ),
         ] else ...[
           if (!selectedDay.isAfter(today) && selectedDay.weekday == 6) ...[
-            Text("今天已經星期六囉~無法再換到別天了！")
+            const Text("今天已經星期六囉~無法再換到別天了！")
           ] else ...[
             Text("你要將 ${widget.arguments['selectedDay'].month}/"
                 "${widget.arguments['selectedDay'].day} 的運動計畫移到哪天呢？"),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Container(
               height: MediaQuery.of(context).size.width * 0.1,
               width: double.maxFinite,
