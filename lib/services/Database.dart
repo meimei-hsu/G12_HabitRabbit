@@ -320,7 +320,7 @@ class ContractDB {
     return user!["startDay"];
   }
 
-  static Future<num?> getEndDay(String id) async {
+  static Future<String?> getEndDay(String id) async {
     final Map? user = await getContract(id);
     return user!["endDay"];
   }

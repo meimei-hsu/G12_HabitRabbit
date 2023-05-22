@@ -5,6 +5,7 @@ import 'package:g12/services/Database.dart';
 class FirstContractPage extends StatefulWidget {
   final Map arguments;
 
+
   const FirstContractPage({super.key, required this.arguments});
 
   @override
@@ -232,34 +233,44 @@ class _FirstContractPage extends State<FirstContractPage> {
                             ),
                             onPressed: () {
                               Navigator.of(context).pop();
-                              Map<String, String> contractData = {
+                              /*Map<String, String> contractData = {
                                 'plan': plan,
                                 '投入金額': dropdownValue,
 
                                 // TODO:回傳選取的合約內容
-                              };
-                              String endDay ="";
+                              };*/
+
+                              int endDay=0;
                               String flag ="";
                               if(plan=="5週4旗"){
-                                endDay="加5週";
+                                endDay=35;
                                 flag="0, 4";
                               }
                               else if(plan=="12週8旗"){
-                                endDay="加12週";
+                                endDay=84;
                                 flag="0, 8";
                               }
                               else if(plan=="18週12旗"){
-                                endDay="加18週";
+                                endDay=126;
                                 flag="0, 12";
                               }
                               var c=[
-                                Calendar.today().toString(),
-                                endDay,
-                                dropdownValue,
-                                '1111111',
+                                Calendar.today().toString(),//startDay
+                                Calendar.getWeekFrom(Calendar.today(), endDay).last.toString(),//endDay
+                                dropdownValue,//money
+                                '1111111',//bankaccount
                                 flag,
                                 false,
                               ];
+                              Map<String, String> contractData = {
+                                'plan': plan,
+                                '投入金額': dropdownValue,
+                                'flag': flag,
+                                'endDay':Calendar.getWeekFrom(Calendar.today(), endDay).last.toString(),
+
+                                // TODO:回傳選取的合約內容
+                              };
+
                               Map contract=Map.fromIterables(ContractDB.getColumns(),c);
                               print(contract);
                               ContractDB.insert(widget.arguments['user'].uid, contract);
@@ -386,8 +397,7 @@ class _SecondContractPageState extends State<SecondContractPage> {
               top: 460,
               left: 65,
               child: Text(
-
-                '距離成功已完成：', // TODO:獲取運動進度
+                '距離成功已完成：${widget.arguments['contractData']['flag']}', // TODO:獲取運動進度
                 style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 18,
@@ -398,7 +408,8 @@ class _SecondContractPageState extends State<SecondContractPage> {
               top: 490,
               left: 65,
               child: Text(
-                '承諾合約終止日：', // TODO:這個要自己算還是從後端取資料？
+                // endDay=ContractDB.getEndDay(widget.arguments['user'].uid);
+                '承諾合約終止日：${widget.arguments['contractData']['endDay']}',
                 style: TextStyle(
                   color: Colors.grey[700],
                   fontSize: 18,
