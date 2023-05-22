@@ -123,7 +123,13 @@ class Calendar {
         duration, (index) => fmt.format(firstDay.add(Duration(days: index))));
     return week;
   }
-
+  //Get next sunday
+  static DateTime nextSunday(DateTime today){
+    while(today.weekday!=7){
+      today.add(const Duration(days: 1));
+    }
+    return today;
+  }
   // Get the days of week that have already passed
   static List<String> daysPassed() => (firstDay().weekday != 7)
       ? getWeekFrom(firstDay(), today().weekday.toInt())

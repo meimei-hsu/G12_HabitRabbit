@@ -255,6 +255,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                 flag="0, 12";
                               }
                               var c=[
+                               // Calendar.nextSunday(Calendar.today()).toString(),//startDay
+                               // Calendar.getWeekFrom(Calendar.nextSunday(Calendar.today()), endDay).last.toString(),//endDay
                                 Calendar.today().toString(),//startDay
                                 Calendar.getWeekFrom(Calendar.today(), endDay).last.toString(),//endDay
                                 dropdownValue,//money
