@@ -15,6 +15,9 @@ class StatisticPage extends StatefulWidget {
 class _StatisticPageState extends State<StatisticPage> {
   List<List<double>> res = [[0.0]];
   List<double> list1 = [0.0];
+  List<Map<double,String>> weightDataList = [ ];
+  late double weight;
+  late String date;
 
   final Map<DateTime, int> datasets = {
     DateTime(2023, 5, 6): 1,
@@ -72,7 +75,6 @@ class _StatisticPageState extends State<StatisticPage> {
                       height: 380,
                       child: LineChart(
                         LineChartData(
-
                           lineTouchData: LineTouchData(
                             touchCallback: (LineTouchResponse touchResponse) {},
                             handleBuiltInTouches: true,
@@ -216,11 +218,13 @@ class _StatisticPageState extends State<StatisticPage> {
                     // For simplicity, I'm assuming the date input is in the format 'YYYY-MM-DD'
                     // and directly adding it as a label to the bottom axis of the chart
                     res.add([DateTime.parse(date).millisecondsSinceEpoch.toDouble()]);
+                    weightDataList.add({weight: date});
                   });
                 }
-                weightController.clear(); // Clear weight text field
-                dateController.clear(); // Clear date text field
-                Navigator.of(context).pop();
+                    print(weightDataList); //to-do list 嘉嘉
+                    weightController.clear(); // Clear weight text field
+                    dateController.clear(); // Clear date text field
+                    Navigator.of(context).pop();
               },
               child: Text('Add'),
             ),

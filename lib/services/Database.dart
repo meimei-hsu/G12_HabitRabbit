@@ -86,7 +86,7 @@ class Home extends StatelessWidget {
               onPressed: () {
                 UserDB.insert(mary, maryProfile);
                 // UserDB.update(mary, {"weight": 47});
-                UserDB.updateByFeedback(john, "cardio", [2, 2]);
+                UserDB.updateByFeedback(mary, "cardio", [1, 1]);
                 UserDB.getAll();
                 WorkoutDB.toNames(plan);
                 ContractDB.insert(mary, maryContract);
@@ -252,12 +252,12 @@ class UserDB {
     }
 
     // Insert user into database
-    return await DB.insert("$db/$id", map);
+    return await DB.insert("$db/$id/", map);
   }
 
   // Update data {columnName: value} from userID
   static Future<bool> update(String id, Map<String, Object> map) async {
-    return await DB.update("$db/$id", map);
+    return await DB.update("$db/$id/", map);
   }
 
   // Update plan variables by user's feedback [滿意度, 疲憊度]
@@ -271,9 +271,8 @@ class UserDB {
 
       List adjVal = [-5, -2, 0, 2, 5];
       liking += adjVal[feedback[0] - 1];
-      ability += adjVal[feedback[1] - 1];
+      ability += adjVal[feedback[0] - 1];
 
-      print("DEBUG: $type: $liking & $ability");
       return await update(id, {index1: liking, index2: ability});
     }
     return false;
