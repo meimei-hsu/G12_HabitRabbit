@@ -328,7 +328,7 @@ class FeedbackDialog extends StatefulWidget {
 class FeedbackDialogState extends State<FeedbackDialog> {
   double _currentValue1 = 1;
   double _currentValue2 = 1;
-  List<double> feedbackData = [];
+  List<int> feedbackData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -420,8 +420,8 @@ class FeedbackDialogState extends State<FeedbackDialog> {
             child: const Text("Submit"),
             onPressed: () async {
               //存input?
-              feedbackData.add(_currentValue1);
-              feedbackData.add(_currentValue2);
+              feedbackData.add(_currentValue1.toInt());
+              feedbackData.add(_currentValue2.toInt());
               print("FeedbackData: $feedbackData");
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false,
