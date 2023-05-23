@@ -91,6 +91,7 @@ class Home extends StatelessWidget {
                 WorkoutDB.toNames(plan);
                 ContractDB.insert(mary, maryContract);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
+                Calendar.nextSunday(Calendar.today());
               },
               child: const Text("test DB")),
           TextButton(
@@ -125,10 +126,13 @@ class Calendar {
   }
   //Get next sunday
   static DateTime nextSunday(DateTime today){
-    while(today.weekday!=7){
-      today.add(const Duration(days: 1));
+    DateTime sunday = today;
+    while(sunday.weekday!=7){
+      sunday = sunday.add(Duration(days: 1));
+      print("day");
+      print(sunday.weekday);
     }
-    return today;
+    return sunday;
   }
   // Get the days of week that have already passed
   static List<String> daysPassed() => (firstDay().weekday != 7)

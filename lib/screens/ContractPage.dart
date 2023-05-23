@@ -242,14 +242,10 @@ class _FirstContractPage extends State<FirstContractPage> {
                               flag = "0, 12";
                             }
                             var c = [
-                              // Calendar.nextSunday(Calendar.today()).toString(),//startDay
-                              // Calendar.getWeekFrom(Calendar.nextSunday(Calendar.today()), endDay).last.toString(),//endDay
-                              Calendar.today().toString(),
-                              //startDay
-                              Calendar.getWeekFrom(Calendar.today(), endDay)
-                                  .last
-                                  .toString(),
-                              //endDay
+                               Calendar.nextSunday(Calendar.today()).toString(),//startDay
+                               Calendar.getWeekFrom(Calendar.nextSunday(Calendar.today()), endDay).last.toString(),//endDay
+                              //Calendar.today().toString(),//startDay
+                              //Calendar.getWeekFrom(Calendar.today(), endDay).last.toString(),//endDay
                               dropdownValue,
                               //money
                               '1111111',
@@ -261,10 +257,10 @@ class _FirstContractPage extends State<FirstContractPage> {
                               'plan': plan,
                               '投入金額': dropdownValue,
                               'flag': flag,
-                              'endDay':
-                                  Calendar.getWeekFrom(Calendar.today(), endDay)
+                              'endDay':Calendar.getWeekFrom(Calendar.nextSunday(Calendar.today()), endDay).last.toString(),
+                                  /*Calendar.getWeekFrom(Calendar.today(), endDay)
                                       .last
-                                      .toString(),
+                                      .toString(),*/
 
                               // TODO:回傳選取的合約內容
                             };
