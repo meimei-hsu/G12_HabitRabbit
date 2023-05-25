@@ -4,18 +4,19 @@ import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 
 class StatisticPage extends StatefulWidget {
   final Map arguments;
-  final String title;
 
-  const StatisticPage({Key? key, required this.arguments, required this.title}) : super(key: key);
+  const StatisticPage({super.key, required this.arguments});
 
   @override
   _StatisticPageState createState() => _StatisticPageState();
 }
 
 class _StatisticPageState extends State<StatisticPage> {
-  List<List<double>> res = [[0.0]];
+  List<List<double>> res = [
+    [0.0]
+  ];
   List<double> list1 = [0.0];
-  List<Map<double,String>> weightDataList = [ ];
+  List<Map<double, String>> weightDataList = [];
   late double weight;
   late String date;
 
@@ -62,111 +63,110 @@ class _StatisticPageState extends State<StatisticPage> {
         body: Padding(
           padding: EdgeInsets.all(16),
           //ListView可各分配空間給兩張圖
-          child: ListView(
-              children:[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Statistics:',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    Container(
-                      height: 380,
-                      child: LineChart(
-                        LineChartData(
-                          lineTouchData: LineTouchData(
-                            touchCallback: (LineTouchResponse touchResponse) {},
-                            handleBuiltInTouches: true,
-                            touchTooltipData: LineTouchTooltipData(
-                              tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
-                            ),
-                          ),
-                          gridData: FlGridData(show: true),
-                          titlesData: FlTitlesData(
-                            bottomTitles: SideTitles(
-                              showTitles: true,
-                              reservedSize: 22,
-                              getTextStyles: (value) =>
-                              const TextStyle(color: Colors.black, fontSize: 10),
-                              getTitles: (value) {
-                                int index = value.toInt();
-                                if (index >= 0 && index < res.length) {
-                                  int timestamp = res[index][0].toInt();
-                                  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
-                                  return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
-                                }
-                                return '';
-                              },
-                              margin: 8,
-                            ),
-                            leftTitles: SideTitles(
-                              showTitles: true,
-                              getTextStyles: (value) =>
-                              const TextStyle(color: Colors.black, fontSize: 10),
-                              getTitles: (value) {
-                                return '${value.toInt()}';
-                              },
-                              margin: 8,
-                            ),
-                          ),
-                          borderData: FlBorderData(show: true),
-                          lineBarsData: [
-                            LineChartBarData(
-                              spots: _getWeightData(),
-                              isCurved: true,
-                              colors: [Colors.blue],
-                              barWidth: 2,
-                              isStrokeCapRound: true,
-                              dotData: FlDotData(
-                                show: true,
-                                getDotPainter: (spot, percent, barData, index) =>
-                                    FlDotCirclePainter(
-                                      color: Colors.black,
-                                      radius: 3,
-                                    ),
-                              ),
-                            ),
-                          ],
+          child: ListView(children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Statistics:',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  height: 380,
+                  child: LineChart(
+                    LineChartData(
+                      lineTouchData: LineTouchData(
+                        touchCallback: (LineTouchResponse touchResponse) {},
+                        handleBuiltInTouches: true,
+                        touchTooltipData: LineTouchTooltipData(
+                          tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
                         ),
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(right: 80, left: 80, top: 20),
-                      child :Text(
-                        '熱圖介面',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            backgroundColor: Colors.yellow,
-                            color: Color(0xff0d3b66),
-                            fontSize: 32,
-                            letterSpacing:
-                            0 /*percentages not used in flutter. defaulting to zero*/,
-                            fontWeight: FontWeight.bold,
-                            height: 1),
+                      gridData: FlGridData(show: true),
+                      titlesData: FlTitlesData(
+                        bottomTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 22,
+                          getTextStyles: (value) => const TextStyle(
+                              color: Colors.black, fontSize: 10),
+                          getTitles: (value) {
+                            int index = value.toInt();
+                            if (index >= 0 && index < res.length) {
+                              int timestamp = res[index][0].toInt();
+                              DateTime dateTime =
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      timestamp);
+                              return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+                            }
+                            return '';
+                          },
+                          margin: 8,
+                        ),
+                        leftTitles: SideTitles(
+                          showTitles: true,
+                          getTextStyles: (value) => const TextStyle(
+                              color: Colors.black, fontSize: 10),
+                          getTitles: (value) {
+                            return '${value.toInt()}';
+                          },
+                          margin: 8,
+                        ),
                       ),
+                      borderData: FlBorderData(show: true),
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: _getWeightData(),
+                          isCurved: true,
+                          colors: [Colors.blue],
+                          barWidth: 2,
+                          isStrokeCapRound: true,
+                          dotData: FlDotData(
+                            show: true,
+                            getDotPainter: (spot, percent, barData, index) =>
+                                FlDotCirclePainter(
+                              color: Colors.black,
+                              radius: 3,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    Container(
-                      height:200,
-                      child: HeatMapCalendar(
-                        defaultColor: Colors.white,
-                        flexible: true,
-                        colorMode: ColorMode.color,
-                        datasets: datasets,
-                        colorsets: colorsets,
-                        onClick: (value) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(value.toString())),
-                          );
-                        },
-                      ),
-                    )
-                  ],
+                  ),
                 ),
-              ]
-          ),
-        )
-    );
+                Container(
+                  padding: EdgeInsets.only(right: 80, left: 80, top: 20),
+                  child: Text(
+                    '熱圖介面',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        backgroundColor: Colors.yellow,
+                        color: Color(0xff0d3b66),
+                        fontSize: 32,
+                        letterSpacing:
+                            0 /*percentages not used in flutter. defaulting to zero*/,
+                        fontWeight: FontWeight.bold,
+                        height: 1),
+                  ),
+                ),
+                Container(
+                  height: 200,
+                  child: HeatMapCalendar(
+                    defaultColor: Colors.white,
+                    flexible: true,
+                    colorMode: ColorMode.color,
+                    datasets: datasets,
+                    colorsets: colorsets,
+                    onClick: (value) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(value.toString())),
+                      );
+                    },
+                  ),
+                )
+              ],
+            ),
+          ]),
+        ));
   }
 
   void _showAddWeightDialog() {
@@ -217,14 +217,16 @@ class _StatisticPageState extends State<StatisticPage> {
                     // You can handle the conversion and formatting of the date here if needed
                     // For simplicity, I'm assuming the date input is in the format 'YYYY-MM-DD'
                     // and directly adding it as a label to the bottom axis of the chart
-                    res.add([DateTime.parse(date).millisecondsSinceEpoch.toDouble()]);
+                    res.add([
+                      DateTime.parse(date).millisecondsSinceEpoch.toDouble()
+                    ]);
                     weightDataList.add({weight: date});
                   });
                 }
-                    print(weightDataList); //to-do list 嘉嘉
-                    weightController.clear(); // Clear weight text field
-                    dateController.clear(); // Clear date text field
-                    Navigator.of(context).pop();
+                print(weightDataList); //to-do list 嘉嘉
+                weightController.clear(); // Clear weight text field
+                dateController.clear(); // Clear date text field
+                Navigator.of(context).pop();
               },
               child: Text('Add'),
             ),
@@ -242,9 +244,6 @@ class _StatisticPageState extends State<StatisticPage> {
       return [];
     }
     return List.generate(
-        list1.length,
-            (index) => FlSpot(index.toDouble(), list1[index])
-    );
+        list1.length, (index) => FlSpot(index.toDouble(), list1[index]));
   }
 }
-

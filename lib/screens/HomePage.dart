@@ -530,26 +530,49 @@ class _HomepageState extends State<Homepage> {
                   //收合drawer
                 },
               ),
-              ListTile(
-                title: const Text(
-                  '承諾合約',
-                  style: TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                  ),
-                ),
-                onTap: () {
-                  // TODO: 判斷是否有立過合約，有 -> /contract；沒有 -> /contract/initial
-                  Navigator.popAndPushNamed(context, '/contract/initial',
-                      arguments: {'user': widget.arguments['user']});
-                  //點擊後做什麼事
-                  //切換頁面
-                  //收合drawer
-                },
-              ),
-              ListTile(
+              FutureBuilder(
+                  // Exercise plan
+                  future: ContractDB.getContractDetails(
+                      widget.arguments['user'].uid),
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const CircularProgressIndicator();
+                      default:
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        }
+                        // If snapshot has no error, return plan
+                        List? contractData = snapshot?.data;
+
+                        return ListTile(
+                          title: const Text(
+                            '承諾合約',
+                            style: TextStyle(
+                              color: Color(0xff0d3b66),
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              height: 1,
+                            ),
+                          ),
+                          onTap: () {
+                            if (contractData != null) {
+                              Navigator.popAndPushNamed(context, '/contract',
+                                  arguments: {
+                                    'user': widget.arguments['user'],
+                                    'contractData': contractData[0],
+                                  });
+                            } else {
+                              Navigator.popAndPushNamed(
+                                  context, '/contract/initial', arguments: {
+                                'user': widget.arguments['user']
+                              });
+                            }
+                          },
+                        );
+                    }
+                  }),
+              /*ListTile(
                 title: const Text(
                   '客製計畫',
                   style: TextStyle(
@@ -564,7 +587,7 @@ class _HomepageState extends State<Homepage> {
                   //切換頁面
                   //收合drawer
                 },
-              ),
+              ),*/
               ListTile(
                 title: const Text(
                   '里程碑',
@@ -575,11 +598,7 @@ class _HomepageState extends State<Homepage> {
                     height: 1,
                   ),
                 ),
-                onTap: () {
-                  //點擊後做什麼事
-                  //切換頁面
-                  //收合drawer
-                },
+                onTap: () {},
               ),
             ],
           ),

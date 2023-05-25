@@ -242,21 +242,33 @@ class _FirstContractPage extends State<FirstContractPage> {
                               flag = "0, 12";
                             }
                             var c = [
-                               Calendar.nextSunday(Calendar.today()).toString(),//startDay
-                               Calendar.getWeekFrom(Calendar.nextSunday(Calendar.today()), endDay).last.toString(),//endDay
-                             // Calendar.today().toString(),//startDay
+                              Calendar.nextSunday(Calendar.today()).toString(),
+                              //startDay
+                              Calendar.getWeekFrom(
+                                      Calendar.nextSunday(Calendar.today()),
+                                      endDay)
+                                  .last
+                                  .toString(),
+                              //endDay
+                              // Calendar.today().toString(),//startDay
                               //Calendar.getWeekFrom(Calendar.today(), endDay).last.toString(),//endDay
-                              dropdownValue, //money
-                              '1111111', //bankaccount
+                              dropdownValue,
+                              //money
+                              '1111111',
+                              //bankaccount
                               flag,
                               false,
                             ];
                             Map<String, String> contractData = {
                               'plan': plan,
-                              '投入金額': dropdownValue,
+                              'money': dropdownValue,
                               'flag': flag,
-                              'endDay':Calendar.getWeekFrom(Calendar.nextSunday(Calendar.today()), endDay).last.toString(),
-                                  //Calendar.getWeekFrom(Calendar.today(), endDay).last.toString(),
+                              'endDay': Calendar.getWeekFrom(
+                                      Calendar.nextSunday(Calendar.today()),
+                                      endDay)
+                                  .last
+                                  .toString(),
+                              //Calendar.getWeekFrom(Calendar.today(), endDay).last.toString(),
 
                               // TODO:回傳選取的合約內容
                             };
@@ -322,6 +334,8 @@ class SecondContractPage extends StatefulWidget {
 }
 
 class SecondContractPageState extends State<SecondContractPage> {
+  Map flagToPlan = {"0,4": "5 週 4 旗", "0,8": "12 週 8 旗", "0,12": "18 週 12 旗"};
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -376,7 +390,7 @@ class SecondContractPageState extends State<SecondContractPage> {
             top: 400,
             left: 65,
             child: Text(
-              '您選擇的方案：${widget.arguments['contractData']['plan']}',
+              '您選擇的方案：${flagToPlan[widget.arguments['contractData']['flag']]}',
               style: TextStyle(
                 color: Colors.grey[700],
                 fontSize: 18,
@@ -387,19 +401,19 @@ class SecondContractPageState extends State<SecondContractPage> {
             top: 430,
             left: 65,
             child: Text(
-              '您所投入的金額(元)：${widget.arguments['contractData']['投入金額']}',
+              '您所投入的金額(元)：${widget.arguments['contractData']['money']}',
               style: TextStyle(
                 color: Colors.grey[700],
                 fontSize: 18,
               ),
             ),
           ),
+          // TODO: 用進度條顯示
           Positioned(
             top: 460,
             left: 65,
             child: Text(
               '距離成功已完成：${widget.arguments['contractData']['flag']}',
-              // TODO:獲取運動進度
               style: TextStyle(
                 color: Colors.grey[700],
                 fontSize: 18,
@@ -411,7 +425,7 @@ class SecondContractPageState extends State<SecondContractPage> {
             left: 65,
             child: Text(
               // endDay=ContractDB.getEndDay(widget.arguments['user'].uid);
-              '承諾合約終止日：${widget.arguments['contractData']['endDay']}',
+              '承諾合約終止日：${widget.arguments['contractData']['endDay'].split(" ")[0]}',
               style: TextStyle(
                 color: Colors.grey[700],
                 fontSize: 18,
