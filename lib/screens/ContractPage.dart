@@ -427,7 +427,8 @@ class SecondContractPageState extends State<SecondContractPage> {
             child: StepProgressIndicator(
               totalSteps: int.parse(
                   widget.arguments['contractData']['flag'].split(",")[1]),
-              currentStep: 2,
+              currentStep: int.parse(
+                widget.arguments['contractData']['flag'].split(",")[0]), //
               selectedColor: const Color(0xFFFFA493),
               unselectedColor: Colors.white,
               customStep: (index, color, _) => Icon(
