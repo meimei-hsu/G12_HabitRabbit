@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
+
 import 'package:g12/services/Database.dart';
 
 class FirstContractPage extends StatefulWidget {
@@ -408,15 +410,29 @@ class SecondContractPageState extends State<SecondContractPage> {
               ),
             ),
           ),
-          // TODO: 用進度條顯示
           Positioned(
             top: 460,
             left: 65,
             child: Text(
-              '距離成功已完成：${widget.arguments['contractData']['flag']}',
+              '距離成功已完成：',//${widget.arguments['contractData']['flag']}
               style: TextStyle(
                 color: Colors.grey[700],
                 fontSize: 18,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 462,
+            left: 205,
+            child: StepProgressIndicator(
+              totalSteps: int.parse(
+                  widget.arguments['contractData']['flag'].split(",")[1]),
+              currentStep: 2,
+              selectedColor: const Color(0xFFFFA493),
+              unselectedColor: Colors.white,
+              customStep: (index, color, _) => Icon(
+                Icons.flag_rounded,
+                color: color,
               ),
             ),
           ),
