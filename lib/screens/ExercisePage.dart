@@ -427,9 +427,10 @@ class FeedbackDialogState extends State<FeedbackDialog> {
                   context, '/', (Route<dynamic> route) => false,
                   arguments: {'user': widget.arguments['user']});
               String uid = widget.arguments['user'].uid;
-              DateTime today = DateTime.now();
-              UserDB.updateByFeedback(
-                  uid, await PlanDB.getWorkoutType(uid, today), feedbackData);
+              var type = await PlanDB.getWorkoutType(uid, DateTime.now());
+              if (type != null) {
+                UserDB.updateByFeedback(uid, type, feedbackData);
+              }
               await PlanAlgo.execute(uid);
 
               //var profile = await UserDB.getPlanVariables(userID);

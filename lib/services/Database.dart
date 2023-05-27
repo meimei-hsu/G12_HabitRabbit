@@ -21,7 +21,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var mc=[
+    var mc = [
       DateTime.utc(2023, 5, 1).toString(),
       DateTime.utc(2023, 10, 1).toString(),
       500,
@@ -86,20 +86,31 @@ class Home extends StatelessWidget {
               onPressed: () {
                 UserDB.insert(mary, maryProfile);
                 // UserDB.update(mary, {"weight": 47});
-                UserDB.updateByFeedback(mary, "cardio", [1, 1]);
+                UserDB.updateByFeedback(john, "cardio", [1, 1]);
                 UserDB.getAll();
                 WorkoutDB.toNames(plan);
                 ContractDB.insert(mary, maryContract);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
-                Calendar.nextSunday(Calendar.today());
               },
               child: const Text("test DB")),
           TextButton(
               onPressed: () {
-                // PlanAlgo.execute(john);
+                PlanAlgo.execute(john);
                 PlanAlgo.regenerate(mary, DateTime.now());
               },
               child: const Text("test AG")),
+          TextButton(
+              onPressed: () async {
+                // print(Calendar.isThisWeek(DateTime(2023, 5, 21)));
+                // print(Calendar.isThisWeek(DateTime(2023, 5, 28)));
+                // print(Calendar.nextSunday(DateTime(2023, 5, 21)));
+                // print(Calendar.nextSunday(DateTime(2023, 5, 25)));
+                // print(await UserDB.isWorkoutDay(mary, DateTime(2023, 5, 21)));
+                // print(await UserDB.isWorkoutDay(mary, DateTime(2023, 5, 22)));
+                // print(await UserDB.isWorkoutDay("123", DateTime(2023, 5, 22)));
+                print(await DurationDB.calcCompletion(mary));
+              },
+              child: const Text("test")),
         ],
       ),
     ));
@@ -124,16 +135,14 @@ class Calendar {
         duration, (index) => fmt.format(firstDay.add(Duration(days: index))));
     return week;
   }
-  //Get next sunday
-  static DateTime nextSunday(DateTime today){
-    DateTime sunday = today;
-    while(sunday.weekday!=7){
-      sunday = sunday.add(Duration(days: 1));
-      print("day");
-      print(sunday.weekday);
-    }
-    return sunday;
-  }
+
+  // Check if the given date is within this week
+  static bool isThisWeek(DateTime date) =>
+      (thisWeek().contains(toKey(date))) ? true : false;
+
+  // Get next sunday
+  static DateTime nextSunday(DateTime today) =>
+      (today.weekday == 7) ? today : firstDay().add(const Duration(days: 7));
   // Get the days of week that have already passed
   static List<String> daysPassed() => (firstDay().weekday != 7)
       ? getWeekFrom(firstDay(), today().weekday.toInt())
@@ -190,7 +199,10 @@ class UserDB {
 
   // Select user from userID
   static Future<Map?> getUser(String id) async {
-    return Map<String, dynamic>.from(await DB.select(db, id) as Map);
+    var snapshot = await DB.select(db, id);
+    return (snapshot != null)
+        ? Map<String, dynamic>.from(snapshot as Map)
+        : null;
   }
 
   // Select dynamic data from userID
@@ -206,7 +218,7 @@ class UserDB {
         },
         {
           'timeSpan': user["timeSpan"],
-          'workoutDays': user["workoutDays"],
+          'workoutDays': user['workoutDays'].split('').map(int.parse).toList(),
         },
         {
           'strengthLiking': user["strengthLiking"],
@@ -224,9 +236,16 @@ class UserDB {
     }
   }
 
-  static Future<num?> getTimeSpan(String id) async {
-    final Map? user = await getUser(id);
-    return user!["timeSpan"];
+  static Future<Map?> getPersonalities(String id) async {
+    return (await getPlanVariables(id))?[0];
+  }
+
+  static Future<Map?> getLikings(String id) async {
+    return (await getPlanVariables(id))?[2];
+  }
+
+  static Future<Map?> getAbilities(String id) async {
+    return (await getPlanVariables(id))?[3];
   }
 
   static Future<String?> getLastWorkoutDay(String id) async {
@@ -234,8 +253,17 @@ class UserDB {
     return Calendar.thisWeek()[user!["workoutDays"].lastIndexOf("1")];
   }
 
+  // Check if the given date should workout
+  static Future<bool?> isWorkoutDay(String id, DateTime date) async {
+    int idx = Calendar.bothWeeks().indexOf(Calendar.toKey(date));
+    idx = (idx >= 7) ? idx - 7 : idx;
+    List? workoutDays = (await getPlanVariables(id))?[1]["workoutDays"];
+    bool isWorkoutDay = (workoutDays?[idx] == 1) ? true : false;
+    return (workoutDays != null) ? isWorkoutDay : null;
+  }
+
   // Insert data {columnName: value} into Users
-  static Future<bool> insert(String id, Map map) async {
+  static Future<bool> insert(String id, Map data) async {
     // Set modifiers
     int nMul = 10;
     int cMul = 5;
@@ -244,20 +272,20 @@ class UserDB {
     // Adjust survey results with user's personalities
     for (var item in types) {
       if (item == "strength") {
-        map[item + "Liking"] -= map["neuroticism"] * nMul;
+        data[item + "Liking"] -= data["neuroticism"] * nMul;
       } else {
-        map[item + "Liking"] += map["neuroticism"] * nMul;
+        data[item + "Liking"] += data["neuroticism"] * nMul;
       }
-      map[item + "Ability"] += map["conscientiousness"] * cMul;
+      data[item + "Ability"] += data["conscientiousness"] * cMul;
     }
 
     // Insert user into database
-    return await DB.insert("$db/$id/", map);
+    return await DB.insert("$db/$id/", data);
   }
 
   // Update data {columnName: value} from userID
-  static Future<bool> update(String id, Map<String, Object> map) async {
-    return await DB.update("$db/$id/", map);
+  static Future<bool> update(String id, Map<String, Object> data) async {
+    return await DB.update("$db/$id/", data);
   }
 
   // Update plan variables by user's feedback [滿意度, 疲憊度]
@@ -283,6 +311,7 @@ class UserDB {
     return await DB.delete(db, id);
   }
 }
+
 class ContractDB {
   static const db = "contract";
 
@@ -295,11 +324,8 @@ class ContractDB {
       "bankAccount",
       "flag",
       "result",
-
     ];
   }
-
-
 
   // Select contract from userID
   static Future<Map?> getContract(String id) async {
@@ -307,19 +333,16 @@ class ContractDB {
   }
 
   // Select dynamic data from userID
-  static Future<List<Map<String, dynamic>>?> getContractDetails(String id) async {
+  static Future<Map<String, dynamic>?> getContractDetails(String id) async {
     final Map? contract = await getContract(id);
 
     if (contract != null) {
-      return [
-        {
-          'startDay': contract["startDay"],
-          'endDay': contract["endDay"],
-          'money': contract["money"],
-          'flag': contract["flag"],
-        },
-
-      ];
+      return {
+        'startDay': contract["startDay"],
+        'endDay': contract["endDay"],
+        'money': contract["money"],
+        'flag': contract["flag"],
+      };
     } else {
       return null;
     }
@@ -345,22 +368,16 @@ class ContractDB {
     return user!["flag"];
   }
 
-
-
   // Insert data {columnName: value} into Users
-  static Future<bool> insert(String id, Map map) async {
-
-
+  static Future<bool> insert(String id, Map data) async {
     // Insert contract into database
-    return await DB.insert("$db/$id/", map);
+    return await DB.insert("$db/$id/", data);
   }
 
   // Update data {columnName: value} from userID
-  static Future<bool> update(String id, Map<String, Object> map) async {
-    return await DB.update("$db/$id/", map);
+  static Future<bool> update(String id, Map<String, Object> data) async {
+    return await DB.update("$db/$id/", data);
   }
-
-
 
   // Delete data from userName
   static Future<bool> delete(String id) async {
@@ -418,13 +435,13 @@ class WorkoutDB {
     return retVal;
   }
 
-  static Future<bool> insert(Map map) async {
-    return await DB.insert(db, map);
+  static Future<bool> insert(Map data) async {
+    return await DB.insert(db, data);
   }
 
-  // Update data {columnName: value} from workoutId
-  static Future<bool> update(Map<String, Object> map) async {
-    return await DB.update(db, map);
+  // Update data {columnName: value} from workoutID
+  static Future<bool> update(Map<String, Object> data) async {
+    return await DB.update(db, data);
   }
 
   // Delete data from workoutId
@@ -484,23 +501,27 @@ class PlanDB {
   static Future<Map?> getFromDates(String userID, List<String> dates) async =>
       await JournalDB.getFromDates(userID, dates, table);
 
-  static Future<String> getFromDate(String userID, DateTime date) async =>
+  static Future<String?> getFromDate(String userID, DateTime date) async =>
       await JournalDB.getFromDate(userID, date, table);
 
   // Select user's plan based on workout names
   static Future<String?> getByName(String userID, DateTime date) async {
     var plan = await getFromDate(userID, date);
-    if (plan.isNotEmpty) {
+    if (plan != null) {
       var ids = plan.split(", ");
       return (await WorkoutDB.toNames(ids))?.join(", ");
     }
     return null;
   }
 
-  static Future<String> getWorkoutType(String userID, DateTime date) async {
+  static Future<int?> getPlanLong(String userID, DateTime date) async {
+    return (await getFromDate(userID, date))?.split(", ").length;
+  }
+
+  static Future<String?> getWorkoutType(String userID, DateTime date) async {
     // The third element of the plan is the first workout after the warmup,
     // and its first character's index (which indicates the workout type) is 18.
-    switch ((await getFromDate(userID, date))[18]) {
+    switch ((await getFromDate(userID, date))?[18]) {
       case '1':
         return "strength";
       case '2':
@@ -508,7 +529,7 @@ class PlanDB {
       case '3':
         return "yoga";
       default:
-        return "";
+        return null;
     }
   }
 
@@ -523,19 +544,25 @@ class PlanDB {
   }
 
   // Insert plan data {date: plan} into table {table/userID/plan/date}
-  static Future<bool> insert(String userID, Map<String, String> map) async =>
-      await JournalDB.insert(userID, map, table);
+  static Future<bool> insert(String userID, Map<String, String> data) async =>
+      await JournalDB.insert(userID, data, table) &&
+      await DurationDB.update(userID, data.map((key, value) {
+        return MapEntry(key, "0, ${value.length}");
+      }));
 
   // Update plan data {date: plan} from table {table/userID/plan/date}
-  static Future<bool> update(String userID, Map<String, String> map) async =>
-      await JournalDB.update(userID, map, table);
+  static Future<bool> update(String userID, Map<String, String> data) async =>
+      await JournalDB.update(userID, data, table) &&
+      await DurationDB.update(userID, data.map((key, value) {
+        return MapEntry(key, "0, ${value.split(", ").length}");
+      }));
 
   // Update the plan's date to given date (coming days of current week)
   static Future<bool> updateDate(
       String userID, DateTime original, DateTime modified) async {
     // The map is constituted by the modified date and the original plan
-    String plan = await getFromDate(userID, original);
-    if (plan.isNotEmpty) {
+    String? plan = await getFromDate(userID, original);
+    if (plan!= null) {
       Map<String, String> map = {Calendar.toKey(modified): plan};
       // Delete the original record, and update with the modified date
       return await delete(userID, Calendar.toKey(original)) &&
@@ -546,7 +573,8 @@ class PlanDB {
 
   // Delete plan data {table/userID/plan/date}
   static Future<bool> delete(String userID, String date) async =>
-      await JournalDB.delete(userID, date, table);
+      await JournalDB.delete(userID, date, table) &&
+      await DurationDB.delete(userID, date);
 }
 
 class DurationDB {
@@ -559,7 +587,7 @@ class DurationDB {
   // Select user's workout duration from given date
   static Future<List?> getFromDate(String userID, DateTime date) async {
     var duration = await JournalDB.getFromDate(userID, date, table);
-    return (duration.isNotEmpty)
+    return (duration != null)
         ? duration.split(', ').map(int.parse).toList()
         : null;
   }
@@ -572,13 +600,26 @@ class DurationDB {
         : null;
   }
 
+  // Calculate the number of times user has completed a workout plan during this week
+  static Future<num?> calcCompletion(String uid) async {
+    List? workoutDays = (await UserDB.getPlanVariables(uid))?[1]["workoutDays"];
+    int complete = 0;
+    for (String date in Calendar.thisWeek()) {
+      complete +=
+          (await calcProgress(uid, DateTime.parse(date)) == 100) ? 1 : 0;
+    }
+    return (workoutDays != null)
+        ? (complete / workoutDays.fold(0, (p, c) => c + p) * 100).round()
+        : null;
+  }
+
   // Insert duration data {date: "duration, timeSpan"} into table {table/userID/duration/date}
-  static Future<bool> insert(String userID, Map<String, String> map) async =>
-      await JournalDB.insert(userID, map, table);
+  static Future<bool> insert(String userID, Map<String, String> data) async =>
+      await JournalDB.insert(userID, data, table);
 
   // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
-  static Future<bool> update(String userID, Map map) async =>
-      await JournalDB.update(userID, map, table);
+  static Future<bool> update(String userID, Map data) async =>
+      await JournalDB.update(userID, data, table);
 
   // Delete duration data {table/userID/duration/date}
   static Future<bool> delete(String userID, String date) async =>
@@ -603,24 +644,20 @@ class WeightDB {
   static Future<Map?> getFromDates(String userID, List<String> dates) async =>
       await JournalDB.getFromDates(userID, dates, table);
 
-  static Future<double> getFromDate(String userID, DateTime date) async {
+  static Future<double?> getFromDate(String userID, DateTime date) async {
     var weight = await JournalDB.getFromDate(userID, date, table);
-    return (weight.isNotEmpty) ? double.parse(weight) : 0;
+    return (weight != null) ? double.parse(weight) : null;
   }
 
   // Insert weight data {date: weight} into table {table/userID/weight/date}
-  static Future<bool> insert(String userID, Map<String, String> map) async =>
-      await JournalDB.insert(userID, map, table);
+  static Future<bool> insert(String userID, Map<String, String> data) async =>
+      await JournalDB.insert(userID, data, table);
 
   // Update weight data {date: weight} from table {table/userID/weight/date}
-  static Future<bool> update(String userID, Map map) async =>
-      await JournalDB.update(userID, map, table);
+  static Future<bool> update(String userID, Map data) async =>
+      await JournalDB.update(userID, data, table);
 
   // Delete weight data {table/userID/weight/date}
   static Future<bool> delete(String userID, String date) async =>
       await JournalDB.delete(userID, date, table);
 }
-
-
-
-

@@ -19,33 +19,22 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   final GlobalKey<ScaffoldState> _myKey = GlobalKey();
 
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
+  // Plan 相關資料
+  String workoutPlan = "";
+
   // Calendar 相關設定
   DateTime _focusedDay = Calendar.today();
   DateTime? _selectedDay = Calendar.today();
 
   get firstDay => Calendar.firstDay();
-
   get lastDay => firstDay.add(const Duration(days: 13));
-
-  // Local variable: workoutPlan
-  String workoutPlan = "";
-
-  bool isThisWeek() {
-    DateFormat fmt = DateFormat('yyyy-MM-dd');
-    String selectedDayDate = fmt.format(
-        DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day));
-    return (Calendar.thisWeek().contains(selectedDayDate)) ? true : false;
-  }
-
-  Future<bool> getWorkoutDay(int weekday) async {
-    Map workoutDaysMap = {};
-    Map? user = await UserDB.getUser(widget.arguments["user"].uid);
-    List workoutDays = user!["workoutDays"].split('');
-    for (int i = 0; i < workoutDays.length; i++) {
-      workoutDaysMap["${i + 1}"] = workoutDays[i];
-    }
-    return (workoutDaysMap[weekday.toString()] == "1") ? true : false;
-  }
+  get isThisWeek => Calendar.isThisWeek(_selectedDay!);
 
   List<Widget> _getSportList(List content, List title) {
     int length = content.length;
@@ -250,6 +239,26 @@ class _HomepageState extends State<Homepage> {
                                 ),
                               ),
                               const SizedBox(width: 10),
+                              // TODO: Delete later on (無刪除功能，測試方便而添加)
+                              Ink(
+                                decoration: const ShapeDecoration(
+                                  color: Color(0xfffbb87f),
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.delete_outline),
+                                  iconSize: 40,
+                                  color: const Color(0xff0d3b66),
+                                  tooltip: "刪除計畫",
+                                  onPressed: () async {
+                                    await PlanDB.delete(
+                                        widget.arguments["user"].uid,
+                                        Calendar.toKey(_selectedDay!));
+                                    refresh();
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
                               Ink(
                                 decoration: const ShapeDecoration(
                                   color: Color(0xffffa493),
@@ -280,13 +289,13 @@ class _HomepageState extends State<Homepage> {
                 }
               }),
           const SizedBox(height: 10),
-          // FIXME: 修改運動日後未更新
           FutureBuilder(
               // Exercise plan
               future: Future.wait([
                 DurationDB.calcProgress(
                     widget.arguments['user'].uid, _selectedDay!),
-                getWorkoutDay(_selectedDay!.weekday)
+                UserDB.isWorkoutDay(
+                    widget.arguments['user'].uid, _selectedDay!),
               ]),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -297,14 +306,13 @@ class _HomepageState extends State<Homepage> {
                       return Text('Error: ${snapshot.error}');
                     }
                     // If snapshot has no error, return plan
-                    // num? uncompletedPercentage = snapshot.data;
-                    num? uncompletedPercentage = snapshot.data?[0] as num?;
+                    num? progress = snapshot.data?[0] as num?;
                     bool? isWorkoutDay = snapshot.data?[1] as bool?;
-                    if (uncompletedPercentage != null) {
+                    if (progress != null) {
                       // Return the plan information
-                      if (uncompletedPercentage < 100) {
+                      if (progress < 100) {
                         return Text(
-                          "今天還有 $uncompletedPercentage% 的運動還沒完成噢~加油加油！",
+                          "今天還有 ${1 - progress}% 的運動還沒完成噢~加油加油！",
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               color: Color(0xffffa493),
@@ -325,10 +333,10 @@ class _HomepageState extends State<Homepage> {
                               height: 1),
                         );
                       }
-                    } else if (!isThisWeek()) {
+                    } else if (!isThisWeek) {
                       return (isWorkoutDay == true)
                           ? const Text(
-                              "這天要運動噢！",
+                              "運動安排中...",
                               style: TextStyle(
                                 color: Color(0xffffa493),
                                 fontSize: 18,
@@ -347,10 +355,9 @@ class _HomepageState extends State<Homepage> {
               // Exercise plan
               future: Future.wait([
                 PlanDB.getByName(widget.arguments['user'].uid, _selectedDay!),
-                getWorkoutDay(_selectedDay!.weekday)
+                UserDB.isWorkoutDay(
+                    widget.arguments['user'].uid, _selectedDay!),
               ]),
-              /*future:
-                  PlanDB.getByName(widget.arguments['user'].uid, _selectedDay!),*/
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.waiting:
@@ -400,7 +407,7 @@ class _HomepageState extends State<Homepage> {
                           ),
                         ),
                       );
-                    } else if (!isThisWeek()) {
+                    } else if (!isThisWeek) {
                       return (isWorkoutDay == true)
                           ? Container()
                           : addExerciseBtn;
@@ -543,7 +550,7 @@ class _HomepageState extends State<Homepage> {
                           return Text('Error: ${snapshot.error}');
                         }
                         // If snapshot has no error, return plan
-                        List? contractData = snapshot?.data;
+                        Map? contractData = snapshot.data;
 
                         return ListTile(
                           title: const Text(
@@ -560,7 +567,7 @@ class _HomepageState extends State<Homepage> {
                               Navigator.popAndPushNamed(context, '/contract',
                                   arguments: {
                                     'user': widget.arguments['user'],
-                                    'contractData': contractData[0],
+                                    'contractData': contractData,
                                   });
                             } else {
                               Navigator.popAndPushNamed(
@@ -693,10 +700,11 @@ class AddExerciseDialogState extends State<AddExerciseDialog> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xfffbb87f),
             ),
-            onPressed: () {
-              // TODO: (backend) 新增運動
-              print(
-                  "${widget.arguments['selectedDay']} add $exerciseTime minutes exercise plan.");
+            onPressed: () async {
+              String uid = widget.arguments['user'].uid;
+              DateTime selectedDay = widget.arguments['selectedDay'];
+              await PlanAlgo.generate(uid, selectedDay, exerciseTime);
+              print("$selectedDay add $exerciseTime minutes exercise plan.");
               Navigator.pop(context);
             },
             child: const Text(
@@ -817,7 +825,7 @@ class ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
           backgroundColor: const Color(0xfffbb87f),
         ),
         onPressed: () async {
-          // TODO: (backend) 修改運動天數
+          // FIXME: 如果修改天數，換到已經有計畫的日子怎麼辦? (現在是直接蓋掉原本的)
           String uid = widget.arguments['user'].uid;
           DateTime originalDate = widget.arguments['selectedDay'];
           await PlanDB.updateDate(uid, originalDate, changedDayDate);

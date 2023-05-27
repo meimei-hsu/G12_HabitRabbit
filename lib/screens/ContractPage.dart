@@ -231,47 +231,41 @@ class _FirstContractPage extends State<FirstContractPage> {
                               // TODO:回傳選取的合約內容
                             };*/
 
-                            int endDay = 0;
+                            int duration = 0;
                             String flag = "";
-                            if (plan == "5週4旗") {
-                              endDay = 35;
-                              flag = "0, 4";
-                            } else if (plan == "12週8旗") {
-                              endDay = 84;
-                              flag = "0, 8";
-                            } else if (plan == "18週12旗") {
-                              endDay = 126;
-                              flag = "0, 12";
+                            switch (plan) {
+                              case "5週4旗":
+                                duration = 35;
+                                flag = "0, 4";
+                                break;
+                              case "12週8旗":
+                                duration = 84;
+                                flag = "0, 8";
+                                break;
+                              case "18週12旗":
+                                duration = 126;
+                                flag = "0, 12";
+                                break;
                             }
+
+                            DateTime startDay =
+                                Calendar.nextSunday(DateTime.now());
+                            DateTime endDay =
+                                startDay.add(Duration(days: duration));
                             var c = [
-                              Calendar.nextSunday(Calendar.today()).toString(),
-                              //startDay
-                              Calendar.getWeekFrom(
-                                      Calendar.nextSunday(Calendar.today()),
-                                      endDay)
-                                  .last
-                                  .toString(),
-                              //endDay
-                              // Calendar.today().toString(),//startDay
-                              //Calendar.getWeekFrom(Calendar.today(), endDay).last.toString(),//endDay
+                              Calendar.toKey(startDay),
+                              Calendar.toKey(endDay),
                               dropdownValue,
-                              //money
                               '1111111',
-                              //bankaccount
                               flag,
                               false,
                             ];
+
                             Map<String, String> contractData = {
                               'plan': plan,
                               'money': dropdownValue,
                               'flag': flag,
-                              'endDay': Calendar.getWeekFrom(
-                                      Calendar.nextSunday(Calendar.today()),
-                                      endDay)
-                                  .last
-                                  .toString(),
-                              //Calendar.getWeekFrom(Calendar.today(), endDay).last.toString(),
-
+                              'endDay': Calendar.toKey(endDay),
                               // TODO:回傳選取的合約內容
                             };
 
@@ -414,7 +408,7 @@ class SecondContractPageState extends State<SecondContractPage> {
             top: 460,
             left: 65,
             child: Text(
-              '距離成功已完成：',//${widget.arguments['contractData']['flag']}
+              '距離成功已完成：', //${widget.arguments['contractData']['flag']}
               style: TextStyle(
                 color: Colors.grey[700],
                 fontSize: 18,
@@ -428,7 +422,7 @@ class SecondContractPageState extends State<SecondContractPage> {
               totalSteps: int.parse(
                   widget.arguments['contractData']['flag'].split(",")[1]),
               currentStep: int.parse(
-                widget.arguments['contractData']['flag'].split(",")[0]), //
+                  widget.arguments['contractData']['flag'].split(",")[0]), //
               selectedColor: const Color(0xFFFFA493),
               unselectedColor: Colors.white,
               customStep: (index, color, _) => Icon(

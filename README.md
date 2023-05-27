@@ -11,6 +11,7 @@ A milestone habit App.
 ---Database.dart
     |---Calendar  (get the days of the current and following weeks)
     |---UserDB    (database operations for the users table)
+    |---ContractDB(database operations for the contract table)
     |---WorkoutDB (database operations for the workouts table)
     |---PlanDB    (database operations for the plan children of the journal table)
     |---DurationDB(database operations for the duration children of the journal table)

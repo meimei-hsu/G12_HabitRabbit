@@ -87,10 +87,10 @@ class JournalDB {
     return retVal.isNotEmpty ? retVal : null;
   }
 
-  static Future<String> getFromDate(
+  static Future<String?> getFromDate(
       String userID, DateTime date, String table) async {
     var records = await DB.select("$db/$userID/$table", Calendar.toKey(date));
-    return (records != null) ? records as String : "";
+    return (records != null) ? records as String : null;
   }
 
   // Select the user's journal records of the given week

@@ -105,7 +105,7 @@ class _RegisterPage extends State<RegisterPage> {
 
   Widget _buildLoginForm(BuildContext context) {
     //登錄
-    //var _accountController;
+    // TODO: 記住帳號密碼
     return Scaffold(
       backgroundColor: const Color(0xfffaf0ca),
       appBar: AppBar(

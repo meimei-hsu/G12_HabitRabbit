@@ -39,8 +39,6 @@ class PlanAlgo {
     if (db != null) {
       var skd = await algo.arrangeSchedule(db);
       var plan = await algo.arrangePlan(db, skd);
-      var duration = await algo.arrangeDuration(db, skd);
-      await DurationDB.update(uid, duration);
       await PlanDB.update(uid, plan);
     } else {
       print("Not the time to generate a plan.");
@@ -54,10 +52,22 @@ class PlanAlgo {
     var date = Calendar.toKey(dateTime);
 
     var workoutType = await PlanDB.getWorkoutType(uid, dateTime);
-    if (workoutType != "") {
-      await PlanDB.update(
-          uid, {date: await algo.arrangeWorkout(db, workoutType)});
+    var timeSpan = await PlanDB.getPlanLong(uid, dateTime);
+    if (workoutType != null) {
+      var plan = await algo.arrangeWorkout(db, workoutType, timeSpan);
+      await PlanDB.update(uid, {date: plan});
     }
+  }
+
+  static generate(String uid, DateTime dateTime, int timeSpan) async {
+    Algorithm algo = Algorithm();
+    var db = await algo.initializeThisWeek(uid);
+    var date = Calendar.toKey(dateTime);
+
+    List workoutType = ["strength", "cardio", "yoga"];
+    int idx = Random().nextInt(3);
+    var plan = await algo.arrangeWorkout(db, workoutType[idx], timeSpan);
+    await PlanDB.update(uid, {date: plan});
   }
 }
 
@@ -120,15 +130,16 @@ class Algorithm {
   }
 
   // Method to generate all 10 minutes workouts
-  Future<List<List>> getTenMinWorkout(PlanData db, String type) async {
+  Future<List<List>> getTenMinWorkout(PlanData db, String type,
+      [int? timeSpan]) async {
     // Get the workout database
     List workouts = db.workoutIDs[type]!;
 
     // Get users ability level and plan settings
     int ability = db.abilities['${type}Ability'];
-    ability =
-        (type == 'cardio') ? (ability / 33).ceil() : (ability / 20).ceil();
-    int nLoops = (db.timeSpan / 15).toInt(); // total rounds
+    ability = ((type == 'cardio') ? ability / 33 : ability / 20).ceil();
+    timeSpan ??= db.timeSpan;
+    int nLoops = timeSpan! ~/ 15; // total rounds
     int nSame = db.nSame; // number of repetitions
     bool same = (nSame > 0) ? true : false;
 
@@ -160,13 +171,15 @@ class Algorithm {
   }
 
   // Method to generate all 5 minutes workouts
-  Future<List<List>> getFiveMinWorkout(PlanData db, String type) async {
+  Future<List<List>> getFiveMinWorkout(PlanData db, String type,
+      [int? timeSpan]) async {
     // Get the workout database
     List workouts = db.workoutIDs[type]!;
 
     // Get difficulty level and plan settings
     int diff = 0; // difficulty level for 5 minute workout session: easy
-    int nLoops = (db.timeSpan / 15).toInt() - 1; // total rounds
+    timeSpan ??= db.timeSpan;
+    int nLoops = timeSpan! ~/ 15 - 1; // total rounds
 
     // Generate the list of workouts from random
     Random rand = Random();
@@ -201,11 +214,12 @@ class Algorithm {
   }
 
   // Method to generate a list of workouts from a given workout type
-  Future<String> arrangeWorkout(PlanData db, String type) async {
+  Future<String> arrangeWorkout(PlanData db, String type,
+      [int? timeSpan]) async {
     // Generate the list of workouts from random
     List<String> warmUp = await getStretchWorkout(db, "warmUp");
-    List<List> tenMin = await getTenMinWorkout(db, type);
-    List<List> fiveMin = await getFiveMinWorkout(db, type);
+    List<List> tenMin = await getTenMinWorkout(db, type, timeSpan);
+    List<List> fiveMin = await getFiveMinWorkout(db, type, timeSpan);
     List<String> coolDown = await getStretchWorkout(db, "coolDown");
 
     // Arrange different sessions into one string
@@ -231,16 +245,6 @@ class Algorithm {
     print("plan: $plan");
     return plan;
   }
-
-  Future<Map> arrangeDuration(PlanData db, Map schedule) async {
-    Map duration = {};
-    schedule.forEach((key, value) {
-      if (value != "rest") {
-        duration[key] = "0, ${db.timeSpan}";
-      }
-    });
-    return duration;
-  }
 }
 
 class PlanData {
@@ -262,8 +266,7 @@ class PlanData {
 
     _personalities = profile![0];
     _timeSpan = profile[1]['timeSpan'];
-    _workoutDays = Map.fromIterables(
-        weekDates, profile[1]['workoutDays'].split('').map(int.parse).toList());
+    _workoutDays = Map.fromIterables(weekDates, profile[1]['workoutDays']);
     _likings = profile[2];
     _abilities = profile[3];
 
