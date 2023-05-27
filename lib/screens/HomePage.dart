@@ -22,11 +22,26 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
+    uid = widget.arguments['user'].uid;
+    getPlanData();
+  }
 
+  void getPlanData() async {
+    var plan = await PlanDB.getThisWeekByName(uid);
+    var progress = await DurationDB.getThisWeek(uid);
+    var workoutDays = await UserDB.getBothWeekWorkoutDays(uid);
+    setState(() {
+      workoutPlanList = plan ?? {};
+      progressList = progress ?? {};
+      bothWeekWorkoutList = workoutDays ?? [];
+    });
   }
 
   // Plan 相關資料
-  String workoutPlan = "";
+  String uid = "";
+  Map workoutPlanList = {};
+  Map progressList = {};
+  List bothWeekWorkoutList = [];
 
   // Calendar 相關設定
   DateTime _focusedDay = Calendar.today();
@@ -201,101 +216,74 @@ class _HomepageState extends State<Homepage> {
           ),
           const SizedBox(height: 10),
           // TODO: To be better.....程式碼重複，maybe 參考 getWorkoutDay()?
-          FutureBuilder<String?>(
-              // Exercise plan
-              future:
-                  PlanDB.getByName(widget.arguments['user'].uid, _selectedDay!),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return const CircularProgressIndicator();
-                  default:
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
-                    // If snapshot has no error, return plan
-                    workoutPlan = snapshot.data ?? "";
-                    if (workoutPlan.isNotEmpty) {
-                      return Container(
-                          padding: const EdgeInsets.only(right: 10),
-                          height: 60,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Color(0xfffaf0ca),
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  icon:
-                                      const Icon(Icons.edit_calendar_outlined),
-                                  iconSize: 40,
-                                  color: const Color(0xff0d3b66),
-                                  tooltip: "修改運動日",
-                                  onPressed: () {
-                                    _showChangeExerciseDayDialog();
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              // TODO: Delete later on (無刪除功能，測試方便而添加)
-                              Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Color(0xfffbb87f),
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(Icons.delete_outline),
-                                  iconSize: 40,
-                                  color: const Color(0xff0d3b66),
-                                  tooltip: "刪除計畫",
-                                  onPressed: () async {
-                                    await PlanDB.delete(
-                                        widget.arguments["user"].uid,
-                                        Calendar.toKey(_selectedDay!));
-                                    refresh();
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Color(0xffffa493),
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  icon: const Icon(Icons.cached),
-                                  iconSize: 40,
-                                  color: const Color(0xff0d3b66),
-                                  tooltip: "重新計畫",
-                                  onPressed: () {
-                                    PlanAlgo.regenerate(
-                                        widget.arguments['user'].uid,
-                                        _selectedDay!);
-                                    refresh();
-                                  },
-                                ),
-                              )
-                            ],
-                          ));
-                    }
-                    /*else if (ifThisWeek()) {
-                      return Container();
-                    }*/
-                    else {
-                      return Container();
-                    }
-                }
-              }),
+          (workoutPlanList[Calendar.toKey(_selectedDay!)] != null)
+              ? Container(
+                  padding: const EdgeInsets.only(right: 10),
+                  height: 60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Color(0xfffaf0ca),
+                          shape: CircleBorder(),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.edit_calendar_outlined),
+                          iconSize: 40,
+                          color: const Color(0xff0d3b66),
+                          tooltip: "修改運動日",
+                          onPressed: () {
+                            _showChangeExerciseDayDialog();
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      // TODO: Delete after coding (實際無刪除功能, 測試方便而加)
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Color(0xfffbb87f),
+                          shape: CircleBorder(),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.delete_outline),
+                          iconSize: 40,
+                          color: const Color(0xff0d3b66),
+                          tooltip: "刪除計畫",
+                          onPressed: () async {
+                            await PlanDB.delete(widget.arguments["user"].uid,
+                                Calendar.toKey(_selectedDay!));
+                            refresh();
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Color(0xffffa493),
+                          shape: CircleBorder(),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.cached),
+                          iconSize: 40,
+                          color: const Color(0xff0d3b66),
+                          tooltip: "重新計畫",
+                          onPressed: () {
+                            PlanAlgo.regenerate(uid, _selectedDay!);
+                            refresh();
+                          },
+                        ),
+                      )
+                    ],
+                  ))
+              : Container(),
           const SizedBox(height: 10),
+          // FIXME: 修改運動日後未更新
           FutureBuilder(
               // Exercise plan
               future: Future.wait([
-                DurationDB.calcProgress(
-                    widget.arguments['user'].uid, _selectedDay!),
-                UserDB.isWorkoutDay(
-                    widget.arguments['user'].uid, _selectedDay!),
+                DurationDB.calcProgress(uid, _selectedDay!),
+                UserDB.isWorkoutDay(uid, _selectedDay!),
               ]),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -312,7 +300,7 @@ class _HomepageState extends State<Homepage> {
                       // Return the plan information
                       if (progress < 100) {
                         return Text(
-                          "今天還有 ${1 - progress}% 的運動還沒完成噢~加油加油！",
+                          "今天還有 ${100 - progress}% 的運動還沒完成噢~加油加油！",
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               color: Color(0xffffa493),
@@ -354,9 +342,8 @@ class _HomepageState extends State<Homepage> {
           FutureBuilder(
               // Exercise plan
               future: Future.wait([
-                PlanDB.getByName(widget.arguments['user'].uid, _selectedDay!),
-                UserDB.isWorkoutDay(
-                    widget.arguments['user'].uid, _selectedDay!),
+                PlanDB.getByName(uid, _selectedDay!),
+                UserDB.isWorkoutDay(uid, _selectedDay!),
               ]),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
@@ -368,7 +355,7 @@ class _HomepageState extends State<Homepage> {
                     }
                     // If snapshot has no error, return plan
                     String? plan = snapshot.data?[0] as String?;
-                    workoutPlan = plan ?? "";
+                    var workoutPlan = plan ?? "";
                     bool? isWorkoutDay = snapshot.data?[1] as bool?;
 
                     ElevatedButton addExerciseBtn = ElevatedButton(
@@ -434,6 +421,7 @@ class _HomepageState extends State<Homepage> {
               color: const Color(0xff0d3b66),
               tooltip: "開始運動",
               onPressed: () {
+                var workoutPlan = "";
                 List items = workoutPlan.split(", ");
                 Navigator.pushNamed(context, '/countdown', arguments: {
                   'user': widget.arguments['user'],
@@ -539,8 +527,7 @@ class _HomepageState extends State<Homepage> {
               ),
               FutureBuilder(
                   // Exercise plan
-                  future: ContractDB.getContractDetails(
-                      widget.arguments['user'].uid),
+                  future: ContractDB.getContractDetails(uid),
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:

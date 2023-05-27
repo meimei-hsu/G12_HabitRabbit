@@ -253,6 +253,23 @@ class UserDB {
     return Calendar.thisWeek()[user!["workoutDays"].lastIndexOf("1")];
   }
 
+  static Future<List?> getBothWeekWorkoutDays(String id) async {
+    List? workoutDays = (await getPlanVariables(id))?[1]["workoutDays"];
+    if (workoutDays != null) {
+      List retVal = [];
+      List thisWeek = Calendar.thisWeek();
+      List nextWeek = Calendar.nextWeek();
+      for (int i = 0; i < 7; i++) {
+        if (workoutDays[i] == 1) {
+          retVal.add(thisWeek[i]);
+          retVal.add(nextWeek[i]);
+        }
+      }
+      return retVal..sort();
+    }
+    return null;
+  }
+
   // Check if the given date should workout
   static Future<bool?> isWorkoutDay(String id, DateTime date) async {
     int idx = Calendar.bothWeeks().indexOf(Calendar.toKey(date));
@@ -504,7 +521,23 @@ class PlanDB {
   static Future<String?> getFromDate(String userID, DateTime date) async =>
       await JournalDB.getFromDate(userID, date, table);
 
-  // Select user's plan based on workout names
+  // Select a map of user's plans based on workout names
+  static Future<Map?> getDatesByName(String userID, Map? plans) async {
+    var workoutNames = await WorkoutDB.getAll();
+    if (plans != null && workoutNames != null) {
+      return plans.map((date, plan) => MapEntry(date,
+          plan.split(", ").map((value) => workoutNames[value]).join(", ")));
+    }
+    return null;
+  }
+
+  static Future<Map?> getThisWeekByName(String userID) async =>
+      await getDatesByName(userID, await getThisWeek(userID));
+
+  static Future<Map?> getNextWeekByName(String userID) async =>
+      await getDatesByName(userID, await getNextWeek(userID));
+
+  // Select a String of user's plan based on workout names
   static Future<String?> getByName(String userID, DateTime date) async {
     var plan = await getFromDate(userID, date);
     if (plan != null) {
@@ -562,7 +595,7 @@ class PlanDB {
       String userID, DateTime original, DateTime modified) async {
     // The map is constituted by the modified date and the original plan
     String? plan = await getFromDate(userID, original);
-    if (plan!= null) {
+    if (plan != null) {
       Map<String, String> map = {Calendar.toKey(modified): plan};
       // Delete the original record, and update with the modified date
       return await delete(userID, Calendar.toKey(original)) &&
@@ -590,6 +623,18 @@ class DurationDB {
     return (duration != null)
         ? duration.split(', ').map(int.parse).toList()
         : null;
+  }
+
+  static Future<Map?> getThisWeek(String userID) async {
+    Map? durations =
+        await JournalDB.getFromDates(userID, Calendar.thisWeek(), table);
+    if (durations != null) {
+      return durations.map((key, value) {
+        var duration = value.split(', ').map(int.parse).toList();
+        return MapEntry(key, (duration[0] / duration[1] * 100).round());
+      });
+    }
+    return null;
   }
 
   // Calculate user's workout progress from given date
