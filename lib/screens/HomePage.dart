@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:motion_toast/resources/arrays.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:motion_toast/motion_toast.dart';
 
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
@@ -47,11 +49,18 @@ class _HomepageState extends State<Homepage> {
   DateTime? _selectedDay = Calendar.today();
 
   get firstDay => Calendar.firstDay();
+
   get lastDay => firstDay.add(const Duration(days: 13));
+
   get isThisWeek => Calendar.isThisWeek(_selectedDay!);
 
-  List<Widget> _getSportList(List content, List title) {
+  List<Widget> _getSportList(List content) {
     int length = content.length;
+
+    // Generate the titles
+    List title = [for (int i = 1; i <= length - 2; i++) "Round $i"];
+    title.insert(0, "Warm up");
+    title.insert(length - 1, "Cool down");
 
     List<ExpansionTile> expansionTitleList = [];
     for (int i = 0; i < length; i++) {
@@ -80,6 +89,25 @@ class _HomepageState extends State<Homepage> {
     return expansionTitleList;
   }
 
+  Widget getAddExerciseBtn() {
+    ElevatedButton addExerciseBtn = ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xfffaf0ca),
+      ),
+      onPressed: () {
+        _showAddExerciseDialog();
+      },
+      child: const Text(
+        "新增運動",
+        style: TextStyle(
+          color: Color(0xFF0D3B66),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+    return addExerciseBtn;
+  }
+
   void _showAddExerciseDialog() async {
     await showDialog<double>(
       context: context,
@@ -101,6 +129,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   void refresh() {
+    getPlanData();
     setState(() {});
   }
 
@@ -214,9 +243,9 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           const SizedBox(height: 10),
-          // TODO: To be better.....程式碼重複，maybe 參考 getWorkoutDay()?
-          (workoutPlanList[Calendar.toKey(_selectedDay!)] != null)
-              ? Container(
+          if (workoutPlanList[Calendar.toKey(_selectedDay!)] != null) ...[
+            if (progressList[Calendar.toKey(_selectedDay!)] < 100) ...[
+              Container(
                   padding: const EdgeInsets.only(right: 10),
                   height: 60,
                   child: Row(
@@ -270,14 +299,73 @@ class _HomepageState extends State<Homepage> {
                           onPressed: () {
                             PlanAlgo.regenerate(uid, _selectedDay!);
                             refresh();
+                            MotionToast(
+                              icon: Icons.done_all_rounded,
+                              primaryColor: const Color(0xffffa493),
+                              description: Text(
+                                "${_selectedDay?.month}/"
+                                "${_selectedDay?.day} 的運動計畫已經更新囉！",
+                                style: const TextStyle(
+                                  color: Color(0xff0d3b66),
+                                  fontSize: 16,
+                                  letterSpacing: 0,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1,
+                                ),
+                              ),
+                              position: MotionToastPosition.bottom,
+                              animationType: AnimationType.fromBottom,
+                              animationCurve: Curves.bounceIn,
+                              //displaySideBar: false,
+                            ).show(context);
                           },
                         ),
                       )
                     ],
                   ))
-              : Container(),
+            ] else ...[
+              Container()
+            ]
+          ] else ...[
+            Container()
+          ],
           const SizedBox(height: 10),
-          FutureBuilder(
+          if (progressList[Calendar.toKey(_selectedDay!)] != null) ...[
+            (progressList[Calendar.toKey(_selectedDay!)] < 100)
+                ? Text(
+                    "今天還有 ${100 - progressList[Calendar.toKey(_selectedDay!)]}% 的運動還沒完成噢~加油加油！",
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                        color: Color(0xffffa493),
+                        fontSize: 18,
+                        letterSpacing: 0,
+                        fontWeight: FontWeight.bold,
+                        height: 1),
+                  )
+                : const Text(
+                    "今天的運動都完成囉~很棒很棒！",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: Color(0xff5dbb63),
+                        fontSize: 18,
+                        letterSpacing: 0,
+                        fontWeight: FontWeight.bold,
+                        height: 1),
+                  ),
+          ] else if (!isThisWeek) ...[
+            (bothWeekWorkoutList.contains(Calendar.toKey(_selectedDay!)))
+                ? const Text("運動安排中...",
+                    style: TextStyle(
+                      color: Color(0xffffa493),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ))
+                : const Text("Rest Day"),
+          ] else ...[
+            const Text("Rest Day"),
+          ],
+          // TODO: 確認顯示無問題後，刪除 FutureBuilder code
+          /*FutureBuilder(
               // Exercise plan
               future: Future.wait([
                 DurationDB.calcProgress(uid, _selectedDay!),
@@ -334,10 +422,30 @@ class _HomepageState extends State<Homepage> {
                       return const Text("Rest Day");
                     }
                 }
-              }),
+              }),*/
           const SizedBox(height: 10),
-          // FIXME: 若運動都完成後 or 過期，不應該顯示新增運動按鈕？
-          FutureBuilder(
+          // (need check again) FIXME: 若運動都完成後 or 過期，不應該顯示新增運動按鈕？
+          if ((workoutPlanList[Calendar.toKey(_selectedDay!)] != null)) ...[
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                child: ListView(
+                  children: _getSportList(PlanDB.toList(
+                      workoutPlanList[Calendar.toKey(_selectedDay!)])),
+                ),
+              ),
+            ),
+          ] else if (!isThisWeek) ...[
+            (bothWeekWorkoutList.contains(Calendar.toKey(_selectedDay!)))
+                ? Container()
+                : getAddExerciseBtn(),
+          ] else ...[
+            (_selectedDay!.isBefore(_focusedDay))
+                ? Container()
+                : getAddExerciseBtn()
+          ],
+          // TODO: 確認顯示無問題後，刪除 FutureBuilder code
+          /*FutureBuilder(
               // Exercise plan
               future: Future.wait([
                 PlanDB.getByName(uid, _selectedDay!),
@@ -388,7 +496,7 @@ class _HomepageState extends State<Homepage> {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 10, left: 10),
                           child: ListView(
-                            children: _getSportList(content, title),
+                            children: _getSportList(content),
                           ),
                         ),
                       );
@@ -401,10 +509,9 @@ class _HomepageState extends State<Homepage> {
                       //return const Text("Generate Workout Button");
                     }
                 }
-              }),
+              }),*/
         ],
       ),
-      // FIXME: 開始運動的運動清單應為 today 的，而不是 _selectedDay 的
       floatingActionButton: FloatingActionButton.large(
           onPressed: () {},
           backgroundColor: const Color(0xffffa493),
@@ -419,13 +526,34 @@ class _HomepageState extends State<Homepage> {
               color: const Color(0xff0d3b66),
               tooltip: "開始運動",
               onPressed: () {
-                var workoutPlan = "";
-                List items = workoutPlan.split(", ");
-                Navigator.pushNamed(context, '/countdown', arguments: {
-                  'user': widget.arguments['user'],
-                  'exerciseTime': items.length * 6, // should be 60s
-                  'exerciseItem': items
-                });
+                if (progressList[Calendar.toKey(_focusedDay!)] < 100) {
+                  var workoutPlan =
+                      workoutPlanList[Calendar.toKey(_focusedDay!)];
+                  List items = workoutPlan.split(", ");
+                  Navigator.pushNamed(context, '/countdown', arguments: {
+                    'user': widget.arguments['user'],
+                    'exerciseTime': items.length * 6, // should be 60s
+                    'exerciseItem': items
+                  });
+                } else {
+                  MotionToast(
+                    icon: Icons.done_all_rounded,
+                    primaryColor: const Color(0xff5dbb63),
+                    description: const Text(
+                      "今天的運動都已經完成囉！",
+                      style: TextStyle(
+                        color: Color(0xff0d3b66),
+                        fontSize: 17,
+                        letterSpacing: 0,
+                        fontWeight: FontWeight.bold,
+                        height: 1,
+                      ),
+                    ),
+                    position: MotionToastPosition.bottom,
+                    animationType: AnimationType.fromBottom,
+                    //displaySideBar: false,
+                  ).show(context);
+                }
               },
             ),
           )),
@@ -518,9 +646,6 @@ class _HomepageState extends State<Homepage> {
                 ),
                 onTap: () {
                   Navigator.pop(context, '/');
-                  //點擊後做什麼事
-                  //切換頁面
-                  //收合drawer
                 },
               ),
               FutureBuilder(
@@ -780,7 +905,11 @@ class ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
         allowedDayList.add(getDayBtn(i));
       }
       for (int i = selectedDay.weekday - 1; i >= 0; i--) {
-        if (i >= today.weekday) {
+        if (today.weekday != 7) {
+          if (i >= today.weekday) {
+            allowedDayList.insert(0, getDayBtn(i));
+          }
+        } else {
           allowedDayList.insert(0, getDayBtn(i));
         }
       }
@@ -824,12 +953,28 @@ class ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
             fontWeight: FontWeight.bold,
           ),
         ));
+    ElevatedButton confirmBtn2 = ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+        ),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text(
+          "確認",
+          style: TextStyle(
+            color: Color(0xff0d3b66),
+            fontWeight: FontWeight.bold,
+          ),
+        ));
 
     if (selectedDay.isBefore(today)) {
-      btnList.add(confirmBtn);
+      btnList.add(confirmBtn2);
     } else {
       if (!selectedDay.isAfter(today) && selectedDay.weekday == 6) {
-        btnList.add(confirmBtn);
+        btnList.add(confirmBtn2);
+      } else if (selectedDay.isAfter(today) && selectedDay.weekday == 6) {
+        btnList.add(confirmBtn2);
       } else {
         btnList.add(cancelBtn);
         btnList.add(confirmBtn);
@@ -857,6 +1002,9 @@ class ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
         ] else ...[
           if (!selectedDay.isAfter(today) && selectedDay.weekday == 6) ...[
             const Text("今天已經星期六囉~無法再換到別天了！")
+          ] else if (selectedDay.isAfter(today) &&
+              selectedDay.weekday == 6) ...[
+            const Text("星期六的計畫無法換到別天噢！")
           ] else ...[
             Text("你要將 ${widget.arguments['selectedDay'].month}/"
                 "${widget.arguments['selectedDay'].day} 的運動計畫移到哪天呢？"),
