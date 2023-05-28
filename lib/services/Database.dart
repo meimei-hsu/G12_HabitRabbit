@@ -47,8 +47,13 @@ class Home extends StatelessWidget {
       50,
       40,
     ];
+    var ms=[
+      '0, 24',
+      '0, 3',
+    ];
     Map maryProfile = Map.fromIterables(UserDB.getColumns(), m);
     Map maryContract = Map.fromIterables(ContractDB.getColumns(), mc);
+    Map maryMilestone = Map.fromIterables(MilestoneDB.getColumns(), ms);
     var plan = [
       "4008",
       "4012",
@@ -90,6 +95,7 @@ class Home extends StatelessWidget {
                 UserDB.getAll();
                 WorkoutDB.toNames(plan);
                 ContractDB.insert(mary, maryContract);
+                MilestoneDB.insert(mary, maryMilestone);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
               },
               child: const Text("test DB")),
@@ -383,6 +389,50 @@ class ContractDB {
   static Future<num?> getFlag(String id) async {
     final Map? user = await getContract(id);
     return user!["flag"];
+  }
+
+  // Insert data {columnName: value} into Users
+  static Future<bool> insert(String id, Map data) async {
+    // Insert contract into database
+    return await DB.insert("$db/$id/", data);
+  }
+
+  // Update data {columnName: value} from userID
+  static Future<bool> update(String id, Map<String, Object> data) async {
+    return await DB.update("$db/$id/", data);
+  }
+
+  // Delete data from userName
+  static Future<bool> delete(String id) async {
+    return await DB.delete(db, id);
+  }
+}
+
+class MilestoneDB {
+  static const db = "milestone";
+
+  // Define the columns of the user table
+  static List<String> getColumns() {
+    return [
+      "flag",
+      "steps",
+    ];
+  }
+
+  // Select milestone from userID
+  static Future<Map?> getMilestone(String id) async {
+    return Map<String, dynamic>.from(await DB.select(db, id) as Map);
+  }
+
+
+  static Future<num?> getFlag(String id) async {
+    final Map? user = await getMilestone(id);
+    return user!["flag"];
+  }
+
+  static Future<String?> getSteps(String id) async {
+    final Map? user = await getMilestone(id);
+    return user!["steps"];
   }
 
   // Insert data {columnName: value} into Users
