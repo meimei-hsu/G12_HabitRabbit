@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:g12/services/Database.dart';
+
 class UserProfilePage extends StatefulWidget {
   final Map arguments;
 
@@ -11,11 +13,32 @@ class UserProfilePage extends StatefulWidget {
   _UserProfilePage createState() => _UserProfilePage();
 }
 
-// TODO: 抓使用者的原設定帶入預設值
 class _UserProfilePage extends State<UserProfilePage> {
   //暱稱
   TextEditingController nicknameController = TextEditingController();
   String nickName = "";
+
+  @override
+  void initState() {
+    super.initState();
+    getPlanData();
+  }
+
+  void getPlanData() async {
+    String uid = widget.arguments['user'].uid;
+    var planVariables = await UserDB.getPlanVariables(uid);
+    var workoutDays = planVariables![1]["workoutDays"];
+    setState(() {
+      timeSpan = planVariables[1]["timeSpan"].toString();
+      monday = (workoutDays[0] == 1) ? true : false;
+      tuesday = (workoutDays[1] == 1) ? true : false;
+      wednesday = (workoutDays[2] == 1) ? true : false;
+      thursday = (workoutDays[3] == 1) ? true : false;
+      friday = (workoutDays[4] == 1) ? true : false;
+      saturday = (workoutDays[5] == 1) ? true : false;
+      sunday = (workoutDays[6] == 1) ? true : false;
+    });
+  }
 
   //運動時間
   String timeSpan = "";
@@ -29,11 +52,12 @@ class _UserProfilePage extends State<UserProfilePage> {
   bool saturday = false;
   bool sunday = false;
 
+  // TODO: 運動偏好譖麼讓使用者修改
   //運動偏好
   bool strengthLiking = false;
   bool cardioLiking = false;
   bool yogaLiking = false;
-  bool none = false;
+  bool noneLiking = false;
 
   @override
   void dispose() {
@@ -392,10 +416,10 @@ class _UserProfilePage extends State<UserProfilePage> {
                 child: Row(
                   children: [
                     Checkbox(
-                      value: none,
+                      value: noneLiking,
                       onChanged: (value) {
                         setState(() {
-                          none = value!;
+                          noneLiking = value!;
                         });
                       },
                       activeColor: const Color(0xFFFFA493),

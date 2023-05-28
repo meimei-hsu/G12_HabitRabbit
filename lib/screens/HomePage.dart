@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'package:g12/services/Database.dart';
@@ -278,7 +277,6 @@ class _HomepageState extends State<Homepage> {
                   ))
               : Container(),
           const SizedBox(height: 10),
-          // FIXME: 修改運動日後未更新
           FutureBuilder(
               // Exercise plan
               future: Future.wait([

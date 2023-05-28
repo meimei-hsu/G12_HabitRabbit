@@ -224,12 +224,6 @@ class _FirstContractPage extends State<FirstContractPage> {
                           ),
                           onPressed: () {
                             Navigator.of(context).pop();
-                            /*Map<String, String> contractData = {
-                              'plan': plan,
-                              '投入金額': dropdownValue,
-
-                              // TODO:回傳選取的合約內容
-                            };*/
 
                             int duration = 0;
                             String flag = "";
@@ -247,11 +241,11 @@ class _FirstContractPage extends State<FirstContractPage> {
                                 flag = "0, 12";
                                 break;
                             }
-
                             DateTime startDay =
                                 Calendar.nextSunday(DateTime.now());
                             DateTime endDay =
                                 startDay.add(Duration(days: duration));
+
                             var c = [
                               Calendar.toKey(startDay),
                               Calendar.toKey(endDay),
@@ -261,22 +255,12 @@ class _FirstContractPage extends State<FirstContractPage> {
                               false,
                             ];
 
-                            Map<String, String> contractData = {
-                              'plan': plan,
-                              'money': dropdownValue,
-                              'flag': flag,
-                              'endDay': Calendar.toKey(endDay),
-                              // TODO:回傳選取的合約內容
-                            };
-
                             Map contract =
                                 Map.fromIterables(ContractDB.getColumns(), c);
                             print(contract);
                             ContractDB.insert(
                                 widget.arguments['user'].uid, contract);
 
-                            print(contractData);
-                            // do something with the contract data, such as sending it to a server or storing it locally
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -284,7 +268,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                                   Navigator.of(context).pop();
                                   Navigator.pushNamed(context, '/contract',
                                       arguments: {
-                                        'contractData': contractData,
+                                        'contractData': contract,
                                         'user': widget.arguments['user']
                                       });
                                 });
