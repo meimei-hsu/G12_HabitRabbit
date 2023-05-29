@@ -46,6 +46,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.1.0
+  level_map: ^0.2.0
 
 dev_dependencies:
   flutter_test:
@@ -87,6 +88,11 @@ flutter:
     - assets/images/personality_S₁OS₂.png
     - assets/images/personality_NGS₂.png
     - assets/images/personality_S₁GS₂.png
+    - assets/images/currentLevel.png
+    - assets/images/completedLevel.jpg
+    - assets/images/lockedLevel.jpg
+    - assets/images/start.jpg
+    - assets/images/end.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
