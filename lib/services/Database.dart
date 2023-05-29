@@ -259,6 +259,18 @@ class UserDB {
     return Calendar.thisWeek()[user!["workoutDays"].lastIndexOf("1")];
   }
 
+  static Future<int?> getHowManyWorkoutDay(String id) async {
+    final Map? user = await getUser(id);
+    int days=0;
+    for(int i=0;i<7;i++){
+      if(user!["workoutDays"][i]!=0) {
+        days++;
+      }
+    }
+    return days;
+  }
+
+
   static Future<List?> getBothWeekWorkoutDays(String id) async {
     List? workoutDays = (await getPlanVariables(id))?[1]["workoutDays"];
     if (workoutDays != null) {
