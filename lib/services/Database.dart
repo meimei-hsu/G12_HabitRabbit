@@ -411,7 +411,7 @@ class ContractDB {
 class MilestoneDB {
   static const db = "milestone";
 
-  // Define the columns of the user table
+  // Define the columns of the milestone table
   static List<String> getColumns() {
     return [
       "flag",
@@ -437,7 +437,8 @@ class MilestoneDB {
 
   // Insert data {columnName: value} into Users
   static Future<bool> insert(String id, Map data) async {
-    // Insert contract into database
+    // Insert milestone into database
+
     return await DB.insert("$db/$id/", data);
   }
 
