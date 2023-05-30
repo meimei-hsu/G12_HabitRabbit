@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:level_map/level_map.dart';
 
 class MilestonePage extends StatefulWidget {
+  final Map arguments;
+
+  const MilestonePage({super.key, required this.arguments});
+
   @override
   _MilestonePage createState() => _MilestonePage();
 }
 
 class _MilestonePage extends State<MilestonePage> {
   int exerciseDays = 7; //默認運動天數為7
-  double currentLevel = 0.0; // 每個人從起點出發都是0?
+  double currentLevel = 1.0; // 每個人從起點出發都是0?
   final int totalLevels = 24;
 
   @override

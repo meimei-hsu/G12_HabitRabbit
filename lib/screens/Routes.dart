@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:g12/screens/RegisterPage.dart';
-import 'package:g12/screens/QuestionnairePage.dart';
-import 'package:g12/screens/Homepage.dart';
-import 'package:g12/screens/StatisticPage.dart';
 import 'package:g12/screens/ContractPage.dart';
 import 'package:g12/screens/CountdownPage.dart';
 import 'package:g12/screens/ExercisePage.dart';
+import 'package:g12/screens/Homepage.dart';
+import 'package:g12/screens/MilestonePage.dart';
+import 'package:g12/screens/QuestionnairePage.dart';
+import 'package:g12/screens/RegisterPage.dart';
+import 'package:g12/screens/StatisticPage.dart';
 import 'package:g12/screens/UserProfilePage.dart';
 
 //配置路由規則
@@ -18,6 +19,7 @@ final routes = {
   '/exercise': (context, {arguments}) => ExercisePage(arguments: arguments),
   '/customized': (context, {arguments}) =>
       UserProfilePage(arguments: arguments),
+  '/milestone': (context, {arguments}) => MilestonePage(arguments: arguments),
   /* ContractPage */
   '/contract/initial': (context, {arguments}) =>
       FirstContractPage(arguments: arguments),

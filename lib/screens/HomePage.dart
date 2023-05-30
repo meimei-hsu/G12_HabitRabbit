@@ -715,7 +715,10 @@ class _HomepageState extends State<Homepage> {
                     height: 1,
                   ),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, '/milestone',
+                      arguments: {'user': widget.arguments['user']});
+                },
               ),
             ],
           ),
