@@ -84,7 +84,7 @@ class _StatisticPageState extends State<StatisticPage> {
                     ),
                     Container(
                       height: 300,
-                      padding: EdgeInsets.only(right: 405, top: 20),
+                      padding: EdgeInsets.only(right: 40, top: 20),
                       child: LineChart(
                         LineChartData(
                           lineTouchData: LineTouchData(
