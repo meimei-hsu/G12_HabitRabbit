@@ -45,7 +45,10 @@ class _HomepageState extends State<Homepage> {
   List bothWeekWorkoutList = [];
 
   // Calendar 相關設定
-  DateTime _focusedDay = Calendar.today();
+  DateTime today = Calendar.today();
+  DateTime _focusedDay = DateTime(
+      Calendar.today().year, Calendar.today().month, Calendar.today().day);
+
   DateTime? _selectedDay = Calendar.today();
 
   get firstDay => Calendar.firstDay();
@@ -244,7 +247,10 @@ class _HomepageState extends State<Homepage> {
           ),
           const SizedBox(height: 10),
           if (workoutPlanList[Calendar.toKey(_selectedDay!)] != null) ...[
-            if (progressList[Calendar.toKey(_selectedDay!)] < 100) ...[
+            if (progressList[Calendar.toKey(_selectedDay!)] < 100 &&
+                _selectedDay!.isBefore(DateTime(_focusedDay.year,
+                        _focusedDay.month, _focusedDay.day)) ==
+                    false) ...[
               Container(
                   padding: const EdgeInsets.only(right: 10),
                   height: 60,
@@ -440,7 +446,8 @@ class _HomepageState extends State<Homepage> {
                 ? Container()
                 : getAddExerciseBtn(),
           ] else ...[
-            (_selectedDay!.isBefore(_focusedDay))
+            (_selectedDay!.isBefore(DateTime(
+                    _focusedDay.year, _focusedDay.month, _focusedDay.day)))
                 ? Container()
                 : getAddExerciseBtn()
           ],
