@@ -254,12 +254,16 @@ class UserDB {
     return (await getPlanVariables(id))?[3];
   }
 
+  static Future<int?> getTimeSpan(String id) async {
+    return (await getUser(id))?["timeSpan"] as int;
+  }
+
   static Future<String?> getLastWorkoutDay(String id) async {
     final Map? user = await getUser(id);
     return Calendar.thisWeek()[user!["workoutDays"].lastIndexOf("1")];
   }
 
-  static Future<int?> getHowManyWorkoutDay(String id) async {
+  static Future<int?> getWorkoutDayCount(String id) async {
     final Map? user = await getUser(id);
     int days=0;
     for(int i=0;i<7;i++){
@@ -722,12 +726,24 @@ class DurationDB {
   }
 
   // Insert duration data {date: "duration, timeSpan"} into table {table/userID/duration/date}
-  static Future<bool> insert(String userID, Map<String, String> data) async =>
-      await JournalDB.insert(userID, data, table);
+  static Future<bool> insert(String userID, Map<String, String> data) async {
+    var timeSpan = await UserDB.getTimeSpan(userID);
+    data.map((key, value) {
+      value += ", $timeSpan";
+      return MapEntry(key, value);
+    });
+    return await JournalDB.insert(userID, data, table);
+  }
 
   // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
-  static Future<bool> update(String userID, Map data) async =>
-      await JournalDB.update(userID, data, table);
+  static Future<bool> update(String userID, Map data) async {
+    var timeSpan = await UserDB.getTimeSpan(userID);
+    data.map((key, value) {
+      value += ", $timeSpan";
+      return MapEntry(key, value);
+    });
+    return await JournalDB.update(userID, data, table);
+  }
 
   // Delete duration data {table/userID/duration/date}
   static Future<bool> delete(String userID, String date) async =>
