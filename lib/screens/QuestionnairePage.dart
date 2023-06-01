@@ -53,7 +53,7 @@ class FirstPageState extends State<FirstPage> {
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, "/questionnaire/2",
-                      arguments: {'user': widget.arguments['user']});
+                      arguments: widget.arguments);
                 },
                 child: const Text(
                   "開始作答",
@@ -461,6 +461,7 @@ class SecondPageState extends State<SecondPage> {
                             );
                           } else {
                             Map<String, dynamic> answers = {
+                              'userName': widget.arguments['userName'],
                               'gender': gender,
                               'birthday': selectedDateTime.toString(),
                               'height': double.parse(height),
@@ -468,10 +469,7 @@ class SecondPageState extends State<SecondPage> {
                             };
                             print(answers);
                             Navigator.pushNamed(context, "/questionnaire/3",
-                                arguments: {
-                                  'user': widget.arguments['user'],
-                                  'answers': answers
-                                });
+                                arguments: {'answers': answers});
                           }
                         },
                         child: const Text(
@@ -1260,10 +1258,7 @@ class _ThirdPage extends State<ThirdPage> {
                             combinedData_1.addAll(data);
                             print('combinedData_1: $combinedData_1');
                             Navigator.pushNamed(context, "/questionnaire/4",
-                                arguments: {
-                                  'user': widget.arguments['user'],
-                                  'combinedData_1': combinedData_1
-                                });
+                                arguments: {'combinedData_1': combinedData_1});
                             /*Navigator.push(context,
                               MaterialPageRoute(builder: (context) => ForthPage(combinedData_1: combinedData_1, user: widget.user)
                               ));*/
@@ -1991,10 +1986,7 @@ class _ForthPage extends State<ForthPage> {
                           combinedData_2.addAll(data);
                           print('combinedData_2: $combinedData_2');
                           Navigator.pushNamed(context, "/questionnaire/5",
-                              arguments: {
-                                'user': widget.arguments['user'],
-                                'combinedData_2': combinedData_2
-                              });
+                              arguments: {'combinedData_2': combinedData_2});
                         }
                       },
                       child: const Text(
@@ -2063,7 +2055,6 @@ class _FifthPage extends State<FifthPage> {
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, "/questionnaire/6", arguments: {
-                    'user': widget.arguments['user'],
                     'combinedData_2': widget.arguments['combinedData_2']
                   });
                 },
@@ -2606,23 +2597,21 @@ class _SixthPage extends State<SixthPage> {
                       } else {
                         personality['openness'] = 2;
                       }
+
                       Map<String, dynamic> combinedData = {};
                       combinedData.addAll(widget.arguments['combinedData_2']);
                       combinedData.addAll(personality);
-                      combinedData["userName"] =
-                          widget.arguments['user'].displayName;
                       print('combinedData: $combinedData');
 
-                      String uid = widget.arguments['user'].uid;
-                      await UserDB.insert(uid, combinedData);
-                      await PlanAlgo.execute(uid);
+                      await UserDB.insert(combinedData);
+                      await PlanAlgo.execute();
+
+                      if (!mounted) return;
                       Navigator.pushNamed(context, "/questionnaire/result",
                           arguments: {
-                            'user': widget.arguments['user'],
                             'neuroticismSum': neuroticismSum,
                             'conscientiousnessSum': conscientiousnessSum,
                             'opennessSum': opennessSum,
-                            'resultMap': combinedData,
                           });
                     }
                   },
@@ -2646,10 +2635,7 @@ class _SixthPage extends State<SixthPage> {
 class ResultPage extends StatefulWidget {
   final Map arguments;
 
-  const ResultPage({
-    super.key,
-    required this.arguments,
-  });
+  const ResultPage({super.key, required this.arguments});
 
   @override
   _ResultPage createState() => _ResultPage();
@@ -2785,15 +2771,13 @@ class _ResultPage extends State<ResultPage> {
               ),
               onPressed: () async {
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/', (Route<dynamic> route) => false,
-                    arguments: {'user': widget.arguments['user']});
+                    context, '/', (Route<dynamic> route) => false);
               },
               child: const Text("確認",
                   style: TextStyle(
                     color: Color(0xFF0D3B66),
                   )),
             ),
-            Text("Map: ${widget.arguments['resultMap']}"),
             const SizedBox(height: 20),
           ],
         ),

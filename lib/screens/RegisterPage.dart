@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import 'package:g12/services/Authentication.dart';
 import 'package:g12/services/PlanAlgo.dart';
+import 'package:motion_toast/motion_toast.dart';
+import 'package:motion_toast/resources/arrays.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key, required this.isLoginPage}) : super(key: key);
@@ -33,9 +35,6 @@ class _RegisterPage extends State<RegisterPage> {
   void initState() {
     super.initState();
     isLoginPage = widget.isLoginPage; //初始化
-    // 初始化變量
-    //loginPage = _RegisterPageState('Login', true);
-    //signupPage = _RegisterPageState('Signup', false);
   }
 
   @override
@@ -277,23 +276,52 @@ class _RegisterPage extends State<RegisterPage> {
                   backgroundColor: const Color(0xFFFFA493),
                 ),
                 onPressed: () async {
-                  // 存储用戶輸入的帳號和密碼
-                  print(
-                      "${_accountController.text} : ${_passwordController.text}");
+                  String email = _accountController.text;
+                  String password = _passwordController.text;
+                  print("$email : $password");
 
-                  try {
-                    User? user = await FireAuth.signIn(
-                      email: _accountController.text,
-                      password: _passwordController.text,
-                    );
-                    if (user != null) {
-                      await PlanAlgo.execute(user.uid);
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/', (Route<dynamic> route) => false,
-                          arguments: {'user': user});
+                  String errMsg = "";
+                  errMsg += Validator.validateEmail(email) ?? "";
+                  errMsg += Validator.validatePassword(password) ?? "";
+
+                  if (errMsg.isEmpty) {
+                    try {
+                      User? user = await FireAuth.signIn(
+                        email: _accountController.text,
+                        password: _passwordController.text,
+                      );
+
+                      if (user != null) {
+                        await PlanAlgo.execute();
+                        if (!mounted) return;
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/', (Route<dynamic> route) => false);
+                      }
+                    } catch (e) {
+                      errMsg = "$e";
                     }
-                  } catch (e) {
-                    print("exception: $e");
+                  }
+
+                  if (errMsg.isNotEmpty) {
+                    if (!mounted) return;
+                    MotionToast(
+                      icon: Icons.done_all_rounded,
+                      primaryColor: const Color(0xffffa493),
+                      description: Text(
+                        errMsg,
+                        style: const TextStyle(
+                          color: Color(0xff0d3b66),
+                          fontSize: 16,
+                          letterSpacing: 0,
+                          fontWeight: FontWeight.bold,
+                          height: 1,
+                        ),
+                      ),
+                      position: MotionToastPosition.bottom,
+                      animationType: AnimationType.fromBottom,
+                      animationCurve: Curves.bounceIn,
+                      //displaySideBar: false,
+                    ).show(context);
                   }
                 },
                 child: const Text(
@@ -541,11 +569,9 @@ class _RegisterPage extends State<RegisterPage> {
                   backgroundColor: const Color(0xFFFFA493),
                 ),
                 onPressed: () async {
-                  // 存储用戶輸入的帳號和密碼
                   String name = _nameController.text;
                   String email = _accountController.text;
                   String password = _passwordController.text;
-
                   print("$email : $password");
 
                   String errMsg = "";
@@ -562,15 +588,37 @@ class _RegisterPage extends State<RegisterPage> {
                       );
 
                       if (user != null) {
+                        await PlanAlgo.execute();
+                        if (!mounted) return;
                         Navigator.pushNamedAndRemoveUntil(context,
                             '/questionnaire/1', (Route<dynamic> route) => false,
-                            arguments: {'user': user});
+                            arguments: {"userName": user.displayName});
                       }
                     } catch (e) {
-                      print("exception: $e");
+                      errMsg = "$e";
                     }
-                  } else {
-                    print("exception: $errMsg");
+                  }
+
+                  if (errMsg.isNotEmpty) {
+                    if (!mounted) return;
+                    MotionToast(
+                      icon: Icons.done_all_rounded,
+                      primaryColor: const Color(0xffffa493),
+                      description: Text(
+                        errMsg,
+                        style: const TextStyle(
+                          color: Color(0xff0d3b66),
+                          fontSize: 16,
+                          letterSpacing: 0,
+                          fontWeight: FontWeight.bold,
+                          height: 1,
+                        ),
+                      ),
+                      position: MotionToastPosition.bottom,
+                      animationType: AnimationType.fromBottom,
+                      animationCurve: Curves.bounceIn,
+                      //displaySideBar: false,
+                    ).show(context);
                   }
                 },
                 child: const Text(

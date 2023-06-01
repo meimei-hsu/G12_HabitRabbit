@@ -1,13 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:g12/services/Database.dart';
 
 class UserProfilePage extends StatefulWidget {
-  final Map arguments;
-
-  //final User user;
-
-  const UserProfilePage({super.key, required this.arguments});
+  const UserProfilePage({super.key});
 
   @override
   _UserProfilePage createState() => _UserProfilePage();
@@ -25,11 +22,10 @@ class _UserProfilePage extends State<UserProfilePage> {
   }
 
   void getPlanData() async {
-    String uid = widget.arguments['user'].uid;
-    var planVariables = await UserDB.getPlanVariables(uid);
+    var planVariables = await UserDB.getPlanVariables();
     var workoutDays = planVariables![1]["workoutDays"];
     setState(() {
-      timeSpan = planVariables[1]["timeSpan"].toString();
+      timeSpan = "${planVariables[1]["timeSpan"]}分鐘";
       monday = (workoutDays[0] == 1) ? true : false;
       tuesday = (workoutDays[1] == 1) ? true : false;
       wednesday = (workoutDays[2] == 1) ? true : false;
@@ -85,7 +81,6 @@ class _UserProfilePage extends State<UserProfilePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${widget.arguments['user'].displayName}'),
               const SizedBox(height: 30),
               const Padding(
                 padding: EdgeInsets.only(left: 20),
@@ -102,7 +97,8 @@ class _UserProfilePage extends State<UserProfilePage> {
                 child: SizedBox(
                   width: 200,
                   child: TextField(
-                    controller: nicknameController,
+                    controller: nicknameController
+                      ..text = FirebaseAuth.instance.currentUser!.displayName!,
                     decoration: const InputDecoration(
                       //hintText: '修改暱稱',
                       hintStyle: TextStyle(

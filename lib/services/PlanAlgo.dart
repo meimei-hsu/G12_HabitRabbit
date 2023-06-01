@@ -5,18 +5,18 @@ import 'package:g12/services/Database.dart';
 class PlanAlgo {
   // Start point of the planning algorithm
   // Execute when user login or after giving feedback.
-  static execute(String uid) async {
+  static execute() async {
     Algorithm algo = Algorithm();
     PlanData? db;
     DateTime? lastWorkoutDay =
-        DateTime.parse((await UserDB.getLastWorkoutDay(uid))!);
+        DateTime.parse((await UserDB.getLastWorkoutDay())!);
 
     // Conditions
     int today = DateTime.now().weekday;
     int lastDay = lastWorkoutDay.weekday;
-    bool noThisWeekPlan = await PlanDB.getThisWeek(uid) == null;
-    bool noNextWeekPlan = await PlanDB.getNextWeek(uid) == null;
-    bool isFinished = await DurationDB.calcProgress(uid, lastWorkoutDay) == 100;
+    bool noThisWeekPlan = await PlanDB.getThisWeek() == null;
+    bool noNextWeekPlan = await PlanDB.getNextWeek() == null;
+    bool isFinished = await DurationDB.calcProgress(lastWorkoutDay) == 100;
 
     // Start generating the plan
     // Generate next week's plan if:
@@ -26,12 +26,12 @@ class PlanAlgo {
     if ((today == lastDay && isFinished) ||
         (today > lastDay && !isFinished && today != 7)) {
       if (noNextWeekPlan) {
-        db = await algo.initializeNextWeek(uid);
+        db = await algo.initializeNextWeek();
         print("Generate next week's plan.");
       }
     } else {
       if (noThisWeekPlan) {
-        db = await algo.initializeThisWeek(uid);
+        db = await algo.initializeThisWeek();
         print("Generate this week's plan.");
       }
     }
@@ -39,48 +39,48 @@ class PlanAlgo {
     if (db != null) {
       var skd = await algo.arrangeSchedule(db);
       var plan = await algo.arrangePlan(db, skd);
-      await PlanDB.update(uid, plan);
+      await PlanDB.update(plan);
     } else {
       print("Not the time to generate a plan.");
     }
   }
 
   // Regenerate the plan for a day in the current week
-  static regenerate(String uid, DateTime dateTime) async {
+  static regenerate(DateTime dateTime) async {
     Algorithm algo = Algorithm();
-    var db = await algo.initializeThisWeek(uid);
+    var db = await algo.initializeThisWeek();
     var date = Calendar.toKey(dateTime);
 
-    var workoutType = await PlanDB.getWorkoutType(uid, dateTime);
-    var timeSpan = await PlanDB.getPlanLong(uid, dateTime);
+    var workoutType = await PlanDB.getWorkoutType(dateTime);
+    var timeSpan = await PlanDB.getPlanLong(dateTime);
     if (workoutType != null) {
       var plan = await algo.arrangeWorkout(db, workoutType, timeSpan);
-      await PlanDB.update(uid, {date: plan});
+      await PlanDB.update({date: plan});
     }
   }
 
-  static generate(String uid, DateTime dateTime, int timeSpan) async {
+  static generate(DateTime dateTime, int timeSpan) async {
     Algorithm algo = Algorithm();
-    var db = await algo.initializeThisWeek(uid);
+    var db = await algo.initializeThisWeek();
     var date = Calendar.toKey(dateTime);
 
     List workoutType = ["strength", "cardio", "yoga"];
     int idx = Random().nextInt(3);
     var plan = await algo.arrangeWorkout(db, workoutType[idx], timeSpan);
-    await PlanDB.update(uid, {date: plan});
+    await PlanDB.update({date: plan});
   }
 }
 
 class Algorithm {
-  Future<PlanData> initializeThisWeek(String uid) async {
+  Future<PlanData> initializeThisWeek() async {
     PlanData db = PlanData();
-    await db.init(uid, Calendar.thisWeek());
+    await db.init(Calendar.thisWeek());
     return db;
   }
 
-  Future<PlanData> initializeNextWeek(String uid) async {
+  Future<PlanData> initializeNextWeek() async {
     PlanData db = PlanData();
-    await db.init(uid, Calendar.nextWeek());
+    await db.init(Calendar.nextWeek());
     return db;
   }
 
@@ -259,10 +259,10 @@ class PlanData {
   Map _workoutIDs = {};
 
   // Setter
-  Future<void> init(String uid, List<String> weekDates) async {
+  Future<void> init(List<String> weekDates) async {
     _workoutIDs = (await WorkoutDB.getWIDs())!;
 
-    var profile = await UserDB.getPlanVariables(uid);
+    var profile = await UserDB.getPlanVariables();
 
     _personalities = profile![0];
     _timeSpan = profile[1]['timeSpan'];

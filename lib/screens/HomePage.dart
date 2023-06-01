@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_toast/resources/arrays.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -7,11 +8,7 @@ import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
 
 class Homepage extends StatefulWidget {
-  final Map arguments;
-
-  //final User user;
-  //const Homepage({super.key, required this.user});
-  const Homepage({super.key, required this.arguments});
+  const Homepage({super.key});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -19,18 +16,18 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final GlobalKey<ScaffoldState> _myKey = GlobalKey();
+  User user = FirebaseAuth.instance.currentUser!;
 
   @override
   void initState() {
     super.initState();
-    uid = widget.arguments['user'].uid;
     getPlanData();
   }
 
   void getPlanData() async {
-    var plan = await PlanDB.getThisWeekByName(uid);
-    var progress = await DurationDB.getThisWeek(uid);
-    var workoutDays = await UserDB.getBothWeekWorkoutDays(uid);
+    var plan = await PlanDB.getThisWeekByName();
+    var progress = await DurationDB.getThisWeek();
+    var workoutDays = await UserDB.getBothWeekWorkoutDays();
     setState(() {
       workoutPlanList = plan ?? {};
       progressList = progress ?? {};
@@ -39,7 +36,6 @@ class _HomepageState extends State<Homepage> {
   }
 
   // Plan 相關資料
-  String uid = "";
   Map workoutPlanList = {};
   Map progressList = {};
   List bothWeekWorkoutList = [];
@@ -114,20 +110,16 @@ class _HomepageState extends State<Homepage> {
   void _showAddExerciseDialog() async {
     await showDialog<double>(
       context: context,
-      builder: (context) => AddExerciseDialog(arguments: {
-        'user': widget.arguments['user'],
-        "selectedDay": _selectedDay
-      }),
+      builder: (context) =>
+          AddExerciseDialog(arguments: {"selectedDay": _selectedDay}),
     ).then((_) => refresh());
   }
 
   void _showChangeExerciseDayDialog() async {
     await showDialog<double>(
       context: context,
-      builder: (context) => ChangeExerciseDayDialog(arguments: {
-        'user': widget.arguments['user'],
-        "selectedDay": _selectedDay
-      }),
+      builder: (context) =>
+          ChangeExerciseDayDialog(arguments: {"selectedDay": _selectedDay}),
     ).then((_) => refresh());
   }
 
@@ -285,8 +277,7 @@ class _HomepageState extends State<Homepage> {
                           color: const Color(0xff0d3b66),
                           tooltip: "刪除計畫",
                           onPressed: () async {
-                            await PlanDB.delete(widget.arguments["user"].uid,
-                                Calendar.toKey(_selectedDay!));
+                            await PlanDB.delete(Calendar.toKey(_selectedDay!));
                             refresh();
                           },
                         ),
@@ -303,7 +294,7 @@ class _HomepageState extends State<Homepage> {
                           color: const Color(0xff0d3b66),
                           tooltip: "重新計畫",
                           onPressed: () {
-                            PlanAlgo.regenerate(uid, _selectedDay!);
+                            PlanAlgo.regenerate(_selectedDay!);
                             refresh();
                             MotionToast(
                               icon: Icons.done_all_rounded,
@@ -533,12 +524,11 @@ class _HomepageState extends State<Homepage> {
               color: const Color(0xff0d3b66),
               tooltip: "開始運動",
               onPressed: () {
-                if (progressList[Calendar.toKey(_focusedDay!)] < 100) {
+                if (progressList[Calendar.toKey(_focusedDay)] < 100) {
                   var workoutPlan =
-                      workoutPlanList[Calendar.toKey(_focusedDay!)];
+                      workoutPlanList[Calendar.toKey(_focusedDay)];
                   List items = workoutPlan.split(", ");
                   Navigator.pushNamed(context, '/countdown', arguments: {
-                    'user': widget.arguments['user'],
                     'exerciseTime': items.length * 6, // should be 60s
                     'exerciseItem': items
                   });
@@ -580,8 +570,7 @@ class _HomepageState extends State<Homepage> {
                     color: const Color(0xff0d3b66),
                     tooltip: "統計資料",
                     onPressed: () {
-                      Navigator.pushNamed(context, '/statistic',
-                          arguments: {'user': widget.arguments['user']});
+                      Navigator.pushNamed(context, '/statistic');
                     },
                   ),
                   IconButton(
@@ -607,7 +596,7 @@ class _HomepageState extends State<Homepage> {
                   color: Color(0x193598f5),
                 ),
                 accountName: Text(
-                  "${widget.arguments['user'].displayName}",
+                  "${user.displayName}",
                   style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 24,
@@ -618,7 +607,7 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 accountEmail: Text(
-                  "${widget.arguments['user'].email}",
+                  "${user.email}",
                   style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,
@@ -636,10 +625,68 @@ class _HomepageState extends State<Homepage> {
                     color: Color(0xffCCCCCC),
                   ),
                 ),
-                onDetailsPressed: () {
-                  Navigator.popAndPushNamed(context, '/customized',
-                      arguments: {'user': widget.arguments['user']});
-                },
+                onDetailsPressed: () => showDialog<double>(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text(
+                        "選擇行動",
+                        style: TextStyle(
+                          color: Color(0xff0d3b66),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Text("你想要登出目前帳號還是前往個人設定?"),
+                          SizedBox(height: 20),
+                        ],
+                      ),
+                      actions: [
+                        OutlinedButton(
+                            child: const Text(
+                              "取消",
+                              style: TextStyle(
+                                color: Color(0xff0d3b66),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            }),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xffffa493),
+                            ),
+                            onPressed: () {
+                              Navigator.popAndPushNamed(context, '/register');
+                            },
+                            child: const Text(
+                              "登出帳號",
+                              style: TextStyle(
+                                color: Color(0xff0d3b66),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xfffbb87f),
+                            ),
+                            onPressed: () {
+                              Navigator.popAndPushNamed(context, '/customized');
+                            },
+                            child: const Text(
+                              "個人設定",
+                              style: TextStyle(
+                                color: Color(0xff0d3b66),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )),
+                      ],
+                    );
+                  },
+                ),
               ),
               ListTile(
                 title: const Text(
@@ -655,9 +702,10 @@ class _HomepageState extends State<Homepage> {
                   Navigator.pop(context, '/');
                 },
               ),
+              // TODO: 應該點承諾合約按鈕後才抓資料庫
               FutureBuilder(
                   // Exercise plan
-                  future: ContractDB.getContractDetails(uid),
+                  future: ContractDB.getContractDetails(),
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
@@ -683,14 +731,11 @@ class _HomepageState extends State<Homepage> {
                             if (contractData != null) {
                               Navigator.popAndPushNamed(context, '/contract',
                                   arguments: {
-                                    'user': widget.arguments['user'],
                                     'contractData': contractData,
                                   });
                             } else {
                               Navigator.popAndPushNamed(
-                                  context, '/contract/initial', arguments: {
-                                'user': widget.arguments['user']
-                              });
+                                  context, '/contract/initial');
                             }
                           },
                         );
@@ -723,8 +768,7 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 onTap: () {
-                  Navigator.pushNamed(context, '/milestone',
-                      arguments: {'user': widget.arguments['user']});
+                  Navigator.pushNamed(context, '/milestone');
                 },
               ),
             ],
@@ -821,10 +865,10 @@ class AddExerciseDialogState extends State<AddExerciseDialog> {
               backgroundColor: const Color(0xfffbb87f),
             ),
             onPressed: () async {
-              String uid = widget.arguments['user'].uid;
               DateTime selectedDay = widget.arguments['selectedDay'];
-              await PlanAlgo.generate(uid, selectedDay, exerciseTime);
+              await PlanAlgo.generate(selectedDay, exerciseTime);
               print("$selectedDay add $exerciseTime minutes exercise plan.");
+              if (!mounted) return;
               Navigator.pop(context);
             },
             child: const Text(
@@ -950,10 +994,10 @@ class ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
         ),
         onPressed: () async {
           // FIXME: 如果修改天數，換到已經有計畫的日子怎麼辦? (現在是直接蓋掉原本的)
-          String uid = widget.arguments['user'].uid;
           DateTime originalDate = widget.arguments['selectedDay'];
-          await PlanDB.updateDate(uid, originalDate, changedDayDate);
+          await PlanDB.updateDate(originalDate, changedDayDate);
           print("Change $selectedDay to $changedDayDate 星期$changedDayWeekday.");
+          if (!mounted) return;
           Navigator.pop(context);
         },
         child: const Text(

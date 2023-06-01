@@ -4,9 +4,8 @@ import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:g12/services/Database.dart';
 
 class FirstContractPage extends StatefulWidget {
-  final Map arguments;
 
-  const FirstContractPage({super.key, required this.arguments});
+  const FirstContractPage({super.key, required arguments});
 
   @override
   _FirstContractPage createState() => _FirstContractPage();
@@ -258,8 +257,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                             Map contract =
                                 Map.fromIterables(ContractDB.getColumns(), c);
                             print(contract);
-                            ContractDB.insert(
-                                widget.arguments['user'].uid, contract);
+                            ContractDB.insert(contract);
 
                             showDialog(
                               context: context,
@@ -269,7 +267,6 @@ class _FirstContractPage extends State<FirstContractPage> {
                                   Navigator.pushNamed(context, '/contract',
                                       arguments: {
                                         'contractData': contract,
-                                        'user': widget.arguments['user']
                                       });
                                 });
                                 return const AlertDialog(
@@ -435,8 +432,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                 backgroundColor: const Color(0xFFFFA493),
               ),
               onPressed: () {
-                Navigator.pushNamed(context, '/',
-                    arguments: {'user': widget.arguments['user']});
+                Navigator.pushNamed(context, '/');
               },
               child: const Text("確認",
                   style: TextStyle(

@@ -109,7 +109,7 @@ class ExercisePageState extends State<ExercisePage> {
     await showDialog<double>(
       context: context,
       builder: (context) =>
-          FeedbackDialog(arguments: {'user': widget.arguments['user']}),
+          FeedbackDialog(),
     );
   }
 
@@ -317,9 +317,7 @@ class ExercisePageState extends State<ExercisePage> {
 }
 
 class FeedbackDialog extends StatefulWidget {
-  final Map arguments;
-
-  const FeedbackDialog({super.key, required this.arguments});
+  const FeedbackDialog({super.key});
 
   @override
   FeedbackDialogState createState() => FeedbackDialogState();
@@ -424,14 +422,12 @@ class FeedbackDialogState extends State<FeedbackDialog> {
               feedbackData.add(_currentValue2);
               print("FeedbackData: $feedbackData");
               Navigator.pushNamedAndRemoveUntil(
-                  context, '/', (Route<dynamic> route) => false,
-                  arguments: {'user': widget.arguments['user']});
-              String uid = widget.arguments['user'].uid;
-              var type = await PlanDB.getWorkoutType(uid, DateTime.now());
+                  context, '/', (Route<dynamic> route) => false);
+              var type = await PlanDB.getWorkoutType(DateTime.now());
               if (type != null) {
-                UserDB.updateByFeedback(uid, type, feedbackData);
+                UserDB.updateByFeedback(type, feedbackData);
               }
-              await PlanAlgo.execute(uid);
+              await PlanAlgo.execute();
 
               //var profile = await UserDB.getPlanVariables(userID);
               // Map<String, dynamic> _likings = {}, _abilities = {};

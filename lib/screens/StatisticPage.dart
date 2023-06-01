@@ -5,9 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 
 class StatisticPage extends StatefulWidget {
-  final Map arguments;
-
-  const StatisticPage({Key? key, required this.arguments}) : super(key: key);
+  const StatisticPage({Key? key}) : super(key: key);
 
   @override
   _StatisticPageState createState() => _StatisticPageState();

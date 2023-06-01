@@ -25,7 +25,6 @@ class CountdownPageState extends State<CountdownPage> {
         ifEnd = true;
         //Navigator.pushNamed(context, '/exercise');
         Navigator.popAndPushNamed(context, '/exercise', arguments: {
-          'user': widget.arguments['user'],
           'exerciseTime': widget.arguments['exerciseTime'],
           'exerciseItem': widget.arguments['exerciseItem']
         });

@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:level_map/level_map.dart';
 
 class MilestonePage extends StatefulWidget {
-  final Map arguments;
-
-  const MilestonePage({super.key, required this.arguments});
+  const MilestonePage({super.key});
 
   @override
   _MilestonePage createState() => _MilestonePage();

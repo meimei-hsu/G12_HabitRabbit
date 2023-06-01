@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -8,9 +9,17 @@ class AppEntryPoint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var currentUser = FirebaseAuth.instance.currentUser;
+    String initialRoute = "";
+    if(currentUser == null){
+      initialRoute = "/register";
+    } else {
+      initialRoute = "/";
+    }
+
     return MaterialApp(
       title: 'for_my_fat',
-      initialRoute: '/register', // 加 route
+      initialRoute: initialRoute, // 加 route
       onGenerateRoute:onGenerateRoute, // route 抽離
     );
   }
