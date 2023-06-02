@@ -8,7 +8,7 @@ import 'package:g12/screens/MilestonePage.dart';
 import 'package:g12/screens/QuestionnairePage.dart';
 import 'package:g12/screens/RegisterPage.dart';
 import 'package:g12/screens/StatisticPage.dart';
-import 'package:g12/screens/UserProfilePage.dart';
+import 'package:g12/screens/SettingsPage.dart';
 
 //配置路由規則
 final routes = {
@@ -17,7 +17,7 @@ final routes = {
   '/statistic': (context) => const StatisticPage(),
   '/countdown': (context, {arguments}) => CountdownPage(arguments: arguments),
   '/exercise': (context, {arguments}) => ExercisePage(arguments: arguments),
-  '/customized': (context, {arguments}) => const UserProfilePage(),
+  '/settings': (context, {arguments}) => const SettingsPage(),
   '/milestone': (context, {arguments}) => const MilestonePage(),
   /* ContractPage */
   '/contract/initial': (context, {arguments}) =>

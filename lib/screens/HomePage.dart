@@ -625,68 +625,9 @@ class _HomepageState extends State<Homepage> {
                     color: Color(0xffCCCCCC),
                   ),
                 ),
-                onDetailsPressed: () => showDialog<double>(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text(
-                        "選擇行動",
-                        style: TextStyle(
-                          color: Color(0xff0d3b66),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Text("你想要登出目前帳號還是前往個人設定?"),
-                          SizedBox(height: 20),
-                        ],
-                      ),
-                      actions: [
-                        OutlinedButton(
-                            child: const Text(
-                              "取消",
-                              style: TextStyle(
-                                color: Color(0xff0d3b66),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            }),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xffffa493),
-                            ),
-                            onPressed: () {
-                              Navigator.popAndPushNamed(context, '/register');
-                            },
-                            child: const Text(
-                              "登出帳號",
-                              style: TextStyle(
-                                color: Color(0xff0d3b66),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xfffbb87f),
-                            ),
-                            onPressed: () {
-                              Navigator.popAndPushNamed(context, '/customized');
-                            },
-                            child: const Text(
-                              "個人設定",
-                              style: TextStyle(
-                                color: Color(0xff0d3b66),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )),
-                      ],
-                    );
-                  },
-                ),
+                onDetailsPressed: () {
+                  Navigator.popAndPushNamed(context, '/settings');
+                  }
               ),
               ListTile(
                 title: const Text(
