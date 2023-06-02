@@ -36,7 +36,7 @@ A milestone habit App.
         |---CountdownPage.dart
     |---StatisticPage.dart
     |---ContractPage.dart
-    |---UserProfilePage.dart
+    |---SettingsPage.dart
 ---Routes.dart
 ```
 
