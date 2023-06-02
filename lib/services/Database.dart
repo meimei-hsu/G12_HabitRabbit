@@ -78,9 +78,6 @@ class Home extends StatelessWidget {
       "5007"
     ];
 
-    String mary = "j6QYBrgbLIQH7h8iRyslntFFKV63";
-    String john = "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";
-
     return Scaffold(
         body: Container(
       padding: const EdgeInsets.all(50),
@@ -175,7 +172,9 @@ General Database: database records that occurs occasionally
 
 class UserDB {
   static const db = "users";
-  static String uid = FirebaseAuth.instance.currentUser!.uid;
+  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
+  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
+  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Define the columns of the user table
   static List<String> getColumns() {
@@ -353,7 +352,9 @@ class UserDB {
 
 class ContractDB {
   static const db = "contract";
-  static String uid = FirebaseAuth.instance.currentUser!.uid;
+  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
+  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
+  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Define the columns of the user table
   static List<String> getColumns() {
@@ -369,7 +370,10 @@ class ContractDB {
 
   // Select contract from userID
   static Future<Map?> getContract() async {
-    return Map<String, dynamic>.from(await DB.select(db, uid) as Map);
+    var snapshot = await DB.select(db, uid);
+    return (snapshot != null)
+        ? Map<String, dynamic>.from(snapshot as Map)
+        : null;
   }
 
   // Select dynamic data from userID
@@ -427,7 +431,9 @@ class ContractDB {
 
 class MilestoneDB {
   static const db = "milestone";
-  static String uid = FirebaseAuth.instance.currentUser!.uid;
+  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
+  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
+  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Define the columns of the milestone table
   static List<String> getColumns() {
@@ -542,7 +548,9 @@ Journal Database: database records that occurs daily
 
 class PlanDB {
   static const table = "plan";
-  static String uid = FirebaseAuth.instance.currentUser!.uid;
+  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
+  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
+  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Format the String of plan into List of workouts, grouped by workout sets
   static List toList(String planStr) {
@@ -677,7 +685,9 @@ class PlanDB {
 
 class DurationDB {
   static const table = "duration";
-  static String uid = FirebaseAuth.instance.currentUser!.uid;
+  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
+  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
+  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Select all durations
   static Future<Map?> getTable() async => await JournalDB.getTable(uid, table);
@@ -749,7 +759,9 @@ class DurationDB {
 
 class WeightDB {
   static const table = "weight";
-  static String uid = FirebaseAuth.instance.currentUser!.uid;
+  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
+  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
+  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Select all weight
   static Future<Map?> getTable() async => await JournalDB.getTable(uid, table);
@@ -771,11 +783,11 @@ class WeightDB {
   }
 
   // Insert weight data {date: weight} into table {table/userID/weight/date}
-  static Future<bool> insert(Map<String, String> data) async =>
+  static Future<bool> insert(Map<String, double> data) async =>
       await JournalDB.insert(uid, data, table);
 
   // Update weight data {date: weight} from table {table/userID/weight/date}
-  static Future<bool> update(Map data) async =>
+  static Future<bool> update(Map<String, double> data) async =>
       await JournalDB.update(uid, data, table);
 
   // Delete weight data {table/userID/weight/date}

@@ -173,7 +173,9 @@ class _SettingsPage extends State<SettingsPage> {
                 settingsGroupTitle: "帳號",
                 items: [
                   SettingsItem(
-                    onTap: () {
+                    onTap: () async {
+                      await FirebaseAuth.instance.signOut();
+                      if (!mounted) return;
                       Navigator.popAndPushNamed(context, '/register');
                     },
                     icons: Icons.exit_to_app_rounded,

@@ -19,9 +19,8 @@ class RegisterPage extends StatefulWidget {
 // TODO: 將各頁面改為 class 並加入路徑(參考小戴做的頁面)
 class _RegisterPage extends State<RegisterPage> {
   late bool isLoginPage;
+  bool isProcessing = false;
 
-  //late _RegisterPage loginPage; // 定義變量
-  //late _RegisterPage signupPage;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -246,95 +245,106 @@ class _RegisterPage extends State<RegisterPage> {
             ),
           ),
           const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFA493),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => _buildForgetPasswordForm(context),
-                    ),
-                  );
-                },
-                child: const Text(
-                  "忘記密碼",
-                  style: TextStyle(
-                    color: Color(0xFF0D3B66),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFA493),
-                ),
-                onPressed: () async {
-                  String email = _accountController.text;
-                  String password = _passwordController.text;
-                  print("$email : $password");
-
-                  String errMsg = "";
-                  errMsg += Validator.validateEmail(email) ?? "";
-                  errMsg += Validator.validatePassword(password) ?? "";
-
-                  if (errMsg.isEmpty) {
-                    try {
-                      User? user = await FireAuth.signIn(
-                        email: _accountController.text,
-                        password: _passwordController.text,
-                      );
-
-                      if (user != null) {
-                        await PlanAlgo.execute();
-                        if (!mounted) return;
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/', (Route<dynamic> route) => false);
-                      }
-                    } catch (e) {
-                      errMsg = "$e";
-                    }
-                  }
-
-                  if (errMsg.isNotEmpty) {
-                    if (!mounted) return;
-                    MotionToast(
-                      icon: Icons.done_all_rounded,
-                      primaryColor: const Color(0xffffa493),
-                      description: Text(
-                        errMsg,
-                        style: const TextStyle(
-                          color: Color(0xff0d3b66),
-                          fontSize: 16,
-                          letterSpacing: 0,
+          isProcessing
+              ? const CircularProgressIndicator()
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFFA493),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                _buildForgetPasswordForm(context),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "忘記密碼",
+                        style: TextStyle(
+                          color: Color(0xFF0D3B66),
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          height: 1,
                         ),
                       ),
-                      position: MotionToastPosition.bottom,
-                      animationType: AnimationType.fromBottom,
-                      animationCurve: Curves.bounceIn,
-                      //displaySideBar: false,
-                    ).show(context);
-                  }
-                },
-                child: const Text(
-                  "登入",
-                  style: TextStyle(
-                    color: Color(0xFF0D3B66),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFFA493),
+                      ),
+                      onPressed: () async {
+                        setState(() {
+                          isProcessing = true;
+                        });
+
+                        String email = _accountController.text;
+                        String password = _passwordController.text;
+                        print("$email : $password");
+
+                        String errMsg = "";
+                        errMsg += Validator.validateEmail(email) ?? "";
+                        errMsg += Validator.validatePassword(password) ?? "";
+
+                        if (errMsg.isEmpty) {
+                          try {
+                            User? user = await FireAuth.signIn(
+                              email: _accountController.text,
+                              password: _passwordController.text,
+                            );
+
+                            setState(() {
+                              isProcessing = false;
+                            });
+
+                            if (user != null) {
+                              await PlanAlgo.execute();
+                              if (!mounted) return;
+                              Navigator.pushNamedAndRemoveUntil(context, '/',
+                                  (Route<dynamic> route) => false);
+                            }
+                          } catch (e) {
+                            errMsg = "$e";
+                          }
+                        }
+
+                        if (errMsg.isNotEmpty) {
+                          if (!mounted) return;
+                          MotionToast(
+                            icon: Icons.done_all_rounded,
+                            primaryColor: const Color(0xffffa493),
+                            description: Text(
+                              errMsg,
+                              style: const TextStyle(
+                                color: Color(0xff0d3b66),
+                                fontSize: 16,
+                                letterSpacing: 0,
+                                fontWeight: FontWeight.bold,
+                                height: 1,
+                              ),
+                            ),
+                            position: MotionToastPosition.bottom,
+                            animationType: AnimationType.fromBottom,
+                            animationCurve: Curves.bounceIn,
+                            //displaySideBar: false,
+                          ).show(context);
+                        }
+                      },
+                      child: const Text(
+                        "登入",
+                        style: TextStyle(
+                          color: Color(0xFF0D3B66),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ],
       ),
     );
@@ -539,7 +549,9 @@ class _RegisterPage extends State<RegisterPage> {
             ),
           ),
           const SizedBox(height: 30),
-          Row(
+          isProcessing
+              ? const CircularProgressIndicator()
+              : Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
@@ -569,6 +581,10 @@ class _RegisterPage extends State<RegisterPage> {
                   backgroundColor: const Color(0xFFFFA493),
                 ),
                 onPressed: () async {
+                  setState(() {
+                    isProcessing = true;
+                  });
+
                   String name = _nameController.text;
                   String email = _accountController.text;
                   String password = _passwordController.text;
@@ -586,6 +602,10 @@ class _RegisterPage extends State<RegisterPage> {
                         email: _accountController.text,
                         password: _passwordController.text,
                       );
+
+                      setState(() {
+                        isProcessing = false;
+                      });
 
                       if (user != null) {
                         await PlanAlgo.execute();

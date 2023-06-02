@@ -16,7 +16,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final GlobalKey<ScaffoldState> _myKey = GlobalKey();
-  User user = FirebaseAuth.instance.currentUser!;
+  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -596,7 +596,7 @@ class _HomepageState extends State<Homepage> {
                   color: Color(0x193598f5),
                 ),
                 accountName: Text(
-                  "${user.displayName}",
+                  "${user?.displayName}",
                   style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 24,
@@ -607,7 +607,7 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
                 accountEmail: Text(
-                  "${user.email}",
+                  "${user?.email}",
                   style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,
