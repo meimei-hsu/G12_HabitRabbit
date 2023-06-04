@@ -7,17 +7,16 @@ import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key, required this.isLoginPage}) : super(key: key);
-
-  //const LoginPage({super.key, required this.title});
   final bool isLoginPage;
 
+  const RegisterPage({Key? key, required this.isLoginPage}) : super(key: key);
+
   @override
-  _RegisterPage createState() => _RegisterPage(this.isLoginPage);
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
 // TODO: 將各頁面改為 class 並加入路徑(參考小戴做的頁面)
-class _RegisterPage extends State<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage> {
   late bool isLoginPage;
   bool isProcessing = false;
 
@@ -26,8 +25,6 @@ class _RegisterPage extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordConfirmController =
       TextEditingController();
-
-  _RegisterPage(this.isLoginPage); // 定義變量
 
   @override
   //_RegisterPageState({required this.title, required this.isLoginPage})
@@ -297,10 +294,6 @@ class _RegisterPage extends State<RegisterPage> {
                               password: _passwordController.text,
                             );
 
-                            setState(() {
-                              isProcessing = false;
-                            });
-
                             if (user != null) {
                               await PlanAlgo.execute();
                               if (!mounted) return;
@@ -333,6 +326,10 @@ class _RegisterPage extends State<RegisterPage> {
                             //displaySideBar: false,
                           ).show(context);
                         }
+
+                        setState(() {
+                          isProcessing = false;
+                        });
                       },
                       child: const Text(
                         "登入",
@@ -603,10 +600,6 @@ class _RegisterPage extends State<RegisterPage> {
                         password: _passwordController.text,
                       );
 
-                      setState(() {
-                        isProcessing = false;
-                      });
-
                       if (user != null) {
                         await PlanAlgo.execute();
                         if (!mounted) return;
@@ -640,6 +633,10 @@ class _RegisterPage extends State<RegisterPage> {
                       //displaySideBar: false,
                     ).show(context);
                   }
+
+                  setState(() {
+                    isProcessing = false;
+                  });
                 },
                 child: const Text(
                   "註冊",

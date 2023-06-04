@@ -17,6 +17,7 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   final GlobalKey<ScaffoldState> _myKey = GlobalKey();
   User? user = FirebaseAuth.instance.currentUser;
+  bool isFetchingData = true;
 
   @override
   void initState() {
@@ -25,6 +26,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   void getPlanData() async {
+    isFetchingData = true;
     var plan = await PlanDB.getThisWeekByName();
     var progress = await DurationDB.getThisWeek();
     var workoutDays = await UserDB.getBothWeekWorkoutDays();
@@ -32,6 +34,7 @@ class _HomepageState extends State<Homepage> {
       workoutPlanList = plan ?? {};
       progressList = progress ?? {};
       bothWeekWorkoutList = workoutDays ?? [];
+      isFetchingData = false;
     });
   }
 
@@ -359,7 +362,9 @@ class _HomepageState extends State<Homepage> {
                     ))
                 : const Text("Rest Day"),
           ] else ...[
-            const Text("Rest Day"),
+            (isFetchingData)
+                ? const CircularProgressIndicator()
+                : const Text("Rest Day"),
           ],
           // TODO: 確認顯示無問題後，刪除 FutureBuilder code
           /*FutureBuilder(
@@ -422,25 +427,27 @@ class _HomepageState extends State<Homepage> {
               }),*/
           const SizedBox(height: 10),
           // (need check again) FIXME: 若運動都完成後 or 過期，不應該顯示新增運動按鈕？
-          if ((workoutPlanList[Calendar.toKey(_selectedDay!)] != null)) ...[
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10, left: 10),
-                child: ListView(
-                  children: _getSportList(PlanDB.toList(
-                      workoutPlanList[Calendar.toKey(_selectedDay!)])),
+          if (!isFetchingData) ...[
+            if ((workoutPlanList[Calendar.toKey(_selectedDay!)] != null)) ...[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10, left: 10),
+                  child: ListView(
+                    children: _getSportList(PlanDB.toList(
+                        workoutPlanList[Calendar.toKey(_selectedDay!)])),
+                  ),
                 ),
               ),
-            ),
-          ] else if (!isThisWeek) ...[
-            (bothWeekWorkoutList.contains(Calendar.toKey(_selectedDay!)))
-                ? Container()
-                : getAddExerciseBtn(),
-          ] else ...[
-            (_selectedDay!.isBefore(DateTime(
-                    _focusedDay.year, _focusedDay.month, _focusedDay.day)))
-                ? Container()
-                : getAddExerciseBtn()
+            ] else if (!isThisWeek) ...[
+              (bothWeekWorkoutList.contains(Calendar.toKey(_selectedDay!)))
+                  ? Container()
+                  : getAddExerciseBtn(),
+            ] else ...[
+              (_selectedDay!.isBefore(DateTime(
+                      _focusedDay.year, _focusedDay.month, _focusedDay.day)))
+                  ? Container()
+                  : getAddExerciseBtn()
+            ],
           ],
           // TODO: 確認顯示無問題後，刪除 FutureBuilder code
           /*FutureBuilder(
@@ -590,45 +597,44 @@ class _HomepageState extends State<Homepage> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               UserAccountsDrawerHeader(
-                //require email
-                decoration: const BoxDecoration(
-                  //to be better
-                  color: Color(0x193598f5),
-                ),
-                accountName: Text(
-                  "${user?.displayName}",
-                  style: const TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontSize: 24,
-                    letterSpacing:
-                        0 /*percentages not used in flutter. defaulting to zero*/,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
+                  //require email
+                  decoration: const BoxDecoration(
+                    //to be better
+                    color: Color(0x193598f5),
                   ),
-                ),
-                accountEmail: Text(
-                  "${user?.email}",
-                  style: const TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontSize: 16,
-                    letterSpacing:
-                        0 /*percentages not used in flutter. defaulting to zero*/,
-                    height: 1,
+                  accountName: Text(
+                    "${user?.displayName}",
+                    style: const TextStyle(
+                      color: Color(0xff0d3b66),
+                      fontSize: 24,
+                      letterSpacing:
+                          0 /*percentages not used in flutter. defaulting to zero*/,
+                      fontWeight: FontWeight.bold,
+                      height: 1,
+                    ),
                   ),
-                ),
-                currentAccountPicture: const CircleAvatar(
-                  //backgroundImage: NetworkImage(
-                  //"https://avatars2.githubusercontent.com/u/18156421?s=400&u=1f91dcf74134827fde071751f95522845223ed6a&v=4",
-                  //),
-                  child: Icon(
-                    Icons.face,
-                    color: Color(0xffCCCCCC),
+                  accountEmail: Text(
+                    "${user?.email}",
+                    style: const TextStyle(
+                      color: Color(0xff0d3b66),
+                      fontSize: 16,
+                      letterSpacing:
+                          0 /*percentages not used in flutter. defaulting to zero*/,
+                      height: 1,
+                    ),
                   ),
-                ),
-                onDetailsPressed: () {
-                  Navigator.popAndPushNamed(context, '/settings');
-                  }
-              ),
+                  currentAccountPicture: const CircleAvatar(
+                    //backgroundImage: NetworkImage(
+                    //"https://avatars2.githubusercontent.com/u/18156421?s=400&u=1f91dcf74134827fde071751f95522845223ed6a&v=4",
+                    //),
+                    child: Icon(
+                      Icons.face,
+                      color: Color(0xffCCCCCC),
+                    ),
+                  ),
+                  onDetailsPressed: () {
+                    Navigator.popAndPushNamed(context, '/settings');
+                  }),
               ListTile(
                 title: const Text(
                   '首頁',

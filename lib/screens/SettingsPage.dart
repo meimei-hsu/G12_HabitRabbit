@@ -129,15 +129,14 @@ class _SettingsPage extends State<SettingsPage> {
                     title: '更改暱稱',
                   ),
                   SettingsItem(
-                    onTap: () => {},
-                    icons: Icons.email_outlined,
-                    iconStyle: IconStyle(
-                      iconsColor: const Color(0xff0d3b66),
-                      withBackground: true,
-                      backgroundColor: const Color(0xfffaf0ca),
-                    ),
-                    title: '更改信箱'
-                  ),
+                      onTap: () => {},
+                      icons: Icons.email_outlined,
+                      iconStyle: IconStyle(
+                        iconsColor: const Color(0xff0d3b66),
+                        withBackground: true,
+                        backgroundColor: const Color(0xfffaf0ca),
+                      ),
+                      title: '更改信箱'),
                   SettingsItem(
                     onTap: () => {},
                     icons: CupertinoIcons.photo_on_rectangle,
@@ -478,6 +477,11 @@ class ChangeLikingDialog extends StatefulWidget {
 class ChangeLikingDialogState extends State<ChangeLikingDialog> {
   Map<String, num> likings = {};
   List<String> category = ["肌力運動", "有氧運動", "瑜珈運動"];
+  Map<String, IconData> icons = {
+    "肌力運動": Icons.fitness_center,
+    "有氧運動": Icons.directions_run,
+    "瑜珈運動": Icons.self_improvement
+  };
   List<String> key = ["strengthLiking", "cardioLiking", "yogaLiking"];
   String dropdownValue = "";
 
@@ -490,13 +494,12 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
 
   Widget _getSlider(int i) {
     var currentValue = likings[key[i]]! / 20;
-    return ListView(scrollDirection: Axis.horizontal, children: [
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Slider(
         value: currentValue,
         min: 0,
         max: 5,
         divisions: 50,
-        label: currentValue.toStringAsFixed(1),
         onChanged: (value) {
           setState(() {
             likings[key[i]] = value * 20;
@@ -504,7 +507,7 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
         },
       ),
       Text(
-        "$currentValue",
+        currentValue.toStringAsFixed(1),
         textAlign: TextAlign.right,
         style: const TextStyle(
             color: Color(0xff0d3b66),
@@ -546,7 +549,13 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
             items: category.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Row(
+                  children: [
+                    Icon(icons[value]),
+                    const SizedBox(width: 5),
+                    Text(value),
+                  ],
+                ),
               );
             }).toList(),
           ),
