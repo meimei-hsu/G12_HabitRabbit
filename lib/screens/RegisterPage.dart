@@ -102,6 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
     //登錄
     // TODO: 記住帳號密碼
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xfffaf0ca),
       appBar: AppBar(
         elevation: 0,
@@ -351,6 +352,7 @@ class _RegisterPageState extends State<RegisterPage> {
     //登錄
     //var _accountController;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xfffaf0ca),
       appBar: AppBar(
         elevation: 0,
@@ -659,6 +661,7 @@ class _RegisterPageState extends State<RegisterPage> {
     //var _accountController;
     List userData = [];
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xfffaf0ca),
       appBar: AppBar(
         elevation: 0,
