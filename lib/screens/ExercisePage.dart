@@ -47,6 +47,7 @@ class ExercisePageState extends State<ExercisePage> {
   /*  GIF 輪播 */
   late PageController _pageController; //輪播圖 PageView 使用的控制器
   int currentIndex = 0; //當前顯示的索引
+  int exerciseItemListLength = 0;
 
   Widget buildVideoBanner(List videoList) {
     return SizedBox(
@@ -96,6 +97,7 @@ class ExercisePageState extends State<ExercisePage> {
   // Get exerciseItem name List.
   List _getExerciseItemNameList() {
     List exerciseItemList = widget.arguments['exerciseItem'];
+    exerciseItemListLength = exerciseItemList.length;
     /*List<String> nameList = [
       for (int i = 0; i < exerciseItemList.length; i++)
         "${exerciseItem[i]}"
@@ -108,8 +110,7 @@ class ExercisePageState extends State<ExercisePage> {
   void _showFeedbackDialog() async {
     await showDialog<double>(
       context: context,
-      builder: (context) =>
-          FeedbackDialog(),
+      builder: (context) => FeedbackDialog(),
     );
   }
 
@@ -213,58 +214,102 @@ class ExercisePageState extends State<ExercisePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.only(left: 10),
-            height: 60,
-            width: MediaQuery.of(context).size.width,
-            color: const Color(0xfffaf0ca),
-            child: Text(
-              constructTime(totalTime),
-              //'$seconds',
-              textAlign: TextAlign.left,
-              style: const TextStyle(
-                  color: Color(0xff0d3b66),
-                  fontSize: 32,
-                  letterSpacing: 0,
-                  fontWeight: FontWeight.bold,
-                  height: 1),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            decoration: const BoxDecoration(
-                color: Color(0x193598f5),
-                borderRadius: BorderRadius.all(Radius.circular(13))),
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.only(left: 10),
-            height: 60,
-            width: MediaQuery.of(context).size.width - 20,
-            child: Text(
-              sport,
-              textAlign: TextAlign.left,
-              style: const TextStyle(
-                  color: Color(0xff0d3b66),
-                  fontSize: 32,
-                  letterSpacing: 0,
-                  fontWeight: FontWeight.bold,
-                  height: 1),
-            ),
-          ),
-          const SizedBox(height: 10),
-          /*Container(
+    return WillPopScope(
+        onWillPop: () async {
+          startTimer();
+          final shouldPop = await showDialog<bool>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(
+                    '目前運動已經完成 ${((currentIndex / exerciseItemListLength) * 10).round().toString()}% 囉！\n確定要退出，之後再繼續完成嗎？"'),
+                actions: [
+                  OutlinedButton(
+                      child: const Text(
+                        "取消",
+                        style: TextStyle(
+                          color: Color(0xff0d3b66),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: () {
+                        startTimer();
+                        Navigator.pop(context, false);
+                      }),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xfffbb87f),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context, true);
+                        //Navigator.pushNamedAndRemoveUntil(
+                        //    context, '/', (Route<dynamic> route) => false);
+                      },
+                      child: const Text(
+                        "確定",
+                        style: TextStyle(
+                          color: Color(0xff0d3b66),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
+                ],
+              );
+            },
+          );
+          return shouldPop!;
+        },
+        child: Scaffold(
+          body: Column(
+            children: [
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.only(left: 10),
+                height: 60,
+                width: MediaQuery.of(context).size.width,
+                color: const Color(0xfffaf0ca),
+                child: Text(
+                  constructTime(totalTime),
+                  //'$seconds',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                      color: Color(0xff0d3b66),
+                      fontSize: 32,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.bold,
+                      height: 1),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                decoration: const BoxDecoration(
+                    color: Color(0x193598f5),
+                    borderRadius: BorderRadius.all(Radius.circular(13))),
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.only(left: 10),
+                height: 60,
+                width: MediaQuery.of(context).size.width - 20,
+                child: Text(
+                  sport,
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                      color: Color(0xff0d3b66),
+                      fontSize: 32,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.bold,
+                      height: 1),
+                ),
+              ),
+              const SizedBox(height: 10),
+              /*Container(
             child: Image(
               image: AssetImage('images/testPic.gif'),//video
             ),
           ),*/
-          SizedBox(
-            width: MediaQuery.of(context).size.width - 20,
-            child: buildVideoBanner(
-                _getVideoList(widget.arguments['exerciseItem'])),
-            /*child: FutureBuilder(
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 20,
+                child: buildVideoBanner(
+                    _getVideoList(widget.arguments['exerciseItem'])),
+                /*child: FutureBuilder(
               future: _initializeVideoPlayerFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
@@ -282,40 +327,41 @@ class ExercisePageState extends State<ExercisePage> {
                 }
               },
             ),*/
+              ),
+              Container(
+                  padding: const EdgeInsets.only(right: 10),
+                  height: 60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () => startTimer(),
+                        icon: Icon(
+                          ifStart ? Icons.pause : Icons.play_arrow_rounded,
+                          color: const Color(0xff0d3b66),
+                        ),
+                        label: Text(
+                          ifStart ? '暫停' : '繼續',
+                          style: const TextStyle(
+                              color: Color(0xff0d3b66),
+                              fontSize: 24,
+                              letterSpacing: 0,
+                              fontWeight: FontWeight.bold,
+                              height: 1),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xffffa493),
+                        ),
+                      ),
+                    ],
+                  )),
+            ],
           ),
-          Container(
-              padding: const EdgeInsets.only(right: 10),
-              height: 60,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () => startTimer(),
-                    icon: Icon(
-                      ifStart ? Icons.pause : Icons.play_arrow_rounded,
-                      color: const Color(0xff0d3b66),
-                    ),
-                    label: Text(
-                      ifStart ? '暫停' : '繼續',
-                      style: const TextStyle(
-                          color: Color(0xff0d3b66),
-                          fontSize: 24,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.bold,
-                          height: 1),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xffffa493),
-                    ),
-                  ),
-                ],
-              )),
-        ],
-      ),
-    );
+        ));
   }
 }
 
+// 運動回饋
 class FeedbackDialog extends StatefulWidget {
   const FeedbackDialog({super.key});
 
