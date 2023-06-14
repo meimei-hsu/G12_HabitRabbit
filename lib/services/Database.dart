@@ -469,6 +469,21 @@ class MilestoneDB {
     return await DB.update("$db/$uid/", data);
   }
 
+  static Future<Map?> step() async {
+    String? step = await MilestoneDB.getSteps();
+    if (step != null) {
+      //step加一
+       // var duration = value.split(', ').map(int.parse).toList();
+       // return MapEntry(key, (duration[0] / duration[1] * 100).round());
+      }
+   // if(){
+     // 當step前後兩個數字相同，歸零，flag加一
+    //contract flag加一
+    //}
+
+    return null;
+  }
+
   // Delete data from userName
   static Future<bool> delete() async {
     return await DB.delete(db, uid);
