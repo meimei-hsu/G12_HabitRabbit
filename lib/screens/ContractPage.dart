@@ -311,7 +311,7 @@ class SecondContractPage extends StatefulWidget {
 }
 
 class SecondContractPageState extends State<SecondContractPage> {
-  Map flagToPlan = {"0,4": "5 週 4 旗", "0,8": "12 週 8 旗", "0,12": "18 週 12 旗"};
+  Map flagToPlan = {"4": "5 週 4 旗", "8": "12 週 8 旗", "12": "18 週 12 旗"};
 
   @override
   Widget build(BuildContext context) {
@@ -367,7 +367,7 @@ class SecondContractPageState extends State<SecondContractPage> {
             top: 400,
             left: 65,
             child: Text(
-              '您選擇的方案：${flagToPlan[widget.arguments['contractData']['flag']]}',
+              '您選擇的方案：${flagToPlan[widget.arguments['contractData']['flag'].split(", ")[1].toString()]}',
               style: TextStyle(
                 color: Colors.grey[700],
                 fontSize: 18,
