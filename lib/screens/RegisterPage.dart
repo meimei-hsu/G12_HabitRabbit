@@ -603,8 +603,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       );
 
                       if (user != null) {
-                        await PlanAlgo.execute();
-                        if (!mounted) return;
+                        // if (!mounted) return;
                         Navigator.pushNamedAndRemoveUntil(context,
                             '/questionnaire/1', (Route<dynamic> route) => false,
                             arguments: {"userName": user.displayName});
@@ -615,7 +614,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
 
                   if (errMsg.isNotEmpty) {
-                    if (!mounted) return;
+                    // if (!mounted) return;
                     MotionToast(
                       icon: Icons.done_all_rounded,
                       primaryColor: const Color(0xffffa493),
