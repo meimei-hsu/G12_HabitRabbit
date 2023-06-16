@@ -26,6 +26,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   void getPlanData() async {
+    await PlanAlgo.execute();
     isFetchingData = true;
     var plan = await PlanDB.getThisWeekByName();
     var progress = await DurationDB.getThisWeek();

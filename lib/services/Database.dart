@@ -112,7 +112,9 @@ class Home extends StatelessWidget {
                 // print(await UserDB.isWorkoutDay(mary, DateTime(2023, 5, 21)));
                 // print(await UserDB.isWorkoutDay(mary, DateTime(2023, 5, 22)));
                 // print(await UserDB.isWorkoutDay("123", DateTime(2023, 5, 22)));
-                print(await DurationDB.calcCompletion());
+                // print(await DurationDB.calcCompletion());
+                print(Calendar.daysPassed());
+                print(Calendar.daysComing());
               },
               child: const Text("test")),
         ],
@@ -148,12 +150,12 @@ class Calendar {
   static DateTime nextSunday(DateTime today) =>
       (today.weekday == 7) ? today : firstDay().add(const Duration(days: 7));
   // Get the days of week that have already passed
-  static List<String> daysPassed() => (firstDay().weekday != 7)
-      ? getWeekFrom(firstDay(), today().weekday.toInt())
+  static List<String> daysPassed() => (today().weekday != 7)
+      ? getWeekFrom(firstDay(), today().weekday)
       : [];
   // Get the days of week that are yet to come
-  static List<String> daysComing() => (firstDay().weekday != 6)
-      ? getWeekFrom(today(), (7 - today().weekday).toInt())
+  static List<String> daysComing() => (today().weekday != 6)
+      ? getWeekFrom(today(), 7 - today().weekday)
       : [];
   // Get the days of week from the first day
   static List<String> thisWeek() => getWeekFrom(firstDay(), 7);
