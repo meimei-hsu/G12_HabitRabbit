@@ -69,7 +69,39 @@ class _HomepageState extends State<Homepage> {
     for (int i = 0; i < length; i++) {
       List<ListTile> itemList = [
         for (int j = 0; j < content[i].length; j++)
-          ListTile(title: Text('${content[i][j]}'))
+          ListTile(
+            title: Text('${content[i][j]}'),
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text(
+                        "${content[i][j]}",
+                        style: TextStyle(
+                          color: Color(0xff0d3b66),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      //content: Image.asset("assets/videos/${content[i][j]}.gif"),
+                      content: Image.asset("assets/images/testPic.gif"),
+                      actions: [
+                        OutlinedButton(
+                            child: const Text(
+                              "返回",
+                              style: TextStyle(
+                                color: Color(0xff0d3b66),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            }),
+                      ],
+                    );
+                  });
+            },
+          )
       ];
 
       // TODO: make prettier
