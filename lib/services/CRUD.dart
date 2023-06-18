@@ -39,10 +39,10 @@ class DB {
 
   // Update data {columnName: value} into table {path/id}
   // set vs update: https://stackoverflow.com/a/38924648
-  static Future<bool> update(String path, Map<String, Object> data) async {
+  static Future<bool> update(String path, Map data) async {
     final DatabaseReference ref = FirebaseDatabase.instance.ref(path);
     try {
-      await ref.update(data);
+      await ref.update(Map<String, Object>.from(data));
       return true;
     } catch (error) {
       print("DB.update: $error");

@@ -92,8 +92,8 @@ class Home extends StatelessWidget {
                 UserDB.updateByFeedback("cardio", [1, 1]);
                 UserDB.getAll();
                 WorkoutDB.toNames(plan);
-                ContractDB.insert(maryContract);
-                MilestoneDB.insert(maryMilestone);
+                ContractDB.update(maryContract);
+                MilestoneDB.update(maryMilestone);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
               },
               child: const Text("test DB")),
@@ -150,13 +150,11 @@ class Calendar {
   static DateTime nextSunday(DateTime today) =>
       (today.weekday == 7) ? today : firstDay().add(const Duration(days: 7));
   // Get the days of week that have already passed
-  static List<String> daysPassed() => (today().weekday != 7)
-      ? getWeekFrom(firstDay(), today().weekday)
-      : [];
+  static List<String> daysPassed() =>
+      (today().weekday != 7) ? getWeekFrom(firstDay(), today().weekday) : [];
   // Get the days of week that are yet to come
-  static List<String> daysComing() => (today().weekday != 6)
-      ? getWeekFrom(today(), 7 - today().weekday)
-      : [];
+  static List<String> daysComing() =>
+      (today().weekday != 6) ? getWeekFrom(today(), 7 - today().weekday) : [];
   // Get the days of week from the first day
   static List<String> thisWeek() => getWeekFrom(firstDay(), 7);
   // Get the days of week from the eighth day
@@ -325,7 +323,7 @@ class UserDB {
   }
 
   // Update data {columnName: value} from userID
-  static Future<bool> update(Map<String, Object> data) async {
+  static Future<bool> update(Map data) async {
     return await DB.update("$db/$uid/", data);
   }
 
@@ -414,14 +412,8 @@ class ContractDB {
     return user!["flag"];
   }
 
-  // Insert data {columnName: value} into Users
-  static Future<bool> insert(Map data) async {
-    // Insert contract into database
-    return await DB.insert("$db/$uid/", data);
-  }
-
   // Update data {columnName: value} from userID
-  static Future<bool> update(Map<String, Object> data) async {
+  static Future<bool> update(Map data) async {
     return await DB.update("$db/$uid/", data);
   }
 
@@ -460,14 +452,8 @@ class MilestoneDB {
     return user!["steps"];
   }
 
-  // Insert data {columnName: value} into Users
-  static Future<bool> insert(Map data) async {
-    // Insert milestone into database
-    return await DB.insert("$db/$uid/", data);
-  }
-
   // Update data {columnName: value} from userID
-  static Future<bool> update(Map<String, Object> data) async {
+  static Future<bool> update(Map data) async {
     return await DB.update("$db/$uid/", data);
   }
 
@@ -475,11 +461,11 @@ class MilestoneDB {
     String? step = await MilestoneDB.getSteps();
     if (step != null) {
       //step加一
-       // var duration = value.split(', ').map(int.parse).toList();
-       // return MapEntry(key, (duration[0] / duration[1] * 100).round());
-      }
-   // if(){
-     // 當step前後兩個數字相同，歸零，flag加一
+      // var duration = value.split(', ').map(int.parse).toList();
+      // return MapEntry(key, (duration[0] / duration[1] * 100).round());
+    }
+    // if(){
+    // 當step前後兩個數字相同，歸零，flag加一
     //contract flag加一
     //}
 
@@ -542,12 +528,8 @@ class WorkoutDB {
     return retVal;
   }
 
-  static Future<bool> insert(Map data) async {
-    return await DB.insert(db, data);
-  }
-
   // Update data {columnName: value} from workoutID
-  static Future<bool> update(Map<String, Object> data) async {
+  static Future<bool> update(Map data) async {
     return await DB.update(db, data);
   }
 
@@ -668,13 +650,6 @@ class PlanDB {
     return retVal;
   }
 
-  // Insert plan data {date: plan} into table {table/userID/plan/date}
-  static Future<bool> insert(Map<String, String> data) async =>
-      await JournalDB.insert(uid, data, table) &&
-      await DurationDB.update(data.map((key, value) {
-        return MapEntry(key, "0, ${value.length}");
-      }));
-
   // Update plan data {date: plan} from table {table/userID/plan/date}
   static Future<bool> update(Map<String, String> data) async =>
       await JournalDB.update(uid, data, table) &&
@@ -696,8 +671,7 @@ class PlanDB {
 
   // Delete plan data {table/userID/plan/date}
   static Future<bool> delete(String date) async =>
-      await JournalDB.delete(uid, date, table) &&
-      await DurationDB.delete(date);
+      await JournalDB.delete(uid, date, table) && await DurationDB.delete(date);
 }
 
 class DurationDB {
@@ -710,16 +684,14 @@ class DurationDB {
   static Future<Map?> getTable() async => await JournalDB.getTable(uid, table);
 
   // Select user's workout duration from given date
-  static Future<List?> getFromDate(DateTime date) async {
+  static Future<int?> getFromDate(DateTime date) async {
     var duration = await JournalDB.getFromDate(uid, date, table);
-    return (duration != null)
-        ? duration.split(', ').map(int.parse).toList()
-        : null;
+    return (duration != null) ? int.parse(duration.split(', ')[0]) : null;
   }
 
-  static Future<Map?> getThisWeek() async {
-    Map? durations =
-        await JournalDB.getFromDates(uid, Calendar.thisWeek(), table);
+  // Calculate user's workout progress from given dates
+  static Future<Map?> getWeekProgress() async {
+    Map? durations = await JournalDB.getThisWeek(uid, table);
     if (durations != null) {
       return durations.map((key, value) {
         var duration = value.split(', ').map(int.parse).toList();
@@ -731,10 +703,12 @@ class DurationDB {
 
   // Calculate user's workout progress from given date
   static Future<num?> calcProgress(DateTime date) async {
-    List? duration = await getFromDate(date);
-    return (duration != null)
-        ? (duration[0] / duration[1] * 100).round() // percentage
-        : null;
+    var record = (await JournalDB.getFromDate(uid, date, table));
+    if (record != null) {
+      var duration = record.split(', ').map(int.parse).toList();
+      return (duration[0] / duration[1] * 100).round(); // percentage
+    }
+    return null;
   }
 
   // Calculate the number of times user has completed a workout plan during this week
@@ -749,20 +723,10 @@ class DurationDB {
         : null;
   }
 
-  // Insert duration data {date: "duration, timeSpan"} into table {table/userID/duration/date}
-  static Future<bool> insert(Map<String, String> data) async {
-    var timeSpan = await UserDB.getTimeSpan();
-    data.map((key, value) {
-      value += ", $timeSpan";
-      return MapEntry(key, value);
-    });
-    return await JournalDB.insert(uid, data, table);
-  }
-
   // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
   static Future<bool> update(Map data) async {
     var timeSpan = await UserDB.getTimeSpan();
-    data.map((key, value) {
+    data = data.map((key, value) {
       value += ", $timeSpan";
       return MapEntry(key, value);
     });
@@ -798,10 +762,6 @@ class WeightDB {
     var weight = await JournalDB.getFromDate(uid, date, table);
     return (weight != null) ? double.parse(weight) : null;
   }
-
-  // Insert weight data {date: weight} into table {table/userID/weight/date}
-  static Future<bool> insert(Map<String, double> data) async =>
-      await JournalDB.insert(uid, data, table);
 
   // Update weight data {date: weight} from table {table/userID/weight/date}
   static Future<bool> update(Map<String, double> data) async =>

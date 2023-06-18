@@ -4,7 +4,6 @@ import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:g12/services/Database.dart';
 
 class FirstContractPage extends StatefulWidget {
-
   const FirstContractPage({super.key, required arguments});
 
   @override
@@ -257,7 +256,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                             Map contract =
                                 Map.fromIterables(ContractDB.getColumns(), c);
                             print(contract);
-                            ContractDB.insert(contract);
+                            ContractDB.update(contract);
 
                             showDialog(
                               context: context,

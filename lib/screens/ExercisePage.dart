@@ -123,6 +123,8 @@ class ExercisePageState extends State<ExercisePage> {
 
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
+        DurationDB.update(
+            {Calendar.toKey(DateTime.now()): "${currentIndex + 1}"});
         _showFeedbackDialog();
         timer.cancel();
         dispose();
@@ -222,7 +224,7 @@ class ExercisePageState extends State<ExercisePage> {
             builder: (context) {
               return AlertDialog(
                 title: Text(
-                    '目前運動已經完成 ${((currentIndex / exerciseItemListLength) * 10).round().toString()}% 囉！\n確定要退出，之後再繼續完成嗎？"'),
+                    '目前運動已經完成 ${(currentIndex / exerciseItemListLength * 100).round()}% 囉！\n確定要退出，之後再繼續完成嗎？"'),
                 actions: [
                   OutlinedButton(
                       child: const Text(
@@ -241,6 +243,8 @@ class ExercisePageState extends State<ExercisePage> {
                         backgroundColor: const Color(0xfffbb87f),
                       ),
                       onPressed: () {
+                        DurationDB.update(
+                            {Calendar.toKey(DateTime.now()): "$currentIndex"});
                         Navigator.pop(context, true);
                         //Navigator.pushNamedAndRemoveUntil(
                         //    context, '/', (Route<dynamic> route) => false);
@@ -372,7 +376,7 @@ class FeedbackDialog extends StatefulWidget {
 class FeedbackDialogState extends State<FeedbackDialog> {
   double _currentValue1 = 1;
   double _currentValue2 = 1;
-  List<double> feedbackData = [];
+  List<int> feedbackData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -463,9 +467,8 @@ class FeedbackDialogState extends State<FeedbackDialog> {
         ElevatedButton(
             child: const Text("Submit"),
             onPressed: () async {
-              //存input?
-              feedbackData.add(_currentValue1);
-              feedbackData.add(_currentValue2);
+              feedbackData.add(_currentValue1.toInt());
+              feedbackData.add(_currentValue2.toInt());
               print("FeedbackData: $feedbackData");
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false);

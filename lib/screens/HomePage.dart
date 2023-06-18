@@ -29,7 +29,7 @@ class _HomepageState extends State<Homepage> {
     await PlanAlgo.execute();
     isFetchingData = true;
     var plan = await PlanDB.getThisWeekByName();
-    var progress = await DurationDB.getThisWeek();
+    var progress = await DurationDB.getWeekProgress();
     var workoutDays = await UserDB.getBothWeekWorkoutDays();
     setState(() {
       workoutPlanList = plan ?? {};
