@@ -31,10 +31,12 @@ class _HomepageState extends State<Homepage> {
     var plan = await PlanDB.getThisWeekByName();
     var progress = await DurationDB.getWeekProgress();
     var workoutDays = await UserDB.getBothWeekWorkoutDays();
+    var index = await DurationDB.getFromDate(today);
     setState(() {
       workoutPlanList = plan ?? {};
       progressList = progress ?? {};
       bothWeekWorkoutList = workoutDays ?? [];
+      currentIndex = index ?? 0;
       isFetchingData = false;
     });
   }
@@ -43,6 +45,7 @@ class _HomepageState extends State<Homepage> {
   Map workoutPlanList = {};
   Map progressList = {};
   List bothWeekWorkoutList = [];
+  int currentIndex = 0;
 
   // Calendar 相關設定
   DateTime today = Calendar.today();
@@ -78,7 +81,7 @@ class _HomepageState extends State<Homepage> {
                     return AlertDialog(
                       title: Text(
                         "${content[i][j]}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Color(0xff0d3b66),
                           fontWeight: FontWeight.bold,
                         ),
@@ -568,9 +571,20 @@ class _HomepageState extends State<Homepage> {
                   var workoutPlan =
                       workoutPlanList[Calendar.toKey(_focusedDay)];
                   List items = workoutPlan.split(", ");
+                  for (int i = 0; i < items.length; i++) {
+                    if (i <= 2) {
+                      items[i] = "暖身：${items[i]}";
+                    } else if (i >= items.length - 2) {
+                      items[i] = "伸展：${items[i]}";
+                    } else {
+                      items[i] = "運動：${items[i]}";
+                    }
+                  }
                   Navigator.pushNamed(context, '/countdown', arguments: {
-                    'exerciseTime': items.length * 6, // should be 60s
-                    'exerciseItem': items
+                    'totalExerciseItemLength': items.length,
+                    'exerciseTime': items.sublist(currentIndex).length * 6, // should be 60s
+                    'exerciseItem': items.sublist(currentIndex),
+                    'currentIndex': currentIndex
                   });
                 } else {
                   MotionToast(

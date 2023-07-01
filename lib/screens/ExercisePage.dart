@@ -48,6 +48,8 @@ class ExercisePageState extends State<ExercisePage> {
   late PageController _pageController; //輪播圖 PageView 使用的控制器
   int currentIndex = 0; //當前顯示的索引
   int exerciseItemListLength = 0;
+  int totalExerciseItemLength = 0;
+  int playIndex = 0;
 
   Widget buildVideoBanner(List videoList) {
     return SizedBox(
@@ -88,7 +90,7 @@ class ExercisePageState extends State<ExercisePage> {
     List exerciseItemList = exerciseItem;
     List<String> videoList = [
       for (int i = 0; i < exerciseItemList.length; i++)
-        "assets/videos/${exerciseItem[i]}.gif"
+        "assets/videos/${exerciseItem[i].replaceAll(RegExp(r'\W\W：'), '')}.gif"
     ];
     videoList.add("assets/images/testPic.gif");
     return videoList;
@@ -97,11 +99,6 @@ class ExercisePageState extends State<ExercisePage> {
   // Get exerciseItem name List.
   List _getExerciseItemNameList() {
     List exerciseItemList = widget.arguments['exerciseItem'];
-    exerciseItemListLength = exerciseItemList.length;
-    /*List<String> nameList = [
-      for (int i = 0; i < exerciseItemList.length; i++)
-        "${exerciseItem[i]}"
-    ];*/
     return exerciseItemList;
   }
 
@@ -145,26 +142,42 @@ class ExercisePageState extends State<ExercisePage> {
           List nameList = _getExerciseItemNameList();
 
           countDown = 6; // 60s
-          if (currentIndex < 2 || currentIndex >= nameList.length - 3) {
+          /*if (currentIndex < 2 || currentIndex >= totalExerciseItemLength - 3) {
             currentIndex++;
-            _pageController.animateToPage(currentIndex,
+            playIndex ++;
+            _pageController.animateToPage(playIndex,
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.ease);
-            sport = (currentIndex <= 2) ? "暖身：" : "伸展：";
-            sport += nameList[currentIndex];
+            sport = nameList[playIndex];
           } else {
             currentIndex++;
-            _pageController.animateToPage(currentIndex,
+            playIndex++;
+            _pageController.animateToPage(playIndex,
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.ease);
-            sport = "運動：${nameList[currentIndex]}";
+            sport = nameList[playIndex];
 
             // 運動 5 秒後休息 1 秒
             Timer(const Duration(seconds: 5), () {
               _pageController.animateToPage(nameList.length + 1,
                   duration: const Duration(milliseconds: 5),
                   curve: Curves.ease);
-              sport = "休息：${nameList[currentIndex]}";
+              sport = nameList[playIndex].replaceAll("運動", "休息");
+            });
+          }*/
+          currentIndex++;
+          playIndex++;
+          _pageController.animateToPage(playIndex,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.ease);
+          sport = nameList[playIndex];
+          if (currentIndex >= 2 && currentIndex < totalExerciseItemLength - 3){
+            // 運動 5 秒後休息 1 秒
+            Timer(const Duration(seconds: 5), () {
+              _pageController.animateToPage(nameList.length + 1,
+                  duration: const Duration(milliseconds: 5),
+                  curve: Curves.ease);
+              sport = sport.replaceAll("運動", "休息");
             });
           }
           print(
@@ -172,10 +185,6 @@ class ExercisePageState extends State<ExercisePage> {
         }
       }
       setState(() {});
-      /*print("totalTime: $totalTime");
-      print("countDown: $countDown");
-      print("currentIndex: $currentIndex");
-      print("--------------------");*/
     });
   }
 
@@ -190,15 +199,26 @@ class ExercisePageState extends State<ExercisePage> {
 
     super.initState();
     totalTime = widget.arguments['exerciseTime']; // initial totalTime
+    currentIndex = widget.arguments['currentIndex']; // get currentIndex
+    // get whole plan list's length to calculate progress.
+    totalExerciseItemLength = widget.arguments['totalExerciseItemLength'];
+
     // initial first exercise's name
-    sport = "暖身：${_getExerciseItemNameList()[currentIndex]}";
-    _pageController = PageController(initialPage: currentIndex);
+    List nameList = _getExerciseItemNameList();
+    sport = nameList[0];
+    _pageController = PageController(initialPage: 0);
     print(
-        "currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
-    /*print("totalTime: $totalTime");
-    print("countDown: $countDown");
-    print("currentIndex: $currentIndex");
-    print("--------------------");*/
+        "currentIndex_init: $currentIndex ... sport: $sport ... totalTime: $totalTime");
+
+    if (currentIndex >= 2 && currentIndex < totalExerciseItemLength - 3){
+      // 運動 5 秒後休息 1 秒
+      Timer(const Duration(seconds: 5), () {
+        _pageController.animateToPage(nameList.length + 1,
+            duration: const Duration(milliseconds: 5),
+            curve: Curves.ease);
+        sport = sport.replaceAll("運動", "休息");
+      });
+    }
 
     ///當前頁面繪製完第一幀後回撥
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -224,7 +244,7 @@ class ExercisePageState extends State<ExercisePage> {
             builder: (context) {
               return AlertDialog(
                 title: Text(
-                    '目前運動已經完成 ${(currentIndex / exerciseItemListLength * 100).round()}% 囉！\n確定要退出，之後再繼續完成嗎？"'),
+                    '目前運動已經完成 ${(currentIndex / totalExerciseItemLength * 100).round()}% 囉！\n確定要退出，之後再繼續完成嗎？\nCurrent Index: $currentIndex, totalExerciseItemLength: $totalExerciseItemLength'),
                 actions: [
                   OutlinedButton(
                       child: const Text(
@@ -245,9 +265,8 @@ class ExercisePageState extends State<ExercisePage> {
                       onPressed: () {
                         DurationDB.update(
                             {Calendar.toKey(DateTime.now()): "$currentIndex"});
-                        Navigator.pop(context, true);
-                        //Navigator.pushNamedAndRemoveUntil(
-                        //    context, '/', (Route<dynamic> route) => false);
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/', (Route<dynamic> route) => false);
                       },
                       child: const Text(
                         "確定",

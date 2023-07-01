@@ -25,8 +25,10 @@ class CountdownPageState extends State<CountdownPage> {
         ifEnd = true;
         //Navigator.pushNamed(context, '/exercise');
         Navigator.popAndPushNamed(context, '/exercise', arguments: {
+          'totalExerciseItemLength': widget.arguments['totalExerciseItemLength'],
           'exerciseTime': widget.arguments['exerciseTime'],
-          'exerciseItem': widget.arguments['exerciseItem']
+          'exerciseItem': widget.arguments['exerciseItem'],
+          'currentIndex': widget.arguments['currentIndex']
         });
         //timer = null;
       } else {
