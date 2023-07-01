@@ -205,8 +205,10 @@ class _StatisticPageState extends State<StatisticPage> {
                   ),
                 ),
                 Container(
-                  height: 500,
-                  child: HeatMapCalendar(
+                  height: 400,
+                  child: Stack(
+                    children: [
+                  HeatMapCalendar(
                     defaultColor: Colors.white,
                     flexible: true,
                     colorMode: ColorMode.color,
@@ -218,11 +220,72 @@ class _StatisticPageState extends State<StatisticPage> {
                       );
                     },
                   ),
-                )
-              ],
+                  Positioned(
+                    right: 0,
+                    bottom: 20,
+                    child: Container(
+                      width: 150,
+                      height: 50,
+                      color: Colors.white,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.green.shade200,
+                                size: 25,
+                              ),
+                              Text(
+                                '成功',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(width: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.cancel,
+                                color: Colors.red.shade200,
+                                size: 25,
+                              ),
+                              Text(
+                                '失败',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                    ],
+                  ),
+                ),
+
+              ]
             ),
-          ]),
-        ));
+          ],
+          ),
+        )
+
+
+
+    );
+
   }
 
   _showAddWeightDialog() async {
