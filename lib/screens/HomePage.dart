@@ -23,6 +23,7 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     getPlanData();
+    getContractData();
   }
 
   void getPlanData() async {
@@ -41,11 +42,21 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
+  void getContractData() async {
+    var contract = await ContractDB.getContractDetails();
+    setState(() {
+      contractData = contract ?? {};
+    });
+  }
+
   // Plan 相關資料
   Map workoutPlanList = {};
   Map progressList = {};
   List bothWeekWorkoutList = [];
   int currentIndex = 0;
+
+  // Contract 資料
+  Map contractData = {};
 
   // Calendar 相關設定
   DateTime today = Calendar.today();
@@ -402,65 +413,6 @@ class _HomepageState extends State<Homepage> {
                 ? const CircularProgressIndicator()
                 : const Text("Rest Day"),
           ],
-          // TODO: 確認顯示無問題後，刪除 FutureBuilder code
-          /*FutureBuilder(
-              // Exercise plan
-              future: Future.wait([
-                DurationDB.calcProgress(uid, _selectedDay!),
-                UserDB.isWorkoutDay(uid, _selectedDay!),
-              ]),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return const CircularProgressIndicator();
-                  default:
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
-                    // If snapshot has no error, return plan
-                    num? progress = snapshot.data?[0] as num?;
-                    bool? isWorkoutDay = snapshot.data?[1] as bool?;
-                    if (progress != null) {
-                      // Return the plan information
-                      if (progress < 100) {
-                        return Text(
-                          "今天還有 ${100 - progress}% 的運動還沒完成噢~加油加油！",
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(
-                              color: Color(0xffffa493),
-                              fontSize: 18,
-                              letterSpacing: 0,
-                              fontWeight: FontWeight.bold,
-                              height: 1),
-                        );
-                      } else {
-                        return const Text(
-                          "今天的運動都完成囉~很棒很棒！",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              color: Color(0xff5dbb63),
-                              fontSize: 18,
-                              letterSpacing: 0,
-                              fontWeight: FontWeight.bold,
-                              height: 1),
-                        );
-                      }
-                    } else if (!isThisWeek) {
-                      return (isWorkoutDay == true)
-                          ? const Text(
-                              "運動安排中...",
-                              style: TextStyle(
-                                color: Color(0xffffa493),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
-                          : const Text("Rest Day");
-                    } else {
-                      return const Text("Rest Day");
-                    }
-                }
-              }),*/
           const SizedBox(height: 10),
           // (need check again) FIXME: 若運動都完成後 or 過期，不應該顯示新增運動按鈕？
           if (!isFetchingData) ...[
@@ -485,72 +437,6 @@ class _HomepageState extends State<Homepage> {
                   : getAddExerciseBtn()
             ],
           ],
-          // TODO: 確認顯示無問題後，刪除 FutureBuilder code
-          /*FutureBuilder(
-              // Exercise plan
-              future: Future.wait([
-                PlanDB.getByName(uid, _selectedDay!),
-                UserDB.isWorkoutDay(uid, _selectedDay!),
-              ]),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return const CircularProgressIndicator();
-                  default:
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
-                    // If snapshot has no error, return plan
-                    String? plan = snapshot.data?[0] as String?;
-                    var workoutPlan = plan ?? "";
-                    bool? isWorkoutDay = snapshot.data?[1] as bool?;
-
-                    ElevatedButton addExerciseBtn = ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xfffaf0ca),
-                      ),
-                      onPressed: () {
-                        _showAddExerciseDialog();
-                      },
-                      child: const Text(
-                        "新增運動",
-                        style: TextStyle(
-                          color: Color(0xFF0D3B66),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    );
-
-                    if (workoutPlan.isNotEmpty) {
-                      // Convert the String of plan into a List of workouts
-                      List content = PlanDB.toList(workoutPlan);
-                      int length = content.length;
-                      // Generate the titles
-                      List title = [
-                        for (int i = 1; i <= length - 2; i++) "Round $i"
-                      ];
-                      title.insert(0, "Warm up");
-                      title.insert(length - 1, "Cool down");
-
-                      // Return the plan information
-                      return Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 10, left: 10),
-                          child: ListView(
-                            children: _getSportList(content),
-                          ),
-                        ),
-                      );
-                    } else if (!isThisWeek) {
-                      return (isWorkoutDay == true)
-                          ? Container()
-                          : addExerciseBtn;
-                    } else {
-                      return addExerciseBtn;
-                      //return const Text("Generate Workout Button");
-                    }
-                }
-              }),*/
         ],
       ),
       floatingActionButton: FloatingActionButton.large(
@@ -582,7 +468,8 @@ class _HomepageState extends State<Homepage> {
                   }
                   Navigator.pushNamed(context, '/countdown', arguments: {
                     'totalExerciseItemLength': items.length,
-                    'exerciseTime': items.sublist(currentIndex).length * 6, // should be 60s
+                    'exerciseTime':
+                        items.sublist(currentIndex).length * 6, // should be 60s
                     'exerciseItem': items.sublist(currentIndex),
                     'currentIndex': currentIndex
                   });
@@ -608,7 +495,8 @@ class _HomepageState extends State<Homepage> {
               },
             ),
           )),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      //centerDocked
       bottomNavigationBar: BottomAppBar(
           color: const Color(0xfffaf0ca),
           shape: const CircularNotchedRectangle(),
@@ -616,7 +504,7 @@ class _HomepageState extends State<Homepage> {
               color: const Color(0xfffaf0ca),
               padding: const EdgeInsets.only(right: 10, left: 10),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   IconButton(
                     icon: const Icon(Icons.insights),
@@ -628,147 +516,50 @@ class _HomepageState extends State<Homepage> {
                     },
                   ),
                   IconButton(
-                    icon: const Icon(Icons.menu),
+                    icon: const Icon(Icons.workspace_premium_outlined),
                     iconSize: 60,
                     color: const Color(0xff0d3b66),
-                    tooltip: "選單",
-                    onPressed: () => _myKey.currentState!.openEndDrawer(),
+                    tooltip: "里程碑",
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/milestone');
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.home_outlined),
+                    iconSize: 60,
+                    color: const Color(0xff0d3b66),
+                    tooltip: "首頁",
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/');
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.request_quote_outlined),
+                    iconSize: 60,
+                    color: const Color(0xff0d3b66),
+                    tooltip: "承諾合約",
+                    onPressed: () {
+                      if (contractData != null) {
+                        Navigator.pushNamed(context, '/contract',
+                            arguments: {
+                              'contractData': contractData,
+                            });
+                      } else {
+                        Navigator.pushNamed(context, '/contract/initial');
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.manage_accounts_outlined),
+                    iconSize: 60,
+                    color: const Color(0xff0d3b66),
+                    tooltip: "個人設定",
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/settings');
+                    },
                   ),
                 ],
               ))),
-      key: _myKey,
-      endDrawer: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.55,
-        child: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              UserAccountsDrawerHeader(
-                  //require email
-                  decoration: const BoxDecoration(
-                    //to be better
-                    color: Color(0x193598f5),
-                  ),
-                  accountName: Text(
-                    "${user?.displayName}",
-                    style: const TextStyle(
-                      color: Color(0xff0d3b66),
-                      fontSize: 24,
-                      letterSpacing:
-                          0 /*percentages not used in flutter. defaulting to zero*/,
-                      fontWeight: FontWeight.bold,
-                      height: 1,
-                    ),
-                  ),
-                  accountEmail: Text(
-                    "${user?.email}",
-                    style: const TextStyle(
-                      color: Color(0xff0d3b66),
-                      fontSize: 16,
-                      letterSpacing:
-                          0 /*percentages not used in flutter. defaulting to zero*/,
-                      height: 1,
-                    ),
-                  ),
-                  currentAccountPicture: const CircleAvatar(
-                    //backgroundImage: NetworkImage(
-                    //"https://avatars2.githubusercontent.com/u/18156421?s=400&u=1f91dcf74134827fde071751f95522845223ed6a&v=4",
-                    //),
-                    child: Icon(
-                      Icons.face,
-                      color: Color(0xffCCCCCC),
-                    ),
-                  ),
-                  onDetailsPressed: () {
-                    Navigator.popAndPushNamed(context, '/settings');
-                  }),
-              ListTile(
-                title: const Text(
-                  '首頁',
-                  style: TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context, '/');
-                },
-              ),
-              // TODO: 應該點承諾合約按鈕後才抓資料庫
-              FutureBuilder(
-                  // Exercise plan
-                  future: ContractDB.getContractDetails(),
-                  builder: (context, snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return const CircularProgressIndicator();
-                      default:
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        }
-                        // If snapshot has no error, return plan
-                        Map? contractData = snapshot.data;
-
-                        return ListTile(
-                          title: const Text(
-                            '承諾合約',
-                            style: TextStyle(
-                              color: Color(0xff0d3b66),
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              height: 1,
-                            ),
-                          ),
-                          onTap: () {
-                            if (contractData != null) {
-                              Navigator.popAndPushNamed(context, '/contract',
-                                  arguments: {
-                                    'contractData': contractData,
-                                  });
-                            } else {
-                              Navigator.popAndPushNamed(
-                                  context, '/contract/initial');
-                            }
-                          },
-                        );
-                    }
-                  }),
-              /*ListTile(
-                title: const Text(
-                  '客製計畫',
-                  style: TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                  ),
-                ),
-                onTap: () {
-                  //點擊後做什麼事
-                  //切換頁面
-                  //收合drawer
-                },
-              ),*/
-              ListTile(
-                title: const Text(
-                  '里程碑',
-                  style: TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pushNamed(context, '/milestone');
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
