@@ -15,7 +15,6 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  final GlobalKey<ScaffoldState> _myKey = GlobalKey();
   User? user = FirebaseAuth.instance.currentUser;
   bool isFetchingData = true;
 
@@ -299,6 +298,25 @@ class _HomepageState extends State<Homepage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      // TODO: Delete after line pay function connecting
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Color(0x193598f5),
+                          shape: CircleBorder(),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.bug_report_outlined),
+                          iconSize: 40,
+                          color: const Color(0xff0d3b66),
+                          tooltip: "Line Pay Page",
+                          onPressed: () async {
+                            Navigator.pushNamed(context, '/pay', arguments: {
+                              'user': user
+                            });
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       Ink(
                         decoration: const ShapeDecoration(
                           color: Color(0xfffaf0ca),

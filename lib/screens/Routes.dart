@@ -5,6 +5,7 @@ import 'package:g12/screens/CountdownPage.dart';
 import 'package:g12/screens/ExercisePage.dart';
 import 'package:g12/screens/HomePage.dart';
 import 'package:g12/screens/MilestonePage.dart';
+import 'package:g12/screens/LinePayPage.dart';
 import 'package:g12/screens/QuestionnairePage.dart';
 import 'package:g12/screens/RegisterPage.dart';
 import 'package:g12/screens/StatisticPage.dart';
@@ -24,6 +25,9 @@ final routes = {
       FirstContractPage(arguments: arguments),
   '/contract': (context, {arguments}) =>
       SecondContractPage(arguments: arguments),
+  '/pay': (context, {arguments}) => PayPage(arguments: arguments),
+  '/pay/password': (context, {arguments}) => PasswordPage(arguments: arguments),
+  '/pay/checkout': (context, {arguments}) => ConfirmPage(arguments: arguments),
   /* QuestionnairePage */
   '/questionnaire/1': (context, {arguments}) => FirstPage(arguments: arguments),
   '/questionnaire/2': (context, {arguments}) =>
