@@ -515,6 +515,7 @@ class _HomepageState extends State<Homepage> {
           )),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       //centerDocked
+      // FIXME: bottom bar overflow
       bottomNavigationBar: BottomAppBar(
           color: const Color(0xfffaf0ca),
           shape: const CircularNotchedRectangle(),

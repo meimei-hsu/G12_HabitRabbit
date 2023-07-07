@@ -503,6 +503,7 @@ class ConfirmPageState extends State<ConfirmPage> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 10),
                 const ListTile(
                   title: Text(
                     "實際支付金額",
@@ -520,6 +521,7 @@ class ConfirmPageState extends State<ConfirmPage> {
                   ),
                   visualDensity: VisualDensity(vertical: -4),
                 ),
+                const SizedBox(height: 15),
                 Container(
                   margin:
                       const EdgeInsetsDirectional.only(start: 18.0, end: 18.0),
@@ -530,11 +532,11 @@ class ConfirmPageState extends State<ConfirmPage> {
                         style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFA0A9B8),
                             shadowColor: Colors.white,
-                            minimumSize: const Size(0, 40)),
+                            minimumSize: const Size(0, 45)),
                         onPressed: () {},
                         child: const Text(
                           "取消",
-                          style: TextStyle(color: Colors.white, fontSize: 14),
+                          style: TextStyle(color: Colors.white, fontSize: 15),
                         ),
                       )),
                       Expanded(
@@ -544,14 +546,14 @@ class ConfirmPageState extends State<ConfirmPage> {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF23B91A),
                               shadowColor: Colors.white,
-                              minimumSize: const Size(0, 40)),
+                              minimumSize: const Size(0, 45)),
                           onPressed: () { // TODO: back to ContractPage.
                             Navigator.pushNamedAndRemoveUntil(
                                 context, '/', (Route<dynamic> route) => false);
                           },
                           child: const Text(
                             "付款",
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                            style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                         ),
                       )),
