@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
+import 'package:onscreen_num_keyboard/onscreen_num_keyboard.dart';
 
 class PayPage extends StatefulWidget {
   final Map arguments;
@@ -196,14 +198,15 @@ class PayPageState extends State<PayPage> {
         ],
       ),
       bottomNavigationBar: Container(
-        color: Color(0xFF23B91A),
+        color: const Color(0xFF23B91A),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF23B91A),
+            backgroundColor: const Color(0xFF23B91A),
             minimumSize: const Size.fromHeight(55), // NEW
           ),
           onPressed: () {
-            Navigator.pushNamed(context, '/pay/password');
+            Navigator.pushNamed(context, '/pay/password',
+                arguments: {'user': widget.arguments['user']});
           },
           child: const Text(
             '支付NT\$ 150', // TODO: get contract value
@@ -225,10 +228,121 @@ class PasswordPage extends StatefulWidget {
 }
 
 class PasswordPageState extends State<PasswordPage> {
+  String pinCode = "";
+  final pinCodeController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    pinCodeController.dispose();
+    super.dispose();
+  }
+
+  onKeyboardTap(String value) {
+    setState(() {
+      pinCode = pinCode + value;
+      pinCodeController.text = pinCode;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.close_rounded,
+              color: Color(0xff343434),
+            ),
+            onPressed: () {},
+          ),
+        ],
+        backgroundColor: Colors.grey[50],
+        automaticallyImplyLeading: false, //關掉返回鍵
+      ),
+      body: SafeArea(
+          child: Center(
+              child: Column(children: [
+        const Spacer(),
+        const Text(
+          "Line Pay 密碼",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
+        const SizedBox(height: 10),
+        const Text("請輸入您的 Line Pay 密碼。", style: TextStyle(color: Colors.grey)),
+        const Spacer(),
+        Container(
+          color: Colors.white,
+          margin: const EdgeInsets.only(left: 20, right: 20),
+          padding: const EdgeInsets.only(left: 60, right: 60),
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                const SizedBox(
+                  height: 10.0,
+                ),
+                PinCodeFields(
+                  length: 6,
+                  obscureText: true,
+                  obscureCharacter: "🔴",
+                  textStyle: const TextStyle(color: Color(0xFF23B91A)),
+                  // FIXME: didn't change color, but it's enable when setting obscureText==true
+                  borderColor: const Color(0xFFA0A9B8),
+                  keyboardType: TextInputType.number,
+                  controller: pinCodeController,
+                  onComplete: (text) {
+                    Navigator.pushNamed(context, '/pay/checkout',
+                        arguments: {'user': widget.arguments['user']});
+                    //dispose();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        const Text(
+          "忘記密碼？",
+          style: TextStyle(color: Colors.grey),
+        ),
+        const Spacer(),
+        Container(
+          color: Colors.white,
+          child: NumericKeyboard(
+              onKeyboardTap: onKeyboardTap,
+              textStyle: const TextStyle(
+                  color: Color(0xFFA0A9B8),
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold),
+              rightButtonFn: () {
+                if (pinCode.isEmpty) return;
+                setState(() {
+                  pinCode = pinCode.substring(0, pinCode.length - 1);
+                  pinCodeController.text = pinCode;
+                });
+              },
+              rightButtonLongPressFn: () {
+                if (pinCode.isEmpty) return;
+                setState(() {
+                  pinCode = '';
+                  pinCodeController.text = pinCode;
+                });
+              },
+              rightIcon: const Icon(
+                Icons.backspace_outlined,
+                color: Colors.blueGrey,
+              ),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween),
+        ),
+      ]))),
+    );
   }
 }
 
@@ -244,8 +358,215 @@ class ConfirmPage extends StatefulWidget {
 class ConfirmPageState extends State<ConfirmPage> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 1,
+        title: const Text(
+          "LINE Pay",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Color(0xff343434),
+              fontSize: 26,
+              letterSpacing: 0,
+              fontWeight: FontWeight.bold,
+              height: 1),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.close_rounded,
+              color: Color(0xff343434),
+            ),
+            onPressed: () {},
+          ),
+        ],
+        backgroundColor: Colors.grey[50],
+        automaticallyImplyLeading: false, //關掉返回鍵
+      ),
+      body: Column(
+        children: [
+          Container(
+            color: Colors.white,
+            child: Column(
+              children: [
+                const ListTile(
+                  title: Text(
+                    "商家",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Text(
+                    "懶蟲運動科技公司",
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                  visualDensity: VisualDensity(vertical: -4),
+                ),
+                const ListTile(
+                  title: Text(
+                    "商品",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Text(
+                    "懶蟲們，一起運動吧！",
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                  visualDensity: VisualDensity(vertical: -4),
+                ),
+                ListTile(
+                  title: const Text(
+                    "付款方法",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      RichText(
+                        textAlign: TextAlign.end,
+                        text: TextSpan(
+                          children: [
+                            const TextSpan(
+                                text:
+                                    " • • • •  • • • •  • • • • 8529(熊大黑卡/中國\n信託)",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold)),
+                            WidgetSpan(
+                              child: Image.asset('assets/images/visa.png'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  visualDensity: const VisualDensity(vertical: 2),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 10.0,
+                  child: Center(
+                    child: Container(
+                      margin: const EdgeInsetsDirectional.only(
+                          start: 18.0, end: 18.0),
+                      height: 0.5,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+                const ListTile(
+                  title: Text(
+                    "商品價格",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Text(
+                    "NT\$ 150", // TODO: get contract value
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                  visualDensity: VisualDensity(vertical: -4),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(bottom: 10),
+            color: Colors.white,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 10.0,
+                  child: Center(
+                    child: Container(
+                      margin: const EdgeInsetsDirectional.only(
+                          start: 18.0, end: 18.0),
+                      height: 0.5,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+                const ListTile(
+                  title: Text(
+                    "實際支付金額",
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Text(
+                    "NT\$ 150", // TODO: get contract value
+                    style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  visualDensity: VisualDensity(vertical: -4),
+                ),
+                Container(
+                  margin:
+                      const EdgeInsetsDirectional.only(start: 18.0, end: 18.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFA0A9B8),
+                            shadowColor: Colors.white,
+                            minimumSize: const Size(0, 40)),
+                        onPressed: () {},
+                        child: const Text(
+                          "取消",
+                          style: TextStyle(color: Colors.white, fontSize: 14),
+                        ),
+                      )),
+                      Expanded(
+                          child: Container(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF23B91A),
+                              shadowColor: Colors.white,
+                              minimumSize: const Size(0, 40)),
+                          onPressed: () { // TODO: back to ContractPage.
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, '/', (Route<dynamic> route) => false);
+                          },
+                          child: const Text(
+                            "付款",
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 15),
+          const Text("點選按鍵開始進行。", style: TextStyle(color: Colors.grey)),
+          const Text("請在訂單頁面中確認結果。", style: TextStyle(color: Colors.grey)),
+        ],
+      ),
+    );
   }
 }
 
@@ -350,7 +671,6 @@ class PayByPointItem extends StatelessWidget {
                   ),
                 ),
                 const Text("0", style: TextStyle(fontSize: 16))
-                // TODO: 和輸入的點數數字同步更新
               ],
             ),
             const SizedBox(height: 15),
@@ -404,50 +724,7 @@ class PayByPointItem extends StatelessWidget {
   }
 }
 
-class LabeledRadio extends StatelessWidget {
-  const LabeledRadio({
-    super.key,
-    required this.label,
-    required this.padding,
-    required this.groupValue,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final String label;
-  final EdgeInsets padding;
-  final Card groupValue;
-  final Card value;
-  final ValueChanged<Card> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        if (value != groupValue) {
-          onChanged(value);
-        }
-      },
-      child: Padding(
-        padding: padding,
-        child: Row(
-          children: <Widget>[
-            Radio<Card>(
-              groupValue: groupValue,
-              value: value,
-              onChanged: (Card? newValue) {
-                onChanged(newValue!);
-              },
-            ),
-            Text(label),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Point List Item
+// Pay Method Item
 class PayMethodItem extends StatelessWidget {
   const PayMethodItem({
     super.key,
