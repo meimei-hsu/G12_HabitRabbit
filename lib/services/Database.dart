@@ -724,14 +724,8 @@ class DurationDB {
   }
 
   // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
-  static Future<bool> update(Map data) async {
-    var timeSpan = await UserDB.getTimeSpan();
-    data = data.map((key, value) {
-      value += ", $timeSpan";
-      return MapEntry(key, value);
-    });
-    return await JournalDB.update(uid, data, table);
-  }
+  static Future<bool> update(Map data) async =>
+      await JournalDB.update(uid, data, table);
 
   // Delete duration data {table/userID/duration/date}
   static Future<bool> delete(String date) async =>
