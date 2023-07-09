@@ -6,6 +6,7 @@ import 'package:motion_toast/motion_toast.dart';
 
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
+import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -197,7 +198,7 @@ class _HomepageState extends State<Homepage> {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,//關掉返回鍵
         leading: Image.asset('assets/images/Logo.jpg'),
-        toolbarHeight: 100,
+        toolbarHeight: 12,
       ),
       body: Column(
         children: [
@@ -518,69 +519,35 @@ class _HomepageState extends State<Homepage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       //centerDocked
       // FIXME: bottom bar overflow
-      bottomNavigationBar: BottomAppBar(
-          color: const Color(0xfffaf0ca),
-          shape: const CircularNotchedRectangle(),
-          child: Container(
-              color: const Color(0xfffaf0ca),
-              padding: const EdgeInsets.only(right: 10, left: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.insights),
-                    iconSize: 60,
-                    color: const Color(0xff0d3b66),
-                    tooltip: "統計資料",
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/statistic');
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.workspace_premium_outlined),
-                    iconSize: 60,
-                    color: const Color(0xff0d3b66),
-                    tooltip: "里程碑",
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/milestone');
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.home_outlined),
-                    iconSize: 60,
-                    color: const Color(0xff0d3b66),
-                    tooltip: "首頁",
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/');
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.request_quote_outlined),
-                    iconSize: 60,
-                    color: const Color(0xff0d3b66),
-                    tooltip: "承諾合約",
-                    onPressed: () {
-                      if (contractData != null) {
-                        Navigator.pushNamed(context, '/contract',
-                            arguments: {
-                              'contractData': contractData,
-                            });
-                      } else {
-                        Navigator.pushNamed(context, '/contract/initial');
-                      }
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.manage_accounts_outlined),
-                    iconSize: 60,
-                    color: const Color(0xff0d3b66),
-                    tooltip: "個人設定",
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/settings');
-                    },
-                  ),
-                ],
-              ))),
+      bottomNavigationBar: SnakeNavigationBar.color(
+        behaviour: snakeBarStyle,
+        snakeShape: snakeShape,
+        shape: bottomBarShape,
+        padding: padding,
+
+        ///configuration for SnakeNavigationBar.color
+        snakeViewColor: selectedColor,
+        selectedItemColor: snakeShape == SnakeShape.indicator ? selectedColor : null,
+        unselectedItemColor: Colors.blueGrey,
+
+        ///configuration for SnakeNavigationBar.gradient
+        //snakeViewGradient: selectedGradient,
+        //selectedItemGradient: snakeShape == SnakeShape.indicator ? selectedGradient : null,
+        //unselectedItemGradient: unselectedGradient,
+
+        showUnselectedLabels: showUnselectedLabels,
+        showSelectedLabels: showSelectedLabels,
+
+        currentIndex: _selectedItemPosition,
+        onTap: (index) => setState(() => _selectedItemPosition = index),
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: 'tickets'),
+          BottomNavigationBarItem(icon: Icon(CustomIcons.calendar), label: 'calendar'),
+          BottomNavigationBarItem(icon: Icon(CustomIcons.home), label: 'home'),
+          BottomNavigationBarItem(icon: Icon(CustomIcons.podcasts), label: 'microphone'),
+          BottomNavigationBarItem(icon: Icon(CustomIcons.search), label: 'search')
+        ],
+      ),
     );
   }
 }

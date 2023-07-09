@@ -43,6 +43,9 @@ dependencies:
   babstrap_settings_screen: ^0.1.5+1
   flutter_pin_code_fields: ^2.2.0
   onscreen_num_keyboard: ^1.0.4
+  sidebarx: ^0.16.0
+  flutter_snake_navigationbar: ^0.6.1
+
 
 
   # The following adds the Cupertino Icons font to your application.
