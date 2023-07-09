@@ -183,7 +183,7 @@ class _HomepageState extends State<Homepage> {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          '${_selectedDay!.month}/${_selectedDay!.day} Plan',
+          '${_selectedDay!.month}/${_selectedDay!.day} Plan\n12345679',
           textAlign: TextAlign.left,
           style: const TextStyle(
               color: Color(0xff0d3b66),
@@ -195,7 +195,9 @@ class _HomepageState extends State<Homepage> {
         ),
         actions: const [],
         backgroundColor: Colors.white,
-        automaticallyImplyLeading: false, //關掉返回鍵
+        automaticallyImplyLeading: false,//關掉返回鍵
+        leading: Image.asset('assets/images/Logo.jpg'),
+        toolbarHeight: 100,
       ),
       body: Column(
         children: [
