@@ -49,6 +49,7 @@ dependencies:
   level_map: ^0.2.0
   google_fonts: ^4.0.3
   percent_indicator: ^4.0.1
+  banner_carousel: ^1.2.1
 
 dev_dependencies:
   flutter_test:

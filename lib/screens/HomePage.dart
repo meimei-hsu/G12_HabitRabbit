@@ -7,6 +7,7 @@ import 'package:motion_toast/motion_toast.dart';
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
+import 'package:banner_carousel/banner_carousel.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -431,132 +432,24 @@ class _HomepageState extends State<Homepage> {
                 ] else ...[
                   Container()
                 ],
-                const SizedBox(height: 10),
-                if (progressList[Calendar.toKey(_selectedDay!)] != null) ...[
-                  (progressList[Calendar.toKey(_selectedDay!)] < 100)
-                      ? Text(
-                          "今天還有 ${100 - progressList[Calendar.toKey(_selectedDay!)]}% 的運動還沒完成噢~加油加油！",
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(
-                              color: Color(0xffffa493),
-                              fontSize: 18,
-                              letterSpacing: 0,
-                              fontWeight: FontWeight.bold,
-                              height: 1),
-                        )
-                      : const Text(
-                          "今天的運動都完成囉~很棒很棒！",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              color: Color(0xff5dbb63),
-                              fontSize: 18,
-                              letterSpacing: 0,
-                              fontWeight: FontWeight.bold,
-                              height: 1),
-                        ),
-                ] else if (!isThisWeek) ...[
-                  (bothWeekWorkoutList.contains(Calendar.toKey(_selectedDay!)))
-                      ? const Text("運動安排中...",
-                          style: TextStyle(
-                            color: Color(0xffffa493),
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ))
-                      : const Text("Rest Day"),
-                ] else ...[
-                  (isFetchingData)
-                      ? const CircularProgressIndicator()
-                      : const Text("Rest Day"),
-                ],
-                const SizedBox(height: 10),
-                // (need check again) FIXME: 若運動都完成後 or 過期，不應該顯示新增運動按鈕？
-                if (!isFetchingData) ...[
-                  if ((workoutPlanList[Calendar.toKey(_selectedDay!)] !=
-                      null)) ...[
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10, left: 10),
-                        child: ListView(
-                          children: _getSportList(PlanDB.toList(
-                              workoutPlanList[Calendar.toKey(_selectedDay!)])),
-                        ),
-                      ),
-                    ),
-                  ] else if (!isThisWeek) ...[
-                    (bothWeekWorkoutList
-                            .contains(Calendar.toKey(_selectedDay!)))
-                        ? Container()
-                        : getAddExerciseBtn(),
-                  ] else ...[
-                    (_selectedDay!.isBefore(DateTime(_focusedDay.year,
-                            _focusedDay.month, _focusedDay.day)))
-                        ? Container()
-                        : getAddExerciseBtn()
-                  ],
-                ],
+                const SizedBox(height: 130),
+                Container(
+
+                child: BannerCarousel(
+
+                  height:400,
+                  //spaceBetween : 100,
+                  banners: BannerImages.listBanners,
+                  onTap: (id) => print(id),
+
+                ),
+
+
+    )
               ],
             ),
 
-            //body:
-            floatingActionButton: FloatingActionButton.large(
-                onPressed: () {},
-                backgroundColor: const Color(0xffffa493),
-                child: Ink(
-                  decoration: const ShapeDecoration(
-                    //color: Color(0xffffa493),
-                    shape: CircleBorder(),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(Icons.play_arrow_rounded),
-                    iconSize: 80,
-                    color: const Color(0xff0d3b66),
-                    tooltip: "開始運動",
-                    onPressed: () {
-                      if (progressList[Calendar.toKey(_focusedDay)] < 100) {
-                        var workoutPlan =
-                            workoutPlanList[Calendar.toKey(_focusedDay)];
-                        List items = workoutPlan.split(", ");
-                        for (int i = 0; i < items.length; i++) {
-                          if (i <= 2) {
-                            items[i] = "暖身：${items[i]}";
-                          } else if (i >= items.length - 2) {
-                            items[i] = "伸展：${items[i]}";
-                          } else {
-                            items[i] = "運動：${items[i]}";
-                          }
-                        }
-                        Navigator.pushNamed(context, '/countdown', arguments: {
-                          'totalExerciseItemLength': items.length,
-                          'exerciseTime': items.sublist(currentIndex).length *
-                              6, // should be 60s
-                          'exerciseItem': items.sublist(currentIndex),
-                          'currentIndex': currentIndex
-                        });
-                      } else {
-                        MotionToast(
-                          icon: Icons.done_all_rounded,
-                          primaryColor: const Color(0xff5dbb63),
-                          description: const Text(
-                            "今天的運動都已經完成囉！",
-                            style: TextStyle(
-                              color: Color(0xff0d3b66),
-                              fontSize: 17,
-                              letterSpacing: 0,
-                              fontWeight: FontWeight.bold,
-                              height: 1,
-                            ),
-                          ),
-                          position: MotionToastPosition.bottom,
-                          animationType: AnimationType.fromBottom,
-                          //displaySideBar: false,
-                        ).show(context);
-                      }
-                    },
-                  ),
-                )),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
-            //centerDocked
+
             // FIXME: bottom bar overflow
             bottomNavigationBar: SnakeNavigationBar.color(
               behaviour: snakeBarStyle,
@@ -628,7 +521,22 @@ class _HomepageState extends State<Homepage> {
             )));
   }
 }
+class BannerImages {
+  static const String banner1 =
+      "https://picjumbo.com/wp-content/uploads/the-golden-gate-bridge-sunset-1080x720.jpg";
+  static const String banner2 =
+      "https://cdn.mos.cms.futurecdn.net/Nxz3xSGwyGMaziCwiAC5WW-1024-80.jpg";
+  static const String banner3 = "https://wallpaperaccess.com/full/19921.jpg";
+  static const String banner4 =
+      "https://images.pexels.com/photos/2635817/pexels-photo-2635817.jpeg?auto=compress&crop=focalpoint&cs=tinysrgb&fit=crop&fp-y=0.6&h=500&sharp=20&w=1400";
 
+  static List<BannerModel> listBanners = [
+    BannerModel(imagePath: banner1, id: "1"),
+    BannerModel(imagePath: banner2, id: "2"),
+   // BannerModel(imagePath: banner3, id: "3"),
+    //BannerModel(imagePath: banner4, id: "4"),
+  ];
+}
 // 新增運動
 class AddExerciseDialog extends StatefulWidget {
   final Map arguments;
