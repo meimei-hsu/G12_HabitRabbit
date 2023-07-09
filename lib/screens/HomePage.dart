@@ -207,287 +207,271 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: Text(
-            '${_selectedDay!.month}/${_selectedDay!.day} Plan\n12345679',
-            textAlign: TextAlign.left,
-            style: const TextStyle(
-                color: Color(0xff0d3b66),
-                fontSize: 32,
-                letterSpacing: 0,
-                //percentages not used in flutter
-                fontWeight: FontWeight.bold,
-                height: 1),
-          ),
-          actions: const [],
-          backgroundColor: Colors.white,
-          automaticallyImplyLeading: false,
-          //關掉返回鍵
-          leading: Image.asset('assets/images/Logo.jpg'),
-          toolbarHeight: 12,
-        ),
-        body: Column(
-          children: [
-            Container(
-              color: const Color(0x193598f5),
-              child: TableCalendar(
-                firstDay: firstDay,
-                lastDay: lastDay,
-                focusedDay: _focusedDay,
-                //startingDayOfWeek: StartingDayOfWeek.monday,
-                locale: 'zh_CN',
-                calendarFormat: CalendarFormat.week,
-                daysOfWeekHeight: 24,
-                daysOfWeekStyle: const DaysOfWeekStyle(
-                  weekdayStyle: TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontSize: 16,
-                  ),
-                  weekendStyle: TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontSize: 16,
-                  ),
-                ),
-                calendarStyle: CalendarStyle(
-                  tablePadding: const EdgeInsets.only(
-                      right: 10, left: 10, top: 10, bottom: 10),
-                  todayDecoration: BoxDecoration(
-                    color: const Color(0xffffa493),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  todayTextStyle: const TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: const Color(0xfffbb87f),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  selectedTextStyle: const TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                  defaultDecoration: BoxDecoration(
-                    color: const Color(0xfffaf0ca),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  defaultTextStyle: const TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                  weekendDecoration: BoxDecoration(
-                    color: const Color(0xfffaf0ca),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  weekendTextStyle: const TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                  outsideDecoration: BoxDecoration(
-                    color: const Color(0xfffaf0ca),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  outsideTextStyle: const TextStyle(
-                    color: Color(0xff0d3b66),
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                ),
-                headerVisible: false,
-                selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDay, day);
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  // 選中的日期變成橘色
-                  if (!isSameDay(_selectedDay, selectedDay)) {
-                    setState(() {
-                      _selectedDay = selectedDay;
-                    });
-                  }
-                },
-                onPageChanged: (focusedDay) {
-                  // 選第2頁的日期時不會跳回第一頁
-                  _focusedDay = focusedDay;
-                },
-              ),
-            ),
-            const SizedBox(height: 10),
-            if (workoutPlanList[Calendar.toKey(_selectedDay!)] != null) ...[
-              if (progressList[Calendar.toKey(_selectedDay!)] < 100 &&
-                  _selectedDay!.isBefore(DateTime(_focusedDay.year,
-                          _focusedDay.month, _focusedDay.day)) ==
-                      false) ...[
-                Container(
-                    padding: const EdgeInsets.only(right: 10),
-                    height: 60,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        // TODO: Delete after line pay function connecting
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Color(0x193598f5),
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.bug_report_outlined),
-                            iconSize: 40,
-                            color: const Color(0xff0d3b66),
-                            tooltip: "Line Pay Page",
-                            onPressed: () async {
-                              Navigator.pushNamed(context, '/pay',
-                                  arguments: {'user': user});
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Color(0xfffaf0ca),
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.edit_calendar_outlined),
-                            iconSize: 40,
-                            color: const Color(0xff0d3b66),
-                            tooltip: "修改運動日",
-                            onPressed: () {
-                              _showChangeExerciseDayDialog();
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        // TODO: Delete after coding (實際無刪除功能, 測試方便而加)
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Color(0xfffbb87f),
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.delete_outline),
-                            iconSize: 40,
-                            color: const Color(0xff0d3b66),
-                            tooltip: "刪除計畫",
-                            onPressed: () async {
-                              await PlanDB.delete(
-                                  Calendar.toKey(_selectedDay!));
-                              refresh();
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Ink(
-                          decoration: const ShapeDecoration(
-                            color: Color(0xffffa493),
-                            shape: CircleBorder(),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.cached),
-                            iconSize: 40,
-                            color: const Color(0xff0d3b66),
-                            tooltip: "重新計畫",
-                            onPressed: () {
-                              PlanAlgo.regenerate(_selectedDay!);
-                              refresh();
-                              MotionToast(
-                                icon: Icons.done_all_rounded,
-                                primaryColor: const Color(0xffffa493),
-                                description: Text(
-                                  "${_selectedDay?.month}/"
-                                  "${_selectedDay?.day} 的運動計畫已經更新囉！",
-                                  style: const TextStyle(
-                                    color: Color(0xff0d3b66),
-                                    fontSize: 16,
-                                    letterSpacing: 0,
-                                    fontWeight: FontWeight.bold,
-                                    height: 1,
-                                  ),
-                                ),
-                                position: MotionToastPosition.bottom,
-                                animationType: AnimationType.fromBottom,
-                                animationCurve: Curves.bounceIn,
-                                //displaySideBar: false,
-                              ).show(context);
-                            },
-                          ),
-                        )
-                      ],
-                    ))
-              ] else ...[
-                Container()
-              ]
-            ] else ...[
-              Container()
-            ],
-            const SizedBox(height: 10),
-            if (progressList[Calendar.toKey(_selectedDay!)] != null) ...[
-              (progressList[Calendar.toKey(_selectedDay!)] < 100)
-                  ? Text(
-                      "今天還有 ${100 - progressList[Calendar.toKey(_selectedDay!)]}% 的運動還沒完成噢~加油加油！",
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                          color: Color(0xffffa493),
-                          fontSize: 18,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.bold,
-                          height: 1),
-                    )
-                  : const Text(
-                      "今天的運動都完成囉~很棒很棒！",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          color: Color(0xff5dbb63),
-                          fontSize: 18,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.bold,
-                          height: 1),
-                    ),
-            ] else if (!isThisWeek) ...[
-              (bothWeekWorkoutList.contains(Calendar.toKey(_selectedDay!)))
-                  ? const Text("運動安排中...",
-                      style: TextStyle(
-                        color: Color(0xffffa493),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ))
-                  : const Text("Rest Day"),
-            ] else ...[
-              (isFetchingData)
-                  ? const CircularProgressIndicator()
-                  : const Text("Rest Day"),
-            ],
-            const SizedBox(height: 10),
-            // (need check again) FIXME: 若運動都完成後 or 過期，不應該顯示新增運動按鈕？
-            if (!isFetchingData) ...[
-              if ((workoutPlanList[Calendar.toKey(_selectedDay!)] != null)) ...[
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10, left: 10),
-                    child: ListView(
-                      children: _getSportList(PlanDB.toList(
-                          workoutPlanList[Calendar.toKey(_selectedDay!)])),
-                    ),
-                  ),
-                ),
-              ] else if (!isThisWeek) ...[
-                (bothWeekWorkoutList.contains(Calendar.toKey(_selectedDay!)))
-                    ? Container()
-                    : getAddExerciseBtn(),
-              ] else ...[
-                (_selectedDay!.isBefore(DateTime(
-                        _focusedDay.year, _focusedDay.month, _focusedDay.day)))
-                    ? Container()
-                    : getAddExerciseBtn()
-              ],
-            ],
-          ],
-        ),
+    return SafeArea(
+       child: Scaffold(
+           backgroundColor: Color(0xfffdfdf5),
+         body: Column(
+           children: [
+             Container(
+               color: const Color(0x193598f5),
+               child: TableCalendar(
+                 firstDay: firstDay,
+                 lastDay: lastDay,
+                 focusedDay: _focusedDay,
+                 //startingDayOfWeek: StartingDayOfWeek.monday,
+                 locale: 'zh_CN',
+                 calendarFormat: CalendarFormat.week,
+                 daysOfWeekHeight: 24,
+                 daysOfWeekStyle: const DaysOfWeekStyle(
+                   weekdayStyle: TextStyle(
+                     color: Color(0xff0d3b66),
+                     fontSize: 16,
+                   ),
+                   weekendStyle: TextStyle(
+                     color: Color(0xff0d3b66),
+                     fontSize: 16,
+                   ),
+                 ),
+                 calendarStyle: CalendarStyle(
+                   tablePadding: const EdgeInsets.only(
+                       right: 10, left: 10, top: 10, bottom: 10),
+                   todayDecoration: BoxDecoration(
+                     color: const Color(0xffffa493),
+                     borderRadius: BorderRadius.circular(10.0),
+                   ),
+                   todayTextStyle: const TextStyle(
+                     color: Color(0xff0d3b66),
+                     fontWeight: FontWeight.bold,
+                     fontSize: 24,
+                   ),
+                   selectedDecoration: BoxDecoration(
+                     color: const Color(0xfffbb87f),
+                     borderRadius: BorderRadius.circular(10.0),
+                   ),
+                   selectedTextStyle: const TextStyle(
+                     color: Color(0xff0d3b66),
+                     fontWeight: FontWeight.bold,
+                     fontSize: 24,
+                   ),
+                   defaultDecoration: BoxDecoration(
+                     color: const Color(0xfffaf0ca),
+                     borderRadius: BorderRadius.circular(10.0),
+                   ),
+                   defaultTextStyle: const TextStyle(
+                     color: Color(0xff0d3b66),
+                     fontWeight: FontWeight.bold,
+                     fontSize: 24,
+                   ),
+                   weekendDecoration: BoxDecoration(
+                     color: const Color(0xfffaf0ca),
+                     borderRadius: BorderRadius.circular(10.0),
+                   ),
+                   weekendTextStyle: const TextStyle(
+                     color: Color(0xff0d3b66),
+                     fontWeight: FontWeight.bold,
+                     fontSize: 24,
+                   ),
+                   outsideDecoration: BoxDecoration(
+                     color: const Color(0xfffaf0ca),
+                     borderRadius: BorderRadius.circular(10.0),
+                   ),
+                   outsideTextStyle: const TextStyle(
+                     color: Color(0xff0d3b66),
+                     fontWeight: FontWeight.bold,
+                     fontSize: 24,
+                   ),
+                 ),
+                 headerVisible: false,
+                 selectedDayPredicate: (day) {
+                   return isSameDay(_selectedDay, day);
+                 },
+                 onDaySelected: (selectedDay, focusedDay) {
+                   // 選中的日期變成橘色
+                   if (!isSameDay(_selectedDay, selectedDay)) {
+                     setState(() {
+                       _selectedDay = selectedDay;
+                     });
+                   }
+                 },
+                 onPageChanged: (focusedDay) {
+                   // 選第2頁的日期時不會跳回第一頁
+                   _focusedDay = focusedDay;
+                 },
+               ),
+             ),
+             const SizedBox(height: 10),
+             if (workoutPlanList[Calendar.toKey(_selectedDay!)] != null) ...[
+               if (progressList[Calendar.toKey(_selectedDay!)] < 100 &&
+                   _selectedDay!.isBefore(DateTime(_focusedDay.year,
+                       _focusedDay.month, _focusedDay.day)) ==
+                       false) ...[
+                 Container(
+                     padding: const EdgeInsets.only(right: 10),
+                     height: 60,
+                     child: Row(
+                       mainAxisAlignment: MainAxisAlignment.end,
+                       children: [
+                         // TODO: Delete after line pay function connecting
+                         Ink(
+                           decoration: const ShapeDecoration(
+                             color: Color(0x193598f5),
+                             shape: CircleBorder(),
+                           ),
+                           child: IconButton(
+                             icon: const Icon(Icons.bug_report_outlined),
+                             iconSize: 40,
+                             color: const Color(0xff0d3b66),
+                             tooltip: "Line Pay Page",
+                             onPressed: () async {
+                               Navigator.pushNamed(context, '/pay',
+                                   arguments: {'user': user});
+                             },
+                           ),
+                         ),
+                         const SizedBox(width: 10),
+                         Ink(
+                           decoration: const ShapeDecoration(
+                             color: Color(0xfffaf0ca),
+                             shape: CircleBorder(),
+                           ),
+                           child: IconButton(
+                             icon: const Icon(Icons.edit_calendar_outlined),
+                             iconSize: 40,
+                             color: const Color(0xff0d3b66),
+                             tooltip: "修改運動日",
+                             onPressed: () {
+                               _showChangeExerciseDayDialog();
+                             },
+                           ),
+                         ),
+                         const SizedBox(width: 10),
+                         // TODO: Delete after coding (實際無刪除功能, 測試方便而加)
+                         Ink(
+                           decoration: const ShapeDecoration(
+                             color: Color(0xfffbb87f),
+                             shape: CircleBorder(),
+                           ),
+                           child: IconButton(
+                             icon: const Icon(Icons.delete_outline),
+                             iconSize: 40,
+                             color: const Color(0xff0d3b66),
+                             tooltip: "刪除計畫",
+                             onPressed: () async {
+                               await PlanDB.delete(
+                                   Calendar.toKey(_selectedDay!));
+                               refresh();
+                             },
+                           ),
+                         ),
+                         const SizedBox(width: 10),
+                         Ink(
+                           decoration: const ShapeDecoration(
+                             color: Color(0xffffa493),
+                             shape: CircleBorder(),
+                           ),
+                           child: IconButton(
+                             icon: const Icon(Icons.cached),
+                             iconSize: 40,
+                             color: const Color(0xff0d3b66),
+                             tooltip: "重新計畫",
+                             onPressed: () {
+                               PlanAlgo.regenerate(_selectedDay!);
+                               refresh();
+                               MotionToast(
+                                 icon: Icons.done_all_rounded,
+                                 primaryColor: const Color(0xffffa493),
+                                 description: Text(
+                                   "${_selectedDay?.month}/"
+                                       "${_selectedDay?.day} 的運動計畫已經更新囉！",
+                                   style: const TextStyle(
+                                     color: Color(0xff0d3b66),
+                                     fontSize: 16,
+                                     letterSpacing: 0,
+                                     fontWeight: FontWeight.bold,
+                                     height: 1,
+                                   ),
+                                 ),
+                                 position: MotionToastPosition.bottom,
+                                 animationType: AnimationType.fromBottom,
+                                 animationCurve: Curves.bounceIn,
+                                 //displaySideBar: false,
+                               ).show(context);
+                             },
+                           ),
+                         )
+                       ],
+                     ))
+               ] else ...[
+                 Container()
+               ]
+             ] else ...[
+               Container()
+             ],
+             const SizedBox(height: 10),
+             if (progressList[Calendar.toKey(_selectedDay!)] != null) ...[
+               (progressList[Calendar.toKey(_selectedDay!)] < 100)
+                   ? Text(
+                 "今天還有 ${100 - progressList[Calendar.toKey(_selectedDay!)]}% 的運動還沒完成噢~加油加油！",
+                 textAlign: TextAlign.left,
+                 style: const TextStyle(
+                     color: Color(0xffffa493),
+                     fontSize: 18,
+                     letterSpacing: 0,
+                     fontWeight: FontWeight.bold,
+                     height: 1),
+               )
+                   : const Text(
+                 "今天的運動都完成囉~很棒很棒！",
+                 textAlign: TextAlign.left,
+                 style: TextStyle(
+                     color: Color(0xff5dbb63),
+                     fontSize: 18,
+                     letterSpacing: 0,
+                     fontWeight: FontWeight.bold,
+                     height: 1),
+               ),
+             ] else if (!isThisWeek) ...[
+               (bothWeekWorkoutList.contains(Calendar.toKey(_selectedDay!)))
+                   ? const Text("運動安排中...",
+                   style: TextStyle(
+                     color: Color(0xffffa493),
+                     fontSize: 18,
+                     fontWeight: FontWeight.bold,
+                   ))
+                   : const Text("Rest Day"),
+             ] else ...[
+               (isFetchingData)
+                   ? const CircularProgressIndicator()
+                   : const Text("Rest Day"),
+             ],
+             const SizedBox(height: 10),
+             // (need check again) FIXME: 若運動都完成後 or 過期，不應該顯示新增運動按鈕？
+             if (!isFetchingData) ...[
+               if ((workoutPlanList[Calendar.toKey(_selectedDay!)] != null)) ...[
+                 Expanded(
+                   child: Padding(
+                     padding: const EdgeInsets.only(right: 10, left: 10),
+                     child: ListView(
+                       children: _getSportList(PlanDB.toList(
+                           workoutPlanList[Calendar.toKey(_selectedDay!)])),
+                     ),
+                   ),
+                 ),
+               ] else if (!isThisWeek) ...[
+                 (bothWeekWorkoutList.contains(Calendar.toKey(_selectedDay!)))
+                     ? Container()
+                     : getAddExerciseBtn(),
+               ] else ...[
+                 (_selectedDay!.isBefore(DateTime(
+                     _focusedDay.year, _focusedDay.month, _focusedDay.day)))
+                     ? Container()
+                     : getAddExerciseBtn()
+               ],
+             ],
+           ],
+         ),
+
+        //body:
         floatingActionButton: FloatingActionButton.large(
             onPressed: () {},
             backgroundColor: const Color(0xffffa493),
@@ -552,12 +536,16 @@ class _HomepageState extends State<Homepage> {
           snakeShape: snakeShape,
           shape: bottomBarShape,
           padding: padding,
-
+          height:80,
+          backgroundColor:Color(0xfffdeed9),
+          snakeViewColor:Color(0xfffdfdf5),
+          selectedItemColor:Color(0xff4b3d70),
+          unselectedItemColor:Color(0xff4b3d70),
           ///configuration for SnakeNavigationBar.color
-          snakeViewColor: selectedColor,
-          selectedItemColor:
-              snakeShape == SnakeShape.indicator ? selectedColor : null,
-          unselectedItemColor: Colors.blueGrey,
+         // snakeViewColor: selectedColor,
+         // selectedItemColor:
+            //  snakeShape == SnakeShape.indicator ? selectedColor : null,
+          //unselectedItemColor: Colors.blueGrey,
 
           ///configuration for SnakeNavigationBar.gradient
           //snakeViewGradient: selectedGradient,
@@ -571,22 +559,20 @@ class _HomepageState extends State<Homepage> {
           //onTap: (index) => setState(() => _selectedItemPosition = index),
           onTap: (index) {
             _selectedItemPosition = index;
-            if(index == 4){
+           /* if(index == 4){
               Navigator.pushNamed(context, '/pay',
                   arguments: {'user': user});
-            }
+            }*/
             print(index);
           },
           items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.ac_unit), label: 'tickets'),
-            BottomNavigationBarItem(icon: Icon(Icons.add), label: 'calendar'),
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'home'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.podcasts), label: 'microphone'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'search')
+            BottomNavigationBarItem(icon: Icon(Icons.insights,size: 40,), label: 'tickets'),
+            BottomNavigationBarItem(icon: Icon(Icons.workspace_premium_outlined,size: 40,), label: 'calendar'),
+            BottomNavigationBarItem(icon: Icon(Icons.home_outlined,size: 40,), label: 'home'),
+            BottomNavigationBarItem(icon: Icon(Icons.request_quote_outlined,size: 40,), label: 'microphone'),
+            BottomNavigationBarItem(icon: Icon(Icons.manage_accounts_outlined,size: 40,), label: 'search')
           ],
-        ));
+        )));
   }
 }
 
