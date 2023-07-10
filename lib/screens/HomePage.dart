@@ -184,8 +184,8 @@ class _HomepageState extends State<Homepage> {
     topRight: Radius.circular(25),
   );
 
-  ShapeBorder? bottomBarShape = RoundedRectangleBorder(
-      borderRadius: const BorderRadius.only(
+  ShapeBorder? bottomBarShape = const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
     topLeft: Radius.circular(25),
     topRight: Radius.circular(25),
   ));
@@ -210,12 +210,15 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            backgroundColor: Color(0xfffdfdf5),
+            backgroundColor: const Color(0xfffdfdf5),
             body: Column(
               children: [
+                const SizedBox(
+                  height: 10,
+                ),
                 Container(
                   //color: const Color(0x193598f5),
-                  color: const Color(0xffd4d6fc),//日曆背景
+                  color: const Color(0xfffdfdf5), //日曆背景
                   child: TableCalendar(
                     firstDay: firstDay,
                     lastDay: lastDay,
@@ -241,7 +244,7 @@ class _HomepageState extends State<Homepage> {
                           right: 10, left: 10, top: 10, bottom: 10),
                       todayDecoration: BoxDecoration(
                         //color: const Color(0xffffa493),
-                        color: const Color(0xfff6cdb7),//今天顏色
+                        color: const Color(0xfff6cdb7), //今天顏色
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       todayTextStyle: const TextStyle(
@@ -252,8 +255,21 @@ class _HomepageState extends State<Homepage> {
                       ),
                       selectedDecoration: BoxDecoration(
                         //color: const Color(0xfffbb87f),
-                        color: const Color(0xfffdeed9),//點到的天數顏色
+                        color: (DateTime(_selectedDay!.year,
+                                    _selectedDay!.month, _selectedDay!.day) ==
+                                _focusedDay)
+                            ? const Color(0xfff6cdb7)
+                            : const Color(0xfffdeed9), //點到的天數顏色
                         borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 8,
+                            offset: const Offset(
+                                0, 5), // changes position of shadow
+                          ),
+                        ],
                       ),
                       selectedTextStyle: const TextStyle(
                         //color: Color(0xff0d3b66),
@@ -263,7 +279,7 @@ class _HomepageState extends State<Homepage> {
                       ),
                       defaultDecoration: BoxDecoration(
                         //color: const Color(0xfffaf0ca),
-                        color: const Color(0xfffdfdf5),
+                        color: const Color(0xfffdeed9),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       defaultTextStyle: const TextStyle(
@@ -274,7 +290,7 @@ class _HomepageState extends State<Homepage> {
                       ),
                       weekendDecoration: BoxDecoration(
                         //color: const Color(0xfffaf0ca),
-                        color: const Color(0xfffdfdf5),
+                        color: const Color(0xfffdeed9),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       weekendTextStyle: const TextStyle(
@@ -306,6 +322,14 @@ class _HomepageState extends State<Homepage> {
                           _selectedDay = selectedDay;
                         });
                       }
+                      print((_selectedDay == _focusedDay));
+                      print(_selectedDay);
+                      print(_focusedDay);
+                      /*if (isSameDay(selectedDay, focusedDay)){
+                        setState(() {
+                          _selectedDay = focusedDay;
+                        });
+                      }*/
                     },
                     onPageChanged: (focusedDay) {
                       // 選第2頁的日期時不會跳回第一頁
@@ -447,21 +471,15 @@ class _HomepageState extends State<Homepage> {
                 ],
                 const SizedBox(height: 130),
                 Container(
-
-                child: BannerCarousel(
-
-                  height:400,
-                  //spaceBetween : 100,
-                  banners: BannerImages.listBanners,
-                  onTap: (id) => print(id),
-
-                ),
-
-
-    )
+                  child: BannerCarousel(
+                    height: 400,
+                    //spaceBetween : 100,
+                    banners: BannerImages.listBanners,
+                    onTap: (id) => print(id),
+                  ),
+                )
               ],
             ),
-
 
             // FIXME: bottom bar overflow
             bottomNavigationBar: SnakeNavigationBar.color(
@@ -470,10 +488,10 @@ class _HomepageState extends State<Homepage> {
               shape: bottomBarShape,
               padding: padding,
               height: 80,
-              backgroundColor: Color(0xfffdeed9),
-              snakeViewColor: Color(0xfffdfdf5),
-              selectedItemColor: Color(0xff4b3d70),
-              unselectedItemColor: Color(0xff4b3d70),
+              backgroundColor: const Color(0xfffdeed9),
+              snakeViewColor: const Color(0xfffdfdf5),
+              selectedItemColor: const Color(0xff4b3d70),
+              unselectedItemColor: const Color(0xff4b3d70),
 
               ///configuration for SnakeNavigationBar.color
               // snakeViewColor: selectedColor,
@@ -500,31 +518,31 @@ class _HomepageState extends State<Homepage> {
                 print(index);
               },
               items: [
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     icon: Icon(
                       Icons.insights,
                       size: 40,
                     ),
                     label: 'tickets'),
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     icon: Icon(
                       Icons.workspace_premium_outlined,
                       size: 40,
                     ),
                     label: 'calendar'),
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     icon: Icon(
                       Icons.home_outlined,
                       size: 40,
                     ),
                     label: 'home'),
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     icon: Icon(
                       Icons.request_quote_outlined,
                       size: 40,
                     ),
                     label: 'microphone'),
-                BottomNavigationBarItem(
+                const BottomNavigationBarItem(
                     icon: Icon(
                       Icons.manage_accounts_outlined,
                       size: 40,
@@ -534,6 +552,7 @@ class _HomepageState extends State<Homepage> {
             )));
   }
 }
+
 class BannerImages {
   static const String banner1 =
       "https://picjumbo.com/wp-content/uploads/the-golden-gate-bridge-sunset-1080x720.jpg";
@@ -546,10 +565,11 @@ class BannerImages {
   static List<BannerModel> listBanners = [
     BannerModel(imagePath: banner1, id: "1"),
     BannerModel(imagePath: banner2, id: "2"),
-   // BannerModel(imagePath: banner3, id: "3"),
+    // BannerModel(imagePath: banner3, id: "3"),
     //BannerModel(imagePath: banner4, id: "4"),
   ];
 }
+
 // 新增運動
 class AddExerciseDialog extends StatefulWidget {
   final Map arguments;
