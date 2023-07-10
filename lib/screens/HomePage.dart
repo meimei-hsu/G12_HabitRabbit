@@ -8,6 +8,7 @@ import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:banner_carousel/banner_carousel.dart';
+import 'package:chat_bubbles/chat_bubbles.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -472,17 +473,44 @@ class _HomepageState extends State<Homepage> {
                 ] else ...[
                   Container()
                 ],
-                const SizedBox(height: 30),
-                Image.asset("assets/images/testPic.gif",width: 100,height: 100,),
-                const SizedBox(height: 30),
+                const SizedBox(height: 0),
+                Row(
+                  children:[
                 Container(
+
+                   child: Padding(
+                     padding:EdgeInsets.only(left: 9,right:0,),
+                    child:BubbleSpecialThree(
+                      text: 'Hello Mary～\n今天的運動尚未完成\n今天的冥想尚未完成',
+                      color: Color(0xFFfdeed9),
+                      tail: true,
+                      textStyle: TextStyle(
+                          color: Color(0xFF4b3d70),
+                          fontSize: 17,
+                          //fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                   ),
+                ),
+                    Container(
+                      child: Padding(
+                        padding:EdgeInsets.only(left: 0),
+                        child:Image.asset("assets/images/rabbit.png",width: 125,height: 160,),
+                      ),
+                    ),
+                //const SizedBox(height: 10),
+                ],),
+                const SizedBox(height: 0),
+                Container(
+
                   child: BannerCarousel(
-                    height: 400,
+                    height: 350,
                     //spaceBetween : 100,
                     banners: BannerImages.listBanners,
                     onTap: (id) => print(id),
                   ),
-                )
+                ),
+                const SizedBox(height: 10),
               ],
             ),
 
