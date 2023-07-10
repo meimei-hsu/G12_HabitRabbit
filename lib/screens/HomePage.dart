@@ -215,8 +215,11 @@ class _HomepageState extends State<Homepage> {
               children: [
                 const SizedBox(
                   height: 10,
+
                 ),
+
                 Container(
+
                   //color: const Color(0x193598f5),
                   color: const Color(0xfffdfdf5), //日曆背景
                   child: TableCalendar(
@@ -469,7 +472,9 @@ class _HomepageState extends State<Homepage> {
                 ] else ...[
                   Container()
                 ],
-                const SizedBox(height: 130),
+                const SizedBox(height: 30),
+                Image.asset("assets/images/testPic.gif",width: 100,height: 100,),
+                const SizedBox(height: 30),
                 Container(
                   child: BannerCarousel(
                     height: 400,
