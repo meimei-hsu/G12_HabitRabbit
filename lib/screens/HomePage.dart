@@ -214,7 +214,8 @@ class _HomepageState extends State<Homepage> {
             body: Column(
               children: [
                 Container(
-                  color: const Color(0x193598f5),
+                  //color: const Color(0x193598f5),
+                  color: const Color(0xffd4d6fc),//日曆背景
                   child: TableCalendar(
                     firstDay: firstDay,
                     lastDay: lastDay,
@@ -225,11 +226,13 @@ class _HomepageState extends State<Homepage> {
                     daysOfWeekHeight: 24,
                     daysOfWeekStyle: const DaysOfWeekStyle(
                       weekdayStyle: TextStyle(
-                        color: Color(0xff0d3b66),
+                        //color: Color(0xff0d3b66),
+                        color: Color(0xff4b3d70),
                         fontSize: 16,
                       ),
                       weekendStyle: TextStyle(
-                        color: Color(0xff0d3b66),
+                        //color: Color(0xff0d3b66),
+                        color: Color(0xff4b3d70),
                         fontSize: 16,
                       ),
                     ),
@@ -237,47 +240,57 @@ class _HomepageState extends State<Homepage> {
                       tablePadding: const EdgeInsets.only(
                           right: 10, left: 10, top: 10, bottom: 10),
                       todayDecoration: BoxDecoration(
-                        color: const Color(0xffffa493),
+                        //color: const Color(0xffffa493),
+                        color: const Color(0xfff6cdb7),//今天顏色
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       todayTextStyle: const TextStyle(
-                        color: Color(0xff0d3b66),
+                        //color: Color(0xff0d3b66),
+                        color: Color(0xff4b3d70),
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       selectedDecoration: BoxDecoration(
-                        color: const Color(0xfffbb87f),
+                        //color: const Color(0xfffbb87f),
+                        color: const Color(0xfffdeed9),//點到的天數顏色
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       selectedTextStyle: const TextStyle(
-                        color: Color(0xff0d3b66),
+                        //color: Color(0xff0d3b66),
+                        color: Color(0xff4b3d70),
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       defaultDecoration: BoxDecoration(
-                        color: const Color(0xfffaf0ca),
+                        //color: const Color(0xfffaf0ca),
+                        color: const Color(0xfffdfdf5),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       defaultTextStyle: const TextStyle(
-                        color: Color(0xff0d3b66),
+                        //color: Color(0xff0d3b66),
+                        color: Color(0xff4b3d70),
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       weekendDecoration: BoxDecoration(
-                        color: const Color(0xfffaf0ca),
+                        //color: const Color(0xfffaf0ca),
+                        color: const Color(0xfffdfdf5),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       weekendTextStyle: const TextStyle(
-                        color: Color(0xff0d3b66),
+                        //color: Color(0xff0d3b66),
+                        color: Color(0xff4b3d70),
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       outsideDecoration: BoxDecoration(
-                        color: const Color(0xfffaf0ca),
+                        //color: const Color(0xfffaf0ca),
+                        color: const Color(0xff4b3d70),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       outsideTextStyle: const TextStyle(
-                        color: Color(0xff0d3b66),
+                        //color: Color(0xff0d3b66),
+                        color: Color(0xff4b3d70),
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
