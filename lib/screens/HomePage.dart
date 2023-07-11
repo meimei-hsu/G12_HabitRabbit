@@ -9,6 +9,7 @@ import 'package:g12/services/PlanAlgo.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:banner_carousel/banner_carousel.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
+import 'package:swipe_cards/swipe_cards.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -228,18 +229,20 @@ class _HomepageState extends State<Homepage> {
                     lastDay: lastDay,
                     focusedDay: _focusedDay,
                     //startingDayOfWeek: StartingDayOfWeek.monday,
-                    locale: 'zh_CN',
+                    //locale: 'zh_CN',
                     calendarFormat: CalendarFormat.week,
                     daysOfWeekHeight: 24,
                     daysOfWeekStyle: const DaysOfWeekStyle(
                       weekdayStyle: TextStyle(
                         //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        //color: Color(0xff4b3d70),
+                        color: Color(0xfff6cdb7),
                         fontSize: 16,
                       ),
                       weekendStyle: TextStyle(
                         //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        //color: Color(0xff4b3d70),
+                        color: Color(0xfff6cdb7),
                         fontSize: 16,
                       ),
                     ),
@@ -521,7 +524,8 @@ class _HomepageState extends State<Homepage> {
               shape: bottomBarShape,
               padding: padding,
               height: 80,
-              backgroundColor: const Color(0xfffdeed9),
+              //backgroundColor: const Color(0xfffdeed9),
+              backgroundColor: const Color(0xffd4d6fc),
               snakeViewColor: const Color(0xfffdfdf5),
               selectedItemColor: const Color(0xff4b3d70),
               unselectedItemColor: const Color(0xff4b3d70),
@@ -544,10 +548,27 @@ class _HomepageState extends State<Homepage> {
               //onTap: (index) => setState(() => _selectedItemPosition = index),
               onTap: (index) {
                 _selectedItemPosition = index;
-                /* if(index == 4){
-              Navigator.pushNamed(context, '/pay',
+                if(index == 0){
+                  Navigator.pushNamed(context, '/statistic',
+                      arguments: {'user': user});
+                }
+                if(index == 1){
+                  Navigator.pushNamed(context, '/milestone',
+                      arguments: {'user': user});
+                }
+                if(index == 2){
+                  Navigator.pushNamed(context, '/',
+                      arguments: {'user': user});
+                }
+                if(index == 3){
+                  Navigator.pushNamed(context, '/contract/initial',
+                      arguments: {'user': user});
+                }
+                //3
+                 if(index == 4){
+              Navigator.pushNamed(context, '/settings',
                   arguments: {'user': user});
-            }*/
+            }
                 print(index);
               },
               items: [
