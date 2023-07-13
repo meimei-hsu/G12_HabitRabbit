@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:g12/screens/ContractPage.dart';
 import 'package:g12/screens/CountdownPage.dart';
 import 'package:g12/screens/ExercisePage.dart';
-import 'package:g12/screens/HabitDetailPage.dart';
 import 'package:g12/screens/HomePage.dart';
 import 'package:g12/screens/MilestonePage.dart';
 import 'package:g12/screens/LinePayPage.dart';
@@ -21,7 +20,6 @@ final routes = {
   '/exercise': (context, {arguments}) => ExercisePage(arguments: arguments),
   '/settings': (context, {arguments}) => const SettingsPage(),
   '/milestone': (context, {arguments}) => const MilestonePage(),
-  '/detail': (context, {arguments}) => HabitDetailPage(arguments: arguments),
   /* ContractPage */
   '/contract/initial': (context, {arguments}) =>
       FirstContractPage(arguments: arguments),
@@ -31,16 +29,6 @@ final routes = {
   '/pay/password': (context, {arguments}) => PasswordPage(arguments: arguments),
   '/pay/checkout': (context, {arguments}) => ConfirmPage(arguments: arguments),
   /* QuestionnairePage */
-  '/questionnaire/1': (context, {arguments}) => FirstPage(arguments: arguments),
-  '/questionnaire/2': (context, {arguments}) =>
-      SecondPage(arguments: arguments),
-  '/questionnaire/3': (context, {arguments}) => ThirdPage(arguments: arguments),
-  '/questionnaire/4': (context, {arguments}) => ForthPage(arguments: arguments),
-  '/questionnaire/5': (context, {arguments}) => FifthPage(arguments: arguments),
-  '/questionnaire/6': (context, {arguments}) => SixthPage(arguments: arguments),
-  '/questionnaire/result': (context, {arguments}) => ResultPage(
-        arguments: arguments,
-      ),
 };
 
 var onGenerateRoute = (RouteSettings settings) {
@@ -54,7 +42,7 @@ var onGenerateRoute = (RouteSettings settings) {
     return route;
   } else {
     final Route route =
-        MaterialPageRoute(builder: (context) => pageContentBuilder(context));
+    MaterialPageRoute(builder: (context) => pageContentBuilder(context));
     return route;
   }
 };
