@@ -30,10 +30,10 @@ A milestone habit App.
     |---Login
     |---Signup
         |---QuestionnairePage.dart
-    |---ForgetPassword
 ---HomePage.dart
-    |---ExercisePage.dart
-        |---CountdownPage.dart
+    |---HabitDetailPage.dart
+        |---ExercisePage.dart
+            |---CountdownPage.dart
     |---StatisticPage.dart
     |---ContractPage.dart
         |---LinePayPage.dart

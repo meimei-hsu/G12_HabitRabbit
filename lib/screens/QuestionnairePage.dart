@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
 import 'dart:async';
-
+import 'package:datepicker_cupertino/datepicker_cupertino.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swipe_cards/swipe_cards.dart';
@@ -13,13 +13,16 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
-    debugShowCheckedModeBanner: false,
-    title: "Quiz",
-    theme: ThemeData(primarySwatch: Colors.deepOrange),
-    home: TitlePage(arguments: {"part": 2}),
-  );
+        debugShowCheckedModeBanner: false,
+        title: "Quiz",
+        theme: ThemeData(primarySwatch: Colors.deepOrange),
+        home: TitlePage(arguments: {"part": 0}),
+      );
 }
 
+//////////////////////////////  Data Type  /////////////////////////////////////
+
+// List of questions in part two
 final questions = [
   Question(
     text: "運動時間 (複選)",
@@ -142,6 +145,7 @@ final questions = [
   ),
 ];
 
+// Define data type (Question & Option) for part two
 class Option {
   final String text;
   final String data;
@@ -168,6 +172,9 @@ class Question {
   }) : selectedOption = selectedOption ?? [];
 }
 
+///////////////////////////////  Widget  ///////////////////////////////////////
+
+// Build options for part two
 class OptionsWidget extends StatelessWidget {
   final Question question;
   final ValueChanged<Option> onClickedOption;
@@ -181,7 +188,7 @@ class OptionsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List options =
-    question.options.map((option) => buildOption(context, option)).toList();
+        question.options.map((option) => buildOption(context, option)).toList();
     List<Widget> optionList = [options.first, const SizedBox(height: 8)];
     for (int i = 1; i < options.length - 1; i++) {
       final child = options[i];
@@ -212,14 +219,14 @@ class OptionsWidget extends StatelessWidget {
             ],
           ),
           child: ListTile(
-            title: buildAnswer(option),
+            title: buildSelection(option),
             subtitle:
-            (option.description != "") ? buildDescription(option) : null,
+                (option.description != "") ? buildDescription(option) : null,
           )),
     );
   }
 
-  Widget buildAnswer(Option option) {
+  Widget buildSelection(Option option) {
     final color = getForeground(option);
 
     return Container(
@@ -271,6 +278,7 @@ class OptionsWidget extends StatelessWidget {
   }
 }
 
+// Build navigation bar for questions in part two
 class QuestionNumbersWidget extends StatelessWidget {
   final ScrollController _controller = ScrollController();
   final List<Question> questions;
@@ -311,8 +319,8 @@ class QuestionNumbersWidget extends StatelessWidget {
     Color color = isSelected
         ? Colors.orange.shade300
         : isAnswered
-        ? Colors.grey
-        : Colors.white;
+            ? Colors.grey
+            : Colors.white;
 
     return GestureDetector(
       onTap: () => onClickedNumber(index),
@@ -331,6 +339,7 @@ class QuestionNumbersWidget extends StatelessWidget {
   }
 }
 
+// Build questions and options for part two
 class QuestionsWidget extends StatelessWidget {
   final PageController controller;
   final ValueChanged<int> onChangedPage;
@@ -345,40 +354,42 @@ class QuestionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PageView.builder(
-    onPageChanged: onChangedPage,
-    controller: controller,
-    itemCount: 10,
-    itemBuilder: (context, index) {
-      final question = questions[index];
+        onPageChanged: onChangedPage,
+        controller: controller,
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          final question = questions[index];
 
-      return buildQuestion(question: question);
-    },
-  );
+          return buildQuestion(question: question);
+        },
+      );
 
   Widget buildQuestion({required Question question}) => Container(
-    // decoration: const BoxDecoration(image: DecorationImage(image: AssetImage("assets/images/questionnaire_bg.jpg"),fit: BoxFit.cover,),),
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          question.text,
-          style: const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 24),
+        // decoration: const BoxDecoration(image: DecorationImage(image: AssetImage("assets/images/questionnaire_bg.jpg"),fit: BoxFit.cover,),),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              question.text,
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24),
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: OptionsWidget(
+                question: question,
+                onClickedOption: onClickedOption,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 24),
-        Expanded(
-          child: OptionsWidget(
-            question: question,
-            onClickedOption: onClickedOption,
-          ),
-        ),
-      ],
-    ),
-  );
+      );
 }
+
+////////////////////////////////  Page  ////////////////////////////////////////
 
 class TitlePage extends StatefulWidget {
   final Map arguments;
@@ -399,14 +410,16 @@ class _TitlePageState extends State<TitlePage> {
     Timer(const Duration(seconds: 2), () {
       switch (widget.arguments['part']) {
         case 0:
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => PartOnePage()));
           break;
         case 1:
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => PartTwoQuestionPage()));
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => PartTwoPage()));
           break;
         case 2:
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => PartThreeQuestionPage()));
+              MaterialPageRoute(builder: (context) => PartThreePage()));
           break;
       }
     });
@@ -448,14 +461,293 @@ class _TitlePageState extends State<TitlePage> {
   }
 }
 
-class PartTwoQuestionPage extends StatefulWidget {
-  const PartTwoQuestionPage({super.key});
-
+// Part I 基本資料
+class PartOnePage extends StatefulWidget {
   @override
-  _PartTwoQuestionPageState createState() => _PartTwoQuestionPageState();
+  _PartOnePageState createState() => _PartOnePageState();
 }
 
-class _PartTwoQuestionPageState extends State<PartTwoQuestionPage> {
+class _PartOnePageState extends State<PartOnePage> {
+  late Map answer = {"gender": "", "birthday": "", "height": "", "weight": ""};
+  bool isComplete = false;
+  TextEditingController heightController = TextEditingController();
+  TextEditingController weightController = TextEditingController();
+
+  bool checkCompletion() {
+    for (MapEntry e in answer.entries) {
+      if (e.value == "") return false;
+    }
+    return true;
+  }
+
+  Color getForegroundColor(String key, String value) {
+    return answer[key] == value ? Colors.white : Colors.black;
+  }
+
+  Color getBackgroundColor(String key, String value) {
+    return answer[key] == value ? Colors.black87 : Colors.white;
+  }
+
+  TextStyle getQuestionStyle() {
+    return const TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      fontSize: 25,
+    );
+  }
+
+  @override
+  void dispose() {
+    heightController.dispose();
+    weightController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(backgroundColor: Colors.white, elevation: 0.0),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(36, 48, 36, 12),
+              child: Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height * 0.75,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 2),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 48),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Text(
+                        '性別',
+                        style: getQuestionStyle(),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Padding(
+                      padding: EdgeInsets.only(left: 30),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  getBackgroundColor("gender", "男"), // 按鈕顏色設定
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                answer['gender'] = "男";
+                                isComplete = checkCompletion();
+                              });
+                            },
+                            child: Text(
+                              "男",
+                              style: TextStyle(
+                                color:
+                                    getForegroundColor("gender", "男"), // 字體顏色設定
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  getBackgroundColor("gender", "女"),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                answer['gender'] = "女";
+                                isComplete = checkCompletion();
+                              });
+                            },
+                            child: Text(
+                              "女",
+                              style: TextStyle(
+                                color: getForegroundColor("gender", "女"),
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 30),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  getBackgroundColor("gender", "其他"),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                answer['gender'] = "其他";
+                                isComplete = checkCompletion();
+                              });
+                            },
+                            child: Text(
+                              "其他",
+                              style: TextStyle(
+                                color: getForegroundColor("gender", "其他"),
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 36),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Text(
+                        '生日',
+                        style: getQuestionStyle(),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Padding(
+                      padding: EdgeInsets.only(left: 30),
+                      child: Container(
+                        width: 250,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.transparent),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: DatePickerCupertino(
+                          hintText: '請選擇日期',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                          ),
+                          onDateTimeChanged: (date) {
+                            setState(() {
+                              answer['birthday'] = Calendar.toKey(date);
+                              isComplete = checkCompletion();
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 36),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Text(
+                        '身高',
+                        style: getQuestionStyle(),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Padding(
+                      padding: EdgeInsets.only(left: 30),
+                      child: Container(
+                        width: 250,
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                            color: Colors.white),
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 9),
+                            border: InputBorder.none,
+                            hintText: '請輸入您的身高(cm)',
+                            hintStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                            ),
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            setState(() {
+                              answer['height'] = value;
+                              isComplete = checkCompletion();
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 36),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Text(
+                        '體重',
+                        style: getQuestionStyle(),
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Padding(
+                      padding: EdgeInsets.only(left: 30),
+                      child: Container(
+                        width: 250,
+                        decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                            color: Colors.white),
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 9),
+                            border: InputBorder.none,
+                            hintText: '請輸入您的體重(kg)',
+                            hintStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15,
+                            ),
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            setState(() {
+                              answer['weight'] = value;
+                              isComplete = checkCompletion();
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            isComplete
+                ? ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(fontSize: 20),
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          elevation: 0.0),
+                      onPressed: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  TitlePage(arguments: {"part": 1}))),
+                      child: Icon(Icons.arrow_circle_right_outlined),
+                  )
+                : Container(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Part II 習慣養成
+class PartTwoPage extends StatefulWidget {
+  const PartTwoPage({super.key});
+
+  @override
+  _PartTwoPageState createState() => _PartTwoPageState();
+}
+
+class _PartTwoPageState extends State<PartTwoPage> {
   late PageController pageController;
   late ScrollController scrollController;
   late Question question;
@@ -495,18 +787,18 @@ class _PartTwoQuestionPageState extends State<PartTwoQuestionPage> {
             ),
             isComplete
                 ? ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 20),
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  elevation: 0.0),
-              onPressed: () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          TitlePage(arguments: {"part": 2}))),
-              child: Icon(Icons.arrow_circle_right_outlined),
-            )
+                    style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 20),
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                        elevation: 0.0),
+                    onPressed: () => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                TitlePage(arguments: {"part": 2}))),
+                    child: Icon(Icons.arrow_circle_right_outlined),
+                  )
                 : Container(),
           ],
         ),
@@ -515,29 +807,29 @@ class _PartTwoQuestionPageState extends State<PartTwoQuestionPage> {
   }
 
   PreferredSizeWidget? buildAppBar(context) => AppBar(
-    backgroundColor: Colors.white,
-    elevation: 0.0,
-    bottom: PreferredSize(
-      preferredSize: Size.fromHeight(26),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 16),
-        child: Container(
-          height: 50,
-          child: ListView.separated(
-            physics: BouncingScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            controller: scrollController,
-            scrollDirection: Axis.horizontal,
-            separatorBuilder: (context, index) => Container(width: 16),
-            itemCount: questions.length,
-            itemBuilder: (context, index) {
-              return buildNumber(index: index);
-            },
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(26),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Container(
+              height: 50,
+              child: ListView.separated(
+                physics: BouncingScrollPhysics(),
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                controller: scrollController,
+                scrollDirection: Axis.horizontal,
+                separatorBuilder: (context, index) => Container(width: 16),
+                itemCount: questions.length,
+                itemBuilder: (context, index) {
+                  return buildNumber(index: index);
+                },
+              ),
+            ),
           ),
         ),
-      ),
-    ),
-  );
+      );
 
   Widget buildNumber({required int index}) {
     final isSelected = question == questions[index];
@@ -546,8 +838,8 @@ class _PartTwoQuestionPageState extends State<PartTwoQuestionPage> {
     Color color = isSelected
         ? Colors.orange.shade300
         : isAnswered
-        ? Colors.grey
-        : Colors.white;
+            ? Colors.grey
+            : Colors.white;
 
     return GestureDetector(
       onTap: () => nextQuestion(index: index, jump: true),
@@ -620,14 +912,15 @@ class _PartTwoQuestionPageState extends State<PartTwoQuestionPage> {
   }
 }
 
-class PartThreeQuestionPage extends StatefulWidget {
-  const PartThreeQuestionPage({super.key});
+// Part III 個人性格
+class PartThreePage extends StatefulWidget {
+  const PartThreePage({super.key});
 
   @override
-  _PartThreeQuestionPageState createState() => _PartThreeQuestionPageState();
+  _PartThreePageState createState() => _PartThreePageState();
 }
 
-class _PartThreeQuestionPageState extends State<PartThreeQuestionPage>
+class _PartThreePageState extends State<PartThreePage>
     with SingleTickerProviderStateMixin {
   late List<SwipeItem> _swipeItems = [];
   late MatchEngine _matchEngine;
@@ -737,57 +1030,57 @@ class _PartThreeQuestionPageState extends State<PartThreeQuestionPage>
                         ),
                         if (index == 0) // 只在第一頁顯示
                           ...[
-                            Positioned(
-                              left: 15,
-                              top: 400,
-                              child: AnimatedBuilder(
-                                animation: _controller,
-                                builder: (context, child) {
-                                  _controller.forward(); // 啟動動畫
-                                  return Transform.translate(
-                                    offset: Offset(
-                                        _controller.value * -50, 0), // X軸位移
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: const [
-                                        Icon(
-                                          FontAwesomeIcons.angleDoubleLeft,
-                                          size: 40,
-                                        ),
-                                        SizedBox(width: 6),
-                                        Text('否 NO'),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
+                          Positioned(
+                            left: 15,
+                            top: 400,
+                            child: AnimatedBuilder(
+                              animation: _controller,
+                              builder: (context, child) {
+                                _controller.forward(); // 啟動動畫
+                                return Transform.translate(
+                                  offset: Offset(
+                                      _controller.value * -50, 0), // X軸位移
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      Icon(
+                                        FontAwesomeIcons.angleDoubleLeft,
+                                        size: 40,
+                                      ),
+                                      SizedBox(width: 6),
+                                      Text('否 NO'),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
-                            Positioned(
-                              right: 15,
-                              top: 400,
-                              child: AnimatedBuilder(
-                                animation: _controller,
-                                builder: (context, child) {
-                                  _controller.forward(); // 啟動動畫
-                                  return Transform.translate(
-                                    offset:
-                                    Offset(_controller.value * 50, 0), // X軸位移
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: const [
-                                        Text('是 Yes'),
-                                        SizedBox(width: 6),
-                                        Icon(
-                                          FontAwesomeIcons.angleDoubleRight,
-                                          size: 40,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
+                          ),
+                          Positioned(
+                            right: 15,
+                            top: 400,
+                            child: AnimatedBuilder(
+                              animation: _controller,
+                              builder: (context, child) {
+                                _controller.forward(); // 啟動動畫
+                                return Transform.translate(
+                                  offset:
+                                      Offset(_controller.value * 50, 0), // X軸位移
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      Text('是 Yes'),
+                                      SizedBox(width: 6),
+                                      Icon(
+                                        FontAwesomeIcons.angleDoubleRight,
+                                        size: 40,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
-                          ],
+                          ),
+                        ],
                       ],
                     ),
                   );
@@ -810,7 +1103,7 @@ class _PartThreeQuestionPageState extends State<PartThreeQuestionPage>
                   margin: const EdgeInsets.all(24.0),
                   padding: const EdgeInsets.all(3.0),
                   decoration:
-                  BoxDecoration(border: Border.all(color: Colors.green)),
+                      BoxDecoration(border: Border.all(color: Colors.green)),
                   child: const Text(
                     'YES',
                     style: TextStyle(
@@ -823,7 +1116,7 @@ class _PartThreeQuestionPageState extends State<PartThreeQuestionPage>
                   margin: const EdgeInsets.all(24.0),
                   padding: const EdgeInsets.all(3.0),
                   decoration:
-                  BoxDecoration(border: Border.all(color: Colors.red)),
+                      BoxDecoration(border: Border.all(color: Colors.red)),
                   child: const Text(
                     'NOPE',
                     style: TextStyle(
@@ -840,7 +1133,7 @@ class _PartThreeQuestionPageState extends State<PartThreeQuestionPage>
     );
   }
 }
-
+// TODO: connect to backend
 class ResultPage extends StatefulWidget {
   final Map arguments;
 
@@ -853,49 +1146,49 @@ class ResultPage extends StatefulWidget {
 class _ResultPage extends State<ResultPage> {
   String getPersonalityType() {
     if ((widget.arguments['neuroticismSum'] == 2 ||
-        widget.arguments['neuroticismSum'] == 3) &&
+            widget.arguments['neuroticismSum'] == 3) &&
         (widget.arguments['conscientiousnessSum'] == 2 ||
             widget.arguments['conscientiousnessSum'] == 3) &&
         (widget.arguments['opennessSum'] == 2 ||
             widget.arguments['opennessSum'] == 3)) {
       return "NOC";
     } else if ((widget.arguments['neuroticismSum'] == 0 ||
-        widget.arguments['neuroticismSum'] == 1) &&
+            widget.arguments['neuroticismSum'] == 1) &&
         (widget.arguments['conscientiousnessSum'] == 2 ||
             widget.arguments['conscientiousnessSum'] == 3) &&
         (widget.arguments['opennessSum'] == 2 ||
             widget.arguments['opennessSum'] == 3)) {
       return "S₁OC";
     } else if ((widget.arguments['neuroticismSum'] == 2 ||
-        widget.arguments['neuroticismSum'] == 3) &&
+            widget.arguments['neuroticismSum'] == 3) &&
         (widget.arguments['conscientiousnessSum'] == 0 ||
             widget.arguments['conscientiousnessSum'] == 1) &&
         (widget.arguments['opennessSum'] == 2 ||
             widget.arguments['opennessSum'] == 3)) {
       return "NGC";
     } else if ((widget.arguments['neuroticismSum'] == 0 ||
-        widget.arguments['neuroticismSum'] == 1) &&
+            widget.arguments['neuroticismSum'] == 1) &&
         (widget.arguments['conscientiousnessSum'] == 0 ||
             widget.arguments['conscientiousnessSum'] == 1) &&
         (widget.arguments['opennessSum'] == 2 ||
             widget.arguments['opennessSum'] == 3)) {
       return "S₁GC";
     } else if ((widget.arguments['neuroticismSum'] == 2 ||
-        widget.arguments['neuroticismSum'] == 3) &&
+            widget.arguments['neuroticismSum'] == 3) &&
         (widget.arguments['conscientiousnessSum'] == 2 ||
             widget.arguments['conscientiousnessSum'] == 3) &&
         (widget.arguments['opennessSum'] == 0 ||
             widget.arguments['opennessSum'] == 1)) {
       return "NOS₂";
     } else if ((widget.arguments['neuroticismSum'] == 0 ||
-        widget.arguments['neuroticismSum'] == 1) &&
+            widget.arguments['neuroticismSum'] == 1) &&
         (widget.arguments['conscientiousnessSum'] == 2 ||
             widget.arguments['conscientiousnessSum'] == 3) &&
         (widget.arguments['opennessSum'] == 0 ||
             widget.arguments['opennessSum'] == 1)) {
       return "S₁OS₂";
     } else if ((widget.arguments['neuroticismSum'] == 2 ||
-        widget.arguments['neuroticismSum'] == 3) &&
+            widget.arguments['neuroticismSum'] == 3) &&
         (widget.arguments['conscientiousnessSum'] == 0 ||
             widget.arguments['conscientiousnessSum'] == 1) &&
         (widget.arguments['opennessSum'] == 0 || widget.arguments['opennessSum'] == 1)) {

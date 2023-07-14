@@ -113,6 +113,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  datepicker_cupertino:
+    dependency: "direct main"
+    description:
+      name: datepicker_cupertino
+      sha256: f8da2f21af9d9541a6f933dcd2d6a60b38dd7c948fce06a337bc3112480861c3
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   equatable:
     dependency: transitive
     description:
