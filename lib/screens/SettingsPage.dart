@@ -6,6 +6,34 @@ import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:g12/services/Database.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
+import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
+
+final BorderRadius _borderRadius = const BorderRadius.only(
+  topLeft: Radius.circular(25),
+  topRight: Radius.circular(25),
+);
+
+ShapeBorder? bottomBarShape = const RoundedRectangleBorder(
+    borderRadius: BorderRadius.only(
+  topLeft: Radius.circular(25),
+  topRight: Radius.circular(25),
+));
+SnakeBarBehaviour snakeBarStyle = SnakeBarBehaviour.pinned;
+EdgeInsets padding = EdgeInsets.zero;
+
+int _selectedItemPosition = 2;
+SnakeShape snakeShape = SnakeShape.circle;
+
+bool showSelectedLabels = false;
+bool showUnselectedLabels = false;
+
+Color selectedColor = Colors.black;
+Color unselectedColor = Colors.blueGrey;
+
+Gradient selectedGradient =
+    const LinearGradient(colors: [Colors.red, Colors.amber]);
+Gradient unselectedGradient =
+    const LinearGradient(colors: [Colors.red, Colors.blueGrey]);
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -38,164 +66,247 @@ class _SettingsPage extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: const Text(
-            "個人設定",
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                color: Color(0xff0d3b66),
-                fontSize: 32,
-                letterSpacing: 0,
-                //percentages not used in flutter
-                fontWeight: FontWeight.bold,
-                height: 1),
-          ),
-          backgroundColor: Colors.white,
-          elevation: 0,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(10),
-          child: ListView(
-            children: [
-              // user card
-              SimpleUserCard(
-                userName: user.displayName!,
-                userProfilePic: const NetworkImage(
-                    "https://pokoloruj.com.pl/static/gallery/gwiazdy-pop/yr3ylitu.png"),
+        home: Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              title: const Text(
+                "個人設定",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: Color(0xff0d3b66),
+                    fontSize: 32,
+                    letterSpacing: 0,
+                    //percentages not used in flutter
+                    fontWeight: FontWeight.bold,
+                    height: 1),
               ),
-              SettingsGroup(
-                settingsGroupTitle: "計畫",
-                items: [
-                  SettingsItem(
-                    onTap: () => showDialog<double>(
-                            context: context,
-                            builder: (context) => ChangeTimeDialog(
-                                arguments: {"timeSpan": timeSpan}))
-                        .then((_) => getPlanData()),
-                    icons: CupertinoIcons.timer,
-                    iconStyle: IconStyle(
-                      iconsColor: const Color(0xff0d3b66),
-                      withBackground: true,
-                      backgroundColor: const Color(0xfffaf0ca),
-                    ),
-                    title: '運動時長',
-                    subtitle: "更改每次運動計畫的長度",
+              backgroundColor: Colors.white,
+              elevation: 0,
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(10),
+              child: ListView(
+                children: [
+                  // user card
+                  SimpleUserCard(
+                    userName: user.displayName!,
+                    userProfilePic: const NetworkImage(
+                        "https://pokoloruj.com.pl/static/gallery/gwiazdy-pop/yr3ylitu.png"),
                   ),
-                  SettingsItem(
-                    onTap: () => showDialog<double>(
-                            context: context,
-                            builder: (context) => ChangeDayDialog(
-                                arguments: {"workoutDays": workoutDays}))
-                        .then((_) => getPlanData()),
-                    icons: Icons.calendar_today_outlined,
-                    iconStyle: IconStyle(
-                      iconsColor: const Color(0xff0d3b66),
-                      withBackground: true,
-                      backgroundColor: const Color(0xfffaf0ca),
-                    ),
-                    title: '周運動日',
-                    subtitle: "更改每周可以運動的日子",
-                  ),
-                  SettingsItem(
-                    onTap: () => showDialog<double>(
-                            context: context,
-                            builder: (context) => ChangeLikingDialog(
-                                arguments: {"likings": likings}))
-                        .then((_) => getPlanData()),
-                    icons: CupertinoIcons.heart_circle,
-                    iconStyle: IconStyle(
-                      iconsColor: const Color(0xff0d3b66),
-                      withBackground: true,
-                      backgroundColor: const Color(0xfffaf0ca),
-                    ),
-                    title: '運動偏好',
-                    subtitle: "更改每類運動的喜愛程度",
-                  ),
-                ],
-              ),
-              SettingsGroup(
-                settingsGroupTitle: "個人",
-                items: [
-                  SettingsItem(
-                    onTap: () => {},
-                    icons: CupertinoIcons.textformat_alt,
-                    iconStyle: IconStyle(
-                      iconsColor: const Color(0xff0d3b66),
-                      withBackground: true,
-                      backgroundColor: const Color(0xfffaf0ca),
-                    ),
-                    title: '更改暱稱',
-                  ),
-                  SettingsItem(
-                      onTap: () => {},
-                      icons: Icons.email_outlined,
-                      iconStyle: IconStyle(
-                        iconsColor: const Color(0xff0d3b66),
-                        withBackground: true,
-                        backgroundColor: const Color(0xfffaf0ca),
+                  SettingsGroup(
+                    settingsGroupTitle: "計畫",
+                    items: [
+                      SettingsItem(
+                        onTap: () => showDialog<double>(
+                                context: context,
+                                builder: (context) => ChangeTimeDialog(
+                                    arguments: {"timeSpan": timeSpan}))
+                            .then((_) => getPlanData()),
+                        icons: CupertinoIcons.timer,
+                        iconStyle: IconStyle(
+                          iconsColor: const Color(0xff0d3b66),
+                          withBackground: true,
+                          backgroundColor: const Color(0xfffaf0ca),
+                        ),
+                        title: '運動時長',
+                        subtitle: "更改每次運動計畫的長度",
                       ),
-                      title: '更改信箱'),
-                  SettingsItem(
-                    onTap: () => {},
-                    icons: CupertinoIcons.photo_on_rectangle,
-                    iconStyle: IconStyle(
-                      iconsColor: const Color(0xff0d3b66),
-                      withBackground: true,
-                      backgroundColor: const Color(0xfffaf0ca),
-                    ),
-                    title: '更改照片',
+                      SettingsItem(
+                        onTap: () => showDialog<double>(
+                                context: context,
+                                builder: (context) => ChangeDayDialog(
+                                    arguments: {"workoutDays": workoutDays}))
+                            .then((_) => getPlanData()),
+                        icons: Icons.calendar_today_outlined,
+                        iconStyle: IconStyle(
+                          iconsColor: const Color(0xff0d3b66),
+                          withBackground: true,
+                          backgroundColor: const Color(0xfffaf0ca),
+                        ),
+                        title: '周運動日',
+                        subtitle: "更改每周可以運動的日子",
+                      ),
+                      SettingsItem(
+                        onTap: () => showDialog<double>(
+                                context: context,
+                                builder: (context) => ChangeLikingDialog(
+                                    arguments: {"likings": likings}))
+                            .then((_) => getPlanData()),
+                        icons: CupertinoIcons.heart_circle,
+                        iconStyle: IconStyle(
+                          iconsColor: const Color(0xff0d3b66),
+                          withBackground: true,
+                          backgroundColor: const Color(0xfffaf0ca),
+                        ),
+                        title: '運動偏好',
+                        subtitle: "更改每類運動的喜愛程度",
+                      ),
+                    ],
+                  ),
+                  SettingsGroup(
+                    settingsGroupTitle: "個人",
+                    items: [
+                      SettingsItem(
+                        onTap: () => {},
+                        icons: CupertinoIcons.textformat_alt,
+                        iconStyle: IconStyle(
+                          iconsColor: const Color(0xff0d3b66),
+                          withBackground: true,
+                          backgroundColor: const Color(0xfffaf0ca),
+                        ),
+                        title: '更改暱稱',
+                      ),
+                      SettingsItem(
+                          onTap: () => {},
+                          icons: Icons.email_outlined,
+                          iconStyle: IconStyle(
+                            iconsColor: const Color(0xff0d3b66),
+                            withBackground: true,
+                            backgroundColor: const Color(0xfffaf0ca),
+                          ),
+                          title: '更改信箱'),
+                      SettingsItem(
+                        onTap: () => {},
+                        icons: CupertinoIcons.photo_on_rectangle,
+                        iconStyle: IconStyle(
+                          iconsColor: const Color(0xff0d3b66),
+                          withBackground: true,
+                          backgroundColor: const Color(0xfffaf0ca),
+                        ),
+                        title: '更改照片',
+                      ),
+                    ],
+                  ),
+                  SettingsGroup(
+                    settingsGroupTitle: "其他",
+                    items: [
+                      SettingsItem(
+                        onTap: () {},
+                        icons: Icons.dark_mode_rounded,
+                        iconStyle: IconStyle(
+                          iconsColor: const Color(0xff0d3b66),
+                          withBackground: true,
+                          backgroundColor: const Color(0xfffaf0ca),
+                        ),
+                        title: '夜間模式',
+                        trailing: Switch.adaptive(
+                          value: false,
+                          onChanged: (value) {},
+                        ),
+                      ),
+                    ],
+                  ),
+                  SettingsGroup(
+                    settingsGroupTitle: "帳號",
+                    items: [
+                      SettingsItem(
+                        onTap: () async {
+                          await FirebaseAuth.instance.signOut();
+                          if (!mounted) return;
+                          Navigator.popAndPushNamed(context, '/register');
+                        },
+                        icons: Icons.exit_to_app_rounded,
+                        title: "登出帳號",
+                      ),
+                      SettingsItem(
+                        onTap: () {},
+                        icons: CupertinoIcons.delete_solid,
+                        title: "刪除帳號",
+                        titleStyle: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              SettingsGroup(
-                settingsGroupTitle: "其他",
-                items: [
-                  SettingsItem(
-                    onTap: () {},
-                    icons: Icons.dark_mode_rounded,
-                    iconStyle: IconStyle(
-                      iconsColor: const Color(0xff0d3b66),
-                      withBackground: true,
-                      backgroundColor: const Color(0xfffaf0ca),
+            ),
+            bottomNavigationBar: SnakeNavigationBar.color(
+              behaviour: snakeBarStyle,
+              snakeShape: snakeShape,
+              shape: bottomBarShape,
+              padding: padding,
+              height: 80,
+              //backgroundColor: const Color(0xfffdeed9),
+              backgroundColor: const Color(0xffd4d6fc),
+              snakeViewColor: const Color(0xfffdfdf5),
+              selectedItemColor: const Color(0xff4b3d70),
+              unselectedItemColor: const Color(0xff4b3d70),
+
+              ///configuration for SnakeNavigationBar.color
+              // snakeViewColor: selectedColor,
+              // selectedItemColor:
+              //  snakeShape == SnakeShape.indicator ? selectedColor : null,
+              //unselectedItemColor: Colors.blueGrey,
+
+              ///configuration for SnakeNavigationBar.gradient
+              //snakeViewGradient: selectedGradient,
+              //selectedItemGradient: snakeShape == SnakeShape.indicator ? selectedGradient : null,
+              //unselectedItemGradient: unselectedGradient,
+
+              showUnselectedLabels: showUnselectedLabels,
+              showSelectedLabels: showSelectedLabels,
+
+              currentIndex: _selectedItemPosition,
+              //onTap: (index) => setState(() => _selectedItemPosition = index),
+              onTap: (index) {
+                _selectedItemPosition = index;
+                if (index == 0) {
+                  Navigator.pushNamed(context, '/statistic',
+                      arguments: {'user': user});
+                }
+                if (index == 1) {
+                  Navigator.pushNamed(context, '/milestone',
+                      arguments: {'user': user});
+                }
+                if (index == 2) {
+                  Navigator.pushNamed(context, '/', arguments: {'user': user});
+                }
+                if (index == 3) {
+                  Navigator.pushNamed(context, '/contract/initial',
+                      arguments: {'user': user});
+                }
+                //3
+                if (index == 4) {
+                  Navigator.pushNamed(context, '/settings',
+                      arguments: {'user': user});
+                }
+                print(index);
+              },
+              items: [
+                const BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.insights,
+                      size: 40,
                     ),
-                    title: '夜間模式',
-                    trailing: Switch.adaptive(
-                      value: false,
-                      onChanged: (value) {},
+                    label: 'tickets'),
+                const BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.workspace_premium_outlined,
+                      size: 40,
                     ),
-                  ),
-                ],
-              ),
-              SettingsGroup(
-                settingsGroupTitle: "帳號",
-                items: [
-                  SettingsItem(
-                    onTap: () async {
-                      await FirebaseAuth.instance.signOut();
-                      if (!mounted) return;
-                      Navigator.popAndPushNamed(context, '/register');
-                    },
-                    icons: Icons.exit_to_app_rounded,
-                    title: "登出帳號",
-                  ),
-                  SettingsItem(
-                    onTap: () {},
-                    icons: CupertinoIcons.delete_solid,
-                    title: "刪除帳號",
-                    titleStyle: const TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
+                    label: 'calendar'),
+                const BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.home_outlined,
+                      size: 40,
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+                    label: 'home'),
+                const BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.request_quote_outlined,
+                      size: 40,
+                    ),
+                    label: 'microphone'),
+                const BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.manage_accounts_outlined,
+                      size: 40,
+                    ),
+                    label: 'search')
+              ],
+            )));
   }
 }
 
