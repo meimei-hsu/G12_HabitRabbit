@@ -365,7 +365,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                   arguments: {'user': user});
             }
             if (index == 2) {
-              Navigator.pushNamed(context, '/', arguments: {'user': user});
+              Navigator.pushNamed(context, '/');
             }
             if (index == 3) {
               Navigator.pushNamed(context, '/contract/initial',
