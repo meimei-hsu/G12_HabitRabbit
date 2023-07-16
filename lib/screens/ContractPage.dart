@@ -250,7 +250,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                               setState(() {
                                 String value = inputAmount;
                                 print('投入金額：$value');
-                                Map<String, String> contractData = {
+                                Map contractData = {
+                                  'user': user,
                                   'type': type,
                                   'plan': plan,
                                   'amount': value
@@ -259,8 +260,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        SecondContractPage(contractData: contractData),
+                                    builder: (context) => SecondContractPage(
+                                        arguments: contractData),
                                   ),
                                 );
                               });
@@ -377,11 +378,12 @@ class _FirstContractPage extends State<FirstContractPage> {
 }
 
 class SecondContractPage extends StatefulWidget {
-  //final Map arguments;
-  final Map<String, String> contractData;
-  SecondContractPage({required this.contractData});
+  final Map arguments;
 
-  //const SecondContractPage({super.key, required this.arguments});
+  //final Map<String, String> contractData;
+  //SecondContractPage({required this.contractData});
+
+  const SecondContractPage({super.key, required this.arguments});
 
   @override
   SecondContractPageState createState() => SecondContractPageState();
@@ -392,9 +394,9 @@ class SecondContractPageState extends State<SecondContractPage> {
 
   @override
   Widget build(BuildContext context) {
-    String? type = widget.contractData['type'];
-    String? plan = widget.contractData['plan'];
-    String? amount = widget.contractData['amount'];
+    String? type = widget.arguments['type'];
+    String? plan = widget.arguments['plan'];
+    String? amount = widget.arguments['amount'];
 
     return Scaffold(
       appBar: AppBar(
@@ -426,11 +428,11 @@ class SecondContractPageState extends State<SecondContractPage> {
                   children: [
                     Text(
                       '立契約人  ' //TODO: 使用者名稱
-                          '\n於約定期間積極養成  $type  習慣'
-                          '\n選擇方案為  $plan'
-                          '\n投入金額為  $amount  元'
-                          '\n\n若未達成設定目標，立契約人同意將投入金額全數捐出；'
-                          '若達成設定目標則由系統將全數金額退還。',
+                      '\n於約定期間積極養成  $type  習慣'
+                      '\n選擇方案為  $plan'
+                      '\n投入金額為  $amount  元'
+                      '\n\n若未達成設定目標，立契約人同意將投入金額全數捐出；'
+                      '若達成設定目標則由系統將全數金額退還。',
                       style: TextStyle(
                         fontSize: 18.0,
                         color: Color(0xFFFDFDFD),
@@ -488,7 +490,11 @@ class SecondContractPageState extends State<SecondContractPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => FirstContractPage(),
+                                    builder: (context) => FirstContractPage(
+                                      arguments: {
+                                        'user': widget.arguments['user']
+                                      },
+                                    ),
                                   ),
                                 );
                               });
