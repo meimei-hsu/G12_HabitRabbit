@@ -77,9 +77,9 @@ class PayPageState extends State<PayPage> {
           const SizedBox(height: 10),
           Container(
             color: Colors.white,
-            child: const Column(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
+              children: const <Widget>[
                 CompanyDescriptionItem(value: "150"),
                 // TODO: get contract value
               ],
@@ -88,9 +88,9 @@ class PayPageState extends State<PayPage> {
           const SizedBox(height: 10),
           Container(
             color: Colors.white,
-            child: const Column(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
+              children: const <Widget>[
                 PayByPointItem(),
               ],
             ),
@@ -98,8 +98,8 @@ class PayPageState extends State<PayPage> {
           const SizedBox(height: 10),
           Container(
             color: Colors.white,
-            child: const Column(
-              children: <Widget>[
+            child: Column(
+              children: const <Widget>[
                 ListTile(
                   title: Text(
                     "付款方法",

@@ -724,8 +724,23 @@ class DurationDB {
   }
 
   // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
-  static Future<bool> update(Map data) async =>
-      await JournalDB.update(uid, data, table);
+  static Future<bool> update(Map data) async {
+    String key = data.keys.first;
+    String value = data.values.first;
+
+    if (value.contains(", ")) {
+      // value: "duration, timeSpan"
+      return await JournalDB.update(uid, data, table);
+    } else {
+      // value: "duration"
+      var record = await JournalDB.getFromDate(uid, data.keys.first, table);
+      if (record != null) {
+        String timeSpan = record.split(', ')[1];
+        return await JournalDB.update(uid, {key: "$value, $timeSpan"}, table);
+      }
+    }
+    return false;
+  }
 
   // Delete duration data {table/userID/duration/date}
   static Future<bool> delete(String date) async =>

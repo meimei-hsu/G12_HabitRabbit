@@ -49,10 +49,10 @@ class VideoPageState extends State<VideoPage> {
                             letterSpacing: 10),
                       )
                     ),
-                    subtitle: const Column(
+                    subtitle: Column(
                       children: [
                         Row(
-                          children: [
+                          children: const [
                             Text(
                               " \u2022  轉轉肩膀",
                               style: TextStyle(
@@ -60,9 +60,9 @@ class VideoPageState extends State<VideoPage> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Row(
-                          children: [
+                          children: const [
                             Text(
                               " \u2022  扭扭脖子",
                               style: TextStyle(
@@ -72,7 +72,7 @@ class VideoPageState extends State<VideoPage> {
                         ),
                         SizedBox(height: 5),
                         Row(
-                          children: [
+                          children: const [
                             Text(
                               " \u2022  動動嘴巴",
                               style: TextStyle(

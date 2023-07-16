@@ -120,8 +120,10 @@ class ExercisePageState extends State<ExercisePage> {
 
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
-        DurationDB.update(
-            {Calendar.toKey(DateTime.now()): "${currentIndex + 1}"});
+        DurationDB.update({
+          Calendar.toKey(DateTime.now()):
+              "${currentIndex + 1}, ${widget.arguments['exerciseTime']}"
+        });
         _showFeedbackDialog();
         timer.cancel();
         dispose();
@@ -168,10 +170,9 @@ class ExercisePageState extends State<ExercisePage> {
           currentIndex++;
           playIndex++;
           _pageController.animateToPage(playIndex,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.ease);
+              duration: const Duration(milliseconds: 300), curve: Curves.ease);
           sport = nameList[playIndex];
-          if (currentIndex >= 2 && currentIndex < totalExerciseItemLength - 3){
+          if (currentIndex >= 2 && currentIndex < totalExerciseItemLength - 3) {
             // 運動 5 秒後休息 1 秒
             Timer(const Duration(seconds: 5), () {
               _pageController.animateToPage(nameList.length + 1,
@@ -210,12 +211,11 @@ class ExercisePageState extends State<ExercisePage> {
     print(
         "currentIndex_init: $currentIndex ... sport: $sport ... totalTime: $totalTime");
 
-    if (currentIndex >= 2 && currentIndex < totalExerciseItemLength - 3){
+    if (currentIndex >= 2 && currentIndex < totalExerciseItemLength - 3) {
       // 運動 5 秒後休息 1 秒
       Timer(const Duration(seconds: 5), () {
         _pageController.animateToPage(nameList.length + 1,
-            duration: const Duration(milliseconds: 5),
-            curve: Curves.ease);
+            duration: const Duration(milliseconds: 5), curve: Curves.ease);
         sport = sport.replaceAll("運動", "休息");
       });
     }
@@ -263,8 +263,10 @@ class ExercisePageState extends State<ExercisePage> {
                         backgroundColor: const Color(0xfffbb87f),
                       ),
                       onPressed: () {
-                        DurationDB.update(
-                            {Calendar.toKey(DateTime.now()): "$currentIndex"});
+                        DurationDB.update({
+                          Calendar.toKey(DateTime.now()):
+                              "$currentIndex, ${widget.arguments['exerciseTime']}"
+                        });
                         Navigator.pushNamedAndRemoveUntil(
                             context, '/', (Route<dynamic> route) => false);
                       },
