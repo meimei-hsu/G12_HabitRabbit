@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:g12/screens/ContractPage.dart';
 import 'package:g12/screens/CountdownPage.dart';
 import 'package:g12/screens/ExercisePage.dart';
+import 'package:g12/screens/HabitDetailPage.dart';
 import 'package:g12/screens/HomePage.dart';
 import 'package:g12/screens/MilestonePage.dart';
 import 'package:g12/screens/LinePayPage.dart';
@@ -10,6 +11,7 @@ import 'package:g12/screens/QuestionnairePage.dart';
 import 'package:g12/screens/RegisterPage.dart';
 import 'package:g12/screens/StatisticPage.dart';
 import 'package:g12/screens/SettingsPage.dart';
+import 'package:g12/screens/VideoPage.dart';
 
 //配置路由規則
 final routes = {
@@ -20,6 +22,8 @@ final routes = {
   '/exercise': (context, {arguments}) => ExercisePage(arguments: arguments),
   '/settings': (context, {arguments}) => const SettingsPage(),
   '/milestone': (context, {arguments}) => const MilestonePage(),
+  '/detail': (context, {arguments}) => HabitDetailPage(arguments: arguments),
+  '/video': (context, {arguments}) => VideoPage(arguments: arguments),
   /* ContractPage */
   '/contract/initial': (context, {arguments}) =>
       FirstContractPage(arguments: arguments),

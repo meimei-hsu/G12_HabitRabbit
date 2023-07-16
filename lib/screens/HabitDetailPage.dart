@@ -34,9 +34,12 @@ class HabitDetailPageState extends State<HabitDetailPage> {
             ),
             leading: ClipRRect(
                 borderRadius: BorderRadius.circular(7.5),
+                //TODO: Change to video name
                 child: Image.asset("assets/images/testPic.gif")),
             onTap: () {
-              showDialog(
+              Navigator.pushNamed(context, '/video',
+                  arguments: {'item': content[i][j]});
+              /*showDialog(
                   context: context,
                   builder: (context) {
                     return AlertDialog(
@@ -63,7 +66,7 @@ class HabitDetailPageState extends State<HabitDetailPage> {
                             }),
                       ],
                     );
-                  });
+                  });*/
             },
             visualDensity: const VisualDensity(vertical: 2),
           )
@@ -73,7 +76,8 @@ class HabitDetailPageState extends State<HabitDetailPage> {
       BorderRadius? borderRadius;
 
       if (i == 0) {
-        borderRadius = BorderRadius.only(topLeft: r, topRight: r);
+        //borderRadius = BorderRadius.only(topLeft: r, topRight: r);
+        borderRadius = null;
       } else if (i == length - 1) {
         borderRadius = BorderRadius.only(bottomLeft: r, bottomRight: r);
       } else {
@@ -81,11 +85,11 @@ class HabitDetailPageState extends State<HabitDetailPage> {
       }
 
       expansionTitleList.add(Container(
-        decoration: BoxDecoration(
+        /*decoration: BoxDecoration(
           color: const Color(0xfffdeed9),
           border: Border.all(color: const Color(0xffffeed9)),
           borderRadius: borderRadius,
-        ),
+        ),*/
         child: ExpansionTile(
           title: Text(
             '${title[i]}',
@@ -129,30 +133,34 @@ class HabitDetailPageState extends State<HabitDetailPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ClipRRect(
-                  borderRadius: BorderRadius.circular(7.5),
-                  child: Image.asset("assets/images/testPic.gif")),
+              Container(
+                padding: const EdgeInsets.only(right: 20, left: 20),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(7.5),
+                    child: Image.asset("assets/images/personality_S₁GS₂.png")),
+              ),
               const SizedBox(
                 height: 10,
               ),
               Container(
-                margin: const EdgeInsets.only(right: 10, left: 10),
+                margin: const EdgeInsets.only(right: 20, left: 20),
                 decoration: BoxDecoration(
-                  color: const Color(0xfffdeed9),
-                  border: Border.all(color: const Color(0xffffeed9)),
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                ),
+                    color: const Color(0xfffdeed9),
+                    border: Border.all(color: const Color(0xffffeed9)),
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
                 child: CompanyDescriptionItem(
                   percentage: widget.arguments['percentage'],
                   workoutPlan: widget.arguments['workoutPlan'].split(", "),
                 ),
               ),
-              const SizedBox(
+              /*const SizedBox(
                 height: 10,
-              ),
+              ),*/
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 10, left: 10),
+                  padding: const EdgeInsets.only(right: 20, left: 20),
                   child: Theme(
                     data: Theme.of(context)
                         .copyWith(dividerColor: Colors.transparent),
@@ -167,7 +175,7 @@ class HabitDetailPageState extends State<HabitDetailPage> {
                 height: 10,
               ),
               Container(
-                padding: const EdgeInsets.only(right: 10, left: 10),
+                padding: const EdgeInsets.only(right: 20, left: 20),
                 child: Row(
                   children: [
                     Expanded(
@@ -175,16 +183,22 @@ class HabitDetailPageState extends State<HabitDetailPage> {
                       icon: const Icon(Icons.play_arrow_rounded,
                           color: Color(0xff4b4370)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xfff6cdb7),
+                        backgroundColor: (widget.arguments['isToday'])
+                            ? const Color(0xfff6cdb7)
+                            : const Color(0xffd4d6fc),
                         shadowColor: const Color(0xfffdfdf5),
                         minimumSize: const Size(0, 45),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: widget.arguments['isToday']
+                          ? () {
+                              print("True");
+                            }
+                          : null,
                       label: const Text(
-                        "取消",
+                        "開始運動",
                         style: TextStyle(
                             color: Color(0xff4b4370),
                             fontSize: 22,

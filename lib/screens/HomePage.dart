@@ -329,14 +329,6 @@ class _HomepageState extends State<Homepage> {
                           _selectedDay = selectedDay;
                         });
                       }
-                      print((_selectedDay == _focusedDay));
-                      print(_selectedDay);
-                      print(_focusedDay);
-                      /*if (isSameDay(selectedDay, focusedDay)){
-                        setState(() {
-                          _selectedDay = focusedDay;
-                        });
-                      }*/
                     },
                     onPageChanged: (focusedDay) {
                       // 選第2頁的日期時不會跳回第一頁
@@ -384,15 +376,18 @@ class _HomepageState extends State<Homepage> {
                                 icon: const Icon(Icons.accessibility),
                                 iconSize: 40,
                                 color: const Color(0xff0d3b66),
-                                tooltip: "Line Pay Page",
+                                tooltip: "Habit Detail Page",
                                 onPressed: () async {
                                   Navigator.pushNamed(context, '/detail',
                                       arguments: {
                                         'user': user,
+                                        'isToday': (DateTime(_selectedDay!.year,
+                                            _selectedDay!.month, _selectedDay!.day) ==
+                                            _focusedDay)? true: false,
                                         'percentage': progressList[
                                             Calendar.toKey(_selectedDay!)],
                                         'workoutPlan': workoutPlanList[
-                                            Calendar.toKey(_focusedDay)]
+                                            Calendar.toKey(_selectedDay!)]
                                       });
                                 },
                               ),
@@ -479,39 +474,31 @@ class _HomepageState extends State<Homepage> {
                 const SizedBox(height: 0),
                 Row(
                   children:[
-                Container(
-
-                   child: Padding(
-                     padding:EdgeInsets.only(left: 9,right:0,),
-                    child:BubbleSpecialThree(
-                      text: 'Hello Mary～\n今天的運動尚未完成\n今天的冥想尚未完成',
-                      color: Color(0xFFfdeed9),
-                      tail: true,
-                      textStyle: TextStyle(
-                          color: Color(0xFF4b3d70),
-                          fontSize: 17,
-                          //fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                const Padding(
+                  padding:EdgeInsets.only(left: 9,right:0,),
+                 child:BubbleSpecialThree(
+                   text: 'Hello Mary～\n今天的運動尚未完成\n今天的冥想尚未完成',
+                   color: Color(0xFFfdeed9),
+                   tail: true,
+                   textStyle: TextStyle(
+                       color: Color(0xFF4b3d70),
+                       fontSize: 17,
+                       //fontWeight: FontWeight.bold,
                    ),
+                 ),
                 ),
-                    Container(
-                      child: Padding(
-                        padding:EdgeInsets.only(left: 0),
-                        child:Image.asset("assets/images/rabbit.png",width: 125,height: 160,),
-                      ),
+                    Padding(
+                      padding:const EdgeInsets.only(left: 0),
+                      child:Image.asset("assets/images/rabbit.png",width: 125,height: 160,),
                     ),
                 //const SizedBox(height: 10),
                 ],),
                 const SizedBox(height: 0),
-                Container(
-
-                  child: BannerCarousel(
-                    height: 350,
-                    //spaceBetween : 100,
-                    banners: BannerImages.listBanners,
-                    onTap: (id) => print(id),
-                  ),
+                BannerCarousel(
+                  height: 350,
+                  //spaceBetween : 100,
+                  banners: BannerImages.listBanners,
+                  onTap: (id) => print(id),
                 ),
                 const SizedBox(height: 10),
               ],
@@ -571,32 +558,32 @@ class _HomepageState extends State<Homepage> {
             }
                 print(index);
               },
-              items: [
-                const BottomNavigationBarItem(
+              items: const [
+                BottomNavigationBarItem(
                     icon: Icon(
                       Icons.insights,
                       size: 40,
                     ),
                     label: 'tickets'),
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
                     icon: Icon(
                       Icons.workspace_premium_outlined,
                       size: 40,
                     ),
                     label: 'calendar'),
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
                     icon: Icon(
                       Icons.home_outlined,
                       size: 40,
                     ),
                     label: 'home'),
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
                     icon: Icon(
                       Icons.request_quote_outlined,
                       size: 40,
                     ),
                     label: 'microphone'),
-                const BottomNavigationBarItem(
+                BottomNavigationBarItem(
                     icon: Icon(
                       Icons.manage_accounts_outlined,
                       size: 40,

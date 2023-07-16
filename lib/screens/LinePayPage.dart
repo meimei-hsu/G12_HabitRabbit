@@ -77,7 +77,7 @@ class PayPageState extends State<PayPage> {
           const SizedBox(height: 10),
           Container(
             color: Colors.white,
-            child: Column(
+            child: const Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 CompanyDescriptionItem(value: "150"),
@@ -88,7 +88,7 @@ class PayPageState extends State<PayPage> {
           const SizedBox(height: 10),
           Container(
             color: Colors.white,
-            child: Column(
+            child: const Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 PayByPointItem(),
@@ -98,7 +98,7 @@ class PayPageState extends State<PayPage> {
           const SizedBox(height: 10),
           Container(
             color: Colors.white,
-            child: Column(
+            child: const Column(
               children: <Widget>[
                 ListTile(
                   title: Text(
