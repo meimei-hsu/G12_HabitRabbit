@@ -31,7 +31,9 @@ Gradient unselectedGradient =
     const LinearGradient(colors: [Colors.red, Colors.blueGrey]);
 
 class MilestonePage extends StatefulWidget {
-  const MilestonePage({super.key});
+  final Map arguments;
+
+  const MilestonePage({super.key, required this.arguments});
 
   @override
   _MilestonePage createState() => _MilestonePage();

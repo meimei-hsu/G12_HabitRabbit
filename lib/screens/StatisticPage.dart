@@ -8,7 +8,9 @@ import '../services/Database.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 
 class StatisticPage extends StatefulWidget {
-  const StatisticPage({Key? key}) : super(key: key);
+  final Map arguments;
+
+  const StatisticPage({super.key, required this.arguments});
 
   @override
   _StatisticPageState createState() => _StatisticPageState();

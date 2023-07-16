@@ -36,7 +36,9 @@ Gradient unselectedGradient =
     const LinearGradient(colors: [Colors.red, Colors.blueGrey]);
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+  final Map arguments;
+
+  const SettingsPage({super.key, required this.arguments});
 
   @override
   _SettingsPage createState() => _SettingsPage();
