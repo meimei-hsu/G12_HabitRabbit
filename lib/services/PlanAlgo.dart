@@ -295,20 +295,13 @@ class PlanData {
     _nDays = _workoutDays.values.toList().fold(0, (p, c) => c + p);
 
     var openness = _personalities['openness'];
-    if (_timeSpan == 15) {
-      if (openness <= 2) {
-        _nSame = 2;
-      }
-    } else {
-      if (openness <= 2) {
-        _nSame = 3;
-      } else if (openness == 3) {
-        _nSame = 2;
-      }
-      if (_timeSpan == 60 && openness == 1) {
-        _nSame = 4;
-      }
+    if (openness < 0) {
+      _nSame = 3;
+      if (_timeSpan == 30) _nSame = 2;
+    } else if (openness == 1) {
+      _nSame = 2;
     }
+    if (_timeSpan == 60 && openness == -2) _nSame = 4;
   }
 
   // Getters
