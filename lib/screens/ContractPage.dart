@@ -91,7 +91,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                     margin: EdgeInsets.only(left: 25.0, right: 25.0),
                     padding: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                      color: Color(0xFF98D98E),
+                      color: Color(0xFFFAF0CA),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Column(
@@ -101,7 +101,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                           dialogs[tapCount],
                           style: TextStyle(
                             fontSize: 18.0,
-                            color: Color(0xFFFDFDFD),
+                            color: Color(0xFF0D3B66),
                           ),
                         ),
                         if (tapCount == 2) ...[
@@ -116,8 +116,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color(0xFFFDFDFD),
-                                    onPrimary: Color(0xFF98D98E),
+                                    primary:Color(0xFFFDFDFD),
+                                    onPrimary: Color(0xFF0D3B66),
                                   ),
                                   child: Text('確定！我要挑戰'),
                                 ),
@@ -130,7 +130,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                                   },
                                   style: ElevatedButton.styleFrom(
                                     primary: Color(0xFFFDFDFD),
-                                    onPrimary: Color(0xFF98D98E),
+                                    onPrimary: Color(0xFF0D3B66),
                                   ),
                                   child: Text('先不要...謝謝再連絡'),
                                 ),
@@ -152,8 +152,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color(0xFFFDFDFD),
-                                    onPrimary: Color(0xFF98D98E),
+                                    primary:Color(0xFFFDFDFD),
+                                    onPrimary: Color(0xFF0D3B66),
                                   ),
                                   child: Text('運動'),
                                 ),
@@ -162,13 +162,15 @@ class _FirstContractPage extends State<FirstContractPage> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    tapCount++;
-                                    type = '冥想';
-                                    print('選擇的合約類型：$type');
+                                    setState(() {
+                                      tapCount++;
+                                      type = '冥想'; // 漢值给type字段
+                                      print('選擇的合約類型：$type');
+                                    });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color(0xFFFDFDFD),
-                                    onPrimary: Color(0xFF98D98E),
+                                    primary:Color(0xFFFDFDFD),
+                                    onPrimary: Color(0xFF0D3B66),
                                   ),
                                   child: Text('冥想'),
                                 ),
@@ -189,8 +191,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFFFDFDFD),
-                                  onPrimary: Color(0xFF98D98E),
+                                  primary:Color(0xFFFDFDFD),
+                                  onPrimary: Color(0xFF0D3B66),
                                 ),
                                 child: Text('基礎：一個月內至少達成3週目標'),
                               ),
@@ -204,8 +206,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFFFDFDFD),
-                                  onPrimary: Color(0xFF98D98E),
+                                  primary:Color(0xFFFDFDFD),
+                                  onPrimary: Color(0xFF0D3B66),
                                 ),
                                 child: Text('進階：兩個月內至少達成7週目標'),
                               ),
@@ -219,8 +221,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFFFDFDFD),
-                                  onPrimary: Color(0xFF98D98E),
+                                  primary:Color(0xFFFDFDFD),
+                                  onPrimary: Color(0xFF0D3B66),
                                 ),
                                 child: Text('困難：四個月內至少達成15週目標'),
                               ),
@@ -240,7 +242,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                               decoration: InputDecoration(
                                 labelText: '輸入金額',
                                 labelStyle: TextStyle(
-                                  color: Color(0xFFFDFDFD), // 设置标签文本的颜色为特定颜色
+                                  color: Color(0xFF0D3B66), // 设置标签文本的颜色为特定颜色
                                 ),
                               ),
                             ),
@@ -267,8 +269,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Color(0xFFFDFDFD),
-                              onPrimary: Color(0xFF98D98E),
+                              primary:Color(0xFFFDFDFD),
+                              onPrimary: Color(0xFF0D3B66),
                             ),
                             child: Text('確定'),
                           ),
@@ -420,7 +422,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                 margin: EdgeInsets.only(left: 25.0, right: 25.0),
                 padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  color: Color(0xFF98D98E),
+                  color: Color(0xFFFAF0CA),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
@@ -435,7 +437,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                       '若達成設定目標則由系統將全數金額退還。',
                       style: TextStyle(
                         fontSize: 18.0,
-                        color: Color(0xFFFDFDFD),
+                        color: Color(0xFF0D3B66),
                       ),
                     ),
                     SizedBox(height: 16.0),
@@ -457,8 +459,8 @@ class SecondContractPageState extends State<SecondContractPage> {
                                           // TODO: 跳到 LINEPay
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          primary: Color(0xFFFDFDFD),
-                                          onPrimary: Color(0xFF98D98E),
+                                          primary:Color(0xFFFDFDFD),
+                                          onPrimary: Color(0xFF0D3B66),
                                         ),
                                         child: Text('確定'),
                                       ),
@@ -467,8 +469,8 @@ class SecondContractPageState extends State<SecondContractPage> {
                                           Navigator.of(context).pop();
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          primary: Color(0xFFFDFDFD),
-                                          onPrimary: Color(0xFF98D98E),
+                                          primary:Color(0xFFFDFDFD),
+                                          onPrimary: Color(0xFF0D3B66),
                                         ),
                                         child: Text('取消'),
                                       ),
@@ -478,8 +480,8 @@ class SecondContractPageState extends State<SecondContractPage> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Color(0xFFFDFDFD),
-                              onPrimary: Color(0xFF98D98E),
+                              primary:Color(0xFFFDFDFD),
+                              onPrimary: Color(0xFF0D3B66),
                             ),
                             child: Text('確定'),
                           ),
@@ -500,8 +502,8 @@ class SecondContractPageState extends State<SecondContractPage> {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Color(0xFFFDFDFD),
-                              onPrimary: Color(0xFF98D98E),
+                              primary:Color(0xFFFDFDFD),
+                              onPrimary: Color(0xFF0D3B66),
                             ),
                             child: Text('取消/重新輸入'),
                           ),
