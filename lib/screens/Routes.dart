@@ -33,7 +33,7 @@ final routes = {
   '/pay/password': (context, {arguments}) => PasswordPage(arguments: arguments),
   '/pay/checkout': (context, {arguments}) => ConfirmPage(arguments: arguments),
   /* QuestionnairePage */
-  // TODO: connect QuestionnairePage to RegisterPage
+  '/questionnaire': (context, {arguments}) => TitlePage(arguments: arguments),
 };
 
 var onGenerateRoute = (RouteSettings settings) {

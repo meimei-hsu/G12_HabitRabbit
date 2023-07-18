@@ -549,9 +549,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           if (!mounted) return;
                           Navigator.pushNamedAndRemoveUntil(
                               context,
-                              '/questionnaire/1',
+                              '/questionnaire',
                               (Route<dynamic> route) => false,
-                              arguments: {"userName": user.displayName});
+                              arguments: {"part": 0});
                         }
                       } catch (e) {
                         errMsg = "$e";

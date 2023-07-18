@@ -90,13 +90,13 @@ flutter:
     - assets/images/LINE.jpg
     - assets/images/scroll.png
     - assets/images/personality_NOC.png
-    - assets/images/personality_S₁OC.png
+    - assets/images/personality_SOC.png
     - assets/images/personality_NGC.png
-    - assets/images/personality_S₁GC.jpg
-    - assets/images/personality_NOS₂.png
-    - assets/images/personality_S₁OS₂.png
-    - assets/images/personality_NGS₂.png
-    - assets/images/personality_S₁GS₂.png
+    - assets/images/personality_SGC.jpg
+    - assets/images/personality_NOF.png
+    - assets/images/personality_SOF.png
+    - assets/images/personality_NGF.png
+    - assets/images/personality_SGF.png
     - assets/images/currentLevel.png
     - assets/images/completedLevel.jpg
     - assets/images/lockedLevel.jpg
