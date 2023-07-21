@@ -539,6 +539,66 @@ class WorkoutDB {
   }
 }
 
+class MeditationDB {
+  static const db = "meditations";
+
+  // Select all workouts
+  static Future<Map?> getAll() async {
+    var snapshot = await DB.selectAll(db);
+    return snapshot?.value as Map?;
+  }
+
+  // Convert workoutIDs to workoutNames
+  static Future<List?> toNames(List<String> ids) async {
+    var meditations = await getAll();
+
+    List retVal = [];
+    for (var id in ids) {
+      retVal.add(meditations![id]);
+    }
+
+    return retVal;
+  }
+
+  // Select meditationIDs
+  static Future<Map?> getMIDs() async {
+    var meditations = await getAll();
+    List ids = meditations!.keys.toList();
+
+    Map retVal = {
+      "strength": [[], [], [], [], []],
+      "cardio": [[], []],
+      "yoga": [[], [], [], [], []],
+      "warmUp": [],
+      "coolDown": []
+    };
+    List keys = retVal.keys.toList();
+
+    // Get the list of workoutID from the given type and difficulty
+    for (int type = 1; type <= 3; type++) {
+      for (int diff = 1; diff <= ((type == 2) ? 2 : 5); diff++) {
+        retVal[keys[type - 1]][diff - 1] = List.from(
+            ids.where((item) => item[0] == "$type" && item[1] == "$diff"));
+      }
+    }
+    for (int type = 4; type <= 5; type++) {
+      retVal[keys[type - 1]] =
+          List.from(ids.where((item) => item[0] == "$type"));
+    }
+
+    return retVal;
+  }
+
+  // Update data {columnName: value} from meditationID
+  static Future<bool> update(Map data) async {
+    return await DB.update(db, data);
+  }
+
+  // Delete data from meditationID
+  static Future<bool> delete(String meditationID) async {
+    return await DB.delete(db, meditationID);
+  }
+}
 /*
 ################################################################################
 Journal Database: database records that occurs daily
