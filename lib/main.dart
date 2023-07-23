@@ -55,7 +55,7 @@ class BottomNavigationControllerState
     const StatisticPage(arguments: {}),
     const MilestonePage(arguments: {}),
     const Homepage(),
-    const FirstContractPage(arguments: {}),
+    const FirstContractPage(arguments: {}), // TODO: 判斷有無立合約決定要跳頁面
     const SettingsPage(arguments: {})
   ];
 
