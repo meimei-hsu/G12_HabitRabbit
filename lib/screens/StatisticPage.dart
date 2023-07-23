@@ -16,32 +16,6 @@ class StatisticPage extends StatefulWidget {
   _StatisticPageState createState() => _StatisticPageState();
 }
 
-final BorderRadius _borderRadius = const BorderRadius.only(
-  topLeft: Radius.circular(25),
-  topRight: Radius.circular(25),
-);
-
-ShapeBorder? bottomBarShape = const RoundedRectangleBorder(
-    borderRadius: BorderRadius.only(
-  topLeft: Radius.circular(25),
-  topRight: Radius.circular(25),
-));
-SnakeBarBehaviour snakeBarStyle = SnakeBarBehaviour.pinned;
-EdgeInsets padding = EdgeInsets.zero;
-
-int _selectedItemPosition = 2;
-SnakeShape snakeShape = SnakeShape.circle;
-bool showSelectedLabels = false;
-bool showUnselectedLabels = false;
-
-Color selectedColor = Colors.black;
-Color unselectedColor = Colors.blueGrey;
-
-Gradient selectedGradient =
-    const LinearGradient(colors: [Colors.red, Colors.amber]);
-Gradient unselectedGradient =
-    const LinearGradient(colors: [Colors.red, Colors.blueGrey]);
-
 class _StatisticPageState extends State<StatisticPage> {
   User? user = FirebaseAuth.instance.currentUser;
   List<List<double>> res = [
@@ -89,310 +63,224 @@ class _StatisticPageState extends State<StatisticPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: const Text(
-            '統計資料',
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              color: Color(0xff0d3b66),
-              fontSize: 32,
-              letterSpacing: 0,
-              fontWeight: FontWeight.bold,
-              height: 1,
-            ),
+      appBar: AppBar(
+        elevation: 0,
+        title: const Text(
+          '統計資料',
+          textAlign: TextAlign.left,
+          style: TextStyle(
+            color: Color(0xff0d3b66),
+            fontSize: 32,
+            letterSpacing: 0,
+            fontWeight: FontWeight.bold,
+            height: 1,
           ),
-          actions: [],
-          backgroundColor: Colors.white,
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            _showAddWeightDialog(); // Show dialog to add weight
-          },
-          backgroundColor: Color(0xffffa493),
-          child: Icon(Icons.add),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-        body: Padding(
-          padding: EdgeInsets.all(16),
-          //ListView可各分配空間給兩張圖
-          child: ListView(
-            children: [
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                //FIXME: 統計頁面待美化
-                Text(
-                  'Statistics:',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                // FIXME: 體重圖表初次無法顯示折線圖，需要加入體重後才會顯示
-                Container(
-                  height: 300,
-                  padding: EdgeInsets.only(right: 40, top: 20),
-                  child: LineChart(
-                    LineChartData(
-                      lineTouchData: LineTouchData(
-                        touchCallback: (LineTouchResponse touchResponse) {},
-                        handleBuiltInTouches: true,
-                        touchTooltipData: LineTouchTooltipData(
-                          tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
-                        ),
+        actions: [],
+        backgroundColor: Colors.white,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showAddWeightDialog(); // Show dialog to add weight
+        },
+        backgroundColor: Color(0xffffa493),
+        child: Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        //ListView可各分配空間給兩張圖
+        child: ListView(
+          children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              //FIXME: 統計頁面待美化
+              Text(
+                'Statistics:',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              // FIXME: 體重圖表初次無法顯示折線圖，需要加入體重後才會顯示
+              Container(
+                height: 300,
+                padding: EdgeInsets.only(right: 40, top: 20),
+                child: LineChart(
+                  LineChartData(
+                    lineTouchData: LineTouchData(
+                      touchCallback: (LineTouchResponse touchResponse) {},
+                      handleBuiltInTouches: true,
+                      touchTooltipData: LineTouchTooltipData(
+                        tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
                       ),
-                      gridData: FlGridData(
-                        show: true,
-                        drawVerticalLine: false,
-                        // Disable vertical grid lines
-                        drawHorizontalLine: true,
-                        getDrawingHorizontalLine: (value) {
-                          return FlLine(
-                            color: Colors.grey,
-                            strokeWidth: 0.5,
-                          );
-                        },
-                        checkToShowHorizontalLine: (value) {
-                          return value % 5 ==
-                              0; // Show horizontal grid lines at intervals of 5
-                        },
-                      ),
-                      titlesData: FlTitlesData(
-                        bottomTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 22,
-                          getTextStyles: (value) => const TextStyle(
-                              color: Colors.black, fontSize: 10),
-                          getTitles: (value) {
-                            int index = value.toInt();
-                            if (index >= 0 && index < res.length) {
-                              int timestamp = res[index][0].toInt();
-                              DateTime dateTime =
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                      timestamp);
-                              return Calendar.toKey(dateTime);
-                            }
-                            return '';
-                          },
-                          margin: 8,
-                        ),
-                        // FIXME: 體重圖表的最大值應該是體重的最大值加 10(or 5)，反之亦然
-                        leftTitles: SideTitles(
-                          showTitles: true,
-                          getTextStyles: (value) => const TextStyle(
-                              color: Colors.black, fontSize: 10),
-                          getTitles: (value) {
-                            double weight = list1.isNotEmpty
-                                ? list1[list1.length - 1]
-                                : 0.0;
-                            double minValue = weight - 10;
-                            double maxValue = weight + 10;
-
-                            // Customize the display for values within the range
-                            if (value >= minValue && value <= maxValue) {
-                              int intValue = value.toInt();
-                              if (intValue % 5 == 0) {
-                                return '$intValue';
-                              }
-                            }
-                            return '';
-                          },
-                          margin: 8,
-                          reservedSize: 28,
-                        ),
-                      ),
-                      borderData: FlBorderData(show: true),
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots: _getWeightData(),
-                          isCurved: false,
-                          colors: [Colors.blue],
-                          barWidth: 2,
-                          isStrokeCapRound: true,
-                          dotData: FlDotData(
-                            show: true,
-                            getDotPainter: (spot, percent, barData, index) =>
-                                FlDotCirclePainter(
-                              color: Colors.black,
-                              radius: 3,
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.only(right: 80, left: 20, top: 20),
-                  child: Text(
-                    '當月進度表',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        backgroundColor: Colors.yellow,
-                        color: Color(0xff0d3b66),
-                        fontSize: 32,
-                        letterSpacing:
-                            0 /*percentages not used in flutter. defaulting to zero*/,
-                        fontWeight: FontWeight.bold,
-                        height: 1),
-                  ),
-                ),
-                Container(
-                  height: 400,
-                  child: Stack(
-                    children: [
-                      HeatMapCalendar(
-                        defaultColor: Colors.white,
-                        flexible: true,
-                        colorMode: ColorMode.color,
-                        datasets: completionRateList,
-                        colorsets: colorSet,
-                        onClick: (value) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(value.toString())),
-                          );
+                    gridData: FlGridData(
+                      show: true,
+                      drawVerticalLine: false,
+                      // Disable vertical grid lines
+                      drawHorizontalLine: true,
+                      getDrawingHorizontalLine: (value) {
+                        return FlLine(
+                          color: Colors.grey,
+                          strokeWidth: 0.5,
+                        );
+                      },
+                      checkToShowHorizontalLine: (value) {
+                        return value % 5 ==
+                            0; // Show horizontal grid lines at intervals of 5
+                      },
+                    ),
+                    titlesData: FlTitlesData(
+                      bottomTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 22,
+                        getTextStyles: (value) =>
+                            const TextStyle(color: Colors.black, fontSize: 10),
+                        getTitles: (value) {
+                          int index = value.toInt();
+                          if (index >= 0 && index < res.length) {
+                            int timestamp = res[index][0].toInt();
+                            DateTime dateTime =
+                                DateTime.fromMillisecondsSinceEpoch(timestamp);
+                            return Calendar.toKey(dateTime);
+                          }
+                          return '';
                         },
+                        margin: 8,
                       ),
-                      Positioned(
-                        right: 0,
-                        bottom: 20,
-                        child: Container(
-                          width: 150,
-                          height: 50,
-                          color: Colors.white,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.check_circle,
-                                    color: Colors.green.shade200,
-                                    size: 25,
-                                  ),
-                                  Text(
-                                    '成功',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 15),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.cancel,
-                                    color: Colors.red.shade200,
-                                    size: 25,
-                                  ),
-                                  Text(
-                                    '失败',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                      // FIXME: 體重圖表的最大值應該是體重的最大值加 10(or 5)，反之亦然
+                      leftTitles: SideTitles(
+                        showTitles: true,
+                        getTextStyles: (value) =>
+                            const TextStyle(color: Colors.black, fontSize: 10),
+                        getTitles: (value) {
+                          double weight =
+                              list1.isNotEmpty ? list1[list1.length - 1] : 0.0;
+                          double minValue = weight - 10;
+                          double maxValue = weight + 10;
+
+                          // Customize the display for values within the range
+                          if (value >= minValue && value <= maxValue) {
+                            int intValue = value.toInt();
+                            if (intValue % 5 == 0) {
+                              return '$intValue';
+                            }
+                          }
+                          return '';
+                        },
+                        margin: 8,
+                        reservedSize: 28,
+                      ),
+                    ),
+                    borderData: FlBorderData(show: true),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: _getWeightData(),
+                        isCurved: false,
+                        colors: [Colors.blue],
+                        barWidth: 2,
+                        isStrokeCapRound: true,
+                        dotData: FlDotData(
+                          show: true,
+                          getDotPainter: (spot, percent, barData, index) =>
+                              FlDotCirclePainter(
+                            color: Colors.black,
+                            radius: 3,
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ]),
-            ],
-          ),
-        ),
-        bottomNavigationBar: SnakeNavigationBar.color(
-          behaviour: snakeBarStyle,
-          snakeShape: snakeShape,
-          shape: bottomBarShape,
-          padding: padding,
-          height: 80,
-          //backgroundColor: const Color(0xfffdeed9),
-          backgroundColor: const Color(0xffd4d6fc),
-          snakeViewColor: const Color(0xfffdfdf5),
-          selectedItemColor: const Color(0xff4b3d70),
-          unselectedItemColor: const Color(0xff4b3d70),
-
-          ///configuration for SnakeNavigationBar.color
-          // snakeViewColor: selectedColor,
-          // selectedItemColor:
-          //  snakeShape == SnakeShape.indicator ? selectedColor : null,
-          //unselectedItemColor: Colors.blueGrey,
-
-          ///configuration for SnakeNavigationBar.gradient
-          //snakeViewGradient: selectedGradient,
-          //selectedItemGradient: snakeShape == SnakeShape.indicator ? selectedGradient : null,
-          //unselectedItemGradient: unselectedGradient,
-
-          showUnselectedLabels: showUnselectedLabels,
-          showSelectedLabels: showSelectedLabels,
-
-          currentIndex: _selectedItemPosition,
-          //onTap: (index) => setState(() => _selectedItemPosition = index),
-          onTap: (index) {
-            _selectedItemPosition = index;
-            if (index == 0) {
-              Navigator.pushNamed(context, '/statistic',
-                  arguments: {'user': user});
-            }
-            if (index == 1) {
-              Navigator.pushNamed(context, '/milestone',
-                  arguments: {'user': user});
-            }
-            if (index == 2) {
-              Navigator.pushNamed(context, '/');
-            }
-            if (index == 3) {
-              Navigator.pushNamed(context, '/contract/initial',
-                  arguments: {'user': user});
-            }
-            //3
-            if (index == 4) {
-              Navigator.pushNamed(context, '/settings',
-                  arguments: {'user': user});
-            }
-            print(index);
-          },
-          items: [
-            const BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.insights,
-                  size: 40,
+              ),
+              Container(
+                padding: EdgeInsets.only(right: 80, left: 20, top: 20),
+                child: Text(
+                  '當月進度表',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      backgroundColor: Colors.yellow,
+                      color: Color(0xff0d3b66),
+                      fontSize: 32,
+                      letterSpacing:
+                          0 /*percentages not used in flutter. defaulting to zero*/,
+                      fontWeight: FontWeight.bold,
+                      height: 1),
                 ),
-                label: 'tickets'),
-            const BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.workspace_premium_outlined,
-                  size: 40,
+              ),
+              Container(
+                height: 400,
+                child: Stack(
+                  children: [
+                    HeatMapCalendar(
+                      defaultColor: Colors.white,
+                      flexible: true,
+                      colorMode: ColorMode.color,
+                      datasets: completionRateList,
+                      colorsets: colorSet,
+                      onClick: (value) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(value.toString())),
+                        );
+                      },
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 20,
+                      child: Container(
+                        width: 150,
+                        height: 50,
+                        color: Colors.white,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.check_circle,
+                                  color: Colors.green.shade200,
+                                  size: 25,
+                                ),
+                                Text(
+                                  '成功',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: 15),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.cancel,
+                                  color: Colors.red.shade200,
+                                  size: 25,
+                                ),
+                                Text(
+                                  '失败',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                label: 'calendar'),
-            const BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.home_outlined,
-                  size: 40,
-                ),
-                label: 'home'),
-            const BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.request_quote_outlined,
-                  size: 40,
-                ),
-                label: 'microphone'),
-            const BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.manage_accounts_outlined,
-                  size: 40,
-                ),
-                label: 'search')
+              ),
+            ]),
           ],
-        ));
+        ),
+      ),
+    );
   }
 
   _showAddWeightDialog() async {

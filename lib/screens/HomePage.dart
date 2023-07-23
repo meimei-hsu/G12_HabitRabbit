@@ -386,6 +386,7 @@ class _HomepageState extends State<Homepage> {
                                             _focusedDay)? true: false,
                                         'percentage': progressList[
                                             Calendar.toKey(_selectedDay!)],
+                                        'currentIndex': currentIndex,
                                         'workoutPlan': workoutPlanList[
                                             Calendar.toKey(_selectedDay!)]
                                       });
@@ -505,7 +506,7 @@ class _HomepageState extends State<Homepage> {
             ),
 
             // FIXME: bottom bar overflow
-            bottomNavigationBar: SnakeNavigationBar.color(
+            /*bottomNavigationBar: SnakeNavigationBar.color(
               behaviour: snakeBarStyle,
               snakeShape: snakeShape,
               shape: bottomBarShape,
@@ -594,7 +595,7 @@ class _HomepageState extends State<Homepage> {
                     ),
                     label: 'search')
               ],
-            )));
+            )*/));
   }
 }
 
