@@ -27,7 +27,8 @@ class PayPageState extends State<PayPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
@@ -48,7 +49,9 @@ class PayPageState extends State<PayPage> {
               Icons.close_rounded,
               color: Color(0xff343434),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ],
         backgroundColor: const Color(0xfffdfdfd),
@@ -214,7 +217,7 @@ class PayPageState extends State<PayPage> {
           ),
         ),
       ),
-    );
+    ));
   }
 }
 
@@ -251,7 +254,8 @@ class PasswordPageState extends State<PasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         elevation: 0,
@@ -261,7 +265,9 @@ class PasswordPageState extends State<PasswordPage> {
               Icons.close_rounded,
               color: Color(0xff343434),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ],
         backgroundColor: Colors.grey[50],
@@ -342,7 +348,7 @@ class PasswordPageState extends State<PasswordPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween),
         ),
       ]))),
-    );
+    ));
   }
 }
 
@@ -358,7 +364,8 @@ class ConfirmPage extends StatefulWidget {
 class ConfirmPageState extends State<ConfirmPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
@@ -379,7 +386,9 @@ class ConfirmPageState extends State<ConfirmPage> {
               Icons.close_rounded,
               color: Color(0xff343434),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ],
         backgroundColor: Colors.grey[50],
@@ -547,7 +556,8 @@ class ConfirmPageState extends State<ConfirmPage> {
                               backgroundColor: const Color(0xFF23B91A),
                               shadowColor: Colors.white,
                               minimumSize: const Size(0, 45)),
-                          onPressed: () { // TODO: back to ContractPage.
+                          onPressed: () {
+                            // TODO: back to ContractPage.
                             Navigator.pushNamedAndRemoveUntil(
                                 context, '/', (Route<dynamic> route) => false);
                           },
@@ -568,7 +578,7 @@ class ConfirmPageState extends State<ConfirmPage> {
           const Text("請在訂單頁面中確認結果。", style: TextStyle(color: Colors.grey)),
         ],
       ),
-    );
+    ));
   }
 }
 

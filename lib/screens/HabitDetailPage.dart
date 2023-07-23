@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import 'package:g12/services/Database.dart';
-import 'package:g12/services/PlanAlgo.dart';
 
 class HabitDetailPage extends StatefulWidget {
   final Map arguments;
@@ -22,7 +21,7 @@ class HabitDetailPageState extends State<HabitDetailPage> {
     title.insert(0, "Warm up");
     title.insert(length - 1, "Cool down");
 
-    List<Container> expansionTitleList = [];
+    List<Widget> expansionTitleList = [];
     for (int i = 0; i < length; i++) {
       List<ListTile> itemList = [
         for (int j = 0; j < content[i].length; j++)
@@ -85,23 +84,22 @@ class HabitDetailPageState extends State<HabitDetailPage> {
       }
 
       expansionTitleList.add(Container(
-        /*decoration: BoxDecoration(
+          /*decoration: BoxDecoration(
           color: const Color(0xfffdeed9),
           border: Border.all(color: const Color(0xffffeed9)),
           borderRadius: borderRadius,
         ),*/
-        child: ExpansionTile(
-          title: Text(
-            '${title[i]}',
-            style: const TextStyle(
-                color: Color(0xff4b4370),
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                height: 1),
-          ),
-          children: itemList,
+          child: ExpansionTile(
+        title: Text(
+          '${title[i]}',
+          style: const TextStyle(
+              color: Color(0xff4b4370),
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              height: 1),
         ),
-      ));
+        children: itemList,
+      )));
     }
     return expansionTitleList;
   }
@@ -137,7 +135,7 @@ class HabitDetailPageState extends State<HabitDetailPage> {
                 padding: const EdgeInsets.only(right: 20, left: 20),
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(7.5),
-                    child: Image.asset("assets/images/personality_S₁GS₂.png")),
+                    child: Image.asset("assets/images/personality_SGF.png")),
               ),
               const SizedBox(
                 height: 10,
@@ -150,7 +148,7 @@ class HabitDetailPageState extends State<HabitDetailPage> {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20))),
-                child: CompanyDescriptionItem(
+                child: PlanDetailItem(
                   percentage: widget.arguments['percentage'],
                   workoutPlan: widget.arguments['workoutPlan'].split(", "),
                 ),
@@ -195,6 +193,29 @@ class HabitDetailPageState extends State<HabitDetailPage> {
                       onPressed: widget.arguments['isToday']
                           ? () {
                               print("True");
+                              int currentIndex =
+                                  widget.arguments['currentIndex'];
+                              print("Current Index: $currentIndex");
+                              List items =
+                                  widget.arguments['workoutPlan'].split(", ");
+                              for (int i = 0; i < items.length; i++) {
+                                if (i <= 2) {
+                                  items[i] = "暖身：${items[i]}";
+                                } else if (i >= items.length - 2) {
+                                  items[i] = "伸展：${items[i]}";
+                                } else {
+                                  items[i] = "運動：${items[i]}";
+                                }
+                              }
+                              Navigator.pushNamed(context, '/countdown',
+                                  arguments: {
+                                    'totalExerciseItemLength': items.length,
+                                    'exerciseTime':
+                                        items.sublist(currentIndex).length *
+                                            6, // should be 60s
+                                    'exerciseItem': items.sublist(currentIndex),
+                                    'currentIndex': currentIndex
+                                  });
                             }
                           : null,
                       label: const Text(
@@ -218,8 +239,8 @@ class HabitDetailPageState extends State<HabitDetailPage> {
 }
 
 // Exercise Plan Detail
-class CompanyDescriptionItem extends StatelessWidget {
-  const CompanyDescriptionItem({
+class PlanDetailItem extends StatelessWidget {
+  const PlanDetailItem({
     super.key,
     required this.percentage,
     required this.workoutPlan,
@@ -252,7 +273,7 @@ class CompanyDescriptionItem extends StatelessWidget {
                     radius: 50.0,
                     lineWidth: 10.0,
                     animation: true,
-                    percent: percentage.toDouble(),
+                    percent: percentage.toDouble() / 100,
                     center: Text(
                       "$percentage %",
                       style: const TextStyle(

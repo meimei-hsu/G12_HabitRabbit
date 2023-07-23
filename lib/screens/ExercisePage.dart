@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+
 //import 'package:video_player/video_player.dart';
+import 'package:square_progress_bar/square_progress_bar.dart';
 
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
@@ -17,6 +19,8 @@ class ExercisePage extends StatefulWidget {
 class ExercisePageState extends State<ExercisePage> {
   String sport = "運動項目";
   late int totalTime;
+  late int countdownTime;
+  double _progress = 0.0;
   int countDown = 6; // 60s
   bool ifStart = false;
   var period = const Duration(seconds: 1);
@@ -81,7 +85,7 @@ class ExercisePageState extends State<ExercisePage> {
     //return VideoPlayerController.asset('assets/videos/videoTest.mp4');
     return Image.asset(
       videoList[index % videoList.length],
-      fit: BoxFit.fill,
+      //fit: BoxFit.fill,
     );
   }
 
@@ -107,7 +111,7 @@ class ExercisePageState extends State<ExercisePage> {
   void _showFeedbackDialog() async {
     await showDialog<double>(
       context: context,
-      builder: (context) => FeedbackDialog(),
+      builder: (context) => const FeedbackDialog(),
     );
   }
 
@@ -136,6 +140,7 @@ class ExercisePageState extends State<ExercisePage> {
       } else {
         // Appbar timer
         totalTime--;
+        _progress = (countdownTime - totalTime) / countdownTime;
         //_controller.play();
 
         // Video timer
@@ -200,6 +205,7 @@ class ExercisePageState extends State<ExercisePage> {
 
     super.initState();
     totalTime = widget.arguments['exerciseTime']; // initial totalTime
+    countdownTime = totalTime;
     currentIndex = widget.arguments['currentIndex']; // get currentIndex
     // get whole plan list's length to calculate progress.
     totalExerciseItemLength = widget.arguments['totalExerciseItemLength'];
@@ -283,10 +289,13 @@ class ExercisePageState extends State<ExercisePage> {
           );
           return shouldPop!;
         },
-        child: Scaffold(
+        child: SafeArea(
+            child: Scaffold(
+              backgroundColor: const Color(0xfffdfdf5),
           body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
+              /*Container(
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.only(left: 10),
                 height: 60,
@@ -303,7 +312,7 @@ class ExercisePageState extends State<ExercisePage> {
                       fontWeight: FontWeight.bold,
                       height: 1),
                 ),
-              ),
+              ),*/
               const SizedBox(height: 10),
               Container(
                 decoration: const BoxDecoration(
@@ -313,7 +322,8 @@ class ExercisePageState extends State<ExercisePage> {
                 padding: const EdgeInsets.only(left: 10),
                 height: 60,
                 width: MediaQuery.of(context).size.width - 20,
-                child: Text(
+                child: Center(
+                    child: Text(
                   sport,
                   textAlign: TextAlign.left,
                   style: const TextStyle(
@@ -322,67 +332,57 @@ class ExercisePageState extends State<ExercisePage> {
                       letterSpacing: 0,
                       fontWeight: FontWeight.bold,
                       height: 1),
+                )),
+              ),
+              const SizedBox(height: 10),
+              SquareProgressBar(
+                width: MediaQuery.of(context).size.width - 25,
+                // default: max available space
+                height: MediaQuery.of(context).size.width - 25,
+                // default: max available space
+                progress: _progress,
+                // provide the progress in a range from 0.0 to 1.0
+                solidBarColor: Colors.amber,
+                emptyBarColor: const Color(0xfffdeed9),
+                strokeWidth: 10,
+                gradientBarColor: const LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: <Color>[Colors.pinkAccent, Colors.blueAccent],
+                  tileMode: TileMode.repeated,
+                ),
+                // 漸層顏色
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: buildVideoBanner(
+                      _getVideoList(widget.arguments['exerciseItem'])),
                 ),
               ),
               const SizedBox(height: 10),
-              /*Container(
-            child: Image(
-              image: AssetImage('images/testPic.gif'),//video
-            ),
-          ),*/
-              SizedBox(
-                width: MediaQuery.of(context).size.width - 20,
-                child: buildVideoBanner(
-                    _getVideoList(widget.arguments['exerciseItem'])),
-                /*child: FutureBuilder(
-              future: _initializeVideoPlayerFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  // If the VideoPlayerController has finished initialization, use
-                  // the data it provides to limit the aspect ratio of the video.
-                  return AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    // Use the VideoPlayer widget to display the video.
-                    child: VideoPlayer(_controller),
-                  );
-                } else {
-                  // If the VideoPlayerController is still initializing, show a
-                  // loading spinner.
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            ),*/
-              ),
-              Container(
-                  padding: const EdgeInsets.only(right: 10),
-                  height: 60,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+              Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton.icon(
-                        onPressed: () => startTimer(),
-                        icon: Icon(
-                          ifStart ? Icons.pause : Icons.play_arrow_rounded,
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Color(0x193598f5),
+                          shape: CircleBorder(),
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            ifStart ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                            color: const Color(0xff0d3b66),
+                          ),
+                          iconSize: 60,
                           color: const Color(0xff0d3b66),
-                        ),
-                        label: Text(
-                          ifStart ? '暫停' : '繼續',
-                          style: const TextStyle(
-                              color: Color(0xff0d3b66),
-                              fontSize: 24,
-                              letterSpacing: 0,
-                              fontWeight: FontWeight.bold,
-                              height: 1),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xffffa493),
+                          onPressed: () => startTimer(),
                         ),
                       ),
                     ],
-                  )),
+                  ),
+              const SizedBox(height: 10),
             ],
           ),
-        ));
+        )));
   }
 }
 
