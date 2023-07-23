@@ -389,9 +389,6 @@ class _FirstContractPage extends State<FirstContractPage> {
 class SecondContractPage extends StatefulWidget {
   final Map arguments;
 
-  //final Map<String, String> contractData;
-  //SecondContractPage({required this.contractData});
-
   const SecondContractPage({super.key, required this.arguments});
 
   @override
@@ -464,9 +461,10 @@ class SecondContractPageState extends State<SecondContractPage> {
                                     actions: [
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.pushNamed(
-                                              context, '/pay',
-                                              arguments: {'user': user,});
+                                          Navigator.pushNamed(context, '/pay',
+                                              arguments: {
+                                                'user': user,
+                                              });
                                         },
                                         style: ElevatedButton.styleFrom(
                                           foregroundColor: Color(0xFF0D3B66),
@@ -531,6 +529,7 @@ class SecondContractPageState extends State<SecondContractPage> {
 
 //已立過合約畫面
 class AlreadyContractPage extends StatelessWidget {
+  User? user = FirebaseAuth.instance.currentUser;
   final Map<String, String> contractData;
   AlreadyContractPage({required this.contractData, required arguments});
 
@@ -548,12 +547,12 @@ class AlreadyContractPage extends StatelessWidget {
         title: Text(
           '承諾合約',
           style: TextStyle(
-            color: Color(0xFFFDFDFD),
+            color: Color(0xFF0D3B66),
             fontWeight: FontWeight.bold,
             fontSize: 25,
           ),
         ),
-        backgroundColor: Color(0xFF98D98E),
+        backgroundColor: Color(0xFFFAF0CA),
         automaticallyImplyLeading: false,
       ),
       body: Container(
@@ -565,7 +564,7 @@ class AlreadyContractPage extends StatelessWidget {
                 margin: EdgeInsets.only(left: 25.0, right: 25.0),
                 padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  color: Color(0xFF98D98E),
+                  color: Color(0xFFFAF0CA),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
@@ -574,57 +573,70 @@ class AlreadyContractPage extends StatelessWidget {
                     Text(
                       '立契約人將依照選擇之方案來養成各項習慣，'
                       '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
-                      '\n您選擇養成的習慣：$type'
+                      '\n您選擇養成的習慣：$type' //現在還跑不出來
                       '\n您選擇的方案：$plan'
                       '\n您所投入的金額：$amount'
-                      '\n距離成功已完成：' //TODO：抓後端資料 //${widget.arguments['contractData']['flag']}
-                      '\n本次合約終止日：', //TODO：抓後端資料 //${widget.arguments['contractData']['endDay'].split(" ")[0]}
+                      '\n距離成功已完成：' //TODO：連後端
+                      '\n本次合約終止日：',
                       style: TextStyle(
                         fontSize: 18.0,
-                        color: Color(0xFFFDFDFD),
+                        color: Color(0xFF0D3B66),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(left: 25.0, right: 25.0),
-              padding: EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      // TODO：連到選擇合約
-                    },
-                    child: Text(
-                      '繼續投入合約',
-                      style: TextStyle(
-                        fontSize: 15.0,
-                        color: Color(0xFF98D98E),
+            Positioned(
+              right: 30,
+              bottom: 230,
+              child: Container(
+                margin: EdgeInsets.only(left: 25.0, right: 25.0),
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/contract/initial',
+                            arguments: {'user': user});
+                        // TODO：連到選擇合約
+                      },
+                      child: Text(
+                        '繼續投入合約',
+                        style: TextStyle(
+                          fontSize: 15.0,
+                          color: Color(0xFF0D3B66),
+                        ),
                       ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/');
-                    },
-                    child: Text(
-                      '回主頁',
+                    Text(
+                      '/',
                       style: TextStyle(
                         fontSize: 15.0,
-                        color: Color(0xFF98D98E),
+                        color: Color(0xFF0D3B66),
                       ),
                     ),
-                  )
-                ],
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/');
+                      },
+                      child: Text(
+                        '回主頁',
+                        style: TextStyle(
+                          fontSize: 15.0,
+                          color: Color(0xFF0D3B66),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
             Positioned(
               bottom: 0,
               left: MediaQuery.of(context).size.width * 0.2,
               child: Image.asset(
-                'assets/images/personality_S₁GS₂.png',
+                'assets/images/personality_SGF.png',
                 width: MediaQuery.of(context).size.width * 0.8,
               ),
             ),

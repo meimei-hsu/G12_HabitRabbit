@@ -21,7 +21,6 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   User? user = FirebaseAuth.instance.currentUser;
   bool isFetchingData = true;
-  bool userHasCommittedToContract = false; //TODO: 從後端抓有沒有投入合約?
 
   @override
   void initState() {
@@ -534,7 +533,7 @@ class _HomepageState extends State<Homepage> {
 
               currentIndex: _selectedItemPosition,
               //onTap: (index) => setState(() => _selectedItemPosition = index),
-              onTap: (index) {
+              onTap: (index) async {
                 _selectedItemPosition = index;
                 if(index == 0){
                   Navigator.pushNamed(context, '/statistic',
@@ -548,7 +547,9 @@ class _HomepageState extends State<Homepage> {
                   Navigator.pushNamed(context, '/');
                 }
                 if(index == 3){
-                  if (userHasCommittedToContract){
+                  //從後端獲取是否有投入合約
+                  Map? contract = await ContractDB.getContract();
+                  if (contract != null){
                     Navigator.pushNamed(context, '/contract/already',
                         arguments: {'contractData': contractData,'user': user});
                   }else
