@@ -77,226 +77,224 @@ class _FirstContractPage extends State<FirstContractPage> {
         ),
         body: GestureDetector(
           onTap: updateDialog,
-          child: Container(
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    margin: EdgeInsets.only(left: 25.0, right: 25.0),
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFAF0CA),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          dialogs[tapCount],
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFAF0CA),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        dialogs[tapCount],
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          color: Color(0xFF0D3B66),
+                        ),
+                      ),
+                      if (tapCount != 1 &&
+                          tapCount != 2 &&
+                          tapCount != 3 &&
+                          tapCount != 4 &&
+                          tapCount != 5) ...[
+                        const Text(
+                          '➤ 點擊前往下一步',
                           style: TextStyle(
-                            fontSize: 18.0,
+                            fontSize: 12.0,
                             color: Color(0xFF0D3B66),
                           ),
                         ),
-                        if (tapCount != 1 &&
-                            tapCount != 2 &&
-                            tapCount != 3 &&
-                            tapCount != 4 &&
-                            tapCount != 5) ...[
-                          Text(
-                            '➤ 點擊前往下一步',
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: Color(0xFF0D3B66),
+                      ],
+                      if (tapCount == 2) ...[
+                        const SizedBox(height: 16.0),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    tapCount++;
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: const Color(0xFF0D3B66),
+                                  backgroundColor: const Color(0xFFFDFDFD),
+                                ),
+                                child: const Text('確定！我要挑戰'),
+                              ),
                             ),
-                          ),
-                        ],
-                        if (tapCount == 2) ...[
-                          SizedBox(height: 16.0),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      tapCount++;
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Color(0xFF0D3B66),
-                                    backgroundColor: Color(0xFFFDFDFD),
-                                  ),
-                                  child: Text('確定！我要挑戰'),
+                            const SizedBox(width: 16.0),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/');
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: const Color(0xFF0D3B66),
+                                  backgroundColor: const Color(0xFFFDFDFD),
                                 ),
+                                child: const Text('先不要...謝謝再連絡'),
                               ),
-                              SizedBox(width: 16.0),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/');
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Color(0xFF0D3B66),
-                                    backgroundColor: Color(0xFFFDFDFD),
-                                  ),
-                                  child: Text('先不要...謝謝再連絡'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                        if (tapCount == 3) ...[
-                          SizedBox(height: 16.0),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      tapCount++;
-                                      type = '運動'; // 賦值给type字段
-                                      print('選擇的合約類型：$type');
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Color(0xFF0D3B66),
-                                    backgroundColor: Color(0xFFFDFDFD),
-                                  ),
-                                  child: Text('運動'),
-                                ),
-                              ),
-                              SizedBox(width: 16.0),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      tapCount++;
-                                      type = '冥想'; // 漢值给type字段
-                                      print('選擇的合約類型：$type');
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Color(0xFF0D3B66),
-                                    backgroundColor: Color(0xFFFDFDFD),
-                                  ),
-                                  child: Text('冥想'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                        if (tapCount == 4) ...[
-                          SizedBox(height: 16.0),
-                          Column(
-                            children: [
-                              ElevatedButton(
+                            ),
+                          ],
+                        ),
+                      ],
+                      if (tapCount == 3) ...[
+                        const SizedBox(height: 16.0),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
                                 onPressed: () {
                                   setState(() {
                                     tapCount++;
-                                    plan = '基礎';
-                                    print('選擇的合約方案：$plan');
+                                    type = '運動'; // 賦值给type字段
+                                    print('選擇的合約類型：$type');
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  foregroundColor: Color(0xFF0D3B66),
-                                  backgroundColor: Color(0xFFFDFDFD),
+                                  foregroundColor: const Color(0xFF0D3B66),
+                                  backgroundColor: const Color(0xFFFDFDFD),
                                 ),
-                                child: Text('基礎：一個月內至少達成3週目標'),
+                                child: const Text('運動'),
                               ),
-                              SizedBox(height: 4.0),
-                              ElevatedButton(
+                            ),
+                            const SizedBox(width: 16.0),
+                            Expanded(
+                              child: ElevatedButton(
                                 onPressed: () {
                                   setState(() {
                                     tapCount++;
-                                    plan = '進階';
-                                    print('選擇的合約方案：$plan');
+                                    type = '冥想'; // 漢值给type字段
+                                    print('選擇的合約類型：$type');
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  foregroundColor: Color(0xFF0D3B66),
-                                  backgroundColor: Color(0xFFFDFDFD),
+                                  foregroundColor: const Color(0xFF0D3B66),
+                                  backgroundColor: const Color(0xFFFDFDFD),
                                 ),
-                                child: Text('進階：兩個月內至少達成7週目標'),
+                                child: const Text('冥想'),
                               ),
-                              SizedBox(height: 4.0),
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    tapCount++;
-                                    plan = '困難';
-                                    print('選擇的合約方案：$plan');
-                                  });
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Color(0xFF0D3B66),
-                                  backgroundColor: Color(0xFFFDFDFD),
-                                ),
-                                child: Text('困難：四個月內至少達成15週目標'),
-                              ),
-                            ],
-                          ),
-                        ],
-                        if (tapCount == 5) ...[
-                          Container(
-                            width: 230.0,
-                            child: TextFormField(
-                              onChanged: (value) {
+                            ),
+                          ],
+                        ),
+                      ],
+                      if (tapCount == 4) ...[
+                        const SizedBox(height: 16.0),
+                        Column(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
                                 setState(() {
-                                  inputAmount = value;
+                                  tapCount++;
+                                  plan = '基礎';
+                                  print('選擇的合約方案：$plan');
                                 });
                               },
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                labelText: '輸入金額',
-                                labelStyle: TextStyle(
-                                  color: Color(0xFF0D3B66),
-                                ),
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: const Color(0xFF0D3B66),
+                                backgroundColor: const Color(0xFFFDFDFD),
+                              ),
+                              child: const Text('基礎：一個月內至少達成3週目標'),
+                            ),
+                            const SizedBox(height: 4.0),
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  tapCount++;
+                                  plan = '進階';
+                                  print('選擇的合約方案：$plan');
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: const Color(0xFF0D3B66),
+                                backgroundColor: const Color(0xFFFDFDFD),
+                              ),
+                              child: const Text('進階：兩個月內至少達成7週目標'),
+                            ),
+                            const SizedBox(height: 4.0),
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  tapCount++;
+                                  plan = '困難';
+                                  print('選擇的合約方案：$plan');
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: const Color(0xFF0D3B66),
+                                backgroundColor: const Color(0xFFFDFDFD),
+                              ),
+                              child: const Text('困難：四個月內至少達成15週目標'),
+                            ),
+                          ],
+                        ),
+                      ],
+                      if (tapCount == 5) ...[
+                        SizedBox(
+                          width: 230.0,
+                          child: TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                inputAmount = value;
+                              });
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              labelText: '輸入金額',
+                              labelStyle: TextStyle(
+                                color: Color(0xFF0D3B66),
                               ),
                             ),
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                String value = inputAmount;
-                                print('投入金額：$value');
-                                Map contractData = {
-                                  'user': user,
-                                  'type': type,
-                                  'plan': plan,
-                                  'amount': value
-                                };
-                                print(contractData);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SecondContractPage(
-                                        arguments: contractData),
-                                  ),
-                                );
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Color(0xFF0D3B66),
-                              backgroundColor: Color(0xFFFDFDFD),
-                            ),
-                            child: Text('確定'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              String value = inputAmount;
+                              print('投入金額：$value');
+                              Map contractData = {
+                                'user': user,
+                                'type': type,
+                                'plan': plan,
+                                'amount': value
+                              };
+                              print(contractData);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SecondContractPage(
+                                      arguments: contractData),
+                                ),
+                              );
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: const Color(0xFF0D3B66),
+                            backgroundColor: const Color(0xFFFDFDFD),
                           ),
-                        ],
+                          child: const Text('確定'),
+                        ),
                       ],
-                    ),
+                    ],
                   ),
                 ),
-                Positioned(
-                  bottom: 0,
-                  left: MediaQuery.of(context).size.width * 0.2,
-                  child: Image.asset(
-                    'assets/images/personality_SGF.png',
-                    width: MediaQuery.of(context).size.width * 0.8,
-                  ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: MediaQuery.of(context).size.width * 0.2,
+                child: Image.asset(
+                  'assets/images/personality_SGF.png',
+                  width: MediaQuery.of(context).size.width * 0.8,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         bottomNavigationBar: SnakeNavigationBar.color(
@@ -350,32 +348,32 @@ class _FirstContractPage extends State<FirstContractPage> {
             }
             print(index);
           },
-          items: [
-            const BottomNavigationBarItem(
+          items: const [
+            BottomNavigationBarItem(
                 icon: Icon(
                   Icons.insights,
                   size: 40,
                 ),
                 label: 'tickets'),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 icon: Icon(
                   Icons.workspace_premium_outlined,
                   size: 40,
                 ),
                 label: 'calendar'),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 icon: Icon(
                   Icons.home_outlined,
                   size: 40,
                 ),
                 label: 'home'),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 icon: Icon(
                   Icons.request_quote_outlined,
                   size: 40,
                 ),
                 label: 'microphone'),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 icon: Icon(
                   Icons.manage_accounts_outlined,
                   size: 40,
@@ -418,110 +416,112 @@ class SecondContractPageState extends State<SecondContractPage> {
         backgroundColor: const Color(0xFFFAF0CA),
         automaticallyImplyLeading: false, // 將返回上一頁的按鈕移除
       ),
-      body: Container(
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                margin: EdgeInsets.only(left: 25.0, right: 25.0),
-                padding: EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Color(0xFFFAF0CA),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '立契約人  ' //TODO: 使用者名稱
-                      '\n於約定期間積極養成  $type  習慣'
-                      '\n選擇方案為  $plan'
-                      '\n投入金額為  $amount  元'
-                      '\n\n若未達成設定目標，立契約人同意將投入金額全數捐出；'
-                      '若達成設定目標則由系統將全數金額退還。',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xFF0D3B66),
-                      ),
+      body: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFAF0CA),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '立契約人  ' //TODO: 使用者名稱
+                    '\n於約定期間積極養成  $type  習慣'
+                    '\n選擇方案為  $plan'
+                    '\n投入金額為  $amount  元'
+                    '\n\n若未達成設定目標，立契約人同意將投入金額全數捐出；'
+                    '若達成設定目標則由系統將全數金額退還。',
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      color: Color(0xFF0D3B66),
                     ),
-                    SizedBox(height: 16.0),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Row(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('確定要執行嗎？'),
-                                    content: Text('確認後將無法取消或進行修改'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pushNamed(context, '/pay',
-                                              arguments: {
-                                                'user': user,
-                                              });
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          foregroundColor: Color(0xFF0D3B66),
-                                          backgroundColor: Color(0xFFFDFDFD),
-                                        ),
-                                        child: Text('確定'),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('確定要執行嗎？'),
+                                  content: const Text('確認後將無法取消或進行修改'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, '/pay',
+                                            arguments: {
+                                              'user': user,
+                                            });
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor:
+                                            const Color(0xFF0D3B66),
+                                        backgroundColor:
+                                            const Color(0xFFFDFDFD),
                                       ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          foregroundColor: Color(0xFF0D3B66),
-                                          backgroundColor: Color(0xFFFDFDFD),
-                                        ),
-                                        child: Text('取消'),
+                                      child: const Text('確定'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor:
+                                            const Color(0xFF0D3B66),
+                                        backgroundColor:
+                                            const Color(0xFFFDFDFD),
                                       ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Color(0xFF0D3B66),
-                              backgroundColor: Color(0xFFFDFDFD),
-                            ),
-                            child: Text('確定'),
+                                      child: const Text('取消'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: const Color(0xFF0D3B66),
+                            backgroundColor: const Color(0xFFFDFDFD),
                           ),
-                          SizedBox(width: 8.0),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/contract/initial',
-                                  arguments: {'user': user});
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Color(0xFF0D3B66),
-                              backgroundColor: Color(0xFFFDFDFD),
-                            ),
-                            child: Text('取消/重新輸入'),
+                          child: const Text('確定'),
+                        ),
+                        const SizedBox(width: 8.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/contract/initial',
+                                arguments: {'user': user});
+                          },
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: const Color(0xFF0D3B66),
+                            backgroundColor: const Color(0xFFFDFDFD),
                           ),
-                        ],
-                      ),
+                          child: const Text('取消/重新輸入'),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            Positioned(
-              bottom: 0,
-              left: MediaQuery.of(context).size.width * 0.2,
-              child: Image.asset(
-                'assets/images/personality_SGF.png',
-                width: MediaQuery.of(context).size.width * 0.8,
-              ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: MediaQuery.of(context).size.width * 0.2,
+            child: Image.asset(
+              'assets/images/personality_SGF.png',
+              width: MediaQuery.of(context).size.width * 0.8,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -531,7 +531,8 @@ class SecondContractPageState extends State<SecondContractPage> {
 class AlreadyContractPage extends StatelessWidget {
   User? user = FirebaseAuth.instance.currentUser;
   final Map<String, String> contractData;
-  AlreadyContractPage({required this.contractData, required arguments});
+  AlreadyContractPage(
+      {super.key, required this.contractData, required arguments});
 
   @override
   Widget build(BuildContext context) {
@@ -544,7 +545,7 @@ class AlreadyContractPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           '承諾合約',
           style: TextStyle(
             color: Color(0xFF0D3B66),
@@ -552,97 +553,379 @@ class AlreadyContractPage extends StatelessWidget {
             fontSize: 25,
           ),
         ),
-        backgroundColor: Color(0xFFFAF0CA),
+        backgroundColor: const Color(0xFFFAF0CA),
         automaticallyImplyLeading: false,
       ),
-      body: Container(
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Container(
-                margin: EdgeInsets.only(left: 25.0, right: 25.0),
-                padding: EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Color(0xFFFAF0CA),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '立契約人將依照選擇之方案來養成各項習慣，'
-                      '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
-                      '\n您選擇養成的習慣：$type' //現在還跑不出來
-                      '\n您選擇的方案：$plan'
-                      '\n您所投入的金額：$amount'
-                      '\n距離成功已完成：' //TODO：連後端
-                      '\n本次合約終止日：',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Color(0xFF0D3B66),
-                      ),
+      body: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFAF0CA),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '立契約人將依照選擇之方案來養成各項習慣，'
+                    '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
+                    '\n您選擇養成的習慣：$type' //現在還跑不出來
+                    '\n您選擇的方案：$plan'
+                    '\n您所投入的金額：$amount'
+                    '\n距離成功已完成：' //TODO：連後端
+                    '\n本次合約終止日：',
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      color: Color(0xFF0D3B66),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            Positioned(
-              right: 30,
-              bottom: 230,
-              child: Container(
-                margin: EdgeInsets.only(left: 25.0, right: 25.0),
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/contract/initial',
-                            arguments: {'user': user});
-                        // TODO：連到選擇合約
-                      },
-                      child: Text(
-                        '繼續投入合約',
-                        style: TextStyle(
-                          fontSize: 15.0,
-                          color: Color(0xFF0D3B66),
-                        ),
-                      ),
-                    ),
-                    Text(
-                      '/',
+          ),
+          Positioned(
+            right: 30,
+            bottom: 230,
+            child: Container(
+              margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      //TODO: 判斷式判斷使用者目前投入哪個合約
+                      Navigator.pushNamed(context, '/contract/exercise',
+                          arguments: {'user': user});
+                    },
+                    child: const Text(
+                      '繼續投入合約',
                       style: TextStyle(
                         fontSize: 15.0,
                         color: Color(0xFF0D3B66),
                       ),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/');
-                      },
-                      child: Text(
-                        '回主頁',
-                        style: TextStyle(
-                          fontSize: 15.0,
-                          color: Color(0xFF0D3B66),
-                        ),
+                  ),
+                  const Text(
+                    '/',
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      color: Color(0xFF0D3B66),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/');
+                    },
+                    child: const Text(
+                      '回主頁',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Color(0xFF0D3B66),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               ),
             ),
-            Positioned(
-              bottom: 0,
-              left: MediaQuery.of(context).size.width * 0.2,
-              child: Image.asset(
-                'assets/images/personality_SGF.png',
-                width: MediaQuery.of(context).size.width * 0.8,
-              ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: MediaQuery.of(context).size.width * 0.2,
+            child: Image.asset(
+              'assets/images/personality_SGF.png',
+              width: MediaQuery.of(context).size.width * 0.8,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
+
+class ExerciseContractPage extends StatefulWidget {
+  const ExerciseContractPage({super.key, required arguments});
+
+  @override
+  _ExerciseContractPage createState() => _ExerciseContractPage();
+}
+
+class _ExerciseContractPage extends State<ExerciseContractPage> {
+  User? user = FirebaseAuth.instance.currentUser;
+  String planAnswer = '';
+  TextEditingController _amountController = TextEditingController();
+  late String inputAmount;
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          '承諾合約',
+          style: TextStyle(
+            color: Color(0xFF0D3B66),
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
+        ),
+        backgroundColor: const Color(0xFFFAF0CA),
+        automaticallyImplyLeading: false,
+      ),
+      body: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFAF0CA),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '選擇養成的習慣：運動',
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      color: Color(0xFF0D3B66),
+                    ),
+                  ),
+                  Text(
+                    '選擇投入方案',
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      color: Color(0xFF0D3B66),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      planAnswer = '基礎：一個月內至少達成3週目標';
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFFFDFDFD), // Default button color
+                      onPrimary: Color(0xFF0D3B66), // Default text color
+                    ),
+                    child: Text(
+                      '基礎：一個月內至少達成3週目標',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Color(0xFF0D3B66),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      planAnswer = '進階：兩個月內至少達成7週目標';
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFFFDFDFD), // Default button color
+                      onPrimary: Color(0xFF0D3B66), // Default text color
+                    ),
+                    child: Text(
+                      '進階：兩個月內至少達成7週目標',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Color(0xFF0D3B66),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      planAnswer = '困難：四個月內至少達成15週目標';
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFFFDFDFD), // Default button color
+                      onPrimary: Color(0xFF0D3B66), // Default text color
+                    ),
+                    child: Text(
+                      '困難：四個月內至少達成15週目標',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Color(0xFF0D3B66),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '輸入金額',
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      color: Color(0xFF0D3B66),
+                    ),
+                  ),
+                  TextFormField(
+                    onChanged: (value) {
+                      setState(() {
+                        inputAmount = value;
+                      });
+                    },
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: '輸入金額',
+                      labelStyle: TextStyle(
+                        color: Color(0xFF0D3B66),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class MeditationContractPage extends StatefulWidget {
+  const MeditationContractPage({super.key, required arguments});
+
+  @override
+  _MeditationContractPage createState() => _MeditationContractPage();
+}
+
+class _MeditationContractPage extends State<MeditationContractPage> {
+  User? user = FirebaseAuth.instance.currentUser;
+  String planAnswer = '';
+  TextEditingController _amountController = TextEditingController();
+  late String inputAmount;
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          '承諾合約',
+          style: TextStyle(
+            color: Color(0xFF0D3B66),
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
+        ),
+        backgroundColor: const Color(0xFFFAF0CA),
+        automaticallyImplyLeading: false,
+      ),
+      body: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFAF0CA),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '選擇養成的習慣：冥想',
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      color: Color(0xFF0D3B66),
+                    ),
+                  ),
+                  Text(
+                    '選擇投入方案',
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      color: Color(0xFF0D3B66),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      planAnswer = '基礎：一個月內至少達成3週目標';
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFFFDFDFD), // Default button color
+                      onPrimary: Color(0xFF0D3B66), // Default text color
+                    ),
+                    child: Text(
+                      '基礎：一個月內至少達成3週目標',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Color(0xFF0D3B66),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      planAnswer = '進階：兩個月內至少達成7週目標';
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFFFDFDFD), // Default button color
+                      onPrimary: Color(0xFF0D3B66), // Default text color
+                    ),
+                    child: Text(
+                      '進階：兩個月內至少達成7週目標',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Color(0xFF0D3B66),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      planAnswer = '困難：四個月內至少達成15週目標';
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFFFDFDFD), // Default button color
+                      onPrimary: Color(0xFF0D3B66), // Default text color
+                    ),
+                    child: Text(
+                      '困難：四個月內至少達成15週目標',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Color(0xFF0D3B66),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '輸入金額',
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      color: Color(0xFF0D3B66),
+                    ),
+                  ),
+                  TextFormField(
+                    onChanged: (value) {
+                      setState(() {
+                        inputAmount = value;
+                      });
+                    },
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: '輸入金額',
+                      labelStyle: TextStyle(
+                        color: Color(0xFF0D3B66),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
