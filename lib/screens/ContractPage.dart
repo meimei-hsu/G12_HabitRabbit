@@ -11,11 +11,6 @@ class FirstContractPage extends StatefulWidget {
   _FirstContractPage createState() => _FirstContractPage();
 }
 
-final BorderRadius _borderRadius = const BorderRadius.only(
-  topLeft: Radius.circular(25),
-  topRight: Radius.circular(25),
-);
-
 ShapeBorder? bottomBarShape = const RoundedRectangleBorder(
     borderRadius: BorderRadius.only(
   topLeft: Radius.circular(25),
@@ -104,6 +99,19 @@ class _FirstContractPage extends State<FirstContractPage> {
                             color: Color(0xFF0D3B66),
                           ),
                         ),
+                        if (tapCount != 1 &&
+                            tapCount != 2 &&
+                            tapCount != 3 &&
+                            tapCount != 4 &&
+                            tapCount != 5) ...[
+                          Text(
+                            '➤ 點擊前往下一步',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              color: Color(0xFF0D3B66),
+                            ),
+                          ),
+                        ],
                         if (tapCount == 2) ...[
                           SizedBox(height: 16.0),
                           Row(
@@ -116,8 +124,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary:Color(0xFFFDFDFD),
-                                    onPrimary: Color(0xFF0D3B66),
+                                    foregroundColor: Color(0xFF0D3B66),
+                                    backgroundColor: Color(0xFFFDFDFD),
                                   ),
                                   child: Text('確定！我要挑戰'),
                                 ),
@@ -126,11 +134,11 @@ class _FirstContractPage extends State<FirstContractPage> {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // TODO: 回到主頁
+                                    Navigator.pushNamed(context, '/');
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color(0xFFFDFDFD),
-                                    onPrimary: Color(0xFF0D3B66),
+                                    foregroundColor: Color(0xFF0D3B66),
+                                    backgroundColor: Color(0xFFFDFDFD),
                                   ),
                                   child: Text('先不要...謝謝再連絡'),
                                 ),
@@ -152,8 +160,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary:Color(0xFFFDFDFD),
-                                    onPrimary: Color(0xFF0D3B66),
+                                    foregroundColor: Color(0xFF0D3B66),
+                                    backgroundColor: Color(0xFFFDFDFD),
                                   ),
                                   child: Text('運動'),
                                 ),
@@ -169,8 +177,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    primary:Color(0xFFFDFDFD),
-                                    onPrimary: Color(0xFF0D3B66),
+                                    foregroundColor: Color(0xFF0D3B66),
+                                    backgroundColor: Color(0xFFFDFDFD),
                                   ),
                                   child: Text('冥想'),
                                 ),
@@ -191,8 +199,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary:Color(0xFFFDFDFD),
-                                  onPrimary: Color(0xFF0D3B66),
+                                  foregroundColor: Color(0xFF0D3B66),
+                                  backgroundColor: Color(0xFFFDFDFD),
                                 ),
                                 child: Text('基礎：一個月內至少達成3週目標'),
                               ),
@@ -206,8 +214,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary:Color(0xFFFDFDFD),
-                                  onPrimary: Color(0xFF0D3B66),
+                                  foregroundColor: Color(0xFF0D3B66),
+                                  backgroundColor: Color(0xFFFDFDFD),
                                 ),
                                 child: Text('進階：兩個月內至少達成7週目標'),
                               ),
@@ -221,8 +229,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary:Color(0xFFFDFDFD),
-                                  onPrimary: Color(0xFF0D3B66),
+                                  foregroundColor: Color(0xFF0D3B66),
+                                  backgroundColor: Color(0xFFFDFDFD),
                                 ),
                                 child: Text('困難：四個月內至少達成15週目標'),
                               ),
@@ -242,7 +250,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                               decoration: InputDecoration(
                                 labelText: '輸入金額',
                                 labelStyle: TextStyle(
-                                  color: Color(0xFF0D3B66), // 设置标签文本的颜色为特定颜色
+                                  color: Color(0xFF0D3B66),
                                 ),
                               ),
                             ),
@@ -269,8 +277,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              primary:Color(0xFFFDFDFD),
-                              onPrimary: Color(0xFF0D3B66),
+                              foregroundColor: Color(0xFF0D3B66),
+                              backgroundColor: Color(0xFFFDFDFD),
                             ),
                             child: Text('確定'),
                           ),
@@ -283,7 +291,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                   bottom: 0,
                   left: MediaQuery.of(context).size.width * 0.2,
                   child: Image.asset(
-                    'assets/images/personality_S₁GS₂.png',
+                    'assets/images/personality_SGF.png',
                     width: MediaQuery.of(context).size.width * 0.8,
                   ),
                 ),
@@ -336,7 +344,6 @@ class _FirstContractPage extends State<FirstContractPage> {
               Navigator.pushNamed(context, '/contract/initial',
                   arguments: {'user': user});
             }
-            //3
             if (index == 4) {
               Navigator.pushNamed(context, '/settings',
                   arguments: {'user': user});
@@ -392,7 +399,8 @@ class SecondContractPage extends StatefulWidget {
 }
 
 class SecondContractPageState extends State<SecondContractPage> {
-  Map flagToPlan = {"4": "5 週 4 旗", "8": "12 週 8 旗", "12": "18 週 12 旗"};
+  User? user = FirebaseAuth.instance.currentUser;
+  //Map flagToPlan = {"4": "5 週 4 旗", "8": "12 週 8 旗", "12": "18 週 12 旗"};
 
   @override
   Widget build(BuildContext context) {
@@ -456,11 +464,13 @@ class SecondContractPageState extends State<SecondContractPage> {
                                     actions: [
                                       TextButton(
                                         onPressed: () {
-                                          // TODO: 跳到 LINEPay
+                                          Navigator.pushNamed(
+                                              context, '/pay',
+                                              arguments: {'user': user,});
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          primary:Color(0xFFFDFDFD),
-                                          onPrimary: Color(0xFF0D3B66),
+                                          foregroundColor: Color(0xFF0D3B66),
+                                          backgroundColor: Color(0xFFFDFDFD),
                                         ),
                                         child: Text('確定'),
                                       ),
@@ -469,8 +479,8 @@ class SecondContractPageState extends State<SecondContractPage> {
                                           Navigator.of(context).pop();
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          primary:Color(0xFFFDFDFD),
-                                          onPrimary: Color(0xFF0D3B66),
+                                          foregroundColor: Color(0xFF0D3B66),
+                                          backgroundColor: Color(0xFFFDFDFD),
                                         ),
                                         child: Text('取消'),
                                       ),
@@ -480,30 +490,20 @@ class SecondContractPageState extends State<SecondContractPage> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              primary:Color(0xFFFDFDFD),
-                              onPrimary: Color(0xFF0D3B66),
+                              foregroundColor: Color(0xFF0D3B66),
+                              backgroundColor: Color(0xFFFDFDFD),
                             ),
                             child: Text('確定'),
                           ),
                           SizedBox(width: 8.0),
                           ElevatedButton(
                             onPressed: () {
-                              setState(() {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => FirstContractPage(
-                                      arguments: {
-                                        'user': widget.arguments['user']
-                                      },
-                                    ),
-                                  ),
-                                );
-                              });
+                              Navigator.pushNamed(context, '/contract/initial',
+                                  arguments: {'user': user});
                             },
                             style: ElevatedButton.styleFrom(
-                              primary:Color(0xFFFDFDFD),
-                              onPrimary: Color(0xFF0D3B66),
+                              foregroundColor: Color(0xFF0D3B66),
+                              backgroundColor: Color(0xFFFDFDFD),
                             ),
                             child: Text('取消/重新輸入'),
                           ),
@@ -512,6 +512,112 @@ class SecondContractPageState extends State<SecondContractPage> {
                     ),
                   ],
                 ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: MediaQuery.of(context).size.width * 0.2,
+              child: Image.asset(
+                'assets/images/personality_SGF.png',
+                width: MediaQuery.of(context).size.width * 0.8,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//已立過合約畫面
+class AlreadyContractPage extends StatelessWidget {
+  final Map<String, String> contractData;
+  AlreadyContractPage({required this.contractData, required arguments});
+
+  @override
+  Widget build(BuildContext context) {
+    String? type = contractData['type'];
+    String? plan = contractData['plan'];
+    String? amount = contractData['amount'];
+    // Use the contractData to display contract details, execution progress, and contract duration.
+    // Build the UI and logic for showing already committed contract details.
+    // You can use contractData['type'], contractData['plan'], contractData['amount'], etc.
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          '承諾合約',
+          style: TextStyle(
+            color: Color(0xFFFDFDFD),
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
+        ),
+        backgroundColor: Color(0xFF98D98E),
+        automaticallyImplyLeading: false,
+      ),
+      body: Container(
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                margin: EdgeInsets.only(left: 25.0, right: 25.0),
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Color(0xFF98D98E),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '立契約人將依照選擇之方案來養成各項習慣，'
+                      '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
+                      '\n您選擇養成的習慣：$type'
+                      '\n您選擇的方案：$plan'
+                      '\n您所投入的金額：$amount'
+                      '\n距離成功已完成：' //TODO：抓後端資料 //${widget.arguments['contractData']['flag']}
+                      '\n本次合約終止日：', //TODO：抓後端資料 //${widget.arguments['contractData']['endDay'].split(" ")[0]}
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color(0xFFFDFDFD),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 25.0, right: 25.0),
+              padding: EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      // TODO：連到選擇合約
+                    },
+                    child: Text(
+                      '繼續投入合約',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Color(0xFF98D98E),
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/');
+                    },
+                    child: Text(
+                      '回主頁',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        color: Color(0xFF98D98E),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
             Positioned(

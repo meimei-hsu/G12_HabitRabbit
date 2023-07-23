@@ -21,6 +21,7 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   User? user = FirebaseAuth.instance.currentUser;
   bool isFetchingData = true;
+  bool userHasCommittedToContract = false; //TODO: 從後端抓有沒有投入合約?
 
   @override
   void initState() {
@@ -547,10 +548,13 @@ class _HomepageState extends State<Homepage> {
                   Navigator.pushNamed(context, '/');
                 }
                 if(index == 3){
+                  if (userHasCommittedToContract){
+                    Navigator.pushNamed(context, '/contract/already',
+                        arguments: {'contractData': contractData,'user': user});
+                  }else
                   Navigator.pushNamed(context, '/contract/initial',
                       arguments: {'user': user});
                 }
-                //3
                  if(index == 4){
               Navigator.pushNamed(context, '/settings',
                   arguments: {'user': user});
