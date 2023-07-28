@@ -16,7 +16,7 @@ import 'package:g12/screens/VideoPage.dart';
 //配置路由規則
 final routes = {
   '/': (context) => const Homepage(),
-  '/register': (context) => const RegisterPage(isLoginPage: true),
+  '/register': (context) => const RegisterPage(),
   '/statistic': (context, {arguments}) => StatisticPage(arguments: arguments),
   '/countdown': (context, {arguments}) => CountdownPage(arguments: arguments),
   '/exercise': (context, {arguments}) => ExercisePage(arguments: arguments),

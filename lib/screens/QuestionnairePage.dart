@@ -1309,6 +1309,7 @@ class _ResultPage extends State<ResultPage> {
                     await UserDB.update(userInfo);
                     await PlanAlgo.execute();
                     if (!mounted) return;
+                    // FIXME: 好像沒成功跳頁到首頁(by 翎翎)
                     Navigator.pushNamedAndRemoveUntil(
                         context, '/', (Route<dynamic> route) => false);
                   },

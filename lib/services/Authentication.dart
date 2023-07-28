@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// TODO: 驗證錯誤訊息改為中文
 class FireAuth {
   // For registering a new user
   static Future<User?> register({
@@ -129,7 +130,7 @@ class Validator {
     }
 
     if (name.isEmpty) {
-      return 'Name can\'t be empty.\n';
+      return '\u26A0 暱稱不得為空。';
     }
 
     return null;
@@ -144,9 +145,9 @@ class Validator {
         r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
 
     if (email.isEmpty) {
-      return 'Email can\'t be empty.\n';
+      return '\u26A0 電子郵件地址不得為空。';
     } else if (!emailRegExp.hasMatch(email)) {
-      return 'Enter a correct email.\n';
+      return '\u26A0 請輸入有效的電子郵件地址。';
     }
 
     return null;
@@ -158,9 +159,9 @@ class Validator {
     }
 
     if (password.isEmpty) {
-      return 'Password can\'t be empty.\n';
+      return '\u26A0 密碼不得為空。';
     } else if (password.length < 6) {
-      return 'Enter a password with length at least 6.\n';
+      return '\u26A0 這個密碼太短了。至少要有 6 個字元。';
     }
 
     return null;

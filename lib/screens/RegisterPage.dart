@@ -6,595 +6,794 @@ import 'package:g12/services/PlanAlgo.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 
-class RegisterPage extends StatefulWidget {
-  final bool isLoginPage;
+OutlineInputBorder enabledBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.circular(20),
+  borderSide: const BorderSide(
+    color: Color(0xff0d3b66),
+    width: 3,
+  ),
+);
 
-  const RegisterPage({Key? key, required this.isLoginPage}) : super(key: key);
+OutlineInputBorder focusedAndErrorBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.circular(20),
+  borderSide: const BorderSide(
+    color: Color(0xFFFFA493),
+    width: 3,
+  ),
+);
+
+OutlineInputBorder errorBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.circular(20),
+  borderSide: const BorderSide(
+    color: Colors.green,
+    width: 3,
+  ),
+);
+
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  RegisterPageState createState() => RegisterPageState();
 }
 
-// TODO: 將各頁面改為 class 並加入路徑(參考小戴做的頁面)
-class _RegisterPageState extends State<RegisterPage> {
-  late bool isLoginPage;
+class RegisterPageState extends State<RegisterPage> {
+  bool showSignIn = true;
+
+  void toggleView() {
+    setState(() => showSignIn = !showSignIn);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (showSignIn) {
+      return SignupForm(toggleView: toggleView);
+    } else {
+      return LoginForm(
+        toggleView: toggleView,
+      );
+    }
+  }
+}
+
+class LoginForm extends StatefulWidget {
+  final Function toggleView;
+
+  const LoginForm({super.key, required this.toggleView});
+
+  @override
+  LoginFormState createState() => LoginFormState();
+}
+
+class LoginFormState extends State<LoginForm> {
+  GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+
   bool isProcessing = false;
+  bool isPasswordVisible = false;
+
+  final TextEditingController _accountController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        resizeToAvoidBottomInset: true,
+        //backgroundColor: const Color(0xfffaf0ca), // TODO: 底色設為圖片背景色
+        body: SafeArea(
+            child: Column(
+              children: [
+                // TODO: 調整 flex (根據背景圖?)
+                Expanded(
+                  flex: 2,
+                  child: Image.asset(
+                    "assets/images/personality_SGF.png",
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+                Expanded(
+                    flex: 5,
+                    child: SingleChildScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      // Disable scrolling
+                      child: Form(
+                        key: loginFormKey,
+                        child: Container(
+                          padding: const EdgeInsets.only(
+                              right: 30, left: 30, top: 80, bottom: 140),
+                          decoration: BoxDecoration(
+                              color: const Color(0xfffdeed9),
+                              border: Border.all(color: const Color(0xffffeed9)),
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30))),
+                          child: Column(
+                            children: [
+                              // TODO: 標題內容 or 藝術字
+                              const Text("一起",
+                                  style: TextStyle(
+                                      color: Color(0xff0d3b66),
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      height: 1)),
+                              const SizedBox(height: 5),
+                              const Text("養成習慣吧！",
+                                  style: TextStyle(
+                                      color: Color(0xff0d3b66),
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      height: 1)),
+                              const SizedBox(height: 30),
+                              /*Container(
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        '帳號',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            backgroundColor: Color(0xfffaf0ca),
+                            color: Color(0xff0d3b66),
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 3,
+                            height: 1),
+                      ),
+                    ),
+                    const SizedBox(height: 10),*/
+                              TextFormField(
+                                controller: _accountController,
+                                validator: Validator.validateEmail,
+                                autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  prefixIcon: const Icon(
+                                    Icons.account_circle,
+                                    color: Color(0xff0d3b66),
+                                  ),
+                                  //errorText: '',
+                                  labelText: '帳號',
+                                  hintText: '請輸入電子郵件地址',
+                                  enabledBorder: enabledBorder,
+                                  errorBorder: focusedAndErrorBorder,
+                                  focusedBorder: focusedAndErrorBorder,
+                                  focusedErrorBorder: focusedAndErrorBorder,
+                                  labelStyle:
+                                  const TextStyle(color: Color(0xff0d3b66)),
+                                  hintStyle: const TextStyle(color: Colors.grey),
+                                  errorStyle: const TextStyle(
+                                      height: 1,
+                                      color: Color(0xFFFFA493),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                  errorMaxLines: 1,
+                                  filled: true,
+                                  fillColor: Colors.white70,
+                                ),
+                                cursorColor: const Color(0xFFFFA493),
+                                style: const TextStyle(fontSize: 20),
+                                keyboardType: TextInputType.text,
+                              ),
+                              const SizedBox(height: 30),
+                              /*Container(
+                      alignment: Alignment.centerLeft,
+                      child: const Text(
+                        '密碼',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            backgroundColor: Color(0xfffaf0ca),
+                            color: Color(0xff0d3b66),
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 3,
+                            height: 1),
+                      ),
+                    ),
+                    const SizedBox(height: 10),*/
+                              TextFormField(
+                                controller: _passwordController,
+                                validator: Validator.validatePassword,
+                                autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  prefixIcon: const Icon(
+                                    Icons.lock_rounded,
+                                    color: Color(0xff0d3b66),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      // Based on passwordVisible state choose the icon
+                                      isPasswordVisible
+                                          ? Icons.visibility_rounded
+                                          : Icons.visibility_off_rounded,
+                                      color: const Color(0xff0d3b66),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        isPasswordVisible = !isPasswordVisible;
+                                      });
+                                    },
+                                  ),
+                                  //errorText: '',
+                                  labelText: '密碼',
+                                  hintText: '至少 6 位數字',
+                                  enabledBorder: enabledBorder,
+                                  errorBorder: focusedAndErrorBorder,
+                                  focusedBorder: focusedAndErrorBorder,
+                                  focusedErrorBorder: focusedAndErrorBorder,
+                                  labelStyle:
+                                  const TextStyle(color: Color(0xff0d3b66)),
+                                  hintStyle: const TextStyle(color: Colors.grey),
+                                  errorStyle: const TextStyle(
+                                      height: 1,
+                                      color: Color(0xFFFFA493),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                  errorMaxLines: 1,
+                                  filled: true,
+                                  fillColor: Colors.white70,
+                                ),
+                                cursorColor: const Color(0xFFFFA493),
+                                style: const TextStyle(fontSize: 20),
+                                keyboardType: TextInputType.text,
+                                obscureText: !isPasswordVisible,
+                              ),
+                              const SizedBox(height: 20),
+                              const Align(
+                                alignment: Alignment.centerRight,
+                                child: Text("忘記密碼？", // TODO: 有忘記密碼的功能嗎？
+                                    style: TextStyle(
+                                        color: Color(0xFFFFA493),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              const SizedBox(height: 20),
+                              isProcessing
+                                  ? const CircularProgressIndicator()
+                                  : ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFFFA493),
+                                  minimumSize: const Size.fromHeight(50),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  loginFormKey.currentState?.save();
+                                  setState(() {
+                                    isProcessing = true;
+                                  });
+
+                                  String email = _accountController.text;
+                                  String password = _passwordController.text;
+                                  print("$email : $password");
+
+                                  String errMsg = "";
+
+                                  if (loginFormKey.currentState!.validate()) {
+                                    try {
+                                      User? user = await FireAuth.signIn(
+                                        email: email,
+                                        password: password,
+                                      );
+
+                                      if (user != null) {
+                                        await PlanAlgo.execute();
+                                        if (!mounted) return;
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            '/',
+                                                (Route<dynamic> route) => false);
+                                      }
+                                    } catch (e) {
+                                      errMsg = "$e";
+                                    }
+                                  }
+                                  /*errMsg +=
+                                        Validator.validateEmail(email) ?? "";
+                                    errMsg +=
+                                        Validator.validatePassword(password) ??
+                                            "";
+
+                                    if (errMsg.isEmpty) {
+                                      try {
+                                        User? user = await FireAuth.signIn(
+                                          email: email,
+                                          password: password,
+                                        );
+
+                                        if (user != null) {
+                                          await PlanAlgo.execute();
+                                          if (!mounted) return;
+                                          Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              '/',
+                                              (Route<dynamic> route) => false);
+                                        }
+                                      } catch (e) {
+                                        errMsg = "$e";
+                                      }
+                                    }*/
+
+                                  if (errMsg.isNotEmpty) {
+                                    if (!mounted) return;
+                                    MotionToast(
+                                      icon: Icons.done_all_rounded,
+                                      primaryColor: const Color(0xffffa493),
+                                      description: Text(
+                                        errMsg,
+                                        style: const TextStyle(
+                                          color: Color(0xff0d3b66),
+                                          fontSize: 16,
+                                          letterSpacing: 0,
+                                          fontWeight: FontWeight.bold,
+                                          height: 1,
+                                        ),
+                                      ),
+                                      position: MotionToastPosition.bottom,
+                                      animationType: AnimationType.fromBottom,
+                                      animationCurve: Curves.bounceIn,
+                                      //displaySideBar: false,
+                                    ).show(context);
+                                  }
+
+                                  setState(() {
+                                    isProcessing = false;
+                                  });
+                                },
+                                child: const Text(
+                                  "登入",
+                                  style: TextStyle(
+                                    color: Color(0xFF0D3B66),
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  const Text(
+                                    "還沒有帳號？ ",
+                                    style: TextStyle(
+                                      color: Color(0xff0d3b66),
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      widget.toggleView();
+                                    },
+                                    child: const Text(
+                                      '註冊',
+                                      style: TextStyle(
+                                          color: Color(0xffffa493),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ))
+              ],
+            )));
+  }
+}
+
+class SignupForm extends StatefulWidget {
+  final Function toggleView;
+
+  const SignupForm({super.key, required this.toggleView});
+
+  @override
+  SignupFormState createState() => SignupFormState();
+}
+
+class SignupFormState extends State<SignupForm> {
+  GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
+
+  bool isProcessing = false;
+  bool isPasswordVisible = false;
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _accountController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
-  //_RegisterPageState({required this.title, required this.isLoginPage})
-  void initState() {
-    super.initState();
-    isLoginPage = widget.isLoginPage; //初始化
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xfffaf0ca),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              // Logo
-              'assets/images/Logo.jpg', // 相對路徑
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFA493),
-                  ),
-                  onPressed: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => _buildLoginForm(context),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    "登入",
-                    style: TextStyle(
-                      color: Color(0xFF0D3B66),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+        resizeToAvoidBottomInset: true,
+        //backgroundColor: const Color(0xfffaf0ca), // TODO: 底色設為圖片背景色
+        body: SafeArea(
+          child: Column(
+            children: [
+              // TODO: 調整 flex (根據背景圖?)
+              Expanded(
+                flex: 2,
+                child: Image.asset(
+                  "assets/images/personality_SGF.png",
+                  width: double.infinity,
+                  fit: BoxFit.fitWidth,
                 ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFA493),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        //builder: (context) => RegisterPage(title: 'Signup', isLoginPage: false),
-                        builder: (context) => _buildRegisterForm(context),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    "註冊新帳號",
-                    style: TextStyle(
-                      color: Color(0xFF0D3B66),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+              ),
+              Expanded(
+                  flex: 5,
+                  child: SingleChildScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      // Disable scrolling
+                      child: Form(
+                          key: signupFormKey,
+                          child: Container(
+                              padding: const EdgeInsets.only(
+                                  right: 30, left: 30, top: 50, bottom: 130),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xfffdeed9),
+                                  border: Border.all(
+                                      color: const Color(0xffffeed9)),
+                                  borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(30),
+                                      topRight: Radius.circular(30))),
+                              child: Column(
+                                children: [
+                                  // TODO: 標題內容 or 藝術字
+                                  const Text("一起",
+                                      style: TextStyle(
+                                          color: Color(0xff0d3b66),
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                          height: 1)),
+                                  const SizedBox(height: 5),
+                                  const Text("養成習慣吧！",
+                                      style: TextStyle(
+                                          color: Color(0xff0d3b66),
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                          height: 1)),
+                                  const SizedBox(height: 30),
+                                  /*Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: const Text(
+                                      '暱稱',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          backgroundColor: Color(0xfffaf0ca),
+                                          color: Color(0xff0d3b66),
+                                          fontSize: 25,
+                                          letterSpacing: 3,
+                                          fontWeight: FontWeight.bold,
+                                          height: 1),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),*/
+                                  TextFormField(
+                                    controller: _nameController,
+                                    validator: Validator.validateName,
+                                    autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      prefixIcon: const Icon(
+                                        Icons.abc_rounded,
+                                        color: Color(0xff0d3b66),
+                                      ),
+                                      labelText: '暱稱',
+                                      hintText: '請輸入暱稱',
+                                      //errorText: '',
+                                      enabledBorder: enabledBorder,
+                                      errorBorder: focusedAndErrorBorder,
+                                      focusedBorder: focusedAndErrorBorder,
+                                      focusedErrorBorder: focusedAndErrorBorder,
+                                      labelStyle: const TextStyle(
+                                          color: Color(0xff0d3b66)),
+                                      hintStyle:
+                                      const TextStyle(color: Colors.grey),
+                                      errorStyle: const TextStyle(
+                                          height: 1,
+                                          color: Color(0xFFFFA493),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                      errorMaxLines: 1,
+                                      filled: true,
+                                      fillColor: Colors.white70,
+                                    ),
+                                    cursorColor: const Color(0xFFFFA493),
+                                    style: const TextStyle(fontSize: 20),
+                                    keyboardType: TextInputType.text,
+                                    obscureText: false,
+                                  ),
+                                  const SizedBox(height: 30),
+                                  /*Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: const Text(
+                                      '帳號',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          backgroundColor: Color(0xfffaf0ca),
+                                          color: Color(0xff0d3b66),
+                                          fontSize: 25,
+                                          letterSpacing: 3,
+                                          fontWeight: FontWeight.bold,
+                                          height: 1),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),*/
+                                  TextFormField(
+                                    controller: _accountController,
+                                    validator: Validator.validateEmail,
+                                    autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      prefixIcon: const Icon(
+                                        Icons.account_circle,
+                                        color: Color(0xff0d3b66),
+                                      ),
+                                      labelText: '帳號',
+                                      hintText: '請輸入電子郵件地址',
+                                      //errorText: '',
+                                      enabledBorder: enabledBorder,
+                                      errorBorder: focusedAndErrorBorder,
+                                      focusedBorder: focusedAndErrorBorder,
+                                      focusedErrorBorder: focusedAndErrorBorder,
+                                      labelStyle: const TextStyle(
+                                          color: Color(0xff0d3b66)),
+                                      hintStyle:
+                                      const TextStyle(color: Colors.grey),
+                                      errorStyle: const TextStyle(
+                                          height: 1,
+                                          color: Color(0xFFFFA493),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                      errorMaxLines: 1,
+                                      filled: true,
+                                      fillColor: Colors.white70,
+                                    ),
+                                    cursorColor: const Color(0xFFFFA493),
+                                    style: const TextStyle(fontSize: 20),
+                                    keyboardType: TextInputType.text,
+                                    obscureText: false,
+                                  ),
+                                  const SizedBox(height: 30),
+                                  /*Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: const Text(
+                                      '密碼',
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          backgroundColor: Color(0xfffaf0ca),
+                                          color: Color(0xff0d3b66),
+                                          fontSize: 25,
+                                          letterSpacing: 3,
+                                          fontWeight: FontWeight.bold,
+                                          height: 1),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),*/
+                                  TextFormField(
+                                    controller: _passwordController,
+                                    validator: Validator.validatePassword,
+                                    autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      prefixIcon: const Icon(
+                                        Icons.lock,
+                                        color: Color(0xff0d3b66),
+                                      ),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          // Based on passwordVisible state choose the icon
+                                          isPasswordVisible
+                                              ? Icons.visibility_rounded
+                                              : Icons.visibility_off_rounded,
+                                          color: const Color(0xff0d3b66),
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            isPasswordVisible =
+                                            !isPasswordVisible;
+                                          });
+                                        },
+                                      ),
+                                      labelText: '密碼',
+                                      hintText: '至少 6 位數字或英文',
+                                      //errorText: '',
+                                      enabledBorder: enabledBorder,
+                                      errorBorder: focusedAndErrorBorder,
+                                      focusedBorder: focusedAndErrorBorder,
+                                      focusedErrorBorder: focusedAndErrorBorder,
+                                      labelStyle: const TextStyle(
+                                          color: Color(0xff0d3b66)),
+                                      hintStyle:
+                                      const TextStyle(color: Colors.grey),
+                                      errorStyle: const TextStyle(
+                                          height: 1,
+                                          color: Color(0xFFFFA493),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                      errorMaxLines: 1,
+                                      filled: true,
+                                      fillColor: Colors.white70,
+                                    ),
+                                    cursorColor: const Color(0xFFFFA493),
+                                    style: const TextStyle(fontSize: 20),
+                                    keyboardType: TextInputType.text,
+                                    obscureText: !isPasswordVisible,
+                                  ),
+                                  const SizedBox(height: 30),
+                                  isProcessing
+                                      ? const CircularProgressIndicator()
+                                      : ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor:
+                                      const Color(0xFFFFA493),
+                                      minimumSize:
+                                      const Size.fromHeight(50),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      signupFormKey.currentState?.save();
+                                      setState(() {
+                                        isProcessing = true;
+                                      });
+
+                                      String name = _nameController.text;
+                                      String email =
+                                          _accountController.text;
+                                      String password =
+                                          _passwordController.text;
+
+                                      String errMsg = "";
+
+                                      if (signupFormKey.currentState!
+                                          .validate()) {
+                                        try {
+                                          User? user =
+                                          await FireAuth.register(
+                                            name: name,
+                                            email: email,
+                                            password: password,
+                                          );
+
+                                          if (user != null) {
+                                            if (!mounted) return;
+                                            Navigator
+                                                .pushNamedAndRemoveUntil(
+                                                context,
+                                                '/questionnaire',
+                                                    (Route<dynamic>
+                                                route) =>
+                                                false,
+                                                arguments: {
+                                                  "part": 0
+                                                });
+                                          }
+                                        } catch (e) {
+                                          errMsg = "$e";
+                                        }
+                                      }
+
+                                      /*String name = _nameController.text;
+                                            String email =
+                                                _accountController.text;
+                                            String password =
+                                                _passwordController.text;
+                                            print("$email : $password");
+
+                                            String errMsg = "";
+                                            errMsg +=
+                                                Validator.validateName(name) ??
+                                                    "";
+                                            errMsg += Validator.validateEmail(
+                                                    email) ??
+                                                "";
+                                            errMsg +=
+                                                Validator.validatePassword(
+                                                        password) ??
+                                                    "";
+
+                                            if (errMsg.isEmpty) {
+                                              try {
+                                                User? user =
+                                                    await FireAuth.register(
+                                                  name: name,
+                                                  email: email,
+                                                  password: password,
+                                                );
+
+                                                if (user != null) {
+                                                  if (!mounted) return;
+                                                  Navigator
+                                                      .pushNamedAndRemoveUntil(
+                                                          context,
+                                                          '/questionnaire',
+                                                          (Route<dynamic>
+                                                                  route) =>
+                                                              false,
+                                                          arguments: {
+                                                        "part": 0
+                                                      });
+                                                }
+                                              } catch (e) {
+                                                errMsg = "$e";
+                                              }
+                                            }*/
+
+                                      if (errMsg.isNotEmpty) {
+                                        if (!mounted) return;
+                                        MotionToast(
+                                          icon: Icons.done_all_rounded,
+                                          primaryColor:
+                                          const Color(0xffffa493),
+                                          description: Text(
+                                            errMsg,
+                                            style: const TextStyle(
+                                              color: Color(0xff0d3b66),
+                                              fontSize: 16,
+                                              letterSpacing: 0,
+                                              fontWeight: FontWeight.bold,
+                                              height: 1,
+                                            ),
+                                          ),
+                                          position:
+                                          MotionToastPosition.bottom,
+                                          animationType:
+                                          AnimationType.fromBottom,
+                                          animationCurve: Curves.bounceIn,
+                                          //displaySideBar: false,
+                                        ).show(context);
+                                      }
+
+                                      setState(() {
+                                        isProcessing = false;
+                                      });
+                                    },
+                                    child: const Text(
+                                      "註冊",
+                                      style: TextStyle(
+                                        color: Color(0xFF0D3B66),
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      const Text(
+                                        "已經有帳號嗎？ ",
+                                        style: TextStyle(
+                                          color: Color(0xff0d3b66),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          widget.toggleView();
+                                        },
+                                        child: const Text(
+                                          '登入',
+                                          style: TextStyle(
+                                              color: Color(0xffffa493),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ))))),
+            ],
+          ),
         ));
-  }
-
-  Widget _buildLoginForm(BuildContext context) {
-    //登錄
-    // TODO: 記住帳號密碼
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: const Color(0xfffaf0ca),
-      appBar: AppBar(
-        elevation: 0,
-        title: const Text(
-          '登入',
-          textAlign: TextAlign.left,
-          style: TextStyle(
-              color: Color(0xff0d3b66),
-              fontSize: 35,
-              fontWeight: FontWeight.bold,
-              height: 1),
-        ),
-        actions: const [],
-        //Text(widget.title, style: TextStyle(color: Color(0xff0d3b66))),
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false, //關掉返回鍵
-      ),
-      body: Column(
-        //mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          /*
-          const SizedBox(height: 50),
-          Image.asset(
-            // Logo
-            'images/Logo.jpg', // 相對路徑
-          ),*/
-          const SizedBox(height: 50),
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.only(left: 20),
-            child: const Text(
-              '我的帳號',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  backgroundColor: Color(0xfffaf0ca),
-                  color: Color(0xff0d3b66),
-                  fontSize: 25,
-                  letterSpacing:
-                      0 /*percentages not used in flutter. defaulting to zero*/,
-                  fontWeight: FontWeight.bold,
-                  height: 1),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextField(
-              controller: _accountController,
-              decoration: InputDecoration(
-                isDense: true,
-                // TODO: Let the icon change color when being selected
-                prefixIcon: const Icon(
-                  Icons.account_circle,
-                  color: Color(0xff0d3b66),
-                ),
-                //labelText: '帳號',
-                hintText: '請輸入電子信箱',
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(
-                    color: Color(0xff0d3b66),
-                    width: 3,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFFFA493),
-                    width: 3,
-                  ),
-                ),
-                //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: const TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: Colors.white70,
-              ),
-              cursorColor: const Color(0xFFFFA493),
-              style: const TextStyle(fontSize: 20),
-              keyboardType: TextInputType.text,
-              obscureText: false,
-              //controller: _controller,
-            ),
-          ),
-          const SizedBox(height: 30),
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: const Text(
-              '我的密碼',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  backgroundColor: Color(0xfffaf0ca),
-                  color: Color(0xff0d3b66),
-                  fontSize: 25,
-                  letterSpacing:
-                      0 /*percentages not used in flutter. defaulting to zero*/,
-                  fontWeight: FontWeight.bold,
-                  height: 1),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                isDense: true,
-                prefixIcon: const Icon(
-                  Icons.lock,
-                  color: Color(0xff0d3b66),
-                ),
-                //labelText: '密碼',
-                hintText: '請輸入密碼',
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(
-                    color: Color(0xff0d3b66),
-                    width: 3,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFFFA493),
-                    width: 3,
-                  ),
-                ),
-                //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: const TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: Colors.white70,
-              ),
-              cursorColor: const Color(0xFFFFA493),
-              style: const TextStyle(fontSize: 20),
-              keyboardType: TextInputType.text,
-              obscureText: true,
-              //controller: _controller,
-            ),
-          ),
-          const SizedBox(height: 30),
-          isProcessing
-              ? const CircularProgressIndicator()
-              : ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFA493),
-                  ),
-                  onPressed: () async {
-                    setState(() {
-                      isProcessing = true;
-                    });
-
-                    String email = _accountController.text;
-                    String password = _passwordController.text;
-                    print("$email : $password");
-
-                    String errMsg = "";
-                    errMsg += Validator.validateEmail(email) ?? "";
-                    errMsg += Validator.validatePassword(password) ?? "";
-
-                    if (errMsg.isEmpty) {
-                      try {
-                        User? user = await FireAuth.signIn(
-                          email: email,
-                          password: password,
-                        );
-
-                        if (user != null) {
-                          await PlanAlgo.execute();
-                          if (!mounted) return;
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, '/', (Route<dynamic> route) => false);
-                        }
-                      } catch (e) {
-                        errMsg = "$e";
-                      }
-                    }
-
-                    if (errMsg.isNotEmpty) {
-                      if (!mounted) return;
-                      MotionToast(
-                        icon: Icons.done_all_rounded,
-                        primaryColor: const Color(0xffffa493),
-                        description: Text(
-                          errMsg,
-                          style: const TextStyle(
-                            color: Color(0xff0d3b66),
-                            fontSize: 16,
-                            letterSpacing: 0,
-                            fontWeight: FontWeight.bold,
-                            height: 1,
-                          ),
-                        ),
-                        position: MotionToastPosition.bottom,
-                        animationType: AnimationType.fromBottom,
-                        animationCurve: Curves.bounceIn,
-                        //displaySideBar: false,
-                      ).show(context);
-                    }
-
-                    setState(() {
-                      isProcessing = false;
-                    });
-                  },
-                  child: const Text(
-                    "登入",
-                    style: TextStyle(
-                      color: Color(0xFF0D3B66),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRegisterForm(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: const Color(0xfffaf0ca),
-      appBar: AppBar(
-        elevation: 0,
-        title: const Text(
-          '註冊',
-          textAlign: TextAlign.left,
-          style: TextStyle(
-              color: Color(0xff0d3b66),
-              fontSize: 35,
-              fontWeight: FontWeight.bold,
-              height: 1),
-        ),
-        actions: const [],
-        //Text(widget.title, style: TextStyle(color: Color(0xff0d3b66))),
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false, //關掉返回鍵
-      ),
-      body: Column(
-        //mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          /*
-          const SizedBox(height: 50),
-          Image.asset(
-            // Logo
-            'images/Logo.jpg', // 相對路徑
-          ),*/
-          const SizedBox(height: 50),
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.only(left: 20),
-            child: const Text(
-              '我的暱稱',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  backgroundColor: Color(0xfffaf0ca),
-                  color: Color(0xff0d3b66),
-                  fontSize: 25,
-                  letterSpacing:
-                      0 /*percentages not used in flutter. defaulting to zero*/,
-                  fontWeight: FontWeight.bold,
-                  height: 1),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                isDense: true,
-                prefixIcon: const Icon(
-                  Icons.abc_rounded,
-                  color: Color(0xff0d3b66),
-                ),
-                //labelText: '帳號',
-                hintText: '請輸入名字',
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(
-                    color: Color(0xff0d3b66),
-                    width: 3,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFFFA493),
-                    width: 3,
-                  ),
-                ),
-                //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: const TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: Colors.white70,
-              ),
-              cursorColor: const Color(0xFFFFA493),
-              style: const TextStyle(fontSize: 20),
-              keyboardType: TextInputType.text,
-              obscureText: false,
-              //controller: _controller,
-            ),
-          ),
-          const SizedBox(height: 30),
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.only(left: 20),
-            child: const Text(
-              '我的帳號',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  backgroundColor: Color(0xfffaf0ca),
-                  color: Color(0xff0d3b66),
-                  fontSize: 25,
-                  letterSpacing:
-                      0 /*percentages not used in flutter. defaulting to zero*/,
-                  fontWeight: FontWeight.bold,
-                  height: 1),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextField(
-              controller: _accountController,
-              decoration: InputDecoration(
-                isDense: true,
-                prefixIcon: const Icon(
-                  Icons.account_circle,
-                  color: Color(0xff0d3b66),
-                ),
-                //labelText: '帳號',
-                hintText: '請輸入電子信箱',
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(
-                    color: Color(0xff0d3b66),
-                    width: 3,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFFFA493),
-                    width: 3,
-                  ),
-                ),
-                //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: const TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: Colors.white70,
-              ),
-              cursorColor: const Color(0xFFFFA493),
-              style: const TextStyle(fontSize: 20),
-              keyboardType: TextInputType.text,
-              obscureText: false,
-              //controller: _controller,
-            ),
-          ),
-          const SizedBox(height: 30),
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: const Text(
-              '我的密碼',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  backgroundColor: Color(0xfffaf0ca),
-                  color: Color(0xff0d3b66),
-                  fontSize: 25,
-                  letterSpacing:
-                      0 /*percentages not used in flutter. defaulting to zero*/,
-                  fontWeight: FontWeight.bold,
-                  height: 1),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                isDense: true,
-                prefixIcon: const Icon(
-                  Icons.lock,
-                  color: Color(0xff0d3b66),
-                ),
-                //labelText: '密碼',
-                hintText: '請輸入密碼 (至少六位字元)',
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(
-                    color: Color(0xff0d3b66),
-                    width: 3,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: const BorderSide(
-                    color: Color(0xFFFFA493),
-                    width: 3,
-                  ),
-                ),
-                //labelStyle: TextStyle(color: Colors.blueGrey),
-                hintStyle: const TextStyle(color: Colors.grey),
-                filled: true,
-                fillColor: Colors.white70,
-              ),
-              cursorColor: const Color(0xFFFFA493),
-              style: const TextStyle(fontSize: 20),
-              keyboardType: TextInputType.text,
-              obscureText: true,
-              //controller: _controller,
-            ),
-          ),
-          const SizedBox(height: 30),
-          isProcessing
-              ? const CircularProgressIndicator()
-              : ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFA493),
-                  ),
-                  onPressed: () async {
-                    setState(() {
-                      isProcessing = true;
-                    });
-
-                    String name = _nameController.text;
-                    String email = _accountController.text;
-                    String password = _passwordController.text;
-                    print("$email : $password");
-
-                    String errMsg = "";
-                    errMsg += Validator.validateName(name) ?? "";
-                    errMsg += Validator.validateEmail(email) ?? "";
-                    errMsg += Validator.validatePassword(password) ?? "";
-
-                    if (errMsg.isEmpty) {
-                      try {
-                        User? user = await FireAuth.register(
-                          name: name,
-                          email: email,
-                          password: password,
-                        );
-
-                        if (user != null) {
-                          if (!mounted) return;
-                          Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              '/questionnaire',
-                              (Route<dynamic> route) => false,
-                              arguments: {"part": 0});
-                        }
-                      } catch (e) {
-                        errMsg = "$e";
-                      }
-                    }
-
-                    if (errMsg.isNotEmpty) {
-                      if (!mounted) return;
-                      MotionToast(
-                        icon: Icons.done_all_rounded,
-                        primaryColor: const Color(0xffffa493),
-                        description: Text(
-                          errMsg,
-                          style: const TextStyle(
-                            color: Color(0xff0d3b66),
-                            fontSize: 16,
-                            letterSpacing: 0,
-                            fontWeight: FontWeight.bold,
-                            height: 1,
-                          ),
-                        ),
-                        position: MotionToastPosition.bottom,
-                        animationType: AnimationType.fromBottom,
-                        animationCurve: Curves.bounceIn,
-                        //displaySideBar: false,
-                      ).show(context);
-                    }
-
-                    setState(() {
-                      isProcessing = false;
-                    });
-                  },
-                  child: const Text(
-                    "註冊",
-                    style: TextStyle(
-                      color: Color(0xFF0D3B66),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-        ],
-      ),
-    );
   }
 }
