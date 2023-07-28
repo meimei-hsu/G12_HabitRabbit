@@ -510,8 +510,8 @@ class AlreadyContractPage extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 30,
-            bottom: 230,
+            right: 5,
+            bottom: 180,
             child: Container(
               margin: const EdgeInsets.only(left: 25.0, right: 25.0),
               padding: const EdgeInsets.all(8.0),
@@ -703,104 +703,117 @@ class _ExerciseContractPage extends State<ExerciseContractPage> {
                             color: Color(0xFF0D3B66),
                           ),
                         ),
-                        TextFormField(
-                          onChanged: (value) {
-                            setState(() {
-                              inputAmount = value;
-                            });
-                          },
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: '輸入金額',
-                            labelStyle: TextStyle(
-                              color: Color(0xFF0D3B66),
+                        SizedBox(
+                          width: 300,
+                          child: TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                inputAmount = value;
+                              });
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              labelText: '輸入金額',
+                              labelStyle: TextStyle(
+                                color: Color(0xFF0D3B66),
+                              ),
                             ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),
                 ),
+                Positioned(
+                  right: 25,
+                  bottom: 180,
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('確定要執行嗎？'),
+                                content: const Text('確認後將無法取消或進行修改'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      // DateTime 處理和資料庫更新
+                                      int duration = 0;
+                                      DateTime startDay =
+                                          Calendar.nextSunday(DateTime.now());
+                                      DateTime endDay = startDay
+                                          .add(Duration(days: duration));
+
+                                      var c = [
+                                        Calendar.toKey(startDay),
+                                        Calendar.toKey(endDay),
+                                        //dropdownValue,
+                                        '1111111',
+                                        //flag,
+                                        false,
+                                      ];
+
+                                      Map contract = Map.fromIterables(
+                                          ContractDB.getColumns(), c);
+                                      ContractDB.update(contract);
+                                      //TODO：連 contract資料庫
+                                      contractData['planAnswer'] = planAnswer;
+                                      contractData['inputAmount'] = inputAmount;
+                                      Navigator.pushNamed(context, '/pay',
+                                          arguments: {
+                                            'user': user,
+                                            'contractData': contractData,
+                                          });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: const Color(0xFF0D3B66),
+                                      backgroundColor: const Color(0xFFFDFDFD),
+                                    ),
+                                    child: const Text('確定'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: const Color(0xFF0D3B66),
+                                      backgroundColor: const Color(0xFFFDFDFD),
+                                    ),
+                                    child: const Text('取消'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: const Color(0xFF0D3B66),
+                          backgroundColor: const Color(0xFFFDFDFD),
+                        ),
+                        child: const Text('確定'),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/contract/already',
+                              arguments: {
+                                'user': user,
+                              });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: const Color(0xFF0D3B66),
+                          backgroundColor: const Color(0xFFFDFDFD),
+                        ),
+                        child: const Text('取消'),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('確定要執行嗎？'),
-                        content: const Text('確認後將無法取消或進行修改'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              // DateTime 處理和資料庫更新
-                              int duration = 0;
-                              DateTime startDay =
-                              Calendar.nextSunday(DateTime.now());
-                              DateTime endDay = startDay
-                                  .add(Duration(days: duration));
-
-                              var c = [
-                                Calendar.toKey(startDay),
-                                Calendar.toKey(endDay),
-                                //dropdownValue,
-                                '1111111',
-                                //flag,
-                                false,
-                              ];
-
-                              Map contract = Map.fromIterables(
-                                  ContractDB.getColumns(), c);
-                              ContractDB.update(contract);
-                              //TODO：連 contract資料庫
-                              contractData['planAnswer'] = planAnswer;
-                              contractData['inputAmount'] = inputAmount;
-                              Navigator.pushNamed(context, '/pay', arguments: {
-                                'user': user,
-                                'contractData': contractData,
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: const Color(0xFF0D3B66),
-                              backgroundColor: const Color(0xFFFDFDFD),
-                            ),
-                            child: const Text('確定'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: const Color(0xFF0D3B66),
-                              backgroundColor: const Color(0xFFFDFDFD),
-                            ),
-                            child: const Text('取消'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: const Color(0xFF0D3B66),
-                  backgroundColor: const Color(0xFFFDFDFD),
-                ),
-                child: const Text('確定'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/contract/already', arguments: {
-                    'user': user,
-                  });
-                },
-                child: const Text('取消'),
-              ),
-            ],
           ),
         ],
       ),
@@ -940,107 +953,121 @@ class _MeditationContractPage extends State<MeditationContractPage> {
                             color: Color(0xFF0D3B66),
                           ),
                         ),
-                        TextFormField(
-                          onChanged: (value) {
-                            setState(() {
-                              inputAmount = value;
-                            });
-                          },
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: '輸入金額',
-                            labelStyle: TextStyle(
-                              color: Color(0xFF0D3B66),
+                        SizedBox(
+                          width: 300,
+                          child: TextFormField(
+                            onChanged: (value) {
+                              setState(() {
+                                inputAmount = value;
+                              });
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              labelText: '輸入金額',
+                              labelStyle: TextStyle(
+                                color: Color(0xFF0D3B66),
+                              ),
                             ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),
                 ),
+                Positioned(
+                  right: 25,
+                  bottom: 180,
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('確定要執行嗎？'),
+                                content: const Text('確認後將無法取消或進行修改'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      // DateTime 處理和資料庫更新
+                                      int duration = 0;
+                                      DateTime startDay =
+                                      Calendar.nextSunday(DateTime.now());
+                                      DateTime endDay = startDay
+                                          .add(Duration(days: duration));
+
+                                      var c = [
+                                        Calendar.toKey(startDay),
+                                        Calendar.toKey(endDay),
+                                        //dropdownValue,
+                                        '1111111',
+                                        //flag,
+                                        false,
+                                      ];
+
+                                      Map contract = Map.fromIterables(
+                                          ContractDB.getColumns(), c);
+                                      ContractDB.update(contract);
+                                      //TODO：連 contract資料庫
+                                      contractData['planAnswer'] = planAnswer;
+                                      contractData['inputAmount'] = inputAmount;
+                                      Navigator.pushNamed(context, '/pay',
+                                          arguments: {
+                                            'user': user,
+                                            'contractData': contractData,
+                                          });
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: const Color(0xFF0D3B66),
+                                      backgroundColor: const Color(0xFFFDFDFD),
+                                    ),
+                                    child: const Text('確定'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      foregroundColor: const Color(0xFF0D3B66),
+                                      backgroundColor: const Color(0xFFFDFDFD),
+                                    ),
+                                    child: const Text('取消'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: const Color(0xFF0D3B66),
+                          backgroundColor: const Color(0xFFFDFDFD),
+                        ),
+                        child: const Text('確定'),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/contract/already',
+                              arguments: {
+                                'user': user,
+                              });
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: const Color(0xFF0D3B66),
+                          backgroundColor: const Color(0xFFFDFDFD),
+                        ),
+                        child: const Text('取消'),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('確定要執行嗎？'),
-                        content: const Text('確認後將無法取消或進行修改'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              // DateTime 處理和資料庫更新
-                              int duration = 0;
-                              DateTime startDay =
-                              Calendar.nextSunday(DateTime.now());
-                              DateTime endDay = startDay
-                                  .add(Duration(days: duration));
-
-                              var c = [
-                                Calendar.toKey(startDay),
-                                Calendar.toKey(endDay),
-                                //dropdownValue,
-                                '1111111',
-                                //flag,
-                                false,
-                              ];
-
-                              Map contract = Map.fromIterables(
-                                  ContractDB.getColumns(), c);
-                              ContractDB.update(contract);
-                              //TODO：連 contract資料庫
-                              contractData['planAnswer'] = planAnswer;
-                              contractData['inputAmount'] = inputAmount;
-                              Navigator.pushNamed(context, '/pay', arguments: {
-                                'user': user,
-                                'contractData': contractData,
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: const Color(0xFF0D3B66),
-                              backgroundColor: const Color(0xFFFDFDFD),
-                            ),
-                            child: const Text('確定'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: const Color(0xFF0D3B66),
-                              backgroundColor: const Color(0xFFFDFDFD),
-                            ),
-                            child: const Text('取消'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: const Color(0xFF0D3B66),
-                  backgroundColor: const Color(0xFFFDFDFD),
-                ),
-                child: const Text('確定'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/contract/already', arguments: {
-                    'user': user,
-                  });
-                },
-                child: const Text('取消'),
-              ),
-            ],
           ),
         ],
       ),
     );
   }
 }
+

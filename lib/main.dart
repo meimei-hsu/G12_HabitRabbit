@@ -48,16 +48,39 @@ class BottomNavigationControllerState
     extends State<BottomNavigationController> {
   var user = FirebaseAuth.instance.currentUser;
 
+  bool hasContract() {
+    return true; // Return true if the user has a contract, false otherwise.
+  }
+
   // 目前選擇頁索引值
   int _currentIndex = 2; // 預設值 = homepage
   // TODO: 確認 arguments 會不會有問題
-  final pages = [
-    const StatisticPage(arguments: {}),
-    const MilestonePage(arguments: {}),
-    const Homepage(),
-    const FirstContractPage(arguments: {}), // TODO: 判斷有無立合約決定要跳頁面
-    const SettingsPage(arguments: {})
-  ];
+  List<Widget> pages = [];
+
+  @override
+  void initState() {
+    // 判斷有無立合約決定要跳頁面
+    if (hasContract()) {
+      pages = [
+        const StatisticPage(arguments: {}),
+        const MilestonePage(arguments: {}),
+        const Homepage(),
+        AlreadyContractPage(arguments: const {}, contractData: const {},),
+        const SettingsPage(arguments: {})
+      ];
+    } else {
+      pages = [
+        const StatisticPage(arguments: {}),
+        const MilestonePage(arguments: {}),
+        const Homepage(),
+        const FirstContractPage(arguments: {}),
+        const SettingsPage(arguments: {})
+      ];
+    }
+    super.initState();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
