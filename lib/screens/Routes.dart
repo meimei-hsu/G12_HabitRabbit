@@ -31,10 +31,8 @@ final routes = {
       SecondContractPage(arguments: arguments),
   '/contract/already': (context, {arguments}) =>
       AlreadyContractPage(arguments: arguments, contractData: {},),
-  '/contract/exercise': (context, {arguments}) =>
-      ExerciseContractPage(arguments: arguments),
-  '/contract/meditation': (context, {arguments}) =>
-      MeditationContractPage(arguments: arguments),
+  '/contract/newOptions': (context, {arguments}) =>
+      OptionsDialog(arguments: arguments),
   /* LinePayPage */
   '/pay': (context, {arguments}) => PayPage(arguments: arguments),
   '/pay/password': (context, {arguments}) => PasswordPage(arguments: arguments),
