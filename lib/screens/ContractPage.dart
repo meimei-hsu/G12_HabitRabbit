@@ -332,6 +332,7 @@ class SecondContractPageState extends State<SecondContractPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  const Text('已簽約合約內容'),
                   Text(
                     '立契約人於約定期間積極養成  $type  習慣'
                     '\n選擇方案為  $plan'
@@ -359,27 +360,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        // DateTime 處理和資料庫更新
-                                        int duration = 0;
-                                        DateTime startDay =
-                                            Calendar.nextSunday(DateTime.now());
-                                        DateTime endDay = startDay
-                                            .add(Duration(days: duration));
-
-                                        var c = [
-                                          Calendar.toKey(startDay),
-                                          Calendar.toKey(endDay),
-                                          //dropdownValue,
-                                          '1111111',
-                                          //flag,
-                                          false,
-                                        ];
-
-                                        Map contract = Map.fromIterables(
-                                            ContractDB.getColumns(), c);
-                                        ContractDB.update(contract);
-                                        //TODO：連 contract資料庫
-                                        saveDataToMap();
+                                        // TODO: Connect to backend
                                         Navigator.pushNamed(context, '/pay',
                                             arguments: {
                                               'user': user,
@@ -454,17 +435,11 @@ class AlreadyContractPage extends StatelessWidget {
   User? user = FirebaseAuth.instance.currentUser;
   final Map<String, String> contractData;
   AlreadyContractPage(
-      {super.key, required this.contractData, required arguments});
+      {super.key, required this.contractData, required arguments, String? type, String? plan, String? amount});
 
   @override
   Widget build(BuildContext context) {
-    String? type = contractData['type'];
-    String? plan = contractData['plan'];
-    String? amount = contractData['amount'];
-    // Use the contractData to display contract details, execution progress, and contract duration.
-    // Build the UI and logic for showing already committed contract details.
-    // You can use contractData['type'], contractData['plan'], contractData['amount'], etc.
-
+    print(contractData);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -492,18 +467,38 @@ class AlreadyContractPage extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    '立契約人將依照選擇之方案來養成各項習慣，'
-                    '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
-                    '\n您選擇養成的習慣：$type' //現在還跑不出來
-                    '\n您選擇的方案：$plan'
-                    '\n您所投入的金額：$amount'
-                    '\n距離成功已完成：' //TODO：連後端
-                    '\n本次合約終止日：',
-                    style: const TextStyle(
-                      fontSize: 18.0,
-                      color: Color(0xFF0D3B66),
-                    ),
+                  FutureBuilder<Map<String, dynamic>?>(
+                    future: ContractDB.getContractDetails(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return const Text('Error fetching data');
+                      } else if (snapshot.data != null) {
+                        final type = snapshot.data!['type'];
+                        final plan = snapshot.data!['plan'];
+                        final amount = snapshot.data!['money'];
+                        final startDay = snapshot.data!['startDay'];
+                        final endDay = snapshot.data!['endDay'];
+
+                        return Text(
+                          '立契約人將依照選擇之方案來養成各項習慣，'
+                              '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
+                              '\n您選擇養成的習慣：$type'
+                              '\n您選擇的方案：$plan'
+                              '\n您所投入的金額：$amount'
+                              '\n合約開始日：$startDay'
+                              '\n合約結束日：$endDay'
+                              '\n距離成功已完成：', // TODO: Connect to backend
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xFF0D3B66),
+                          ),
+                        );
+                      } else {
+                        return const Text('No contract data found'); // If no data is found, show a message
+                      }
+                    },
                   ),
                 ],
               ),
