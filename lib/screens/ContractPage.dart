@@ -148,7 +148,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                               onPressed: () {
                                 setState(() {
                                   tapCount++;
-                                  type = '冥想'; // 漢值给type字段
+                                  type = '冥想';
                                   print('選擇的合約類型：$type');
                                 });
                               },
@@ -235,7 +235,6 @@ class _FirstContractPage extends State<FirstContractPage> {
                         onPressed: () {
                           setState(() {
                             String value = inputAmount;
-                            //print('投入金額：$value');
                             Map contractData = {
                               'user': user,
                               'type': type,
@@ -288,20 +287,17 @@ class SecondContractPage extends StatefulWidget {
 
 class SecondContractPageState extends State<SecondContractPage> {
   User? user = FirebaseAuth.instance.currentUser;
-  String? type;
-  String? plan;
-  String? amount;
+  late String type;
+  late String plan;
+  late String amount;
 
   @override
   void initState() {
     super.initState();
-    // 取得要儲存的資料
     type = widget.arguments['type'];
     plan = widget.arguments['plan'];
     amount = widget.arguments['amount'];
   }
-
-  void saveDataToMap() {}
 
   @override
   Widget build(BuildContext context) {
@@ -361,9 +357,16 @@ class SecondContractPageState extends State<SecondContractPage> {
                                     TextButton(
                                       onPressed: () {
                                         // TODO: Connect to backend
+                                        Map<String, dynamic> data = {
+                                          'type': type,
+                                          'plan': plan,
+                                          'amount': amount,
+                                        };
+                                        //print(data);
                                         Navigator.pushNamed(context, '/pay',
                                             arguments: {
                                               'user': user,
+                                              'data': data,
                                             });
                                       },
                                       style: ElevatedButton.styleFrom(
@@ -484,12 +487,12 @@ class AlreadyContractPage extends StatelessWidget {
                         return Text(
                           '立契約人將依照選擇之方案來養成各項習慣，'
                               '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
-                              '\n您選擇養成的習慣：$type'
+                              '\n您選擇養成的習慣：$type' // TODO: Grab data from the backend
                               '\n您選擇的方案：$plan'
                               '\n您所投入的金額：$amount'
                               '\n合約開始日：$startDay'
                               '\n合約結束日：$endDay'
-                              '\n距離成功已完成：', // TODO: Connect to backend
+                              '\n距離成功已完成：',
                           style: const TextStyle(
                             fontSize: 18.0,
                             color: Color(0xFF0D3B66),
@@ -809,22 +812,6 @@ class _OptionsDialogState extends State<OptionsDialog> {
       setState(() {
         processing = true;
       });
-
-      //DateTime 處理和資料庫更新
-      /*int duration = 0;
-      DateTime startDay = Calendar.nextSunday(DateTime.now());
-      DateTime endDay = startDay.add(Duration(days: duration));
-
-      var c = [
-        Calendar.toKey(startDay),
-        Calendar.toKey(endDay),
-        '1111111',
-        false,
-      ];
-
-      Map contract = Map.fromIterables(ContractDB.getColumns(), c);
-      ContractDB.update(contract);
-      print(contract);*/
 
       Navigator.pushNamed(context, '/pay', arguments: {
         'user': widget.user,

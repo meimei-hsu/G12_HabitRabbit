@@ -89,7 +89,6 @@ flutter:
     - assets/images/Logo.jpg
     - assets/images/lazy.png
     - assets/images/LINE.jpg
-    - assets/images/scroll.png
     - assets/images/personality_NOC.png
     - assets/images/personality_SOC.png
     - assets/images/personality_NGC.png
@@ -98,13 +97,14 @@ flutter:
     - assets/images/personality_SOF.png
     - assets/images/personality_NGF.png
     - assets/images/personality_SGF.png
-    - assets/images/currentLevel.png
-    - assets/images/completedLevel.jpg
-    - assets/images/lockedLevel.jpg
-    - assets/images/start.jpg
-    - assets/images/end.jpg
-    - assets/images/star.jpg
-    - assets/images/rocket.jpg
+    - assets/images/completed.png
+    - assets/images/current.png
+    - assets/images/lock.png
+    - assets/images/start.png
+    - assets/images/finish.png
+    - assets/images/1.png
+    - assets/images/2.png
+    - assets/images/3.png
     - assets/images/visa.png
     - assets/images/mastercard.png
     - assets/images/jcb.png
