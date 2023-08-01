@@ -33,6 +33,7 @@ A milestone habit App.
         |---QuestionnairePage.dart
 ---HomePage.dart
     |---HabitDetailPage.dart
+        |---VideoPage.dart
         |---ExercisePage.dart
             |---CountdownPage.dart
     |---StatisticPage.dart
