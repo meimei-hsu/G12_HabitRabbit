@@ -8,7 +8,7 @@ class PlanAlgo {
   static execute() async {
     Algorithm algo = Algorithm();
     PlanData? db;
-    DateTime? lastWorkoutDay =
+    DateTime lastWorkoutDay =
         DateTime.parse((await UserDB.getLastWorkoutDay())!);
 
     // Conditions

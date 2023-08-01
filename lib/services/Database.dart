@@ -52,9 +52,9 @@ class Home extends StatelessWidget {
       '0, 24',
       '0, 3',
     ];
-    Map maryProfile = Map.fromIterables(UserDB.getColumns(), m);
-    Map maryContract = Map.fromIterables(ContractDB.getColumns(), mc);
-    Map maryMilestone = Map.fromIterables(MilestoneDB.getColumns(), ms);
+    Map maryProfile = Map.fromIterables(UserDB.columns, m);
+    Map maryContract = Map.fromIterables(ContractDB.meditationColumns, mc);
+    Map maryMilestone = Map.fromIterables(MilestoneDB.columns, ms);
     var plan = [
       "4008",
       "4012",
@@ -177,26 +177,24 @@ class UserDB {
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Define the columns of the user table
-  static List<String> getColumns() {
-    return [
-      "userName",
-      "gender",
-      "birthday",
-      "neuroticism",
-      "conscientiousness",
-      "openness",
-      "height",
-      "weight",
-      "timeSpan",
-      "workoutDays",
-      "strengthLiking",
-      "cardioLiking",
-      "yogaLiking",
-      "strengthAbility",
-      "cardioAbility",
-      "yogaAbility",
-    ];
-  }
+  static get columns => [
+        "userName",
+        "gender",
+        "birthday",
+        "neuroticism",
+        "conscientiousness",
+        "openness",
+        "height",
+        "weight",
+        "timeSpan",
+        "workoutDays",
+        "strengthLiking",
+        "cardioLiking",
+        "yogaLiking",
+        "strengthAbility",
+        "cardioAbility",
+        "yogaAbility",
+      ];
 
   // Select all users
   static Future<Map?> getAll() async {
@@ -261,7 +259,9 @@ class UserDB {
 
   static Future<String?> getLastWorkoutDay() async {
     final Map? user = await getUser();
-    return Calendar.thisWeek()[user!["workoutDays"].lastIndexOf("1")];
+    return user != null
+        ? Calendar.thisWeek()[user["workoutDays"].lastIndexOf("1")]
+        : null;
   }
 
   static Future<int?> getWorkoutDayCount() async {
@@ -304,12 +304,13 @@ class UserDB {
   // Insert data {columnName: value} into Users
   static Future<bool> insert(Map data) async {
     // Set modifiers
-    int nMul = 10;
-    int cMul = 5;
-    List types = ["strength", "cardio", "yoga"];
+    const int nMul = 10;
+    const int cMul = 5;
+    const int mMul = 10;
+    const List wTypes = ["strength", "cardio", "yoga"];
 
     // Adjust survey results with user's personalities
-    for (var item in types) {
+    for (var item in wTypes) {
       if (item == "strength") {
         data[item + "Liking"] -= data["neuroticism"] * nMul;
       } else {
@@ -317,6 +318,12 @@ class UserDB {
       }
       data[item + "Ability"] += data["conscientiousness"] * cMul;
     }
+    data["bodyScan"] += data["neuroticism"] * mMul;
+    data["visualize"] -= data["conscientiousness"] * mMul;
+    data["kindness"] -= data["agreeableness"] * mMul;
+
+    // Add userName column
+    data["userName"] = FirebaseAuth.instance.currentUser?.displayName;
 
     // Insert user into database
     return await DB.insert("$db/$uid/", data);
@@ -357,16 +364,23 @@ class ContractDB {
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Define the columns of the user table
-  static List<String> getColumns() {
-    return [
-      "startDay",
-      "endDay",
-      "money",
-      "bankAccount",
-      "flag",
-      "result",
-    ];
-  }
+  static get meditationColumns => [
+        "mStartDay",
+        "mEndDay",
+        "mMoney",
+        "mBankAccount",
+        "mFlag",
+        "mResult",
+      ];
+
+  static get workoutColumns => [
+        "wStartDay",
+        "wEndDay",
+        "wMoney",
+        "wBankAccount",
+        "wFlag",
+        "wResult",
+      ];
 
   // Select contract from userID
   static Future<Map?> getContract() async {
@@ -382,10 +396,10 @@ class ContractDB {
 
     if (contract != null) {
       return {
-        'startDay': contract["startDay"],
-        'endDay': contract["endDay"],
-        'money': contract["money"],
-        'flag': contract["flag"],
+        'mStartDay': contract["mStartDay"],
+        'mEndDay': contract["mEndDay"],
+        'mMoney': contract["mMoney"],
+        'mFlag': contract["mFlag"],
       };
     } else {
       return null;
@@ -430,12 +444,10 @@ class MilestoneDB {
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Define the columns of the milestone table
-  static List<String> getColumns() {
-    return [
-      "flag",
-      "steps",
-    ];
-  }
+  static get columns => [
+        "flag",
+        "steps",
+      ];
 
   // Select milestone from userID
   static Future<Map?> getMilestone() async {
@@ -793,7 +805,8 @@ class DurationDB {
       return await JournalDB.update(uid, data, table);
     } else {
       // value: "duration"
-      var record = await JournalDB.getFromDate(uid, data.keys.first, table);
+      var record = await JournalDB.getFromDate(
+          uid, DateTime.parse(data.keys.first), table);
       if (record != null) {
         String timeSpan = record.split(', ')[1];
         return await JournalDB.update(uid, {key: "$value, $timeSpan"}, table);

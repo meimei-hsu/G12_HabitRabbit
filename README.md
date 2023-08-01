@@ -13,6 +13,7 @@ A milestone habit App.
     |---UserDB    (database operations for the users table)
     |---ContractDB(database operations for the contract table)
     |---WorkoutDB (database operations for the workouts table)
+    |---MeditateDB(database operations for the meditations table)
     |---PlanDB    (database operations for the plan children of the journal table)
     |---DurationDB(database operations for the duration children of the journal table)
     |---WeightDB  (database operations for the weight children of the journal table)

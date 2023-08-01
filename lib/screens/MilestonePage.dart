@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:level_map/level_map.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class MilestonePage extends StatefulWidget {
   final Map arguments;
@@ -27,7 +26,7 @@ class _MilestonePage extends State<MilestonePage> {
           backgroundColor: const Color(0xFF98D98E),
           automaticallyImplyLeading: false,
         ),
-        body: const SafeArea(
+        body: SafeArea(
           child: Padding(
             padding: EdgeInsets.only(bottom: 16.0),
             child: Column(

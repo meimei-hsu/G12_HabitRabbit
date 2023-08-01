@@ -9,7 +9,6 @@ import 'package:g12/services/PlanAlgo.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:banner_carousel/banner_carousel.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
-import 'package:swipe_cards/swipe_cards.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -30,7 +29,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   void getPlanData() async {
-    await PlanAlgo.execute();
+    if (user != null) await PlanAlgo.execute();
     isFetchingData = true;
     var plan = await PlanDB.getThisWeekByName();
     var progress = await DurationDB.getWeekProgress();

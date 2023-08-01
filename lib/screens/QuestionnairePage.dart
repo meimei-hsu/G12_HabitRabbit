@@ -6,8 +6,6 @@ import 'package:swipe_cards/swipe_cards.dart';
 import 'dart:async';
 
 import 'package:g12/services/Database.dart';
-import 'package:g12/services/PlanAlgo.dart';
-
 
 void main() => runApp(MyApp());
 
@@ -33,6 +31,12 @@ Map userInfo = {
   "conscientiousness": 0,
   "openness": 0,
   "agreeableness": 0,
+  "strengthLiking": 40,
+  "cardioLiking": 40,
+  "yogaLiking": 40,
+  "bodyScan": 0,
+  "visualize": 0,
+  "kindness": 0,
 };
 
 // List of questions in part two
@@ -575,7 +579,8 @@ class _PartOnePageState extends State<PartOnePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: false, // prevent overflow problem when onscreen keyboard displayed
+        resizeToAvoidBottomInset:
+            false, // prevent overflow problem when onscreen keyboard displayed
         appBar: AppBar(backgroundColor: Colors.white, elevation: 0.0),
         body: Column(
           children: [
@@ -787,7 +792,7 @@ class _PartOnePageState extends State<PartOnePage> {
               ),
             ),
             isComplete
-            // FIXME: Overflow problem: IconButton to turn page
+                // FIXME: Overflow problem: IconButton to turn page
                 ? IconButton(
                     onPressed: () => Navigator.pushReplacement(
                         context,
@@ -850,7 +855,7 @@ class _PartTwoPageState extends State<PartTwoPage> {
               ),
             ),
             isComplete
-            // FIXME: Overflow problem: IconButton to turn page
+                // FIXME: Overflow problem: IconButton to turn page
                 ? IconButton(
                     onPressed: () {
                       processInput(); // update the data into userInfo
@@ -1009,8 +1014,6 @@ class _PartTwoPageState extends State<PartTwoPage> {
                 .join(", ");
       } else if (i == 3) {
         // Get the liking of the three workout types
-        userInfo.addAll(
-            {"strengthLiking": 40, "cardioLiking": 40, "yogaLiking": 40});
         for (Option option in answer) {
           // Set the liking to 60 if is selected, else 40
           userInfo[option.data] += 20;
@@ -1026,10 +1029,15 @@ class _PartTwoPageState extends State<PartTwoPage> {
         userInfo[keys[i]] = reasons.join(", ");
 
         // Get the liking of the three meditation types
-        userInfo.addAll({"bodyScan": 0, "visualize": 0, "kindness": 0});
         for (Option option in answer) {
-          // Count the occurrences for each type
+          // Count the occurrences for each type (liking score)
           userInfo[option.data] += 1;
+        }
+
+        for (String type in ["bodyScan", "visualize", "kindness"]) {
+          // Multiply the liking score by 5 then add the base score 40
+          userInfo[type] *= 5;
+          userInfo[type] += 40;
         }
       }
     }
@@ -1201,6 +1209,7 @@ class _PartThreePageState extends State<PartThreePage>
                   );
                 },
                 onStackFinished: () {
+                  controller.dispose();
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -1306,10 +1315,8 @@ class _ResultPage extends State<ResultPage> {
                     ),
                   ),
                   onPressed: () async {
-                    await UserDB.update(userInfo);
-                    await PlanAlgo.execute();
+                    await UserDB.insert(userInfo);
                     if (!mounted) return;
-                    // FIXME: 好像沒成功跳頁到首頁(by 翎翎)
                     Navigator.pushNamedAndRemoveUntil(
                         context, '/', (Route<dynamic> route) => false);
                   },
