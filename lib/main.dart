@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:g12/services/Database.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 
@@ -48,37 +49,48 @@ class BottomNavigationControllerState
     extends State<BottomNavigationController> {
   var user = FirebaseAuth.instance.currentUser;
 
-  bool hasContract() {
-    return true; // Return true if the user has a contract, false otherwise.
-  }
-
   // 目前選擇頁索引值
   int _currentIndex = 2; // 預設值 = homepage
   // TODO: 確認 arguments 會不會有問題
   List<Widget> pages = [];
 
+  //判斷有無立合約決定要跳頁面
   @override
   void initState() {
-    // 判斷有無立合約決定要跳頁面
-    if (hasContract()) {
-      pages = [
+    super.initState();
+    determinePage().then((pages) {
+      setState(() {
+        this.pages = pages;
+      });
+    });
+  }
+  Future<List<Widget>> determinePage() async {
+    final hasExistingContract = await hasContract();
+
+    if (hasExistingContract) {
+      final contractData = await ContractDB.getContractDetails();
+      return [
         const StatisticPage(arguments: {}),
         const MilestonePage(arguments: {}),
         const Homepage(),
-        AlreadyContractPage(arguments: const {}, contractData: const {},),
-        const SettingsPage(arguments: {})
+        AlreadyContractPage(contractData: contractData, arguments: const {}),
+        const SettingsPage(arguments: {}),
       ];
     } else {
-      pages = [
+      return [
         const StatisticPage(arguments: {}),
         const MilestonePage(arguments: {}),
         const Homepage(),
         const FirstContractPage(arguments: {}),
-        const SettingsPage(arguments: {})
+        const SettingsPage(arguments: {}),
       ];
     }
-    super.initState();
   }
+  Future<bool> hasContract() async {
+    final contractDetails = await ContractDB.getContractDetails();
+    return contractDetails != null;
+  }
+
 
 
 

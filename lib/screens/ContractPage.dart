@@ -436,7 +436,7 @@ class SecondContractPageState extends State<SecondContractPage> {
 //已立過合約畫面
 class AlreadyContractPage extends StatelessWidget {
   User? user = FirebaseAuth.instance.currentUser;
-  final Map<String, String> contractData;
+  final Map<String, dynamic>? contractData;
   AlreadyContractPage(
       {super.key, required this.contractData, required arguments, String? type, String? plan, String? amount});
 
