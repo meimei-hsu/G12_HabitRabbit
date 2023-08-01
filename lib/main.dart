@@ -68,12 +68,11 @@ class BottomNavigationControllerState
     final hasExistingContract = await hasContract();
 
     if (hasExistingContract) {
-      final contractData = await ContractDB.getContractDetails();
       return [
         const StatisticPage(arguments: {}),
         const MilestonePage(arguments: {}),
         const Homepage(),
-        AlreadyContractPage(contractData: contractData, arguments: const {}),
+        const AlreadyContractPage(),
         const SettingsPage(arguments: {}),
       ];
     } else {
@@ -87,7 +86,7 @@ class BottomNavigationControllerState
     }
   }
   Future<bool> hasContract() async {
-    final contractDetails = await ContractDB.getContractDetails();
+    final contractDetails = await ContractDB.getContract();
     return contractDetails != null;
   }
 

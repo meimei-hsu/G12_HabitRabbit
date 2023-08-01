@@ -22,14 +22,6 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var mc = [
-      DateTime.utc(2023, 5, 1).toString(),
-      DateTime.utc(2023, 10, 1).toString(),
-      500,
-      '12345678',
-      '0,4',
-      false,
-    ];
     var m = [
       'Mary',
       'Female',
@@ -53,7 +45,6 @@ class Home extends StatelessWidget {
       '0, 3',
     ];
     Map maryProfile = Map.fromIterables(UserDB.columns, m);
-    Map maryContract = Map.fromIterables(ContractDB.meditationColumns, mc);
     Map maryMilestone = Map.fromIterables(MilestoneDB.columns, ms);
     var plan = [
       "4008",
@@ -92,7 +83,6 @@ class Home extends StatelessWidget {
                 UserDB.updateByFeedback("cardio", [1, 1]);
                 UserDB.getAll();
                 WorkoutDB.toNames(plan);
-                ContractDB.update(maryContract);
                 MilestoneDB.update(maryMilestone);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
               },
@@ -120,6 +110,14 @@ class Home extends StatelessWidget {
         ],
       ),
     ));
+  }
+}
+
+class Tool {
+  // calculate the progress of the given data "completeNum, totalNum"
+  static int calcProgress(String str) {
+    var lst = str.split(', ').map(int.parse).toList();
+    return (lst[0] / lst[1] * 100).round(); // percentage
   }
 }
 
@@ -364,77 +362,42 @@ class ContractDB {
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Define the columns of the user table
-  static get meditationColumns => [
-        "mStartDay",
-        "mEndDay",
-        "mMoney",
-        "mBankAccount",
-        "mFlag",
-        "mResult",
+  static get columns => [
+        "type",
+        "plan",
+        "startDay",
+        "endDay",
+        "money",
+        "bankAccount",
+        "flag",
+        "result",
       ];
 
-  static get workoutColumns => [
-        "wStartDay",
-        "wEndDay",
-        "wMoney",
-        "wBankAccount",
-        "wFlag",
-        "wResult",
-      ];
-
-  // Select contract from userID
-  static Future<Map?> getContract() async {
+  // Select data from userID
+  static Future<Map<String, dynamic>?> getContract() async {
     var snapshot = await DB.select(db, uid);
     return (snapshot != null)
         ? Map<String, dynamic>.from(snapshot as Map)
         : null;
   }
-
-  // Select dynamic data from userID
-  static Future<Map<String, dynamic>?> getContractDetails() async {
-    final Map? contract = await getContract();
-
-    if (contract != null) {
-      return {
-        'mStartDay': contract["mStartDay"],
-        'mEndDay': contract["mEndDay"],
-        'mMoney': contract["mMoney"],
-        'mFlag': contract["mFlag"],
-      };
-    } else {
-      return null;
-    }
-  }
-
-  static Future<num?> getStartDay() async {
-    final Map? user = await getContract();
-    return user!["startDay"];
-  }
-
-  static Future<String?> getEndDay() async {
-    final Map? user = await getContract();
-    return user!["endDay"];
-  }
-
-  static Future<num?> getMoney() async {
-    final Map? user = await getContract();
-    return user!["money"];
-  }
-
-  static Future<num?> getFlag() async {
-    final Map? user = await getContract();
-    return user!["flag"];
-  }
+  // Select workout contract from userID
+  static Future<Map?> getWorkout() async => (await getContract())?["workout"];
+  // Select meditation contract from userID
+  static Future<Map?> getMeditation() async =>
+      (await getContract())?["meditation"];
 
   // Update data {columnName: value} from userID
-  static Future<bool> update(Map data) async {
-    return await DB.update("$db/$uid/", data);
-  }
+  static Future<bool> update(Map data) async => await DB.update(
+      "$db/$uid/${(data["type"] == "運動") ? "workout" : "meditation"}", data);
 
-  // Delete data from userName
-  static Future<bool> delete() async {
-    return await DB.delete(db, uid);
-  }
+  // Delete data from userID
+  static Future<bool> delete() async => await DB.delete(db, uid);
+  // Delete workout contract from userID
+  static Future<bool> deleteWorkout() async =>
+      await DB.delete(db, "$uid/workout");
+  // Delete meditation contract from userID
+  static Future<bool> deleteMeditation() async =>
+      await DB.delete(db, "$uid/meditation");
 }
 
 class MilestoneDB {
@@ -776,11 +739,7 @@ class DurationDB {
   // Calculate user's workout progress from given date
   static Future<num?> calcProgress(DateTime date) async {
     var record = (await JournalDB.getFromDate(uid, date, table));
-    if (record != null) {
-      var duration = record.split(', ').map(int.parse).toList();
-      return (duration[0] / duration[1] * 100).round(); // percentage
-    }
-    return null;
+    return (record != null) ? Tool.calcProgress(record) : null;
   }
 
   // Calculate the number of times user has completed a workout plan during this week

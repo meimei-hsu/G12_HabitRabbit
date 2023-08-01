@@ -45,7 +45,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   void getContractData() async {
-    var contract = await ContractDB.getContractDetails();
+    var contract = await ContractDB.getContract();
     setState(() {
       contractData = contract ?? {};
     });

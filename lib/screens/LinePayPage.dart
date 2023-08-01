@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
 import 'package:onscreen_num_keyboard/onscreen_num_keyboard.dart';
 
+// Define global variables for LinePayPage
+String userName = "", money = "";
+
 class PayPage extends StatefulWidget {
   final Map arguments;
 
@@ -15,6 +18,13 @@ enum Card { ctbc, cube }
 
 // #23B91A: green
 class PayPageState extends State<PayPage> {
+  @override
+  void initState() {
+    super.initState();
+    userName = widget.arguments['user'].displayName;
+    money = widget.arguments['money'].toString();
+  }
+
   String getPayTime() {
     DateTime now = DateTime.now();
     String hour = now.hour < 12 ? "上午${now.hour}" : "下午${now.hour - 12}";
@@ -71,7 +81,7 @@ class PayPageState extends State<PayPage> {
                         "https://pokoloruj.com.pl/static/gallery/gwiazdy-pop/yr3ylitu.png"),
                   ),
                   trailing: const Icon(Icons.info_outline_rounded),
-                  title: Text("${widget.arguments['user'].displayName} 正在付款。"),
+                  title: Text("$userName 正在付款。"),
                   subtitle: Text('請在${getPayTime()}前完成付款。'),
                 ),
               ],
@@ -82,9 +92,8 @@ class PayPageState extends State<PayPage> {
             color: Colors.white,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: const <Widget>[
-                CompanyDescriptionItem(value: "150"),
-                // TODO: get contract value
+              children: <Widget>[
+                CompanyDescriptionItem(value: money),
               ],
             ),
           ),
@@ -208,12 +217,11 @@ class PayPageState extends State<PayPage> {
             minimumSize: const Size.fromHeight(55), // NEW
           ),
           onPressed: () {
-            Navigator.pushNamed(context, '/pay/password',
-                arguments: {'user': widget.arguments['user']});
+            Navigator.pushNamed(context, '/pay/password');
           },
-          child: const Text(
-            '支付NT\$ 150', // TODO: get contract value
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          child: Text(
+            '支付NT\$ $money',
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -222,9 +230,7 @@ class PayPageState extends State<PayPage> {
 }
 
 class PasswordPage extends StatefulWidget {
-  final Map arguments;
-
-  const PasswordPage({super.key, required this.arguments});
+  const PasswordPage({super.key});
 
   @override
   PasswordPageState createState() => PasswordPageState();
@@ -304,8 +310,7 @@ class PasswordPageState extends State<PasswordPage> {
                   keyboardType: TextInputType.number,
                   controller: pinCodeController,
                   onComplete: (text) {
-                    Navigator.pushNamed(context, '/pay/checkout',
-                        arguments: {'user': widget.arguments['user']});
+                    Navigator.pushNamed(context, '/pay/checkout');
                     //dispose();
                   },
                 ),
@@ -353,9 +358,7 @@ class PasswordPageState extends State<PasswordPage> {
 }
 
 class ConfirmPage extends StatefulWidget {
-  final Map arguments;
-
-  const ConfirmPage({super.key, required this.arguments});
+  const ConfirmPage({super.key});
 
   @override
   ConfirmPageState createState() => ConfirmPageState();
@@ -479,8 +482,8 @@ class ConfirmPageState extends State<ConfirmPage> {
                     ),
                   ),
                 ),
-                const ListTile(
-                  title: Text(
+                ListTile(
+                  title: const Text(
                     "商品價格",
                     style: TextStyle(
                         color: Colors.grey,
@@ -488,10 +491,11 @@ class ConfirmPageState extends State<ConfirmPage> {
                         fontWeight: FontWeight.bold),
                   ),
                   trailing: Text(
-                    "NT\$ 150", // TODO: get contract value
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    "NT\$ $money",
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold),
                   ),
-                  visualDensity: VisualDensity(vertical: -4),
+                  visualDensity: const VisualDensity(vertical: -4),
                 ),
               ],
             ),
@@ -513,8 +517,8 @@ class ConfirmPageState extends State<ConfirmPage> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                const ListTile(
-                  title: Text(
+                ListTile(
+                  title: const Text(
                     "實際支付金額",
                     style: TextStyle(
                         color: Colors.grey,
@@ -522,8 +526,8 @@ class ConfirmPageState extends State<ConfirmPage> {
                         fontWeight: FontWeight.bold),
                   ),
                   trailing: Text(
-                    "NT\$ 150", // TODO: get contract value
-                    style: TextStyle(
+                    "NT\$ $money",
+                    style: const TextStyle(
                         color: Colors.blue,
                         fontSize: 32,
                         fontWeight: FontWeight.bold),
@@ -557,9 +561,8 @@ class ConfirmPageState extends State<ConfirmPage> {
                               shadowColor: Colors.white,
                               minimumSize: const Size(0, 45)),
                           onPressed: () {
-                            // TODO: back to ContractPage.
                             Navigator.pushNamedAndRemoveUntil(
-                                context, '/', (Route<dynamic> route) => false);
+                                context, '/contract/already', (Route<dynamic> route) => false);
                           },
                           child: const Text(
                             "付款",

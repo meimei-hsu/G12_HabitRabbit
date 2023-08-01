@@ -27,14 +27,12 @@ final routes = {
   /* ContractPage */
   '/contract/initial': (context, {arguments}) =>
       FirstContractPage(arguments: arguments),
-  '/contract': (context, {arguments}) =>
-      SecondContractPage(arguments: arguments),
-  '/contract/already': (context, {arguments}) =>
-      AlreadyContractPage(arguments: arguments, contractData: {},),
+  '/contract': (context, {arguments}) => const SecondContractPage(),
+  '/contract/already': (context, {arguments}) => const AlreadyContractPage(),
   /* LinePayPage */
   '/pay': (context, {arguments}) => PayPage(arguments: arguments),
-  '/pay/password': (context, {arguments}) => PasswordPage(arguments: arguments),
-  '/pay/checkout': (context, {arguments}) => ConfirmPage(arguments: arguments),
+  '/pay/password': (context, {arguments}) => const PasswordPage(),
+  '/pay/checkout': (context, {arguments}) => const ConfirmPage(),
   /* QuestionnairePage */
   '/questionnaire': (context, {arguments}) => TitlePage(arguments: arguments),
 };
@@ -50,7 +48,7 @@ var onGenerateRoute = (RouteSettings settings) {
     return route;
   } else {
     final Route route =
-    MaterialPageRoute(builder: (context) => pageContentBuilder(context));
+        MaterialPageRoute(builder: (context) => pageContentBuilder(context));
     return route;
   }
 };

@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:g12/services/Database.dart';
+
+// Define global variables for ContractPage
+User? user = FirebaseAuth.instance.currentUser;
+Map contractData = {
+  "type": "",
+  "plan": "",
+  "startDay": Calendar.toKey(DateTime.now()),
+  "endDay": "",
+  "money": 0,
+  "bankAccount": 85167880032579,
+  "flag": "",
+  "result": false,
+};
 
 class FirstContractPage extends StatefulWidget {
   const FirstContractPage({super.key, required arguments});
@@ -11,9 +23,9 @@ class FirstContractPage extends StatefulWidget {
 }
 
 class _FirstContractPage extends State<FirstContractPage> {
-  User? user = FirebaseAuth.instance.currentUser;
   int tapCount = 0;
-  List<String> dialogs = [
+  final DateTime startDay = DateTime.now();
+  final List<String> dialogs = [
     '承諾合約協助您養成習慣',
     '您可以在此於約定期間依照自身狀況選擇方案。'
         '一旦開始執行，契約內容將不能取消或進行更改直到方案完成'
@@ -24,10 +36,6 @@ class _FirstContractPage extends State<FirstContractPage> {
     '請點選您想要投入方案：',
     '您要投入多少金錢以督促自己：',
   ];
-
-  late String inputAmount;
-  late String type;
-  late String plan;
 
   void updateDialog() {
     setState(() {
@@ -131,8 +139,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                               onPressed: () {
                                 setState(() {
                                   tapCount++;
-                                  type = '運動'; // 賦值给type字段
-                                  print('選擇的合約類型：$type');
+                                  contractData["type"] = '運動'; // 賦值给type字段
                                 });
                               },
                               style: ElevatedButton.styleFrom(
@@ -148,8 +155,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                               onPressed: () {
                                 setState(() {
                                   tapCount++;
-                                  type = '冥想';
-                                  print('選擇的合約類型：$type');
+                                  contractData["type"] = '冥想';
                                 });
                               },
                               style: ElevatedButton.styleFrom(
@@ -170,8 +176,10 @@ class _FirstContractPage extends State<FirstContractPage> {
                             onPressed: () {
                               setState(() {
                                 tapCount++;
-                                plan = '基礎';
-                                print('選擇的合約方案：$plan');
+                                contractData["plan"] = "基礎 (1月內達成3週目標)";
+                                contractData["endDay"] = Calendar.toKey(
+                                    DateTime(startDay.year, startDay.month + 1, startDay.day));
+                                contractData["flag"] = "0, 3";
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -185,8 +193,10 @@ class _FirstContractPage extends State<FirstContractPage> {
                             onPressed: () {
                               setState(() {
                                 tapCount++;
-                                plan = '進階';
-                                print('選擇的合約方案：$plan');
+                                contractData["plan"] = "進階 (2月內達成7週目標)";
+                                contractData["endDay"] = Calendar.toKey(
+                                    DateTime(startDay.year, startDay.month + 2, startDay.day));
+                                contractData["flag"] = "0, 7";
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -200,8 +210,10 @@ class _FirstContractPage extends State<FirstContractPage> {
                             onPressed: () {
                               setState(() {
                                 tapCount++;
-                                plan = '困難';
-                                print('選擇的合約方案：$plan');
+                                contractData["plan"] = "困難 (4月內達成15週目標)";
+                                contractData["endDay"] = Calendar.toKey(
+                                    DateTime(startDay.year, startDay.month + 4, startDay.day));
+                                contractData["flag"] = "0, 15";
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -219,7 +231,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                         child: TextFormField(
                           onChanged: (value) {
                             setState(() {
-                              inputAmount = value;
+                              contractData["money"] = int.parse(value);
                             });
                           },
                           keyboardType: TextInputType.number,
@@ -234,19 +246,11 @@ class _FirstContractPage extends State<FirstContractPage> {
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            String value = inputAmount;
-                            Map contractData = {
-                              'user': user,
-                              'type': type,
-                              'plan': plan,
-                              'amount': value,
-                            };
-                            print(contractData);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    SecondContractPage(arguments: contractData),
+                                    const SecondContractPage(),
                               ),
                             );
                           });
@@ -278,27 +282,13 @@ class _FirstContractPage extends State<FirstContractPage> {
 }
 
 class SecondContractPage extends StatefulWidget {
-  final Map arguments;
-  const SecondContractPage({super.key, required this.arguments});
+  const SecondContractPage({super.key});
 
   @override
   SecondContractPageState createState() => SecondContractPageState();
 }
 
 class SecondContractPageState extends State<SecondContractPage> {
-  User? user = FirebaseAuth.instance.currentUser;
-  late String type;
-  late String plan;
-  late String amount;
-
-  @override
-  void initState() {
-    super.initState();
-    type = widget.arguments['type'];
-    plan = widget.arguments['plan'];
-    amount = widget.arguments['amount'];
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -330,9 +320,9 @@ class SecondContractPageState extends State<SecondContractPage> {
                 children: [
                   const Text('已簽約合約內容'),
                   Text(
-                    '立契約人於約定期間積極養成  $type  習慣'
-                    '\n選擇方案為  $plan'
-                    '\n投入金額為  $amount  元'
+                    '立契約人於約定期間積極養成  ${contractData["type"]}  習慣'
+                    '\n選擇方案為  ${contractData["plan"]}'
+                    '\n投入金額為  ${contractData["money"]}  元'
                     '\n\n若未達成設定目標，立契約人同意將投入金額全數捐出；'
                     '若達成設定目標則由系統將全數金額退還。',
                     style: const TextStyle(
@@ -356,17 +346,11 @@ class SecondContractPageState extends State<SecondContractPage> {
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        // TODO: Connect to backend
-                                        Map<String, dynamic> data = {
-                                          'type': type,
-                                          'plan': plan,
-                                          'amount': amount,
-                                        };
-                                        //print(data);
+                                        ContractDB.update(contractData);
                                         Navigator.pushNamed(context, '/pay',
                                             arguments: {
                                               'user': user,
-                                              'data': data,
+                                              'money': contractData["money"],
                                             });
                                       },
                                       style: ElevatedButton.styleFrom(
@@ -403,8 +387,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                         const SizedBox(width: 8.0),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/contract/initial',
-                                arguments: {'user': user});
+                            Navigator.pushNamed(context, '/contract/initial');
                           },
                           style: ElevatedButton.styleFrom(
                             foregroundColor: const Color(0xFF0D3B66),
@@ -435,14 +418,13 @@ class SecondContractPageState extends State<SecondContractPage> {
 
 //已立過合約畫面
 class AlreadyContractPage extends StatelessWidget {
-  User? user = FirebaseAuth.instance.currentUser;
-  final Map<String, dynamic>? contractData;
-  AlreadyContractPage(
-      {super.key, required this.contractData, required arguments, String? type, String? plan, String? amount});
+  const AlreadyContractPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    print(contractData);
+    // TODO: 呈現兩種合約
+    String type = "workout"; // "workout"或"meditation"，呈現該種類的合約資訊
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -471,35 +453,31 @@ class AlreadyContractPage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   FutureBuilder<Map<String, dynamic>?>(
-                    future: ContractDB.getContractDetails(),
+                    future: ContractDB.getContract(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const CircularProgressIndicator();
                       } else if (snapshot.hasError) {
                         return const Text('Error fetching data');
-                      } else if (snapshot.data != null) {
-                        final type = snapshot.data!['type'];
-                        final plan = snapshot.data!['plan'];
-                        final amount = snapshot.data!['money'];
-                        final startDay = snapshot.data!['startDay'];
-                        final endDay = snapshot.data!['endDay'];
-
+                      } else if (snapshot.data!.containsKey(type)) {
+                        Map data = snapshot.data![type];
                         return Text(
                           '立契約人將依照選擇之方案來養成各項習慣，'
-                              '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
-                              '\n您選擇養成的習慣：$type' // TODO: Grab data from the backend
-                              '\n您選擇的方案：$plan'
-                              '\n您所投入的金額：$amount'
-                              '\n合約開始日：$startDay'
-                              '\n合約結束日：$endDay'
-                              '\n距離成功已完成：',
+                          '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
+                          '\n您選擇養成的習慣：${data["type"]}'
+                          '\n您選擇的方案：${data["plan"]}'
+                          '\n您所投入的金額：${data["money"]}'
+                          '\n合約開始日：${data["startDay"]}'
+                          '\n合約結束日：${data["endDay"]}'
+                          '\n距離成功已完成：${Tool.calcProgress(data["flag"])}%',
                           style: const TextStyle(
                             fontSize: 18.0,
                             color: Color(0xFF0D3B66),
                           ),
                         );
                       } else {
-                        return const Text('No contract data found'); // If no data is found, show a message
+                        return const Text(
+                            'No contract data found'); // If no data is found, show a message
                       }
                     },
                   ),
@@ -573,9 +551,9 @@ class AlreadyContractPage extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: OptionsDialog(arguments: null),
+        return const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: OptionsDialog(),
         );
       },
     );
@@ -583,10 +561,7 @@ class AlreadyContractPage extends StatelessWidget {
 }
 
 class OptionsDialog extends StatefulWidget {
-  User? user = FirebaseAuth.instance.currentUser;
-  Map<String, dynamic> contractData = {};
-
-  OptionsDialog({super.key, required arguments});
+  const OptionsDialog({super.key});
 
   @override
   _OptionsDialogState createState() => _OptionsDialogState();
@@ -595,7 +570,7 @@ class OptionsDialog extends StatefulWidget {
 class _OptionsDialogState extends State<OptionsDialog> {
   String? _type;
   String? _plan;
-  int? _amount;
+  int? _money;
   late bool processing;
 
   @override
@@ -603,7 +578,7 @@ class _OptionsDialogState extends State<OptionsDialog> {
     super.initState();
     _type = "運動";
     _plan = "基礎";
-    _amount = 100;
+    _money = 100;
     processing = false;
   }
 
@@ -704,7 +679,7 @@ class _OptionsDialogState extends State<OptionsDialog> {
                   ActionChip(
                     label: const Text("100"),
                     labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _amount == 100
+                    backgroundColor: _money == 100
                         ? const Color(0xFFFAF0CA)
                         : Colors.black26,
                     onPressed: () => _selectAmount(100),
@@ -712,7 +687,7 @@ class _OptionsDialogState extends State<OptionsDialog> {
                   ActionChip(
                     label: const Text("150"),
                     labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _amount == 150
+                    backgroundColor: _money == 150
                         ? const Color(0xFFFAF0CA)
                         : Colors.black26,
                     onPressed: () => _selectAmount(150),
@@ -720,7 +695,7 @@ class _OptionsDialogState extends State<OptionsDialog> {
                   ActionChip(
                     label: const Text("200"),
                     labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _amount == 200
+                    backgroundColor: _money == 200
                         ? const Color(0xFFFAF0CA)
                         : Colors.black26,
                     onPressed: () => _selectAmount(200),
@@ -728,7 +703,7 @@ class _OptionsDialogState extends State<OptionsDialog> {
                   ActionChip(
                     label: const Text("250"),
                     labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _amount == 250
+                    backgroundColor: _money == 250
                         ? const Color(0xFFFAF0CA)
                         : Colors.black26,
                     onPressed: () => _selectAmount(250),
@@ -736,7 +711,7 @@ class _OptionsDialogState extends State<OptionsDialog> {
                   ActionChip(
                     label: const Text("300"),
                     labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _amount == 300
+                    backgroundColor: _money == 300
                         ? const Color(0xFFFAF0CA)
                         : Colors.black26,
                     onPressed: () => _selectAmount(300),
@@ -765,21 +740,41 @@ class _OptionsDialogState extends State<OptionsDialog> {
   _selectType(String t) {
     setState(() {
       _type = t;
-      widget.contractData['type'] = _type;
+      contractData["type"] = t;
     });
   }
 
   _selectPlan(String p) {
     setState(() {
       _plan = p;
-      widget.contractData['plan'] = _plan;
+      DateTime startDay = DateTime.now();
+      switch (p) {
+        case "基礎":
+          contractData["plan"] = "基礎 (1月內達成3週目標)";
+          contractData["endDay"] = Calendar.toKey(
+              DateTime(startDay.year, startDay.month + 1, startDay.day));
+          contractData["flag"] = "0, 3";
+          break;
+        case "進階":
+          contractData["plan"] = "進階 (2月內達成7週目標)";
+          contractData["endDay"] = Calendar.toKey(
+              DateTime(startDay.year, startDay.month + 2, startDay.day));
+          contractData["flag"] = "0, 7";
+          break;
+        case "困難":
+          contractData["plan"] = "困難 (4月內達成15週目標)";
+          contractData["endDay"] = Calendar.toKey(
+              DateTime(startDay.year, startDay.month + 4, startDay.day));
+          contractData["flag"] = "0, 15";
+          break;
+      }
     });
   }
 
   _selectAmount(int a) {
     setState(() {
-      _amount = a;
-      widget.contractData['amount'] = _amount;
+      _money = a;
+      contractData["money"] = a;
     });
   }
 
@@ -794,6 +789,7 @@ class _OptionsDialogState extends State<OptionsDialog> {
             TextButton(
               child: const Text("確認"),
               onPressed: () {
+                ContractDB.update(contractData);
                 Navigator.of(context).pop(true); // Return true if confirmed
               },
             ),
@@ -812,10 +808,10 @@ class _OptionsDialogState extends State<OptionsDialog> {
       setState(() {
         processing = true;
       });
-
+      if (!mounted) return;
       Navigator.pushNamed(context, '/pay', arguments: {
-        'user': widget.user,
-        'contractData': widget.contractData,
+        'user': user,
+        'money': _money,
       });
     }
   }
