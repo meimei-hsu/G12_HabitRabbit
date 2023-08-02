@@ -138,13 +138,13 @@ class Algorithm {
     // Get users ability level and plan settings
     int ability = db.abilities['${type}Ability'];
     ability = ((type == 'cardio') ? ability / 33 : ability / 20).ceil();
-    timeSpan ??= db.timeSpan;
+    timeSpan ??= db.workoutTime;
     int nLoops = timeSpan! ~/ 15; // total rounds
     int nSame = db.nSame; // number of repetitions
     bool same = (nSame > 0) ? true : false;
 
     print('$type: Lv.$ability ability,'
-        ' ${db.timeSpan} min, $nLoops loop ($nSame repeat)');
+        ' ${db.workoutTime} min, $nLoops loop ($nSame repeat)');
 
     // Generate the list of workouts from random
     Random rand = Random();
@@ -178,7 +178,7 @@ class Algorithm {
 
     // Get difficulty level and plan settings
     int diff = 0; // difficulty level for 5 minute workout session: easy
-    timeSpan ??= db.timeSpan;
+    timeSpan ??= db.workoutTime;
     int nLoops = timeSpan! ~/ 15 - 1; // total rounds
 
     // Generate the list of workouts from random
@@ -250,7 +250,7 @@ class Algorithm {
 class PlanData {
   // Get the decision variables for the planning algorithm
   Map<String, dynamic> _likings = {}, _abilities = {};
-  Map<String, dynamic> _workoutDays = {}, _personalities = {};
+  Map<String, dynamic> _workoutDays = {};
   num _timeSpan = 15;
   String _mostLike = '', _leastLike = '';
   String _bestAbility = '', _worstAbility = '';
@@ -264,11 +264,10 @@ class PlanData {
 
     var profile = await UserDB.getPlanVariables();
 
-    _personalities = profile![0];
-    _timeSpan = profile[1]['timeSpan'];
-    _workoutDays = Map.fromIterables(weekDates, profile[1]['workoutDays']);
-    _likings = profile[2];
-    _abilities = profile[3];
+    _timeSpan = profile![0]['workoutTime'];
+    _workoutDays = Map.fromIterables(weekDates, profile[0]['workoutDays']);
+    _likings = profile[1];
+    _abilities = profile[2];
 
     var max = double.negativeInfinity, min = double.infinity;
     _likings.forEach((key, value) {
@@ -294,7 +293,7 @@ class PlanData {
     _sumAbilities = _abilities.values.toList().fold(0, (p, c) => c + p);
     _nDays = _workoutDays.values.toList().fold(0, (p, c) => c + p);
 
-    var openness = _personalities['openness'];
+    var openness = profile[0]['openness'];
     if (openness < 0) {
       _nSame = 3;
       if (_timeSpan == 30) _nSame = 2;
@@ -309,8 +308,7 @@ class PlanData {
   get likings => _likings;
   get abilities => _abilities;
   get workoutDays => _workoutDays;
-  get personalities => _personalities;
-  get timeSpan => _timeSpan;
+  get workoutTime => _timeSpan;
   get mostLike => _mostLike;
   get leastLike => _leastLike;
   get bestAbility => _bestAbility;
@@ -385,7 +383,7 @@ class MeditationPlanAlgo {
     var db = await algo.initializeThisWeek();
     var date = Calendar.toKey(dateTime);
 
-    List meditationType = ["bodyscan", "visualization","loving-kindness"];
+    List meditationType = ["relax", "visualize","kindness"];
     int idx = Random().nextInt(3);
     var meditationplan = await algo.arrangeWorkout(db, meditationType[idx], timeSpan);
     await MeditationPlanDB.update({date: meditationplan});
@@ -468,12 +466,12 @@ class MeditationAlgorithm {
 class MeditationPlanData {
   // Get the decision variables for the planning algorithm
   Map<String, dynamic> _likings = {};
-  Map<String, dynamic> _meditationDays = {}, _personalities = {};
+  Map<String, dynamic> _meditationDays = {};
   num _timeSpan = 15;
   String _mostLike = '', _leastLike = '';
 
-  num _sumLikings = 0, _nDays = 0, _nSame = 0;
-  // Get the workouts ID
+  num _sumLikings = 0, _nDays = 0;
+  // Get the _meditationIDs ID
   Map _meditationIDs = {};
 
   // Setter
@@ -482,10 +480,9 @@ class MeditationPlanData {
 
     var profile = await UserDB.getMeditationPlanVariables();
 
-    _personalities = profile![0];
-    _timeSpan = profile[1]['meditationTimeSpan'];
-    _meditationDays = Map.fromIterables(weekDates, profile[1]['meditationDays']);
-    _likings = profile[2];
+    _timeSpan = profile![0]['meditationTime'];
+    _meditationDays = Map.fromIterables(weekDates, profile[0]['meditationDays']);
+    _likings = profile[1];
 
 
     var max = double.negativeInfinity, min = double.infinity;
@@ -504,28 +501,16 @@ class MeditationPlanData {
     _sumLikings = _likings.values.toList().fold(0, (p, c) => c + p);
 
     _nDays = _meditationDays.values.toList().fold(0, (p, c) => c + p);
-
-  //這段是什麼意思？
-   /* var openness = _personalities['openness'];
-    if (openness < 0) {
-      _nSame = 3;
-      if (_timeSpan == 30) _nSame = 2;
-    } else if (openness == 1) {
-      _nSame = 2;
-    }
-    if (_timeSpan == 60 && openness == -2) _nSame = 4;*/
   }
 
   // Getters
   get meditationIDs => _meditationIDs;
   get likings => _likings;
   get meditationDays => _meditationDays;
-  get personalities => _personalities;
-  get timeSpan => _timeSpan;
+  get meditationTime => _timeSpan;
   get mostLike => _mostLike;
   get leastLike => _leastLike;
   get sumLikings => _sumLikings;
   get nDays => _nDays;
-  //get nSame => _nSame;
 }
 

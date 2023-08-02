@@ -182,15 +182,18 @@ class UserDB {
         "neuroticism",
         "conscientiousness",
         "openness",
+        "agreeableness",
         "height",
         "weight",
-        "timeSpan",
-        "meditationtimeSpan",
+        "workoutTime",
+        "meditationTime",
         "workoutDays",
         "meditationDays",
-        "bodyscanLiking",
-        "visualizationLiking",
-        "loving-kindnessLiking",
+        "workoutGoals",
+        "meditationGoals",
+        "relaxLiking",
+        "visualizeLiking",
+        "kindnessLiking",
         "strengthLiking",
         "cardioLiking",
         "yogaLiking",
@@ -214,29 +217,28 @@ class UserDB {
   }
 
   // Select meditation dynamic data from userID
-  static Future<List<Map<String, dynamic>>?> getMeditationPlanVariables() async {
+  static Future<List<Map<String, dynamic>>?>
+      getMeditationPlanVariables() async {
     final Map? user = await getUser();
 
     if (user != null) {
       return [
         {
-          'openness': user["openness"],
+          'meditationTime': user["meditationTime"],
+          'meditationDays':
+              user['meditationDays'].split('').map(int.parse).toList(),
         },
         {
-          'meditationTimeSpan': user["meditationTimeSpan"],
-          'meditationDays': user['meditationDays'].split('').map(int.parse).toList(),
+          'relaxLiking': user["relaxLiking"],
+          'visualizeLiking': user["visualizeLiking"],
+          'kindnessLiking': user["kindnessLiking"],
         },
-        {
-          'bodyscanLiking': user["bodyscanLiking"],
-          'visualizationLiking': user["visualizationLiking"],
-          'loving-kindnessLiking': user["loving-kindnessLiking"],
-        },
-
       ];
     } else {
       return null;
     }
   }
+
 // Select workout dynamic data from userID
   static Future<List<Map<String, dynamic>>?> getPlanVariables() async {
     final Map? user = await getUser();
@@ -244,12 +246,8 @@ class UserDB {
     if (user != null) {
       return [
         {
-          'neuroticism': user["neuroticism"],
-          'conscientiousness': user["conscientiousness"],
           'openness': user["openness"],
-        },
-        {
-          'timeSpan': user["timeSpan"],
+          'workoutTime': user["workoutTime"],
           'workoutDays': user['workoutDays'].split('').map(int.parse).toList(),
         },
         {
@@ -268,33 +266,26 @@ class UserDB {
     }
   }
 
-  static Future<Map?> getPersonalities() async {
-    return (await getPlanVariables())?[0];
-  }
-
   static Future<Map?> getLikings() async {
-    return (await getPlanVariables())?[2];
+    return (await getPlanVariables())?[1];
   }
 
   static Future<Map?> getAbilities() async {
-    return (await getPlanVariables())?[3];
+    return (await getPlanVariables())?[2];
   }
 
-  static Future<int?> getTimeSpan() async {
-    return (await getUser())?["timeSpan"] as int;
-  }
-  static Future<Map?> getMeditationPersonalities() async {
-    return (await getMeditationPlanVariables())?[0];
+  static Future<int?> getWorkoutTime() async {
+    return (await getUser())?["workoutTime"] as int;
   }
 
   static Future<Map?> getMeditationLikings() async {
-    return (await getMeditationPlanVariables())?[2];
+    return (await getMeditationPlanVariables())?[1];
   }
-
 
   static Future<int?> getMeditationTimeSpan() async {
-    return (await getUser())?["meditationtimeSpan"] as int;
+    return (await getUser())?["meditationTime"] as int;
   }
+
   static Future<String?> getLastWorkoutDay() async {
     final Map? user = await getUser();
     return user != null
@@ -349,7 +340,8 @@ class UserDB {
   }
 
   static Future<List?> getBothWeekMeditationDays() async {
-    List? meditationDays = (await getMeditationPlanVariables())?[1]["meditationDays"];
+    List? meditationDays =
+        (await getMeditationPlanVariables())?[1]["meditationDays"];
     if (meditationDays != null) {
       List retVal = [];
       List thisWeek = Calendar.thisWeek();
@@ -377,7 +369,8 @@ class UserDB {
   static Future<bool?> isMeditationDay(DateTime date) async {
     int idx = Calendar.bothWeeks().indexOf(Calendar.toKey(date));
     idx = (idx >= 7) ? idx - 7 : idx;
-    List? meditationDays = (await getMeditationPlanVariables())?[1]["meditationDays"];
+    List? meditationDays =
+        (await getMeditationPlanVariables())?[1]["meditationDays"];
     bool isMeditationDay = (meditationDays?[idx] == 1) ? true : false;
     return (meditationDays != null) ? isMeditationDay : null;
   }
@@ -463,6 +456,7 @@ class ContractDB {
         ? Map<String, dynamic>.from(snapshot as Map)
         : null;
   }
+
   // Select workout contract from userID
   static Future<Map?> getWorkout() async => (await getContract())?["workout"];
   // Select meditation contract from userID
@@ -791,8 +785,9 @@ class PlanDB {
   static Future<bool> delete(String date) async =>
       await JournalDB.delete(uid, date, table) && await DurationDB.delete(date);
 }
+
 class MeditationPlanDB {
-  static const table = "meditationplan";
+  static const table = "meditationPlan";
   static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
   // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
@@ -876,11 +871,11 @@ class MeditationPlanDB {
     // and its first character's index (which indicates the workout type) is 18.
     switch ((await getFromDate(date))?[18]) {
       case '1':
-        return "bodyscan";
+        return "relax";
       case '2':
-        return "visualization";
+        return "visualize";
       case '3':
-        return "loving-kindness";
+        return "kindness";
       default:
         return null;
     }
@@ -899,9 +894,9 @@ class MeditationPlanDB {
   // Update plan data {date: plan} from table {table/userID/plan/date}
   static Future<bool> update(Map<String, String> data) async =>
       await JournalDB.update(uid, data, table) &&
-          await DurationDB.update(data.map((key, value) {
-            return MapEntry(key, "0, ${value.split(", ").length}");
-          }));
+      await DurationDB.update(data.map((key, value) {
+        return MapEntry(key, "0, ${value.split(", ").length}");
+      }));
 
   // Update the plan's date to given date (coming days of current week)
   static Future<bool> updateDate(DateTime original, DateTime modified) async {
@@ -917,7 +912,8 @@ class MeditationPlanDB {
 
   // Delete plan data {table/userID/plan/date}
   static Future<bool> delete(String date) async =>
-      await JournalDB.delete(uid, date, table) && await MeditationDurationDB.delete(date);
+      await JournalDB.delete(uid, date, table) &&
+      await MeditationDurationDB.delete(date);
 }
 
 class DurationDB {
@@ -991,7 +987,7 @@ class DurationDB {
 }
 
 class MeditationDurationDB {
-  static const table = "meditationduration";
+  static const table = "meditationDuration";
   static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
   // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John

@@ -34,9 +34,9 @@ Map userInfo = {
   "strengthLiking": 40,
   "cardioLiking": 40,
   "yogaLiking": 40,
-  "bodyScan": 0,
-  "visualize": 0,
-  "kindness": 0,
+  "relaxLiking": 0,
+  "visualizeLiking": 0,
+  "kindnessLiking": 0,
 };
 
 // List of questions in part two
@@ -68,6 +68,7 @@ final questions_2 = [
     isMultiChoice: true,
     options: [
       Option(text: "減脂減重", data: "減脂減重"),
+      Option(text: "塑型增肌", data: "塑型增肌"),
       Option(text: "紓解壓力", data: "紓解壓力"),
       Option(text: "預防疾病", data: "預防疾病"),
       Option(text: "改善膚況", data: "改善膚況"),
@@ -983,20 +984,20 @@ class _PartTwoPageState extends State<PartTwoPage> {
     final List keys = [
       "workoutDays",
       "workoutTime",
-      "workoutGoal",
+      "workoutGoals",
       "",
       "strengthAbility",
       "cardioAbility",
       "yogaAbility",
-      "meditateDays",
-      "meditateTime",
-      "meditateGoal",
+      "meditationDays",
+      "meditationTime",
+      "meditationGoals",
     ];
 
     for (int i = 0; i < questions_2.length; i++) {
       List answer = questions_2[i].selectedOptions;
       if (i == 0 || i == 7) {
-        // Get workoutDays || meditateDays
+        // Get workoutDays || meditationDays
         List days = [for (int j = 0; j < 7; j++) 0];
         for (Option option in answer) {
           // Set the day to 1 if is selected, else 0
@@ -1004,10 +1005,10 @@ class _PartTwoPageState extends State<PartTwoPage> {
         }
         userInfo[keys[i]] = days.join(', ');
       } else if (i == 1 || i == 8) {
-        // Get workoutTime || meditateTime
+        // Get workoutTime || meditationTime
         userInfo[keys[i]] = answer.first.data;
       } else if (i == 2) {
-        // Get workoutGoal
+        // Get workoutGoals
         // Joint all the answers into a string with ", "
         userInfo[keys[i]] =
             List.generate(answer.length, (index) => answer[index].data)
@@ -1022,7 +1023,7 @@ class _PartTwoPageState extends State<PartTwoPage> {
         // Get the ability of the three workout types
         userInfo[keys[i]] = answer.first.data;
       } else if (i == 9) {
-        // Get meditateGoal
+        // Get meditationGoals
         // Joint all the answers into a string with ", "
         List reasons =
             List.generate(answer.length, (index) => answer[index].text);
@@ -1034,7 +1035,11 @@ class _PartTwoPageState extends State<PartTwoPage> {
           userInfo[option.data] += 1;
         }
 
-        for (String type in ["bodyScan", "visualize", "kindness"]) {
+        for (String type in [
+          "relaxLiking",
+          "visualizeLiking",
+          "kindnessLiking"
+        ]) {
           // Multiply the liking score by 5 then add the base score 40
           userInfo[type] *= 5;
           userInfo[type] += 40;
