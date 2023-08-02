@@ -185,8 +185,12 @@ class UserDB {
         "height",
         "weight",
         "timeSpan",
+        "meditationtimeSpan",
         "workoutDays",
         "meditationDays",
+        "bodyscanLiking",
+        "visualizationLiking",
+        "loving-kindnessLiking",
         "strengthLiking",
         "cardioLiking",
         "yogaLiking",
@@ -209,7 +213,31 @@ class UserDB {
         : null;
   }
 
-  // Select dynamic data from userID
+  // Select meditation dynamic data from userID
+  static Future<List<Map<String, dynamic>>?> getMeditationPlanVariables() async {
+    final Map? user = await getUser();
+
+    if (user != null) {
+      return [
+        {
+          'openness': user["openness"],
+        },
+        {
+          'meditationTimeSpan': user["meditationTimeSpan"],
+          'meditationDays': user['meditationDays'].split('').map(int.parse).toList(),
+        },
+        {
+          'bodyscanLiking': user["bodyscanLiking"],
+          'visualizationLiking': user["visualizationLiking"],
+          'loving-kindnessLiking': user["loving-kindnessLiking"],
+        },
+
+      ];
+    } else {
+      return null;
+    }
+  }
+// Select workout dynamic data from userID
   static Future<List<Map<String, dynamic>>?> getPlanVariables() async {
     final Map? user = await getUser();
 
@@ -255,7 +283,18 @@ class UserDB {
   static Future<int?> getTimeSpan() async {
     return (await getUser())?["timeSpan"] as int;
   }
+  static Future<Map?> getMeditationPersonalities() async {
+    return (await getMeditationPlanVariables())?[0];
+  }
 
+  static Future<Map?> getMeditationLikings() async {
+    return (await getMeditationPlanVariables())?[2];
+  }
+
+
+  static Future<int?> getMeditationTimeSpan() async {
+    return (await getUser())?["meditationtimeSpan"] as int;
+  }
   static Future<String?> getLastWorkoutDay() async {
     final Map? user = await getUser();
     return user != null
@@ -310,7 +349,7 @@ class UserDB {
   }
 
   static Future<List?> getBothWeekMeditationDays() async {
-    List? meditationDays = (await getPlanVariables())?[1]["meditationDays"];
+    List? meditationDays = (await getMeditationPlanVariables())?[1]["meditationDays"];
     if (meditationDays != null) {
       List retVal = [];
       List thisWeek = Calendar.thisWeek();
@@ -335,12 +374,12 @@ class UserDB {
     return (workoutDays != null) ? isWorkoutDay : null;
   }
 
-  static Future<bool?> ismeditationDay(DateTime date) async {
+  static Future<bool?> isMeditationDay(DateTime date) async {
     int idx = Calendar.bothWeeks().indexOf(Calendar.toKey(date));
     idx = (idx >= 7) ? idx - 7 : idx;
-    List? meditationDays = (await getPlanVariables())?[1]["meditationDays"];
-    bool isWorkoutDay = (meditationDays?[idx] == 1) ? true : false;
-    return (meditationDays != null) ? isWorkoutDay : null;
+    List? meditationDays = (await getMeditationPlanVariables())?[1]["meditationDays"];
+    bool isMeditationDay = (meditationDays?[idx] == 1) ? true : false;
+    return (meditationDays != null) ? isMeditationDay : null;
   }
 
   // Insert data {columnName: value} into Users
@@ -753,7 +792,7 @@ class PlanDB {
       await JournalDB.delete(uid, date, table) && await DurationDB.delete(date);
 }
 class MeditationPlanDB {
-  static const table = "plan";
+  static const table = "meditationplan";
   static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
   // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
@@ -837,11 +876,11 @@ class MeditationPlanDB {
     // and its first character's index (which indicates the workout type) is 18.
     switch ((await getFromDate(date))?[18]) {
       case '1':
-        return "strength";
+        return "bodyscan";
       case '2':
-        return "cardio";
+        return "visualization";
       case '3':
-        return "yoga";
+        return "loving-kindness";
       default:
         return null;
     }
@@ -952,7 +991,7 @@ class DurationDB {
 }
 
 class MeditationDurationDB {
-  static const table = "duration";
+  static const table = "meditationduration";
   static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
   // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John

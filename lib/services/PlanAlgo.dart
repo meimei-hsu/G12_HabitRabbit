@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:g12/services/Database.dart';
-
+//workout
 class PlanAlgo {
   // Start point of the planning algorithm
   // Execute when user login or after giving feedback.
@@ -68,75 +68,6 @@ class PlanAlgo {
     int idx = Random().nextInt(3);
     var plan = await algo.arrangeWorkout(db, workoutType[idx], timeSpan);
     await PlanDB.update({date: plan});
-  }
-}
-
-class MeditationPlanAlgo {
-  // Start point of the planning algorithm
-  // Execute when user login or after giving feedback.
-  static execute() async {
-    Algorithm algo = Algorithm();
-    PlanData? db;
-    DateTime? lastMeditationDay =
-    DateTime.parse((await UserDB.getLastMeditationDay())!);
-
-    // Conditions
-    int today = DateTime.now().weekday;
-    int lastDay = lastMeditationDay.weekday;
-    bool noThisWeekPlan = await MeditationPlanDB.getThisWeek() == null;
-    bool noNextWeekPlan = await MeditationPlanDB.getNextWeek() == null;
-    bool isFinished = await MeditationDurationDB.calcProgress(lastMeditationDay) == 100;
-
-    // Start generating the plan
-    // Generate next week's plan if:
-    //   1. on the last day & feedback is given
-    //   2. on days after last day & no feedback given from the last day
-    // else, generate this week's plan on any day if database has no data.
-    if ((today == lastDay && isFinished) ||
-        (today > lastDay && !isFinished && today != 7)) {
-      if (noNextWeekPlan) {
-        db = await algo.initializeNextWeek();
-        print("Generate next week's plan.");
-      }
-    } else {
-      if (noThisWeekPlan) {
-        db = await algo.initializeThisWeek();
-        print("Generate this week's plan.");
-      }
-    }
-
-    if (db != null) {
-      var skd = await algo.arrangeSchedule(db);
-      var plan = await algo.arrangePlan(db, skd);
-      await MeditationPlanDB.update(plan);
-    } else {
-      print("Not the time to generate a plan.");
-    }
-  }
-
-  // Regenerate the plan for a day in the current week
-  static regenerate(DateTime dateTime) async {
-    Algorithm algo = Algorithm();
-    var db = await algo.initializeThisWeek();
-    var date = Calendar.toKey(dateTime);
-
-    var workoutType = await MeditationPlanDB.getMeditationType(dateTime);
-    var timeSpan = await MeditationPlanDB.getPlanLong(dateTime);
-    if (workoutType != null) {
-      var plan = await algo.arrangeWorkout(db, workoutType, timeSpan);
-      await MeditationPlanDB.update({date: plan});
-    }
-  }
-
-  static generate(DateTime dateTime, int timeSpan) async {
-    Algorithm algo = Algorithm();
-    var db = await algo.initializeThisWeek();
-    var date = Calendar.toKey(dateTime);
-
-    List meditationType = ["focused", "bodyscan", "visualization","loving-kindness"];
-    int idx = Random().nextInt(4);
-    var meditationplan = await algo.arrangeWorkout(db, meditationType[idx], timeSpan);
-    await MeditationPlanDB.update({date: meditationplan});
   }
 }
 
@@ -389,3 +320,213 @@ class PlanData {
   get nDays => _nDays;
   get nSame => _nSame;
 }
+
+class MeditationPlanAlgo {
+  // Start point of the planning algorithm
+  // Execute when user login or after giving feedback.
+  static execute() async {
+    Algorithm algo = Algorithm();
+    PlanData? db;
+    DateTime? lastMeditationDay =
+    DateTime.parse((await UserDB.getLastMeditationDay())!);
+
+    // Conditions
+    int today = DateTime.now().weekday;
+    int lastDay = lastMeditationDay.weekday;
+    bool noThisWeekPlan = await MeditationPlanDB.getThisWeek() == null;
+    bool noNextWeekPlan = await MeditationPlanDB.getNextWeek() == null;
+    bool isFinished = await MeditationDurationDB.calcProgress(lastMeditationDay) == 100;
+
+    // Start generating the plan
+    // Generate next week's plan if:
+    //   1. on the last day & feedback is given
+    //   2. on days after last day & no feedback given from the last day
+    // else, generate this week's plan on any day if database has no data.
+    if ((today == lastDay && isFinished) ||
+        (today > lastDay && !isFinished && today != 7)) {
+      if (noNextWeekPlan) {
+        db = await algo.initializeNextWeek();
+        print("Generate next week's plan.");
+      }
+    } else {
+      if (noThisWeekPlan) {
+        db = await algo.initializeThisWeek();
+        print("Generate this week's plan.");
+      }
+    }
+
+    if (db != null) {
+      var skd = await algo.arrangeSchedule(db);
+      var plan = await algo.arrangePlan(db, skd);
+      await MeditationPlanDB.update(plan);
+    } else {
+      print("Not the time to generate a plan.");
+    }
+  }
+
+  // Regenerate the plan for a day in the current week
+  static regenerate(DateTime dateTime) async {
+    MeditationAlgorithm algo = MeditationAlgorithm();
+    var db = await algo.initializeThisWeek();
+    var date = Calendar.toKey(dateTime);
+
+    var meditationType = await MeditationPlanDB.getMeditationType(dateTime);
+    var timeSpan = await MeditationPlanDB.getPlanLong(dateTime);
+    if (meditationType != null) {
+      //var plan = await algo.arrangeWorkout(db, workoutType, timeSpan);
+      var plan = meditationType;
+      await MeditationPlanDB.update({date: plan});
+    }
+  }
+
+  static generate(DateTime dateTime, int timeSpan) async {
+    Algorithm algo = Algorithm();
+    var db = await algo.initializeThisWeek();
+    var date = Calendar.toKey(dateTime);
+
+    List meditationType = ["bodyscan", "visualization","loving-kindness"];
+    int idx = Random().nextInt(3);
+    var meditationplan = await algo.arrangeWorkout(db, meditationType[idx], timeSpan);
+    await MeditationPlanDB.update({date: meditationplan});
+  }
+}
+
+class MeditationAlgorithm {
+  Future<MeditationPlanData> initializeThisWeek() async {
+    MeditationPlanData db = MeditationPlanData();
+    await db.init(Calendar.thisWeek());
+    return db;
+  }
+
+  Future<MeditationPlanData> initializeNextWeek() async {
+    MeditationPlanData db = MeditationPlanData();
+    await db.init(Calendar.nextWeek());
+    return db;
+  }
+
+  // Method to arrange a workout schedule based on the workout frequency and workout days
+  Future<Map<String, String>> arrangeSchedule(MeditationPlanData db) async {
+    // Calculate workout frequency based on the adjusted user data
+    Map<String, int> frequencies = {};
+    db.likings.forEach((k, v) => {
+      frequencies.putIfAbsent(
+          k, () => (v / db.sumLikings * db.nDays).round())
+    });
+    print('settings: ${db.meditationDays}\nfrequency: $frequencies');
+
+    // Adjust the frequency map based on the error margin of +-1
+    var sumFreq = frequencies.values.toList().fold(0, (p, c) => c + p);
+    if (db.nDays > sumFreq) {
+      frequencies.update(db.mostLike, (v) => v + 1);
+    } else if (db.nDays < sumFreq) {
+      frequencies.update(db.leastLike, (v) => v - 1);
+    }
+    print('frequency(adjust): $frequencies');
+
+    // Turn the frequency map into a list of selectable objects
+    List<String> categories = [];
+    frequencies.forEach((k, v) => {
+      for (int i = 0; i < v; i++)
+        {categories.add(k.substring(0, k.indexOf('Liking')))}
+    });
+
+    // Shuffle the list to randomly pick objects for non-rest days
+    categories.shuffle();
+
+    // Initialize the schedule with rest days
+    Map<String, String> schedule = Map.fromIterables(
+        db.meditationDays.keys, List.generate(7, (index) => 'rest'));
+
+    // Assign workouts to the upcoming non-rest days
+    List daysPassed = Calendar.daysPassed();
+    print("daysPassed: $daysPassed");
+    db.meditationDays.forEach((k, v) => {
+      if (!daysPassed.contains(k) && v == 1)
+        {schedule[k] = categories[0], categories.removeAt(0)}
+    });
+    print('schedule: $schedule');
+
+    return schedule;
+  }
+
+
+  // Method to generate a workout plan {"Date": "workoutIDs"}
+  Future<Map<String, String>> arrangePlan(MeditationPlanData db, Map schedule) async {
+    Map<String, String> plan = {};
+    // Call arrangeWorkout() for each workout type in the workout schedule
+    for (MapEntry entry in schedule.entries) {
+      if (entry.value != 'rest') {
+        //plan[entry.key] = await arrangeWorkout(db, entry.value);
+      }
+    }
+    print("plan: $plan");
+    return plan;
+  }
+}
+
+class MeditationPlanData {
+  // Get the decision variables for the planning algorithm
+  Map<String, dynamic> _likings = {};
+  Map<String, dynamic> _meditationDays = {}, _personalities = {};
+  num _timeSpan = 15;
+  String _mostLike = '', _leastLike = '';
+
+  num _sumLikings = 0, _nDays = 0, _nSame = 0;
+  // Get the workouts ID
+  Map _meditationIDs = {};
+
+  // Setter
+  Future<void> init(List<String> weekDates) async {
+    _meditationIDs = (await WorkoutDB.getWIDs())!;
+
+    var profile = await UserDB.getPlanVariables();
+
+    _personalities = profile![0];
+    _timeSpan = profile[1]['meditationTimeSpan'];
+    _meditationDays = Map.fromIterables(weekDates, profile[1]['meditationDays']);
+    _likings = profile[2];
+
+
+    var max = double.negativeInfinity, min = double.infinity;
+    _likings.forEach((key, value) {
+      if (value > max) {
+        _mostLike = key;
+      }
+      if (value < min) {
+        _leastLike = key;
+      }
+    });
+    max = double.negativeInfinity;
+    min = double.infinity;
+
+
+    _sumLikings = _likings.values.toList().fold(0, (p, c) => c + p);
+
+    _nDays = _meditationDays.values.toList().fold(0, (p, c) => c + p);
+
+    var openness = _personalities['openness'];
+    if (openness < 0) {
+      _nSame = 3;
+      if (_timeSpan == 30) _nSame = 2;
+    } else if (openness == 1) {
+      _nSame = 2;
+    }
+    if (_timeSpan == 60 && openness == -2) _nSame = 4;
+  }
+
+  // Getters
+  get meditationIDs => _meditationIDs;
+  get likings => _likings;
+
+  get meditationDays => _meditationDays;
+  get personalities => _personalities;
+  get timeSpan => _timeSpan;
+  get mostLike => _mostLike;
+  get leastLike => _leastLike;
+
+  get sumLikings => _sumLikings;
+
+  get nDays => _nDays;
+  get nSame => _nSame;
+}
+
