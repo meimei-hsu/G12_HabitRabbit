@@ -321,6 +321,7 @@ class PlanData {
   get nSame => _nSame;
 }
 
+//Meditation
 class MeditationPlanAlgo {
   // Start point of the planning algorithm
   // Execute when user login or after giving feedback.
@@ -479,7 +480,7 @@ class MeditationPlanData {
   Future<void> init(List<String> weekDates) async {
     _meditationIDs = (await WorkoutDB.getWIDs())!;
 
-    var profile = await UserDB.getPlanVariables();
+    var profile = await UserDB.getMeditationPlanVariables();
 
     _personalities = profile![0];
     _timeSpan = profile[1]['meditationTimeSpan'];
@@ -504,29 +505,27 @@ class MeditationPlanData {
 
     _nDays = _meditationDays.values.toList().fold(0, (p, c) => c + p);
 
-    var openness = _personalities['openness'];
+  //這段是什麼意思？
+   /* var openness = _personalities['openness'];
     if (openness < 0) {
       _nSame = 3;
       if (_timeSpan == 30) _nSame = 2;
     } else if (openness == 1) {
       _nSame = 2;
     }
-    if (_timeSpan == 60 && openness == -2) _nSame = 4;
+    if (_timeSpan == 60 && openness == -2) _nSame = 4;*/
   }
 
   // Getters
   get meditationIDs => _meditationIDs;
   get likings => _likings;
-
   get meditationDays => _meditationDays;
   get personalities => _personalities;
   get timeSpan => _timeSpan;
   get mostLike => _mostLike;
   get leastLike => _leastLike;
-
   get sumLikings => _sumLikings;
-
   get nDays => _nDays;
-  get nSame => _nSame;
+  //get nSame => _nSame;
 }
 
