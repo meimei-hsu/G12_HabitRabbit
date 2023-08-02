@@ -186,6 +186,7 @@ class UserDB {
         "weight",
         "timeSpan",
         "workoutDays",
+        "meditationDays",
         "strengthLiking",
         "cardioLiking",
         "yogaLiking",
@@ -262,11 +263,29 @@ class UserDB {
         : null;
   }
 
+  static Future<String?> getLastMeditationDay() async {
+    final Map? user = await getUser();
+    return user != null
+        ? Calendar.thisWeek()[user["meditationDays"].lastIndexOf("1")]
+        : null;
+  }
+
   static Future<int?> getWorkoutDayCount() async {
     final Map? user = await getUser();
     int days = 0;
     for (int i = 0; i < 7; i++) {
       if (user!["workoutDays"][i] != 0) {
+        days++;
+      }
+    }
+    return days;
+  }
+
+  static Future<int?> getMeditationDayCount() async {
+    final Map? user = await getUser();
+    int days = 0;
+    for (int i = 0; i < 7; i++) {
+      if (user!["meditationDays"][i] != 0) {
         days++;
       }
     }
@@ -290,6 +309,23 @@ class UserDB {
     return null;
   }
 
+  static Future<List?> getBothWeekMeditationDays() async {
+    List? meditationDays = (await getPlanVariables())?[1]["meditationDays"];
+    if (meditationDays != null) {
+      List retVal = [];
+      List thisWeek = Calendar.thisWeek();
+      List nextWeek = Calendar.nextWeek();
+      for (int i = 0; i < 7; i++) {
+        if (meditationDays[i] == 1) {
+          retVal.add(thisWeek[i]);
+          retVal.add(nextWeek[i]);
+        }
+      }
+      return retVal..sort();
+    }
+    return null;
+  }
+
   // Check if the given date should workout
   static Future<bool?> isWorkoutDay(DateTime date) async {
     int idx = Calendar.bothWeeks().indexOf(Calendar.toKey(date));
@@ -297,6 +333,14 @@ class UserDB {
     List? workoutDays = (await getPlanVariables())?[1]["workoutDays"];
     bool isWorkoutDay = (workoutDays?[idx] == 1) ? true : false;
     return (workoutDays != null) ? isWorkoutDay : null;
+  }
+
+  static Future<bool?> ismeditationDay(DateTime date) async {
+    int idx = Calendar.bothWeeks().indexOf(Calendar.toKey(date));
+    idx = (idx >= 7) ? idx - 7 : idx;
+    List? meditationDays = (await getPlanVariables())?[1]["meditationDays"];
+    bool isWorkoutDay = (meditationDays?[idx] == 1) ? true : false;
+    return (meditationDays != null) ? isWorkoutDay : null;
   }
 
   // Insert data {columnName: value} into Users
@@ -708,8 +752,206 @@ class PlanDB {
   static Future<bool> delete(String date) async =>
       await JournalDB.delete(uid, date, table) && await DurationDB.delete(date);
 }
+class MeditationPlanDB {
+  static const table = "plan";
+  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
+  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
+  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
+
+  // Format the String of plan into List of workouts, grouped by workout sets
+  static List toList(String planStr) {
+    List<String> plan = planStr.split(", ");
+
+    // (String) plan: 3 warm-up + n loops (10/5/...) + 10 min + 2 cool-down
+    int nLoop = (plan.length - 5) ~/ 15;
+
+    // Split the plan into different loops
+    List<List<String>> fmtPlan = [
+      plan.sublist(0, 3),
+    ];
+    int count = 3;
+
+    for (int i = 0; i < nLoop; i++) {
+      fmtPlan.add(plan.sublist(count, count + 10));
+      count += 10;
+      fmtPlan.add(plan.sublist(count, count + 5));
+      count += 5;
+    }
+
+    fmtPlan.add(plan.sublist(count, count + 10));
+    count += 10;
+    fmtPlan.add(plan.sublist(count, count + 2));
+
+    return fmtPlan;
+  }
+
+  // Select all user's plans
+  static Future<Map?> getTable() async => await JournalDB.getTable(uid, table);
+
+  // Select the user's plan from the dates of given week
+  static Future<Map?> getThisWeek() async =>
+      await JournalDB.getThisWeek(uid, table);
+
+  static Future<Map?> getNextWeek() async =>
+      await JournalDB.getNextWeek(uid, table);
+
+  // Select user's workout plan from given dates
+  static Future<Map?> getFromDates(List<String> dates) async =>
+      await JournalDB.getFromDates(uid, dates, table);
+
+  static Future<String?> getFromDate(DateTime date) async =>
+      await JournalDB.getFromDate(uid, date, table);
+
+  // Select a map of user's plans based on workout names
+  static Future<Map?> getDatesByName(Map? plans) async {
+    var workoutNames = await WorkoutDB.getAll();
+    if (plans != null && workoutNames != null) {
+      return plans.map((date, plan) => MapEntry(date,
+          plan.split(", ").map((value) => workoutNames[value]).join(", ")));
+    }
+    return null;
+  }
+
+  static Future<Map?> getThisWeekByName() async =>
+      await getDatesByName(await getThisWeek());
+
+  static Future<Map?> getNextWeekByName() async =>
+      await getDatesByName(await getNextWeek());
+
+  // Select a String of user's plan based on workout names
+  static Future<String?> getByName(DateTime date) async {
+    var plan = await getFromDate(date);
+    if (plan != null) {
+      var ids = plan.split(", ");
+      return (await WorkoutDB.toNames(ids))?.join(", ");
+    }
+    return null;
+  }
+
+  static Future<int?> getPlanLong(DateTime date) async {
+    return (await getFromDate(date))?.split(", ").length;
+  }
+
+  static Future<String?> getMeditationType(DateTime date) async {
+    // The third element of the plan is the first workout after the warmup,
+    // and its first character's index (which indicates the workout type) is 18.
+    switch ((await getFromDate(date))?[18]) {
+      case '1':
+        return "strength";
+      case '2':
+        return "cardio";
+      case '3':
+        return "yoga";
+      default:
+        return null;
+    }
+  }
+
+  // Select user's workout history
+  static Future<Map?> getHistory() async {
+    var daysComing = Calendar.daysComing();
+    var nextWeek = Calendar.nextWeek();
+    var retVal = await getTable();
+    retVal?.removeWhere((k, v) => daysComing.contains(k));
+    retVal?.removeWhere((k, v) => nextWeek.contains(k));
+    return retVal;
+  }
+
+  // Update plan data {date: plan} from table {table/userID/plan/date}
+  static Future<bool> update(Map<String, String> data) async =>
+      await JournalDB.update(uid, data, table) &&
+          await DurationDB.update(data.map((key, value) {
+            return MapEntry(key, "0, ${value.split(", ").length}");
+          }));
+
+  // Update the plan's date to given date (coming days of current week)
+  static Future<bool> updateDate(DateTime original, DateTime modified) async {
+    // The map is constituted by the modified date and the original plan
+    String? plan = await getFromDate(original);
+    if (plan != null) {
+      Map<String, String> map = {Calendar.toKey(modified): plan};
+      // Delete the original record, and update with the modified date
+      return await delete(Calendar.toKey(original)) && await update(map);
+    }
+    return false;
+  }
+
+  // Delete plan data {table/userID/plan/date}
+  static Future<bool> delete(String date) async =>
+      await JournalDB.delete(uid, date, table) && await MeditationDurationDB.delete(date);
+}
 
 class DurationDB {
+  static const table = "duration";
+  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
+  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
+  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
+
+  // Select all durations
+  static Future<Map?> getTable() async => await JournalDB.getTable(uid, table);
+
+  // Select user's workout duration from given date
+  static Future<int?> getFromDate(DateTime date) async {
+    var duration = await JournalDB.getFromDate(uid, date, table);
+    return (duration != null) ? int.parse(duration.split(', ')[0]) : null;
+  }
+
+  // Calculate user's workout progress from given dates
+  static Future<Map?> getWeekProgress() async {
+    Map? durations = await JournalDB.getThisWeek(uid, table);
+    if (durations != null) {
+      return durations.map((key, value) {
+        var duration = value.split(', ').map(int.parse).toList();
+        return MapEntry(key, (duration[0] / duration[1] * 100).round());
+      });
+    }
+    return null;
+  }
+
+  // Calculate user's workout progress from given date
+  static Future<num?> calcProgress(DateTime date) async {
+    var record = (await JournalDB.getFromDate(uid, date, table));
+    return (record != null) ? Tool.calcProgress(record) : null;
+  }
+
+  // Calculate the number of times user has completed a workout plan during this week
+  static Future<num?> calcCompletion() async {
+    List? workoutDays = (await UserDB.getPlanVariables())?[1]["workoutDays"];
+    int complete = 0;
+    for (String date in Calendar.thisWeek()) {
+      complete += (await calcProgress(DateTime.parse(date)) == 100) ? 1 : 0;
+    }
+    return (workoutDays != null)
+        ? (complete / workoutDays.fold(0, (p, c) => c + p) * 100).round()
+        : null;
+  }
+
+  // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
+  static Future<bool> update(Map data) async {
+    String key = data.keys.first;
+    String value = data.values.first;
+
+    if (value.contains(", ")) {
+      // value: "duration, timeSpan"
+      return await JournalDB.update(uid, data, table);
+    } else {
+      // value: "duration"
+      var record = await JournalDB.getFromDate(
+          uid, DateTime.parse(data.keys.first), table);
+      if (record != null) {
+        String timeSpan = record.split(', ')[1];
+        return await JournalDB.update(uid, {key: "$value, $timeSpan"}, table);
+      }
+    }
+    return false;
+  }
+
+  // Delete duration data {table/userID/duration/date}
+  static Future<bool> delete(String date) async =>
+      await JournalDB.delete(uid, date, table);
+}
+
+class MeditationDurationDB {
   static const table = "duration";
   static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
   // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary

@@ -71,6 +71,75 @@ class PlanAlgo {
   }
 }
 
+class MeditationPlanAlgo {
+  // Start point of the planning algorithm
+  // Execute when user login or after giving feedback.
+  static execute() async {
+    Algorithm algo = Algorithm();
+    PlanData? db;
+    DateTime? lastMeditationDay =
+    DateTime.parse((await UserDB.getLastMeditationDay())!);
+
+    // Conditions
+    int today = DateTime.now().weekday;
+    int lastDay = lastMeditationDay.weekday;
+    bool noThisWeekPlan = await MeditationPlanDB.getThisWeek() == null;
+    bool noNextWeekPlan = await MeditationPlanDB.getNextWeek() == null;
+    bool isFinished = await MeditationDurationDB.calcProgress(lastMeditationDay) == 100;
+
+    // Start generating the plan
+    // Generate next week's plan if:
+    //   1. on the last day & feedback is given
+    //   2. on days after last day & no feedback given from the last day
+    // else, generate this week's plan on any day if database has no data.
+    if ((today == lastDay && isFinished) ||
+        (today > lastDay && !isFinished && today != 7)) {
+      if (noNextWeekPlan) {
+        db = await algo.initializeNextWeek();
+        print("Generate next week's plan.");
+      }
+    } else {
+      if (noThisWeekPlan) {
+        db = await algo.initializeThisWeek();
+        print("Generate this week's plan.");
+      }
+    }
+
+    if (db != null) {
+      var skd = await algo.arrangeSchedule(db);
+      var plan = await algo.arrangePlan(db, skd);
+      await MeditationPlanDB.update(plan);
+    } else {
+      print("Not the time to generate a plan.");
+    }
+  }
+
+  // Regenerate the plan for a day in the current week
+  static regenerate(DateTime dateTime) async {
+    Algorithm algo = Algorithm();
+    var db = await algo.initializeThisWeek();
+    var date = Calendar.toKey(dateTime);
+
+    var workoutType = await MeditationPlanDB.getMeditationType(dateTime);
+    var timeSpan = await MeditationPlanDB.getPlanLong(dateTime);
+    if (workoutType != null) {
+      var plan = await algo.arrangeWorkout(db, workoutType, timeSpan);
+      await MeditationPlanDB.update({date: plan});
+    }
+  }
+
+  static generate(DateTime dateTime, int timeSpan) async {
+    Algorithm algo = Algorithm();
+    var db = await algo.initializeThisWeek();
+    var date = Calendar.toKey(dateTime);
+
+    List meditationType = ["focused", "bodyscan", "visualization","loving-kindness"];
+    int idx = Random().nextInt(4);
+    var meditationplan = await algo.arrangeWorkout(db, meditationType[idx], timeSpan);
+    await MeditationPlanDB.update({date: meditationplan});
+  }
+}
+
 class Algorithm {
   Future<PlanData> initializeThisWeek() async {
     PlanData db = PlanData();
