@@ -838,10 +838,10 @@ class MeditationPlanDB {
 
   // Select a map of user's plans based on workout names
   static Future<Map?> getDatesByName(Map? plans) async {
-    var workoutNames = await WorkoutDB.getAll();
-    if (plans != null && workoutNames != null) {
+    var meditationNames = await MeditationDB.getAll();
+    if (plans != null && meditationNames != null) {
       return plans.map((date, plan) => MapEntry(date,
-          plan.split(", ").map((value) => workoutNames[value]).join(", ")));
+          plan.split(", ").map((value) =>meditationNames[value]).join(", ")));
     }
     return null;
   }
