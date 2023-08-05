@@ -57,10 +57,10 @@ dependencies:
   animated_text_kit: ^4.2.2
   datepicker_cupertino: ^0.0.4
   square_progress_bar: ^1.1.1
+  dots_indicator: ^3.0.0
   toggle_switch: ^2.1.0
   flutter_easyloading: ^3.0.5
   loading_animation_widget: ^1.2.0
-  dots_indicator: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -106,23 +106,26 @@ flutter:
     - assets/images/lock.png
     - assets/images/start.png
     - assets/images/finish.png
-    - assets/images/1.png
-    - assets/images/2.png
-    - assets/images/3.png
     - assets/images/visa.png
     - assets/images/mastercard.png
     - assets/images/jcb.png
     - assets/images/rabbit.png
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+    - assets/images/finish.png
+    - assets/images/first.png
+    - assets/images/second.png
+    - assets/images/third.png
+    - assets/images/third_unknown.png
+    - assets/images/treasure.png
+    # To add assets to your application, add an assets section, like this:
+    # assets:
+    #   - images/a_dot_burr.jpeg
+    #   - images/a_dot_ham.jpeg
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware
+    # An image asset can refer to one or more resolution-specific "variants", see
+    # https://flutter.dev/assets-and-images/#resolution-aware
 
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#fdependencies:
+    # For details regarding adding assets from package dependencies, see
+    # https://flutter.dev/assets-and-images/#fdependencies:
     #  table_calendar: ^3.0.9rom-packages
 
   # To add custom fonts to your application, add a fonts section here,
