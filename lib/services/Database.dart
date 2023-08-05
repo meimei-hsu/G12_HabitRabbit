@@ -550,7 +550,7 @@ class WorkoutDB {
     return await DB.delete(db, workoutID);
   }
 }
-
+//目前應該不會用到？？
 class MeditationDB {
   static const db = "meditations";
 
@@ -817,7 +817,7 @@ class MeditationPlanDB {
     var plan = await getFromDate(date);
     if (plan != null) {
       var ids = plan.split(", ");
-      return (await WorkoutDB.toNames(ids))?.join(", ");
+      return (await MeditationDB.toNames(ids))?.join(", ");
     }
     return null;
   }
@@ -854,7 +854,7 @@ class MeditationPlanDB {
   // Update plan data {date: plan} from table {table/userID/plan/date}
   static Future<bool> update(Map<String, String> data) async =>
       await JournalDB.update(uid, data, table) &&
-      await DurationDB.update(data.map((key, value) {
+      await MeditationDurationDB.update(data.map((key, value) {
         return MapEntry(key, "0, ${value.split(", ").length}");
       }));
 
@@ -981,13 +981,13 @@ class MeditationDurationDB {
 
   // Calculate the number of times user has completed a workout plan during this week
   static Future<num?> calcCompletion() async {
-    List? workoutDays = (await UserDB.getPlanVariables())?[1]["workoutDays"];
+    List? meditationDays = (await UserDB.getMeditationPlanVariables())?[1]["meditationDays"];
     int complete = 0;
     for (String date in Calendar.thisWeek()) {
       complete += (await calcProgress(DateTime.parse(date)) == 100) ? 1 : 0;
     }
-    return (workoutDays != null)
-        ? (complete / workoutDays.fold(0, (p, c) => c + p) * 100).round()
+    return (meditationDays != null)
+        ? (complete / meditationDays.fold(0, (p, c) => c + p) * 100).round()
         : null;
   }
 
