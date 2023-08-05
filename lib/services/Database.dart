@@ -22,52 +22,12 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var m = [
-      'Mary',
-      'Female',
-      DateTime.utc(2001, 1, 1).toString(),
-      1,
-      -1,
-      2,
-      165,
-      50,
-      45,
-      '1010101',
-      40,
-      60,
-      40,
-      70,
-      50,
-      40,
-    ];
     var ms = [
       '0, 24',
       '0, 3',
     ];
-    Map maryProfile = Map.fromIterables(UserDB.columns, m);
     Map maryMilestone = Map.fromIterables(MilestoneDB.columns, ms);
-    var plan = [
-      "4008",
-      "4012",
-      "4006",
-      "3102",
-      "3209",
-      "3209",
-      "3103",
-      "3205",
-      "3102",
-      "3209",
-      "3209",
-      "3103",
-      "3205",
-      "3110",
-      "3103",
-      "3103",
-      "3103",
-      "3108",
-      "5005",
-      "5007"
-    ];
+    var plan = ["4008", "4012", "4006", "3102", "3209"];
 
     return Scaffold(
         body: Container(
@@ -78,9 +38,9 @@ class Home extends StatelessWidget {
         children: <Widget>[
           TextButton(
               onPressed: () {
-                UserDB.insert(maryProfile);
+                // UserDB.insert(maryProfile);
                 // UserDB.update(mary, {"weight": 47});
-                UserDB.updateByFeedback("cardio", [1, 1]);
+                // UserDB.updateByFeedback("cardio", [1, 1]);
                 UserDB.getAll();
                 WorkoutDB.toNames(plan);
                 MilestoneDB.update(maryMilestone);
