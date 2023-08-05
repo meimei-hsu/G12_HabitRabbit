@@ -324,8 +324,8 @@ class MeditationPlanAlgo {
   // Start point of the planning algorithm
   // Execute when user login or after giving feedback.
   static execute() async {
-    Algorithm algo = Algorithm();
-    PlanData? db;
+    MeditationAlgorithm algo = MeditationAlgorithm();
+    MeditationPlanData? db;
     DateTime? lastMeditationDay =
     DateTime.parse((await UserDB.getLastMeditationDay())!);
 
@@ -379,14 +379,16 @@ class MeditationPlanAlgo {
   }
 
   static generate(DateTime dateTime, int timeSpan) async {
-    Algorithm algo = Algorithm();
+    MeditationAlgorithm algo = MeditationAlgorithm();
     var db = await algo.initializeThisWeek();
     var date = Calendar.toKey(dateTime);
 
     List meditationType = ["relax", "visualize","kindness"];
     int idx = Random().nextInt(3);
-    var meditationplan = await algo.arrangeWorkout(db, meditationType[idx], timeSpan);
-    await MeditationPlanDB.update({date: meditationplan});
+    //var meditationplan = await algo.arrangeWorkout(db, meditationType[idx], timeSpan);
+    var meditationplan = await algo.arrangeSchedule(db);
+    //await MeditationPlanDB.update({date: meditationplan});
+    await MeditationPlanDB.update({date: meditationType[idx]});
   }
 }
 
@@ -476,7 +478,7 @@ class MeditationPlanData {
 
   // Setter
   Future<void> init(List<String> weekDates) async {
-    _meditationIDs = (await WorkoutDB.getWIDs())!;
+    _meditationIDs = (await MeditationDB.getMIDs())!;
 
     var profile = await UserDB.getMeditationPlanVariables();
 

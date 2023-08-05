@@ -49,8 +49,10 @@ class Home extends StatelessWidget {
               child: const Text("test DB")),
           TextButton(
               onPressed: () {
-                PlanAlgo.execute();
-                PlanAlgo.regenerate(DateTime.now());
+                //PlanAlgo.execute();
+                //PlanAlgo.regenerate(DateTime.now());
+                MeditationPlanAlgo.execute();
+                MeditationPlanAlgo.regenerate(DateTime.now());
               },
               child: const Text("test AG")),
           TextButton(
@@ -63,8 +65,10 @@ class Home extends StatelessWidget {
                 // print(await UserDB.isWorkoutDay(mary, DateTime(2023, 5, 22)));
                 // print(await UserDB.isWorkoutDay("123", DateTime(2023, 5, 22)));
                 // print(await DurationDB.calcCompletion());
-                print(Calendar.daysPassed());
-                print(Calendar.daysComing());
+               // print(Calendar.daysPassed());
+                //print(Calendar.daysComing());
+                //print(Calendar.daysComing());
+                //print(Calendar.daysComing());
               },
               child: const Text("test")),
         ],
