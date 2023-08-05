@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:g12/services/Database.dart';
+import 'dart:async';
 
 // Define global variables for ContractPage
 User? user = FirebaseAuth.instance.currentUser;
@@ -178,7 +179,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                 tapCount++;
                                 contractData["plan"] = "基礎 (1月內達成3週目標)";
                                 contractData["endDay"] = Calendar.toKey(
-                                    DateTime(startDay.year, startDay.month + 1, startDay.day));
+                                    DateTime(startDay.year, startDay.month + 1,
+                                        startDay.day));
                                 contractData["flag"] = "0, 3";
                               });
                             },
@@ -195,7 +197,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                 tapCount++;
                                 contractData["plan"] = "進階 (2月內達成7週目標)";
                                 contractData["endDay"] = Calendar.toKey(
-                                    DateTime(startDay.year, startDay.month + 2, startDay.day));
+                                    DateTime(startDay.year, startDay.month + 2,
+                                        startDay.day));
                                 contractData["flag"] = "0, 7";
                               });
                             },
@@ -212,7 +215,8 @@ class _FirstContractPage extends State<FirstContractPage> {
                                 tapCount++;
                                 contractData["plan"] = "困難 (4月內達成15週目標)";
                                 contractData["endDay"] = Calendar.toKey(
-                                    DateTime(startDay.year, startDay.month + 4, startDay.day));
+                                    DateTime(startDay.year, startDay.month + 4,
+                                        startDay.day));
                                 contractData["flag"] = "0, 15";
                               });
                             },
@@ -417,13 +421,20 @@ class SecondContractPageState extends State<SecondContractPage> {
 }
 
 //已立過合約畫面
-class AlreadyContractPage extends StatelessWidget {
+class AlreadyContractPage extends StatefulWidget {
   const AlreadyContractPage({super.key});
 
   @override
+  _AlreadyContractPageState createState() => _AlreadyContractPageState();
+}
+
+class _AlreadyContractPageState extends State<AlreadyContractPage> {
+
+  @override
   Widget build(BuildContext context) {
-    // TODO: 呈現兩種合約
-    String type = "workout"; // "workout"或"meditation"，呈現該種類的合約資訊
+    // TODO: 讓使用者更清楚的知道可以左右滑動
+    String type1 = "workout";
+    String type2 = "meditation";
 
     return Scaffold(
       appBar: AppBar(
@@ -440,50 +451,97 @@ class AlreadyContractPage extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              margin: const EdgeInsets.only(left: 25.0, right: 25.0),
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFAF0CA),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FutureBuilder<Map<String, dynamic>?>(
-                    future: ContractDB.getContract(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        return const Text('Error fetching data');
-                      } else if (snapshot.data!.containsKey(type)) {
-                        Map data = snapshot.data![type];
-                        return Text(
-                          '立契約人將依照選擇之方案來養成各項習慣，'
-                          '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
-                          '\n您選擇養成的習慣：${data["type"]}'
-                          '\n您選擇的方案：${data["plan"]}'
-                          '\n您所投入的金額：${data["money"]}'
-                          '\n合約開始日：${data["startDay"]}'
-                          '\n合約結束日：${data["endDay"]}'
-                          '\n距離成功已完成：${Tool.calcProgress(data["flag"])}%',
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            color: Color(0xFF0D3B66),
-                          ),
-                        );
-                      } else {
-                        return const Text(
-                            'No contract data found'); // If no data is found, show a message
-                      }
-                    },
+          PageView(
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFAF0CA),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                ],
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FutureBuilder<Map<String, dynamic>?>(
+                        future: ContractDB.getContract(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return const Text('Error fetching data');
+                          } else if (snapshot.data!.containsKey(type1)) {
+                            Map data = snapshot.data![type1];
+                            return Text(
+                              '立契約人將依照選擇之方案來養成各項習慣，'
+                                  '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
+                                  '\n您選擇養成的習慣：${data["type"]}'
+                                  '\n您選擇的方案：${data["plan"]}'
+                                  '\n您所投入的金額：${data["money"]}'
+                                  '\n合約開始日：${data["startDay"]}'
+                                  '\n合約結束日：${data["endDay"]}'
+                                  '\n距離成功已完成：${Tool.calcProgress(data["flag"])}%',
+                              style: const TextStyle(
+                                fontSize: 18.0,
+                                color: Color(0xFF0D3B66),
+                              ),
+                            );
+                          } else {
+                            return const Text('尚未有運動合約資料'); // If no data is found, show a message
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFAF0CA),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FutureBuilder<Map<String, dynamic>?>(
+                        future: ContractDB.getContract(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return const Text('Error fetching data');
+                          } else if (snapshot.data!.containsKey(type2)) {
+                            Map data = snapshot.data![type2];
+                            return Text(
+                              '立契約人將依照選擇之方案來養成各項習慣，'
+                                  '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
+                                  '\n您選擇養成的習慣：${data["type"]}'
+                                  '\n您選擇的方案：${data["plan"]}'
+                                  '\n您所投入的金額：${data["money"]}'
+                                  '\n合約開始日：${data["startDay"]}'
+                                  '\n合約結束日：${data["endDay"]}'
+                                  '\n距離成功已完成：${Tool.calcProgress(data["flag"])}%',
+                              style: const TextStyle(
+                                fontSize: 18.0,
+                                color: Color(0xFF0D3B66),
+                              ),
+                            );
+                          } else {
+                            return const Text('尚未有冥想合約資料');
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
           Positioned(
             right: 5,
@@ -495,7 +553,34 @@ class AlreadyContractPage extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () {
-                      _showOptionsDialog(context);
+                      Future<Map<String, dynamic>?> futureContract = ContractDB.getContract();
+                      futureContract.then((data) {
+                        bool workoutContractExists = data!.containsKey("workout");
+                        bool meditationContractExists = data.containsKey("meditation");
+
+                        if (workoutContractExists && meditationContractExists) {
+                          // Show the dialog message for one second and then hide it
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return const AlertDialog(
+                                content: Text(
+                                    '每種類型合約僅能建立一次',
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    color: Color(0xFF0D3B66),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                          Timer(const Duration(seconds: 1), () {
+                            Navigator.of(context).pop(); // Close the dialog after one second
+                          });
+                        } else {
+                          _showOptionsDialog(context);
+                        }
+                      });
                     },
                     child: const Text(
                       '新增合約',
@@ -576,10 +661,19 @@ class _OptionsDialogState extends State<OptionsDialog> {
   @override
   void initState() {
     super.initState();
-    _type = "運動";
-    _plan = "基礎";
-    _money = 100;
+    _fetchExistingContractData();
     processing = false;
+  }
+
+  Future<void> _fetchExistingContractData() async {
+    Map<String, dynamic>? contractData = await ContractDB.getContract();
+    if (contractData != null) {
+      setState(() {
+        _type = contractData["type"];
+        _plan = contractData["plan"];
+        _money = contractData["money"];
+      });
+    }
   }
 
   @override
@@ -614,7 +708,16 @@ class _OptionsDialogState extends State<OptionsDialog> {
                     backgroundColor: _type == "運動"
                         ? const Color(0xFFFAF0CA)
                         : Colors.black26,
-                    onPressed: () => _selectType("運動"),
+                    onPressed: () async {
+                      //檢查是否有運動合約
+                      bool hasWorkoutContract =
+                          await ContractDB.getWorkout() != null;
+                      if (hasWorkoutContract) {
+                        _showDialog("已建立過運動合約，不允許二次投入");
+                      } else {
+                        _selectType("運動");
+                      }
+                    },
                   ),
                   ActionChip(
                     label: const Text("冥想"),
@@ -622,7 +725,16 @@ class _OptionsDialogState extends State<OptionsDialog> {
                     backgroundColor: _type == "冥想"
                         ? const Color(0xFFFAF0CA)
                         : Colors.black26,
-                    onPressed: () => _selectType("冥想"),
+                    onPressed: () async {
+                      //檢查是否有冥想合約
+                      bool hasMeditationContract =
+                          await ContractDB.getMeditation() != null;
+                      if (hasMeditationContract) {
+                        _showDialog("已建立過冥想合約，不允許二次投入");
+                      } else {
+                        _selectType("冥想");
+                      }
+                    },
                   ),
                 ],
               ),
@@ -737,6 +849,21 @@ class _OptionsDialogState extends State<OptionsDialog> {
     );
   }
 
+  void _showDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.of(context).pop(); // Close the dialog after 3 seconds
+        });
+        return AlertDialog(
+          title: const Text("警告"),
+          content: Text(message),
+        );
+      },
+    );
+  }
+
   _selectType(String t) {
     setState(() {
       _type = t;
@@ -816,8 +943,3 @@ class _OptionsDialogState extends State<OptionsDialog> {
     }
   }
 }
-
-//TODO: 判斷式判斷使用者目前投入哪個合約
-//1. if (type != exercise)：Navigator.pushNamed(context, '/contract/exercise', arguments: {'user': user});
-//2. if (type != meditation)：Navigator.pushNamed(context, '/contract/meditation', arguments: {'user': user});
-//3. if (type == exercise && type == meditation):showDialog(兩種習慣養成合約都已建立)
