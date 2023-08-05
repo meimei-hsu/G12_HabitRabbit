@@ -57,6 +57,9 @@ dependencies:
   animated_text_kit: ^4.2.2
   datepicker_cupertino: ^0.0.4
   square_progress_bar: ^1.1.1
+  toggle_switch: ^2.1.0
+  flutter_easyloading: ^3.0.5
+  loading_animation_widget: ^1.2.0
 
 dev_dependencies:
   flutter_test:
