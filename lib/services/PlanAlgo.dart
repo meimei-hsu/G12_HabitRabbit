@@ -1,7 +1,13 @@
 import 'dart:math';
 
 import 'package:g12/services/Database.dart';
-//workout
+
+/*
+################################################################################
+Workout plan algorithm
+################################################################################
+*/
+
 class PlanAlgo {
   // Start point of the planning algorithm
   // Execute when user login or after giving feedback.
@@ -88,9 +94,10 @@ class Algorithm {
   Future<Map<String, String>> arrangeSchedule(PlanData db) async {
     // Calculate workout frequency based on the adjusted user data
     Map<String, int> frequencies = {};
+    // workouts' frequency are calculated by the proportion of their likings
     db.likings.forEach((k, v) => {
           frequencies.putIfAbsent(
-              k, () => (v / db.sumLikings * db.nDays).round())
+              k, () => ((v / db.sumLikings) * db.nDays).round())
         });
     print('settings: ${db.workoutDays}\nfrequency: $frequencies');
 
@@ -139,7 +146,7 @@ class Algorithm {
     int ability = db.abilities['${type}Ability'];
     ability = ((type == 'cardio') ? ability / 33 : ability / 20).ceil();
     timeSpan ??= db.workoutTime;
-    int nLoops = timeSpan! ~/ 15; // total rounds
+    int nLoops = timeSpan~/ 15; // total rounds
     int nSame = db.nSame; // number of repetitions
     bool same = (nSame > 0) ? true : false;
 
@@ -179,7 +186,7 @@ class Algorithm {
     // Get difficulty level and plan settings
     int diff = 0; // difficulty level for 5 minute workout session: easy
     timeSpan ??= db.workoutTime;
-    int nLoops = timeSpan! ~/ 15 - 1; // total rounds
+    int nLoops = timeSpan~/ 15 - 1; // total rounds
 
     // Generate the list of workouts from random
     Random rand = Random();
@@ -249,77 +256,67 @@ class Algorithm {
 
 class PlanData {
   // Get the decision variables for the planning algorithm
-  Map<String, dynamic> _likings = {}, _abilities = {};
-  Map<String, dynamic> _workoutDays = {};
-  num _timeSpan = 15;
-  String _mostLike = '', _leastLike = '';
-  String _bestAbility = '', _worstAbility = '';
-  num _sumLikings = 0, _sumAbilities = 0, _nDays = 0, _nSame = 0;
+  Map<String, dynamic> likings = {}, abilities = {};
+  Map<String, dynamic> workoutDays = {};
+  int workoutTime = 15;
+  String mostLike = '', leastLike = '';
+  String bestAbility = '', worstAbility = '';
+  int sumLikings = 0, sumAbilities = 0, nDays = 0, nSame = 0;
   // Get the workouts ID
-  Map _workoutIDs = {};
+  Map workoutIDs = {};
 
   // Setter
   Future<void> init(List<String> weekDates) async {
-    _workoutIDs = (await WorkoutDB.getWIDs())!;
+    workoutIDs = (await WorkoutDB.getWIDs())!;
 
     var profile = await UserDB.getPlanVariables();
 
-    _timeSpan = profile![0]['workoutTime'];
-    _workoutDays = Map.fromIterables(weekDates, profile[0]['workoutDays']);
-    _likings = profile[1];
-    _abilities = profile[2];
+    workoutTime = profile![0]['workoutTime'];
+    workoutDays = Map.fromIterables(weekDates, profile[0]['workoutDays']);
+    likings = profile[1];
+    abilities = profile[2];
 
     var max = double.negativeInfinity, min = double.infinity;
-    _likings.forEach((key, value) {
+    likings.forEach((key, value) {
       if (value > max) {
-        _mostLike = key;
+        mostLike = key;
       }
       if (value < min) {
-        _leastLike = key;
+        leastLike = key;
       }
     });
     max = double.negativeInfinity;
     min = double.infinity;
-    _abilities.forEach((key, value) {
+    abilities.forEach((key, value) {
       if (value > max) {
-        _bestAbility = key;
+        bestAbility = key;
       }
       if (value < min) {
-        _worstAbility = key;
+        worstAbility = key;
       }
     });
 
-    _sumLikings = _likings.values.toList().fold(0, (p, c) => c + p);
-    _sumAbilities = _abilities.values.toList().fold(0, (p, c) => c + p);
-    _nDays = _workoutDays.values.toList().fold(0, (p, c) => c + p);
+    sumLikings = likings.values.toList().fold(0, (p, c) => c + p);
+    sumAbilities = abilities.values.toList().fold(0, (p, c) => c + p);
+    nDays = workoutDays.values.toList().fold(0, (p, c) => c + p);
 
     var openness = profile[0]['openness'];
     if (openness < 0) {
-      _nSame = 3;
-      if (_timeSpan == 30) _nSame = 2;
+      nSame = 3;
+      if (workoutTime == 30) nSame = 2;
     } else if (openness == 1) {
-      _nSame = 2;
+      nSame = 2;
     }
-    if (_timeSpan == 60 && openness == -2) _nSame = 4;
+    if (workoutTime == 60 && openness == -2) nSame = 4;
   }
-
-  // Getters
-  get workoutIDs => _workoutIDs;
-  get likings => _likings;
-  get abilities => _abilities;
-  get workoutDays => _workoutDays;
-  get workoutTime => _timeSpan;
-  get mostLike => _mostLike;
-  get leastLike => _leastLike;
-  get bestAbility => _bestAbility;
-  get worstAbility => _worstAbility;
-  get sumLikings => _sumLikings;
-  get sumAbilities => _sumAbilities;
-  get nDays => _nDays;
-  get nSame => _nSame;
 }
 
-//Meditation
+/*
+################################################################################
+Meditation plan algorithm
+################################################################################
+*/
+
 class MeditationPlanAlgo {
   // Start point of the planning algorithm
   // Execute when user login or after giving feedback.
@@ -327,14 +324,15 @@ class MeditationPlanAlgo {
     MeditationAlgorithm algo = MeditationAlgorithm();
     MeditationPlanData? db;
     DateTime? lastMeditationDay =
-    DateTime.parse((await UserDB.getLastMeditationDay())!);
+        DateTime.parse((await UserDB.getLastMeditationDay())!);
 
     // Conditions
     int today = DateTime.now().weekday;
     int lastDay = lastMeditationDay.weekday;
     bool noThisWeekPlan = await MeditationPlanDB.getThisWeek() == null;
     bool noNextWeekPlan = await MeditationPlanDB.getNextWeek() == null;
-    bool isFinished = await MeditationDurationDB.calcProgress(lastMeditationDay) == 100;
+    bool isFinished =
+        await MeditationDurationDB.calcProgress(lastMeditationDay) == 100;
 
     // Start generating the plan
     // Generate next week's plan if:
@@ -370,25 +368,22 @@ class MeditationPlanAlgo {
     var date = Calendar.toKey(dateTime);
 
     var meditationType = await MeditationPlanDB.getMeditationType(dateTime);
-    var timeSpan = await MeditationPlanDB.getPlanLong(dateTime);
     if (meditationType != null) {
-      //var plan = await algo.arrangeWorkout(db, workoutType, timeSpan);
-      var plan = meditationType;
+      var plan = await algo.arrangeMeditation(db, meditationType);
       await MeditationPlanDB.update({date: plan});
     }
   }
 
-  static generate(DateTime dateTime, int timeSpan) async {
+  static generate(DateTime dateTime) async {
     MeditationAlgorithm algo = MeditationAlgorithm();
     var db = await algo.initializeThisWeek();
     var date = Calendar.toKey(dateTime);
 
-    List meditationType = ["relax", "visualize","kindness"];
-    int idx = Random().nextInt(3);
-    //var meditationplan = await algo.arrangeWorkout(db, meditationType[idx], timeSpan);
-    var meditationplan = await algo.arrangeSchedule(db);
-    //await MeditationPlanDB.update({date: meditationplan});
-    await MeditationPlanDB.update({date: meditationType[idx]});
+    List meditationType = ["mindfulness", "relax", "visualize", "kindness"];
+    int idx = Random().nextInt(4);
+    var meditationPlan =
+        await algo.arrangeMeditation(db, meditationType[idx]);
+    await MeditationPlanDB.update({date: meditationPlan});
   }
 }
 
@@ -405,31 +400,34 @@ class MeditationAlgorithm {
     return db;
   }
 
-  // Method to arrange a workout schedule based on the workout frequency and workout days
+  // Method to arrange a meditation schedule based on the meditation frequency and meditation days
   Future<Map<String, String>> arrangeSchedule(MeditationPlanData db) async {
-    // Calculate workout frequency based on the adjusted user data
+    // Calculate meditation frequency based on the adjusted user data
     Map<String, int> frequencies = {};
+    // mindfulness meditation's frequency is fixed to a proportion of half the total meditation days
+    frequencies["mindfulnessLiking"] = db.nDays ~/ 2;
+    // other type of meditations' frequency are calculated by the proportion of their likings
     db.likings.forEach((k, v) => {
-      frequencies.putIfAbsent(
-          k, () => (v / db.sumLikings * db.nDays).round())
-    });
+          frequencies.putIfAbsent(
+              k, () => ((v / db.sumLikings) * (db.nDays ~/ 2)).round())
+        });
     print('settings: ${db.meditationDays}\nfrequency: $frequencies');
 
     // Adjust the frequency map based on the error margin of +-1
     var sumFreq = frequencies.values.toList().fold(0, (p, c) => c + p);
     if (db.nDays > sumFreq) {
-      frequencies.update(db.mostLike, (v) => v + 1);
+      frequencies.update("mindfulnessLiking", (v) => v + 1);
     } else if (db.nDays < sumFreq) {
-      frequencies.update(db.leastLike, (v) => v - 1);
+      frequencies.update("mindfulnessLiking", (v) => v - 1);
     }
     print('frequency(adjust): $frequencies');
 
     // Turn the frequency map into a list of selectable objects
     List<String> categories = [];
     frequencies.forEach((k, v) => {
-      for (int i = 0; i < v; i++)
-        {categories.add(k.substring(0, k.indexOf('Liking')))}
-    });
+          for (int i = 0; i < v; i++)
+            {categories.add(k.substring(0, k.indexOf('Liking')))}
+        });
 
     // Shuffle the list to randomly pick objects for non-rest days
     categories.shuffle();
@@ -442,22 +440,38 @@ class MeditationAlgorithm {
     List daysPassed = Calendar.daysPassed();
     print("daysPassed: $daysPassed");
     db.meditationDays.forEach((k, v) => {
-      if (!daysPassed.contains(k) && v == 1)
-        {schedule[k] = categories[0], categories.removeAt(0)}
-    });
+          // if the day isn'tPassed and isMeditationDay, then assign a meditation category to the day
+          if (!daysPassed.contains(k) && v == 1)
+            {schedule[k] = categories[0], categories.removeAt(0)}
+        });
     print('schedule: $schedule');
 
     return schedule;
   }
 
+  // Method to generate a meditation from a given meditation type
+  Future<String> arrangeMeditation(MeditationPlanData db, String type) async {
+    Random rand = Random();
+    // Get the type's meditationIDs
+    List meditations = [];
+    if (type == "mindfulness") {
+      meditations = db.meditationIDs[type]!;
+    } else {
+      // randomly pick a subtype from the given main type
+      meditations = db.meditationIDs[type][rand.nextInt(4)]!;
+    }
+    // randomly generate a meditationID
+    return meditations[rand.nextInt(meditations.length)];
+  }
 
-  // Method to generate a workout plan {"Date": "workoutIDs"}
-  Future<Map<String, String>> arrangePlan(MeditationPlanData db, Map schedule) async {
+  // Method to generate a meditation plan {"Date": "meditationIDs"}
+  Future<Map<String, String>> arrangePlan(
+      MeditationPlanData db, Map schedule) async {
     Map<String, String> plan = {};
-    // Call arrangeWorkout() for each workout type in the workout schedule
+    // Call arrangeMeditation() for each workout type in the workout schedule
     for (MapEntry entry in schedule.entries) {
       if (entry.value != 'rest') {
-        //plan[entry.key] = await arrangeWorkout(db, entry.value);
+        plan[entry.key] = await arrangeMeditation(db, entry.value);
       }
     }
     print("plan: $plan");
@@ -467,52 +481,24 @@ class MeditationAlgorithm {
 
 class MeditationPlanData {
   // Get the decision variables for the planning algorithm
-  Map<String, dynamic> _likings = {};
-  Map<String, dynamic> _meditationDays = {};
-  num _timeSpan = 15;
-  String _mostLike = '', _leastLike = '';
-
-  num _sumLikings = 0, _nDays = 0;
+  Map<String, dynamic> likings = {};
+  Map<String, dynamic> meditationDays = {};
+  int meditationTime = 15;
+  int sumLikings = 0, nDays = 0;
   // Get the _meditationIDs ID
-  Map _meditationIDs = {};
+  Map meditationIDs = {};
 
   // Setter
   Future<void> init(List<String> weekDates) async {
-    _meditationIDs = (await MeditationDB.getMIDs())!;
+    meditationIDs = (await MeditationDB.getMIDs())!;
 
     var profile = await UserDB.getMeditationPlanVariables();
 
-    _timeSpan = profile![0]['meditationTime'];
-    _meditationDays = Map.fromIterables(weekDates, profile[0]['meditationDays']);
-    _likings = profile[1];
-
-
-    var max = double.negativeInfinity, min = double.infinity;
-    _likings.forEach((key, value) {
-      if (value > max) {
-        _mostLike = key;
-      }
-      if (value < min) {
-        _leastLike = key;
-      }
-    });
-    max = double.negativeInfinity;
-    min = double.infinity;
-
-
-    _sumLikings = _likings.values.toList().fold(0, (p, c) => c + p);
-
-    _nDays = _meditationDays.values.toList().fold(0, (p, c) => c + p);
+    meditationTime = profile![0]['meditationTime'];
+    meditationDays =
+        Map.fromIterables(weekDates, profile[0]['meditationDays']);
+    likings = profile[1];
+    sumLikings = likings.values.toList().fold(0, (p, c) => c + p);
+    nDays = meditationDays.values.toList().fold(0, (p, c) => c + p);
   }
-
-  // Getters
-  get meditationIDs => _meditationIDs;
-  get likings => _likings;
-  get meditationDays => _meditationDays;
-  get meditationTime => _timeSpan;
-  get mostLike => _mostLike;
-  get leastLike => _leastLike;
-  get sumLikings => _sumLikings;
-  get nDays => _nDays;
 }
-
