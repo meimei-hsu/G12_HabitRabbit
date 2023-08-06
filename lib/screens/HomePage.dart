@@ -25,6 +25,7 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     getPlanData();
+    //getMeditationPlanData();
     getContractData();
   }
 
@@ -44,6 +45,23 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
+  void getMeditationPlanData() async {
+    if (user != null) await MeditationPlanAlgo.execute();
+    isFetchingData = true;
+    var plan = await MeditationPlanDB.getThisWeekByName();
+    var progress = await MeditationDurationDB.getWeekProgress();
+    var meditationDays = await UserDB.getBothWeekMeditationDays();
+    var index = await MeditationDurationDB.getFromDate(today);
+    setState(() {
+      meditationPlanList = plan ?? {};
+      meditationProgressList = progress ?? {};
+      bothWeekMeditationList = meditationDays ?? [];
+      meditationCurrentIndex = index ?? 0;
+      isFetchingData = false;
+    });
+  }
+
+
   void getContractData() async {
     var contract = await ContractDB.getContract();
     setState(() {
@@ -56,6 +74,12 @@ class _HomepageState extends State<Homepage> {
   Map progressList = {};
   List bothWeekWorkoutList = [];
   int currentIndex = 0;
+
+  //Meditation Plan 相關資料
+  Map meditationPlanList = {};
+  Map meditationProgressList = {};
+  List bothWeekMeditationList = [];
+  int meditationCurrentIndex = 0;
 
   // Contract 資料
   Map contractData = {};
@@ -110,6 +134,7 @@ class _HomepageState extends State<Homepage> {
 
   void refresh() {
     getPlanData();
+    //getMeditationPlanData();
     setState(() {});
   }
 
