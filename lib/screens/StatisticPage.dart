@@ -46,6 +46,8 @@ class StatisticPageState extends State<StatisticPage> {
     2: const Color(0xffd4d6fc),
   };
 
+  final ScrollController _scrollController = ScrollController();
+
   void getUserData() async {
     var weight = await WeightDB.getTable();
     if (weight != null) {
@@ -61,9 +63,13 @@ class StatisticPageState extends State<StatisticPage> {
     for (int i = 1; i <= 5; i++) {
       if ((minY - i) % 5 == 0) {
         minY = minY - i;
+        break;
       }
+    }
+    for (int i = 1; i <= 5; i++) {
       if ((maxY + i) % 5 == 0) {
         maxY = maxY + i;
+        break;
       }
     }
     avgWeight = list1.average;
@@ -101,13 +107,18 @@ class StatisticPageState extends State<StatisticPage> {
   @override
   void initState() {
     super.initState();
+
     configLoading();
     EasyLoading.show(
       status: '載入數據中...',
       maskType: EasyLoadingMaskType.clear,
     );
+
     getUserData();
-    //updateYAxisRange();
+  }
+
+  _scrollToBottom() {
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
   }
 
   @override
@@ -128,6 +139,7 @@ class StatisticPageState extends State<StatisticPage> {
               height: 1),
         ),
         backgroundColor: const Color(0xfffdfdf5),
+        automaticallyImplyLeading: false,
       ),
       body: (isInit)
           ? Container()
@@ -135,11 +147,11 @@ class StatisticPageState extends State<StatisticPage> {
               padding: const EdgeInsets.all(10),
               //ListView可各分配空間給兩張圖
               child: ListView(
+                controller: _scrollController,
                 children: [
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //FIXME: 統計頁面待美化
                         Container(
                           padding:
                               const EdgeInsets.fromLTRB(5.0, 10.0, 0.0, 10.0),
@@ -163,7 +175,7 @@ class StatisticPageState extends State<StatisticPage> {
                                   style: TextStyle(
                                       color: Color(0xff4b4370),
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 24.0),
+                                      fontSize: 22.0),
                                 ),
                                 trailing: IconButton(
                                   icon: const Icon(Icons.add_box_rounded),
@@ -180,10 +192,11 @@ class StatisticPageState extends State<StatisticPage> {
                               Container(
                                 height: 300,
                                 padding: const EdgeInsets.only(
-                                    right: 15, top: 5, bottom: 20),
+                                    left: 5, right: 20, top: 15, bottom: 15),
                                 child: (isAddingWeight)
                                     ? Center(
-                                        child: LoadingAnimationWidget.inkDrop(
+                                        child: LoadingAnimationWidget
+                                            .horizontalRotatingDots(
                                         color: const Color(0xfffdfdf5),
                                         size: 100,
                                       ))
@@ -240,9 +253,9 @@ class StatisticPageState extends State<StatisticPage> {
                                                         const EdgeInsets.only(
                                                             left: 10),
                                                     labelResolver: (line) =>
-                                                        '平均',
+                                                        '平均：${avgWeight.round()}',
                                                     alignment:
-                                                        Alignment.centerRight,
+                                                        Alignment.topRight,
                                                     style: TextStyle(
                                                         color: const Color(
                                                                 0xff4b3d70)
@@ -252,7 +265,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                             FontWeight.bold)),
                                                 color: const Color(0xff4b3d70)
                                                     .withOpacity(0.7),
-                                                dashArray: [10, 10],
+                                                dashArray: [5, 5],
                                               ),
                                             ],
                                           ),
@@ -349,6 +362,113 @@ class StatisticPageState extends State<StatisticPage> {
                                         ),
                                       ),
                               ),
+                              // TODO: 要將平均寫在線旁邊還是加圖例
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                    margin: const EdgeInsets.only(
+                                        right: 15, bottom: 5),
+                                    padding: const EdgeInsets.only(
+                                        left: 10, right: 10, bottom: 5, top: 5),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xff4b3d70).withOpacity(0.7),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(5)),
+                                    ),
+                                    child: Text("--- 平均：${avgWeight.round()}",
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                            color: Color(0xfffdfdf5),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold))),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Container(
+                                        margin: const EdgeInsets.only(
+                                            right: 15, bottom: 5),
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10, bottom: 5, top: 5),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xfffdfdf5),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                        ),
+                                        child: Text("--- 平均：${avgWeight.round()}",
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                                color: Color(0xff4b3d70),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold))),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Container(
+                                        margin: const EdgeInsets.only(
+                                            right: 15, bottom: 5),
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10, bottom: 5, top: 5),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffd4d6fc),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                        ),
+                                        child: Text("--- 平均：${avgWeight.round()}",
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                                color: Color(0xfffdfdf5),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold))),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Container(
+                                        margin: const EdgeInsets.only(
+                                            right: 15, bottom: 5),
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10, bottom: 5, top: 5),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xffd4d6fc),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                        ),
+                                        child: Text("--- 平均：${avgWeight.round()}",
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                                color: Color(0xff4b3d70),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold))),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Container(
+                                        margin: const EdgeInsets.only(
+                                            right: 15, bottom: 5),
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10, bottom: 5, top: 5),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xff4b3d70),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                        ),
+                                        child: Text("--- 平均：${avgWeight.round()}",
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                                color: Color(0xfffdfdf5),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold))),
+                                  ),
+                                ],
+                              ),
+
                             ],
                           ),
                         ),
@@ -357,7 +477,7 @@ class StatisticPageState extends State<StatisticPage> {
                         ),
                         Container(
                           padding:
-                              const EdgeInsets.fromLTRB(5.0, 10.0, 0.0, 10.0),
+                              const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
                           margin: const EdgeInsets.only(right: 10, left: 10),
                           decoration: BoxDecoration(
                             color: const Color(0xfffdeed9),
@@ -367,23 +487,25 @@ class StatisticPageState extends State<StatisticPage> {
                           ),
                           child: Column(children: [
                             ListTile(
-                              title: Text(
-                                (planProgress == 0) ? '運動計畫進度表' : '冥想計畫進度表',
-                                style: const TextStyle(
+                              title: const Text(
+                                '計畫進度表',
+                                //(planProgress == 0) ? '運動計畫進度表' : '冥想計畫進度表',
+                                style: TextStyle(
                                     color: Color(0xff4b4370),
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 24.0),
+                                    fontSize: 22.0),
                               ),
                               trailing: ToggleSwitch(
-                                minWidth: 70,
                                 minHeight: 35,
                                 initialLabelIndex: planProgress,
                                 cornerRadius: 10.0,
+                                radiusStyle: true,
                                 labels: const ['運動', '冥想'],
                                 icons: const [
                                   Icons.fitness_center_outlined,
                                   Icons.self_improvement_outlined
                                 ],
+                                iconSize: 16,
                                 activeBgColors: const [
                                   [Color(0xfff6cdb7)],
                                   [Color(0xffd4d6fc)]
@@ -392,8 +514,8 @@ class StatisticPageState extends State<StatisticPage> {
                                 inactiveBgColor: const Color(0xfffdfdf5),
                                 inactiveFgColor: const Color(0xff4b4370),
                                 totalSwitches: 2,
-                                animate: true,
-                                animationDuration: 300,
+                                //animate: true,
+                                //animationDuration: 300,
                                 onToggle: (index) {
                                   planProgress = index!;
                                   setState(() {});
@@ -403,12 +525,12 @@ class StatisticPageState extends State<StatisticPage> {
                             ),
                             (planProgress == 0)
                                 ? Container(
-                                    height: 400,
                                     padding:
                                         const EdgeInsets.fromLTRB(10, 5, 10, 0),
                                     child: HeatMapCalendar(
                                       defaultColor: const Color(0xfffdfdf5),
                                       textColor: const Color(0xff4b4370),
+                                      weekTextColor: const Color(0xff4b4370).withOpacity(0.7),
                                       colorMode: ColorMode.color,
                                       fontSize: 18,
                                       weekFontSize: 14,
@@ -439,6 +561,21 @@ class StatisticPageState extends State<StatisticPage> {
                                           SnackBar(
                                               content: Text(value.toString())),
                                         );
+                                      },
+                                      onMonthChange: (value) {
+                                        // TODO: remove "scrolling automatically function" after adding more chart
+                                        // to scroll the listview to bottom automatically when the size of calendar's container change
+                                        // if set container's height, there will be a big, blank space -> ugly
+                                        // so choose to scroll automatically temporarily to maximize UX (?)
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) {
+                                          _scrollController.animateTo(
+                                              _scrollController
+                                                  .position.maxScrollExtent,
+                                              duration:
+                                                  const Duration(milliseconds: 200),
+                                              curve: Curves.easeOut);
+                                        });
                                       },
                                     ),
                                     // TODO: 要用套件本身的 colorTipHelper，還是自己做圖示？
@@ -612,25 +749,5 @@ class StatisticPageState extends State<StatisticPage> {
       list1.length,
       (index) => FlSpot(index.toDouble(), list1[index]),
     );
-  }
-
-  // Update the updateYAxisRange() method
-  void updateYAxisRange() {
-    if (list1.isEmpty) {
-      return;
-    }
-
-    double minValue = list1.reduce(min) - 10;
-    double maxValue = list1.reduce(max) + 10;
-
-    if (minValue < minY) {
-      minY = minValue;
-    }
-
-    if (maxValue > maxY) {
-      maxY = maxValue;
-    }
-
-    setState(() {});
   }
 }
