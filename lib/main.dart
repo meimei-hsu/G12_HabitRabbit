@@ -29,8 +29,10 @@ class AppEntryPoint extends StatelessWidget {
     // TODO: 確認若登出後重新登入，頁面顯示有無問題
     return MaterialApp(
       title: 'for_my_fat',
-      initialRoute: initialRoute, // 加 route
-      onGenerateRoute: onGenerateRoute, // route 抽離
+      initialRoute: initialRoute,
+      // 加 route
+      onGenerateRoute: onGenerateRoute,
+      // route 抽離
       home: const Scaffold(
         body: BottomNavigationController(),
       ),
@@ -66,6 +68,7 @@ class BottomNavigationControllerState
       });
     });
   }
+
   Future<List<Widget>> determinePage() async {
     final hasExistingContract = await hasContract();
 
@@ -87,13 +90,11 @@ class BottomNavigationControllerState
       ];
     }
   }
+
   Future<bool> hasContract() async {
     final contractDetails = await ContractDB.getContract();
     return contractDetails != null;
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +117,12 @@ class BottomNavigationControllerState
           showUnselectedLabels: false,
           showSelectedLabels: false,
           currentIndex: _currentIndex,
-          onTap: (index) => setState(() => _currentIndex = index),
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+              EasyLoading.dismiss();
+            });
+          },
           items: const [
             BottomNavigationBarItem(
                 icon: Icon(

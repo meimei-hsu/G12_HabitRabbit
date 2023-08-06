@@ -86,10 +86,11 @@ class StatisticPageState extends State<StatisticPage> {
     isInit = false;
     isAddingWeight = false;
 
-    EasyLoading.dismiss();
     setState(() {});
+    EasyLoading.dismiss();
   }
 
+  // Loading mask 屬性
   void configLoading() {
     EasyLoading.instance
       ..indicatorType = EasyLoadingIndicatorType.threeBounce
@@ -207,6 +208,8 @@ class StatisticPageState extends State<StatisticPage> {
                                             handleBuiltInTouches: true,
                                             touchTooltipData:
                                                 LineTouchTooltipData(
+                                              fitInsideHorizontally: true,
+                                              fitInsideVertically: true,
                                               tooltipBgColor:
                                                   const Color(0xfffdfdf5)
                                                       .withOpacity(0.6),
@@ -339,7 +342,7 @@ class StatisticPageState extends State<StatisticPage> {
                                           lineBarsData: [
                                             LineChartBarData(
                                               spots: _getWeightData(),
-                                              isCurved: true,
+                                              isCurved: false,
                                               // 曲線 or 折線?
                                               colors: [const Color(0xffd4d6fc)],
                                               barWidth: 3,
@@ -362,113 +365,6 @@ class StatisticPageState extends State<StatisticPage> {
                                         ),
                                       ),
                               ),
-                              // TODO: 要將平均寫在線旁邊還是加圖例
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Container(
-                                    margin: const EdgeInsets.only(
-                                        right: 15, bottom: 5),
-                                    padding: const EdgeInsets.only(
-                                        left: 10, right: 10, bottom: 5, top: 5),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xff4b3d70).withOpacity(0.7),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(5)),
-                                    ),
-                                    child: Text("--- 平均：${avgWeight.round()}",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            color: Color(0xfffdfdf5),
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold))),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Container(
-                                        margin: const EdgeInsets.only(
-                                            right: 15, bottom: 5),
-                                        padding: const EdgeInsets.only(
-                                            left: 10, right: 10, bottom: 5, top: 5),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xfffdfdf5),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5)),
-                                        ),
-                                        child: Text("--- 平均：${avgWeight.round()}",
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                                color: Color(0xff4b3d70),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold))),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Container(
-                                        margin: const EdgeInsets.only(
-                                            right: 15, bottom: 5),
-                                        padding: const EdgeInsets.only(
-                                            left: 10, right: 10, bottom: 5, top: 5),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xffd4d6fc),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5)),
-                                        ),
-                                        child: Text("--- 平均：${avgWeight.round()}",
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                                color: Color(0xfffdfdf5),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold))),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Container(
-                                        margin: const EdgeInsets.only(
-                                            right: 15, bottom: 5),
-                                        padding: const EdgeInsets.only(
-                                            left: 10, right: 10, bottom: 5, top: 5),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xffd4d6fc),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5)),
-                                        ),
-                                        child: Text("--- 平均：${avgWeight.round()}",
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                                color: Color(0xff4b3d70),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold))),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Container(
-                                        margin: const EdgeInsets.only(
-                                            right: 15, bottom: 5),
-                                        padding: const EdgeInsets.only(
-                                            left: 10, right: 10, bottom: 5, top: 5),
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xff4b3d70),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5)),
-                                        ),
-                                        child: Text("--- 平均：${avgWeight.round()}",
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                                color: Color(0xfffdfdf5),
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold))),
-                                  ),
-                                ],
-                              ),
-
                             ],
                           ),
                         ),
@@ -530,7 +426,8 @@ class StatisticPageState extends State<StatisticPage> {
                                     child: HeatMapCalendar(
                                       defaultColor: const Color(0xfffdfdf5),
                                       textColor: const Color(0xff4b4370),
-                                      weekTextColor: const Color(0xff4b4370).withOpacity(0.7),
+                                      weekTextColor: const Color(0xff4b4370)
+                                          .withOpacity(0.7),
                                       colorMode: ColorMode.color,
                                       fontSize: 18,
                                       weekFontSize: 14,
@@ -572,82 +469,12 @@ class StatisticPageState extends State<StatisticPage> {
                                           _scrollController.animateTo(
                                               _scrollController
                                                   .position.maxScrollExtent,
-                                              duration:
-                                                  const Duration(milliseconds: 200),
+                                              duration: const Duration(
+                                                  milliseconds: 200),
                                               curve: Curves.easeOut);
                                         });
                                       },
                                     ),
-                                    // TODO: 要用套件本身的 colorTipHelper，還是自己做圖示？
-                                    /*Stack(
-                      children: [
-                        HeatMapCalendar(
-                          defaultColor: Colors.white,
-                          flexible: true,
-                          colorMode: ColorMode.color,
-                          datasets: completionRateList,
-                          colorsets: colorSet,
-                          showColorTip: false,
-                          onClick: (value) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(value.toString())),
-                            );
-                          },
-                        ),
-                        Positioned(
-                          right: 0,
-                          bottom: 20,
-                          child: Container(
-                            width: 150,
-                            height: 50,
-                            color: Colors.white,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.check_circle,
-                                      color: Colors.green.shade200,
-                                      size: 25,
-                                    ),
-                                    const Text(
-                                      '成功',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(width: 15),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.cancel,
-                                      color: Colors.red.shade200,
-                                      size: 25,
-                                    ),
-                                    const Text(
-                                      '失败',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),*/
                                   )
                                 : const Text("Coming Soon!!!"),
                           ]),
