@@ -49,16 +49,18 @@ class _FirstContractPage extends State<FirstContractPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFDFDF5),
       appBar: AppBar(
         title: const Text(
           '承諾合約',
           style: TextStyle(
-            color: Color(0xFF0D3B66),
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-          ),
+              color: Color(0xff4b3d70),
+              fontSize: 28,
+              letterSpacing: 2,
+              fontWeight: FontWeight.bold,
+              height: 1),
         ),
-        backgroundColor: const Color(0xFFFAF0CA),
+        backgroundColor: const Color(0xFFFDFDF5),
         automaticallyImplyLeading: false,
       ),
       body: GestureDetector(
@@ -71,7 +73,11 @@ class _FirstContractPage extends State<FirstContractPage> {
                 margin: const EdgeInsets.only(left: 25.0, right: 25.0),
                 padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFAF0CA),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFFFFFFF), Color(0xfffdeed9)],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                  ),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Column(
@@ -296,16 +302,18 @@ class SecondContractPageState extends State<SecondContractPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFDFDF5),
       appBar: AppBar(
         title: const Text(
           '承諾合約',
           style: TextStyle(
-            color: Color(0xFF0D3B66),
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-          ),
+              color: Color(0xff4b3d70),
+              fontSize: 28,
+              letterSpacing: 2,
+              fontWeight: FontWeight.bold,
+              height: 1),
         ),
-        backgroundColor: const Color(0xFFFAF0CA),
+        backgroundColor: const Color(0xFFFDFDF5),
         automaticallyImplyLeading: false, // 將返回上一頁的按鈕移除
       ),
       body: Stack(
@@ -316,7 +324,11 @@ class SecondContractPageState extends State<SecondContractPage> {
               margin: const EdgeInsets.only(left: 25.0, right: 25.0),
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF0CA),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFFFFFFF), Color(0xfffdeed9)],
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                ),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Column(
@@ -429,7 +441,6 @@ class AlreadyContractPage extends StatefulWidget {
 }
 
 class _AlreadyContractPageState extends State<AlreadyContractPage> {
-
   final PageController _pageController = PageController(
     initialPage: 0,
     viewportFraction: 0.9,
@@ -441,16 +452,18 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
     String type2 = "meditation";
 
     return Scaffold(
+      backgroundColor: const Color(0xFFFDFDF5),
       appBar: AppBar(
         title: const Text(
           '承諾合約',
           style: TextStyle(
-            color: Color(0xFF0D3B66),
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-          ),
+              color: Color(0xff4b3d70),
+              fontSize: 28,
+              letterSpacing: 2,
+              fontWeight: FontWeight.bold,
+              height: 1),
         ),
-        backgroundColor: const Color(0xFFFAF0CA),
+        backgroundColor: const Color(0xFFFDFDF5),
         automaticallyImplyLeading: false,
       ),
       body: Stack(
@@ -459,12 +472,16 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
             controller: _pageController,
             children: [
               Align(
-                alignment: Alignment.center,
+                alignment: Alignment(0.0, -0.3),
                 child: Container(
                   margin: const EdgeInsets.only(right: 10.0),
                   padding: const EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF0CA),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFFFFFFF), Color(0xfffdeed9)],
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                    ),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Column(
@@ -473,7 +490,8 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                       FutureBuilder<Map<String, dynamic>?>(
                         future: ContractDB.getContract(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return const CircularProgressIndicator();
                           } else if (snapshot.hasError) {
                             return const Text('Error fetching data');
@@ -481,20 +499,21 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                             Map data = snapshot.data![type1];
                             return Text(
                               '立契約人將依照選擇之方案來養成各項習慣，'
-                                  '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
-                                  '\n您選擇養成的習慣：${data["type"]}'
-                                  '\n您選擇的方案：${data["plan"]}'
-                                  '\n您所投入的金額：${data["money"]}'
-                                  '\n合約開始日：${data["startDay"]}'
-                                  '\n合約結束日：${data["endDay"]}'
-                                  '\n距離成功已完成：${Tool.calcProgress(data["flag"])}%',
+                              '若目標達成系統將投入金額全數退回，失敗則全數捐出。\n'
+                              '\n您選擇養成的習慣：${data["type"]}'
+                              '\n您選擇的方案：${data["plan"]}'
+                              '\n您所投入的金額：${data["money"]}\n'
+                              '\n合約開始日：${data["startDay"]}'
+                              '\n合約結束日：${data["endDay"]}'
+                              '\n距離成功已完成：${Tool.calcProgress(data["flag"])}%',
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 color: Color(0xFF0D3B66),
                               ),
                             );
                           } else {
-                            return const Text('尚未有運動合約資料'); // If no data is found, show a message
+                            return const Text(
+                                '尚未有運動合約資料'); // If no data is found, show a message
                           }
                         },
                       ),
@@ -503,12 +522,16 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                 ),
               ),
               Align(
-                alignment: Alignment.center,
+                alignment: Alignment(0.0, -0.3),
                 child: Container(
                   margin: const EdgeInsets.only(left: 10.0),
                   padding: const EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFAF0CA),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFFFFFFF), Color(0xfffdeed9)],
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                    ),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Column(
@@ -517,7 +540,8 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                       FutureBuilder<Map<String, dynamic>?>(
                         future: ContractDB.getContract(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return const CircularProgressIndicator();
                           } else if (snapshot.hasError) {
                             return const Text('Error fetching data');
@@ -525,13 +549,13 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                             Map data = snapshot.data![type2];
                             return Text(
                               '立契約人將依照選擇之方案來養成各項習慣，'
-                                  '若目標達成系統將投入金額全數退回，失敗則全數捐出。'
-                                  '\n您選擇養成的習慣：${data["type"]}'
-                                  '\n您選擇的方案：${data["plan"]}'
-                                  '\n您所投入的金額：${data["money"]}'
-                                  '\n合約開始日：${data["startDay"]}'
-                                  '\n合約結束日：${data["endDay"]}'
-                                  '\n距離成功已完成：${Tool.calcProgress(data["flag"])}%',
+                              '若目標達成系統將投入金額全數退回，失敗則全數捐出。\n'
+                              '\n您選擇養成的習慣：${data["type"]}'
+                              '\n您選擇的方案：${data["plan"]}'
+                              '\n您所投入的金額：${data["money"]}\n'
+                              '\n合約開始日：${data["startDay"]}'
+                              '\n合約結束日：${data["endDay"]}'
+                              '\n距離成功已完成：${Tool.calcProgress(data["flag"])}%',
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 color: Color(0xFF0D3B66),
@@ -550,7 +574,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
           ),
           Positioned(
             right: 5,
-            bottom: 180,
+            bottom: 200,
             child: Container(
               margin: const EdgeInsets.only(left: 25.0, right: 25.0),
               padding: const EdgeInsets.all(8.0),
@@ -558,10 +582,13 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      Future<Map<String, dynamic>?> futureContract = ContractDB.getContract();
+                      Future<Map<String, dynamic>?> futureContract =
+                          ContractDB.getContract();
                       futureContract.then((data) {
-                        bool workoutContractExists = data!.containsKey("workout");
-                        bool meditationContractExists = data.containsKey("meditation");
+                        bool workoutContractExists =
+                            data!.containsKey("workout");
+                        bool meditationContractExists =
+                            data.containsKey("meditation");
 
                         if (workoutContractExists && meditationContractExists) {
                           // Show the dialog message for one second and then hide it
@@ -570,7 +597,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                             builder: (context) {
                               return const AlertDialog(
                                 content: Text(
-                                    '每種類型合約僅能建立一次',
+                                  '每種類型合約僅能建立一次',
                                   style: TextStyle(
                                     fontSize: 20.0,
                                     color: Color(0xFF0D3B66),
@@ -580,7 +607,8 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                             },
                           );
                           Timer(const Duration(seconds: 1), () {
-                            Navigator.of(context).pop(); // Close the dialog after one second
+                            Navigator.of(context)
+                                .pop(); // Close the dialog after one second
                           });
                         } else {
                           _showOptionsDialog(context);
@@ -595,7 +623,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                       ),
                     ),
                   ),
-                  const Text(
+                  /*const Text(
                     '/',
                     style: TextStyle(
                       fontSize: 15.0,
@@ -613,7 +641,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                         color: Color(0xFF0D3B66),
                       ),
                     ),
-                  )
+                  )*/
                 ],
               ),
             ),
