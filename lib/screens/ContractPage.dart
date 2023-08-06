@@ -430,6 +430,11 @@ class AlreadyContractPage extends StatefulWidget {
 
 class _AlreadyContractPageState extends State<AlreadyContractPage> {
 
+  final PageController _pageController = PageController(
+    initialPage: 0,
+    viewportFraction: 0.9,
+  );
+
   @override
   Widget build(BuildContext context) {
     // TODO: 讓使用者更清楚的知道可以左右滑動
@@ -452,12 +457,13 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
       body: Stack(
         children: [
           PageView(
+            controller: _pageController,
             children: [
               Align(
                 alignment: Alignment.center,
                 child: Container(
-                  margin: const EdgeInsets.only(left: 25.0, right: 25.0),
-                  padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.only(right: 10.0),
+                  padding: const EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFAF0CA),
                     borderRadius: BorderRadius.circular(8.0),
@@ -500,8 +506,8 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
               Align(
                 alignment: Alignment.center,
                 child: Container(
-                  margin: const EdgeInsets.only(left: 25.0, right: 25.0),
-                  padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.only(left: 10.0),
+                  padding: const EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFAF0CA),
                     borderRadius: BorderRadius.circular(8.0),
