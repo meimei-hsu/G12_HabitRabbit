@@ -437,7 +437,6 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: 讓使用者更清楚的知道可以左右滑動
     String type1 = "workout";
     String type2 = "meditation";
 
