@@ -49,8 +49,8 @@ class Home extends StatelessWidget {
               child: const Text("test DB")),
           TextButton(
               onPressed: () {
-                //PlanAlgo.execute();
-                //PlanAlgo.regenerate(DateTime.now());
+                // PlanAlgo.execute();
+                // PlanAlgo.regenerate(DateTime.now());
                 MeditationPlanAlgo.execute();
                 MeditationPlanAlgo.regenerate(DateTime.now());
               },
@@ -65,10 +65,8 @@ class Home extends StatelessWidget {
                 // print(await UserDB.isWorkoutDay(mary, DateTime(2023, 5, 22)));
                 // print(await UserDB.isWorkoutDay("123", DateTime(2023, 5, 22)));
                 // print(await DurationDB.calcCompletion());
-               // print(Calendar.daysPassed());
-                //print(Calendar.daysComing());
-                //print(Calendar.daysComing());
-                //print(Calendar.daysComing());
+                print(Calendar.daysPassed());
+                print(Calendar.daysComing());
               },
               child: const Text("test")),
         ],
@@ -554,7 +552,7 @@ class WorkoutDB {
     return await DB.delete(db, workoutID);
   }
 }
-//目前應該不會用到？？
+
 class MeditationDB {
   static const db = "meditations";
 
@@ -582,25 +580,22 @@ class MeditationDB {
     List ids = meditations!.keys.toList();
 
     Map retVal = {
-      "strength": [[], [], [], [], []],
-      "cardio": [[], []],
-      "yoga": [[], [], [], [], []],
-      "warmUp": [],
-      "coolDown": []
+      "mindfulness": [],
+      "relax": [[], [], [], []],
+      "visualize": [[], [], [], []],
+      "kindness": [[], [], [], []],
     };
     List keys = retVal.keys.toList();
 
     // Get the list of workoutID from the given type and difficulty
-    for (int type = 1; type <= 3; type++) {
-      for (int diff = 1; diff <= ((type == 2) ? 2 : 5); diff++) {
-        retVal[keys[type - 1]][diff - 1] = List.from(
-            ids.where((item) => item[0] == "$type" && item[1] == "$diff"));
+    for (int category = 2; category <= 4; category++) {
+      for (int type = 1; type <= 4; type++) {
+        retVal[keys[category - 1]][type - 1] = List.from(
+            ids.where((item) => item[0] == "$category" && item[1] == "$type"));
       }
     }
-    for (int type = 4; type <= 5; type++) {
-      retVal[keys[type - 1]] =
-          List.from(ids.where((item) => item[0] == "$type"));
-    }
+    retVal["mindfulness"] =
+        List.from(ids.where((item) => item[0] == "1"));
 
     return retVal;
   }
@@ -615,6 +610,7 @@ class MeditationDB {
     return await DB.delete(db, meditationID);
   }
 }
+
 /*
 ################################################################################
 Journal Database: database records that occurs daily
@@ -756,33 +752,6 @@ class MeditationPlanDB {
   // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
-  // Format the String of plan into List of workouts, grouped by workout sets
-  static List toList(String planStr) {
-    List<String> plan = planStr.split(", ");
-
-    // (String) plan: 3 warm-up + n loops (10/5/...) + 10 min + 2 cool-down
-    int nLoop = (plan.length - 5) ~/ 15;
-
-    // Split the plan into different loops
-    List<List<String>> fmtPlan = [
-      plan.sublist(0, 3),
-    ];
-    int count = 3;
-
-    for (int i = 0; i < nLoop; i++) {
-      fmtPlan.add(plan.sublist(count, count + 10));
-      count += 10;
-      fmtPlan.add(plan.sublist(count, count + 5));
-      count += 5;
-    }
-
-    fmtPlan.add(plan.sublist(count, count + 10));
-    count += 10;
-    fmtPlan.add(plan.sublist(count, count + 2));
-
-    return fmtPlan;
-  }
-
   // Select all user's plans
   static Future<Map?> getTable() async => await JournalDB.getTable(uid, table);
 
@@ -793,14 +762,14 @@ class MeditationPlanDB {
   static Future<Map?> getNextWeek() async =>
       await JournalDB.getNextWeek(uid, table);
 
-  // Select user's workout plan from given dates
+  // Select user's meditation plan from given dates
   static Future<Map?> getFromDates(List<String> dates) async =>
       await JournalDB.getFromDates(uid, dates, table);
 
   static Future<String?> getFromDate(DateTime date) async =>
       await JournalDB.getFromDate(uid, date, table);
 
-  // Select a map of user's plans based on workout names
+  // Select a map of user's plans based on meditation names
   static Future<Map?> getDatesByName(Map? plans) async {
     var meditationNames = await MeditationDB.getAll();
     if (plans != null && meditationNames != null) {
@@ -831,14 +800,14 @@ class MeditationPlanDB {
   }
 
   static Future<String?> getMeditationType(DateTime date) async {
-    // The third element of the plan is the first workout after the warmup,
-    // and its first character's index (which indicates the workout type) is 18.
-    switch ((await getFromDate(date))?[18]) {
+    switch ((await getFromDate(date))?[0]) {
       case '1':
-        return "relax";
+        return "mindfulness";
       case '2':
-        return "visualize";
+        return "relax";
       case '3':
+        return "visualize";
+      case '4':
         return "kindness";
       default:
         return null;
@@ -915,7 +884,7 @@ class DurationDB {
 
   // Calculate the number of times user has completed a workout plan during this week
   static Future<num?> calcCompletion() async {
-    List? workoutDays = (await UserDB.getPlanVariables())?[1]["workoutDays"];
+    List? workoutDays = (await UserDB.getUser())?["workoutDays"];
     int complete = 0;
     for (String date in Calendar.thisWeek()) {
       complete += (await calcProgress(DateTime.parse(date)) == 100) ? 1 : 0;
@@ -985,7 +954,7 @@ class MeditationDurationDB {
 
   // Calculate the number of times user has completed a workout plan during this week
   static Future<num?> calcCompletion() async {
-    List? meditationDays = (await UserDB.getMeditationPlanVariables())?[1]["meditationDays"];
+    List? meditationDays = (await UserDB.getUser())?["meditationDays"];
     int complete = 0;
     for (String date in Calendar.thisWeek()) {
       complete += (await calcProgress(DateTime.parse(date)) == 100) ? 1 : 0;

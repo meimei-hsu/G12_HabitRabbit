@@ -1,11 +1,14 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 import '../services/Database.dart';
-import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 
 class StatisticPage extends StatefulWidget {
   final Map arguments;
@@ -13,26 +16,34 @@ class StatisticPage extends StatefulWidget {
   const StatisticPage({super.key, required this.arguments});
 
   @override
-  _StatisticPageState createState() => _StatisticPageState();
+  StatisticPageState createState() => StatisticPageState();
 }
 
-class _StatisticPageState extends State<StatisticPage> {
+class StatisticPageState extends State<StatisticPage> {
+  bool isInit = true;
+  bool isAddingWeight = false;
+
   User? user = FirebaseAuth.instance.currentUser;
   List<List<double>> res = [
     [0.0]
   ];
   List<double> list1 = [0.0];
+
   Map<String, double> weightDataList = {};
   Map<DateTime, int> completionRateList = {};
+
   late double weight;
+  late double avgWeight = 0.0;
   late String date;
   late DateTime? selectedDate;
   late double minY = 0.0;
   late double maxY = 0.0;
 
+  int planProgress = 0; // 0 = 運動, 1 = 冥想
+
   final Map<int, Color> colorSet = {
-    1: Colors.red.shade300,
-    2: Colors.green.shade300,
+    1: const Color(0xfff6cdb7),
+    2: const Color(0xffd4d6fc),
   };
 
   void getUserData() async {
@@ -40,8 +51,22 @@ class _StatisticPageState extends State<StatisticPage> {
     if (weight != null) {
       weightDataList =
           weight.map((key, value) => MapEntry(key as String, value.toDouble()));
+      // 照時間順序排
+      weightDataList = Map.fromEntries(weightDataList.entries.toList()
+        ..sort((e1, e2) => e1.key.compareTo(e2.key)));
       list1 = weightDataList.values.toList();
     }
+    minY = list1.reduce(min);
+    maxY = list1.reduce(max);
+    for (int i = 1; i <= 5; i++) {
+      if ((minY - i) % 5 == 0) {
+        minY = minY - i;
+      }
+      if ((maxY + i) % 5 == 0) {
+        maxY = maxY + i;
+      }
+    }
+    avgWeight = list1.average;
 
     var duration = await DurationDB.getTable();
     if (duration != null) {
@@ -51,236 +76,450 @@ class _StatisticPageState extends State<StatisticPage> {
             (await DurationDB.calcProgress(date) == 100) ? 2 : 1;
       }
     }
+
+    isInit = false;
+    isAddingWeight = false;
+
+    EasyLoading.dismiss();
+    setState(() {});
+  }
+
+  void configLoading() {
+    EasyLoading.instance
+      ..indicatorType = EasyLoadingIndicatorType.threeBounce
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..indicatorSize = 50.0
+      ..radius = 20.0
+      ..backgroundColor = const Color(0xffd4d6fc)
+      ..indicatorColor = const Color(0xff4b3d70)
+      ..textColor = const Color(0xff4b3d70)
+      ..textPadding = const EdgeInsets.all(20)
+      ..userInteractions = true
+      ..dismissOnTap = false;
   }
 
   @override
   void initState() {
     super.initState();
+    configLoading();
+    EasyLoading.show(
+      status: '載入數據中...',
+      maskType: EasyLoadingMaskType.clear,
+    );
     getUserData();
-    updateYAxisRange();
+    //updateYAxisRange();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
+      backgroundColor: const Color(0xfffdfdf5),
       appBar: AppBar(
         elevation: 0,
-        title: const Text(
-          '統計資料',
+        title: Text(
+          '${user?.displayName!} 的統計資料',
           textAlign: TextAlign.left,
-          style: TextStyle(
-            color: Color(0xff0d3b66),
-            fontSize: 32,
-            letterSpacing: 0,
-            fontWeight: FontWeight.bold,
-            height: 1,
-          ),
+          style: const TextStyle(
+              color: Color(0xff4b3d70),
+              fontSize: 28,
+              letterSpacing: 2,
+              fontWeight: FontWeight.bold,
+              height: 1),
         ),
-        actions: [],
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xfffdfdf5),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showAddWeightDialog(); // Show dialog to add weight
-        },
-        backgroundColor: Color(0xffffa493),
-        child: Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        //ListView可各分配空間給兩張圖
-        child: ListView(
-          children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              //FIXME: 統計頁面待美化
-              Text(
-                'Statistics:',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              // FIXME: 體重圖表初次無法顯示折線圖，需要加入體重後才會顯示
-              Container(
-                height: 300,
-                padding: EdgeInsets.only(right: 40, top: 20),
-                child: LineChart(
-                  LineChartData(
-                    lineTouchData: LineTouchData(
-                      touchCallback: (LineTouchResponse touchResponse) {},
-                      handleBuiltInTouches: true,
-                      touchTooltipData: LineTouchTooltipData(
-                        tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
-                      ),
-                    ),
-                    gridData: FlGridData(
-                      show: true,
-                      drawVerticalLine: false,
-                      // Disable vertical grid lines
-                      drawHorizontalLine: true,
-                      getDrawingHorizontalLine: (value) {
-                        return FlLine(
-                          color: Colors.grey,
-                          strokeWidth: 0.5,
-                        );
-                      },
-                      checkToShowHorizontalLine: (value) {
-                        return value % 5 ==
-                            0; // Show horizontal grid lines at intervals of 5
-                      },
-                    ),
-                    titlesData: FlTitlesData(
-                      bottomTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 22,
-                        getTextStyles: (value) =>
-                            const TextStyle(color: Colors.black, fontSize: 10),
-                        getTitles: (value) {
-                          int index = value.toInt();
-                          if (index >= 0 && index < res.length) {
-                            int timestamp = res[index][0].toInt();
-                            DateTime dateTime =
-                                DateTime.fromMillisecondsSinceEpoch(timestamp);
-                            return Calendar.toKey(dateTime);
-                          }
-                          return '';
-                        },
-                        margin: 8,
-                      ),
-                      // FIXME: 體重圖表的最大值應該是體重的最大值加 10(or 5)，反之亦然
-                      leftTitles: SideTitles(
-                        showTitles: true,
-                        getTextStyles: (value) =>
-                            const TextStyle(color: Colors.black, fontSize: 10),
-                        getTitles: (value) {
-                          double weight =
-                              list1.isNotEmpty ? list1[list1.length - 1] : 0.0;
-                          double minValue = weight - 10;
-                          double maxValue = weight + 10;
+      body: (isInit)
+          ? Container()
+          : Padding(
+              padding: const EdgeInsets.all(10),
+              //ListView可各分配空間給兩張圖
+              child: ListView(
+                children: [
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        //FIXME: 統計頁面待美化
+                        Container(
+                          padding:
+                              const EdgeInsets.fromLTRB(5.0, 10.0, 0.0, 10.0),
+                          margin: const EdgeInsets.only(right: 10, left: 10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xfffdeed9),
+                            border: Border.all(color: const Color(0xffffeed9)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                /*leading: const Icon(
+                            Icons.monitor_weight_outlined,
+                            color: Color(0xff4b4370),
+                            size: 28,
+                          ),*/
+                                title: const Text(
+                                  "體重紀錄",
+                                  style: TextStyle(
+                                      color: Color(0xff4b4370),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 24.0),
+                                ),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.add_box_rounded),
+                                  iconSize: 28,
+                                  color: const Color(0xff4b4370),
+                                  tooltip: "新增體重",
+                                  onPressed: () async {
+                                    _showAddWeightDialog();
+                                  },
+                                ),
+                                visualDensity:
+                                    const VisualDensity(vertical: -4),
+                              ),
+                              Container(
+                                height: 300,
+                                padding: const EdgeInsets.only(
+                                    right: 15, top: 5, bottom: 20),
+                                child: (isAddingWeight)
+                                    ? Center(
+                                        child: LoadingAnimationWidget.inkDrop(
+                                        color: const Color(0xfffdfdf5),
+                                        size: 100,
+                                      ))
+                                    : LineChart(
+                                        LineChartData(
+                                          // lineTouchData: 觸摸交互詳細訊息
+                                          lineTouchData: LineTouchData(
+                                            handleBuiltInTouches: true,
+                                            touchTooltipData:
+                                                LineTouchTooltipData(
+                                              tooltipBgColor:
+                                                  const Color(0xfffdfdf5)
+                                                      .withOpacity(0.6),
+                                              getTooltipItems:
+                                                  (List<LineBarSpot>
+                                                      touchedBarSpots) {
+                                                return touchedBarSpots
+                                                    .map((barSpot) {
+                                                  final flSpot = barSpot;
 
-                          // Customize the display for values within the range
-                          if (value >= minValue && value <= maxValue) {
-                            int intValue = value.toInt();
-                            if (intValue % 5 == 0) {
-                              return '$intValue';
-                            }
-                          }
-                          return '';
-                        },
-                        margin: 8,
-                        reservedSize: 28,
-                      ),
-                    ),
-                    borderData: FlBorderData(show: true),
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: _getWeightData(),
-                        isCurved: false,
-                        colors: [Colors.blue],
-                        barWidth: 2,
-                        isStrokeCapRound: true,
-                        dotData: FlDotData(
-                          show: true,
-                          getDotPainter: (spot, percent, barData, index) =>
-                              FlDotCirclePainter(
-                            color: Colors.black,
-                            radius: 3,
+                                                  return LineTooltipItem(
+                                                    '${weightDataList.keys.toList()[flSpot.x.toInt()]}\n',
+                                                    const TextStyle(
+                                                      color: Color(0xff4b3d70),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    children: [
+                                                      TextSpan(
+                                                        text:
+                                                            '${flSpot.y.toString()} 公斤',
+                                                        style: const TextStyle(
+                                                          color:
+                                                              Color(0xff4b3d70),
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w900,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                    textAlign: TextAlign.center,
+                                                  );
+                                                }).toList();
+                                              },
+                                            ),
+                                          ),
+                                          extraLinesData: ExtraLinesData(
+                                            horizontalLines: [
+                                              HorizontalLine(
+                                                y: avgWeight,
+                                                label: HorizontalLineLabel(
+                                                    show: true,
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 10),
+                                                    labelResolver: (line) =>
+                                                        '平均',
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    style: TextStyle(
+                                                        color: const Color(
+                                                                0xff4b3d70)
+                                                            .withOpacity(0.7),
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                color: const Color(0xff4b3d70)
+                                                    .withOpacity(0.7),
+                                                dashArray: [10, 10],
+                                              ),
+                                            ],
+                                          ),
+                                          // gridData: 網格數據
+                                          gridData: FlGridData(
+                                            show: true,
+                                            drawVerticalLine: false,
+                                            // Disable vertical grid lines
+                                            drawHorizontalLine: true,
+                                            getDrawingHorizontalLine: (value) {
+                                              return FlLine(
+                                                color: const Color(0xff4b3d70),
+                                                strokeWidth: 0.5,
+                                              );
+                                            },
+                                            checkToShowHorizontalLine: (value) {
+                                              return value % 5 ==
+                                                  0; // Show horizontal grid lines at intervals of 5
+                                            },
+                                          ),
+                                          // titlesData: 四個方向的標題
+                                          titlesData: FlTitlesData(
+                                            bottomTitles: SideTitles(
+                                              showTitles: false,
+                                              reservedSize: 28,
+                                              getTextStyles: (value) =>
+                                                  const TextStyle(
+                                                      color: Color(0xff4b3d70),
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                              getTitles: (value) {
+                                                return weightDataList.keys
+                                                    .toList()[value.toInt()];
+                                              },
+                                              margin: 8,
+                                            ),
+                                            leftTitles: SideTitles(
+                                              showTitles: true,
+                                              getTextStyles: (value) =>
+                                                  const TextStyle(
+                                                      color: Color(0xff4b3d70),
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                              getTitles: (value) {
+                                                // Customize the display for values within the range
+                                                // FIXME(?): 好像沒有一定會間隔為 5?
+                                                if (value >= minY &&
+                                                    value <= maxY) {
+                                                  int intValue = value.toInt();
+                                                  if (intValue % 5 == 0) {
+                                                    return '$intValue';
+                                                  }
+                                                }
+                                                return '';
+                                              },
+                                              margin: 10,
+                                              reservedSize: 28,
+                                            ),
+                                          ),
+                                          // borderData: 邊框數據
+                                          borderData: FlBorderData(
+                                              show: true,
+                                              border: const Border(
+                                                  bottom: BorderSide(
+                                                color: Color(0xff4e4965),
+                                                width: 0.5,
+                                              ))),
+                                          // lineBarsData: 數線資料
+                                          lineBarsData: [
+                                            LineChartBarData(
+                                              spots: _getWeightData(),
+                                              isCurved: true,
+                                              // 曲線 or 折線?
+                                              colors: [const Color(0xffd4d6fc)],
+                                              barWidth: 3,
+                                              isStrokeCapRound: true,
+                                              dotData: FlDotData(
+                                                show: true,
+                                                getDotPainter: (spot, percent,
+                                                        barData, index) =>
+                                                    FlDotCirclePainter(
+                                                  color:
+                                                      const Color(0xff4b3d70),
+                                                  radius: 3,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                          minY: minY,
+                                          // y軸最小值
+                                          maxY: maxY, // y軸最大值
+                                        ),
+                                      ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(right: 80, left: 20, top: 20),
-                child: Text(
-                  '當月進度表',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                      backgroundColor: Colors.yellow,
-                      color: Color(0xff0d3b66),
-                      fontSize: 32,
-                      letterSpacing:
-                          0 /*percentages not used in flutter. defaulting to zero*/,
-                      fontWeight: FontWeight.bold,
-                      height: 1),
-                ),
-              ),
-              Container(
-                height: 400,
-                child: Stack(
-                  children: [
-                    HeatMapCalendar(
-                      defaultColor: Colors.white,
-                      flexible: true,
-                      colorMode: ColorMode.color,
-                      datasets: completionRateList,
-                      colorsets: colorSet,
-                      onClick: (value) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(value.toString())),
-                        );
-                      },
-                    ),
-                    Positioned(
-                      right: 0,
-                      bottom: 20,
-                      child: Container(
-                        width: 150,
-                        height: 50,
-                        color: Colors.white,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.check_circle,
-                                  color: Colors.green.shade200,
-                                  size: 25,
-                                ),
-                                Text(
-                                  '成功',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: 15),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.cancel,
-                                  color: Colors.red.shade200,
-                                  size: 25,
-                                ),
-                                Text(
-                                  '失败',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                        const SizedBox(
+                          height: 15,
                         ),
-                      ),
-                    ),
-                  ],
-                ),
+                        Container(
+                          padding:
+                              const EdgeInsets.fromLTRB(5.0, 10.0, 0.0, 10.0),
+                          margin: const EdgeInsets.only(right: 10, left: 10),
+                          decoration: BoxDecoration(
+                            color: const Color(0xfffdeed9),
+                            border: Border.all(color: const Color(0xffffeed9)),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Column(children: [
+                            ListTile(
+                              title: Text(
+                                (planProgress == 0) ? '運動計畫進度表' : '冥想計畫進度表',
+                                style: const TextStyle(
+                                    color: Color(0xff4b4370),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24.0),
+                              ),
+                              trailing: ToggleSwitch(
+                                minWidth: 70,
+                                minHeight: 35,
+                                initialLabelIndex: planProgress,
+                                cornerRadius: 10.0,
+                                labels: const ['運動', '冥想'],
+                                icons: const [
+                                  Icons.fitness_center_outlined,
+                                  Icons.self_improvement_outlined
+                                ],
+                                activeBgColors: const [
+                                  [Color(0xfff6cdb7)],
+                                  [Color(0xffd4d6fc)]
+                                ],
+                                activeFgColor: const Color(0xff4b4370),
+                                inactiveBgColor: const Color(0xfffdfdf5),
+                                inactiveFgColor: const Color(0xff4b4370),
+                                totalSwitches: 2,
+                                animate: true,
+                                animationDuration: 300,
+                                onToggle: (index) {
+                                  planProgress = index!;
+                                  setState(() {});
+                                },
+                              ),
+                              visualDensity: const VisualDensity(vertical: -4),
+                            ),
+                            (planProgress == 0)
+                                ? Container(
+                                    height: 400,
+                                    padding:
+                                        const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                    child: HeatMapCalendar(
+                                      defaultColor: const Color(0xfffdfdf5),
+                                      textColor: const Color(0xff4b4370),
+                                      colorMode: ColorMode.color,
+                                      fontSize: 18,
+                                      weekFontSize: 14,
+                                      monthFontSize: 16,
+                                      flexible: true,
+                                      margin: const EdgeInsets.all(2.5),
+                                      datasets: completionRateList,
+                                      colorsets: colorSet,
+                                      colorTipCount: 2,
+                                      colorTipSize: 20,
+                                      colorTipHelper: const [
+                                        Text(
+                                          "失敗 ",
+                                          style: TextStyle(
+                                              color: Color(0xff4b4370),
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          " 成功",
+                                          style: TextStyle(
+                                              color: Color(0xff4b4370),
+                                              fontWeight: FontWeight.w500),
+                                        )
+                                      ],
+                                      onClick: (value) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                              content: Text(value.toString())),
+                                        );
+                                      },
+                                    ),
+                                    // TODO: 要用套件本身的 colorTipHelper，還是自己做圖示？
+                                    /*Stack(
+                      children: [
+                        HeatMapCalendar(
+                          defaultColor: Colors.white,
+                          flexible: true,
+                          colorMode: ColorMode.color,
+                          datasets: completionRateList,
+                          colorsets: colorSet,
+                          showColorTip: false,
+                          onClick: (value) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(value.toString())),
+                            );
+                          },
+                        ),
+                        Positioned(
+                          right: 0,
+                          bottom: 20,
+                          child: Container(
+                            width: 150,
+                            height: 50,
+                            color: Colors.white,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green.shade200,
+                                      size: 25,
+                                    ),
+                                    const Text(
+                                      '成功',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 15),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.cancel,
+                                      color: Colors.red.shade200,
+                                      size: 25,
+                                    ),
+                                    const Text(
+                                      '失败',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),*/
+                                  )
+                                : const Text("Coming Soon!!!"),
+                          ]),
+                        ),
+                      ]),
+                ],
               ),
-            ]),
-          ],
-        ),
-      ),
-    );
+            ),
+    ));
   }
 
   _showAddWeightDialog() async {
@@ -338,30 +577,23 @@ class _StatisticPageState extends State<StatisticPage> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                setState(() {
+                  isAddingWeight = true;
+                });
+
                 double weight = double.tryParse(weightController.text) ?? 0;
                 if (weight > 0 && selectedDate != null) {
-                  setState(() async {
-                    // Add the date to the chart
-                    res.add([selectedDate!.millisecondsSinceEpoch.toDouble()]);
-                    Map<String, double> addedData = {
-                      Calendar.toKey(selectedDate!): weight
-                    };
-                    weightDataList.addAll(addedData);
-                    // Add the weight data to the chart
-                    list1 = Map.fromEntries(weightDataList.entries.toList()
-                          ..sort((e1, e2) => e1.key.compareTo(e2.key)))
-                        .values
-                        .toList();
-                    // Update to database
-                    await WeightDB.update(addedData);
-                    // Update the y-axis range
-                    updateYAxisRange();
-                  });
+                  Map<String, double> addedData = {
+                    Calendar.toKey(selectedDate!): weight
+                  };
+                  await WeightDB.update(addedData);
+                  getUserData();
                 }
                 weightController.clear(); // Clear weight text field
                 dateController.clear(); // Clear date text field
-                Navigator.of(context).pop();
+
+                Navigator.pop(context);
               },
               child: const Text('Add'),
             ),

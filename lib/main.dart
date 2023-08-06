@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:g12/services/Database.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:g12/screens/Routes.dart';
 import 'package:g12/screens/ContractPage.dart';
@@ -33,6 +34,7 @@ class AppEntryPoint extends StatelessWidget {
       home: const Scaffold(
         body: BottomNavigationController(),
       ),
+      builder: EasyLoading.init(),
     );
   }
 }

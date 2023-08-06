@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:level_map/level_map.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class MilestonePage extends StatefulWidget {
   final Map arguments;
@@ -18,15 +19,15 @@ class _MilestonePage extends State<MilestonePage> {
           title: const Text(
             '里程碑',
             style: TextStyle(
-              color: Color(0xFFFDFDFD),
+              color: Color(0xFF0D3B66),
               fontWeight: FontWeight.bold,
               fontSize: 25,
             ),
           ),
-          backgroundColor: const Color(0xFF98D98E),
+          backgroundColor: const Color(0xFFFAF0CA),
           automaticallyImplyLeading: false,
         ),
-        body: SafeArea(
+        body: const SafeArea(
           child: Padding(
             padding: EdgeInsets.only(bottom: 16.0),
             child: Column(
@@ -35,12 +36,24 @@ class _MilestonePage extends State<MilestonePage> {
                 Padding(
                   padding: EdgeInsets.only(left: 32.0, top: 32.0),
                   child: Text(
-                    'Characters'
-                        '\n這邊看需要寫些甚麼或放甚麼東西(不然太空?',
+                    'Mary的角色',
                     style: TextStyle(
                       fontFamily: 'WorkSans',
-                      color: Color(0xFF98D98E),
+                      color: Color(0xFF0D3B66),
                       fontSize: 32,
+                      fontWeight: FontWeight.normal,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 32.0, right: 32.0, top: 10.0),
+                  child: Text(
+                    '請養成規律的運動與冥想習慣蒐集寶物讓我長大吧！',
+                    style: TextStyle(
+                      fontFamily: 'WorkSans',
+                      color: Color(0xFF0D3B66),
+                      fontSize: 25,
                       fontWeight: FontWeight.normal,
                       letterSpacing: 1.1,
                     ),
@@ -65,7 +78,6 @@ class CharacterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-
     return Stack(
       children: [
         Align(
@@ -77,7 +89,7 @@ class CharacterWidget extends StatelessWidget {
               width: 0.9 * screenWidth,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFFFFFFFF), Color(0xFF98D98E)],
+                  colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                 ),
@@ -86,10 +98,10 @@ class CharacterWidget extends StatelessWidget {
           ),
         ),
         Align(
-          alignment: const Alignment(0.75, 0.3),
+          alignment: const Alignment(2.5, -0.6),
           child: Image.asset(
-            'assets/images/1.png',
-            height: screenHeight * 0.4,
+            'assets/images/second.png',
+            height: screenHeight * 0.45,
           ),
         ),
         Align(
@@ -99,15 +111,29 @@ class CharacterWidget extends StatelessWidget {
             height: 40,
             child: FloatingActionButton(
               onPressed: () {
-                _showGrowDialog(context);
+                _showQuizDialog(context);
               },
-              backgroundColor: Colors.black26,
+              backgroundColor: const Color(0xFFFDFDFD),
               child: const Icon(Icons.quiz),
             ),
           ),
         ),
         Align(
-          alignment: const Alignment(-0.75, 0.9),
+          alignment: const Alignment(-0.5, 0.65),
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: FloatingActionButton(
+              onPressed: () {
+                _showGrowDialog(context);
+              },
+              backgroundColor: const Color(0xFFFDFDFD),
+              child: const Icon(Icons.more_horiz_outlined),
+            ),
+          ),
+        ),
+        Align(
+          alignment: const Alignment(-0.25, 0.65),
           child: SizedBox(
             width: 40,
             height: 40,
@@ -115,11 +141,45 @@ class CharacterWidget extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ExerciseLevel()),
+                  MaterialPageRoute(
+                      builder: (context) => const ExerciseLevel()),
                 );
-              }, // 替換為你想要的圖示
-              backgroundColor: Colors.black26,
-              child: const Icon(Icons.map), // 替換為你想要的按鈕背景顏色
+              },
+              backgroundColor: const Color(0xFFFDFDFD),
+              child: const Icon(Icons.map),
+            ),
+          ),
+        ),
+        const Align(
+          alignment: Alignment(-0.72, 0.8),
+          child: Text(
+            '距離下一階段已完成：',
+            style: TextStyle(
+              fontFamily: 'WorkSans',
+              color: Color(0xFF0D3B66),
+              fontSize: 15,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 35),
+          child: Align(
+            alignment: const Alignment(2, 0.88),
+            child: LinearPercentIndicator(
+              width: MediaQuery.of(context).size.width * 0.85,
+              animation: true,
+              lineHeight: 15.0,
+              percent: 0.7,
+              center: const Text(
+                "70.0%",
+                style: TextStyle(
+                  color: Color(0xFFFDFDFD),
+                  fontSize: 10,
+                ),
+              ),
+              barRadius: const Radius.circular(16),
+              backgroundColor: const Color(0xFFFDFDFD),
+              progressColor: const Color(0xFF0D3B66),
             ),
           ),
         ),
@@ -131,19 +191,37 @@ class CharacterWidget extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor:
-      Colors.black.withOpacity(0.5), // Darkened background color
+          Colors.black.withOpacity(0.5), // Darkened background color
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
+        return const Padding(
+          padding: EdgeInsets.all(8.0),
           child: GrowDialog(arguments: null),
         );
       },
     );
   }
+}
+
+void _showQuizDialog(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.black.withOpacity(0.5),
+    // Darkened background color
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+    ),
+    builder: (BuildContext context) {
+      return const Padding(
+        padding: EdgeInsets.all(8.0),
+        child: QuizDialog(arguments: null),
+      );
+    },
+  );
 }
 
 class CharacterCardBackgroundClipper extends CustomClipper<Path> {
@@ -174,19 +252,106 @@ class CharacterCardBackgroundClipper extends CustomClipper<Path> {
   }
 }
 
+//quiz
+class QuizDialog extends StatefulWidget {
+  const QuizDialog({super.key, required arguments});
+
+  @override
+  _QuizDialogState createState() => _QuizDialogState();
+}
+
+class _QuizDialogState extends State<QuizDialog> {
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return Material(
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16.0),
+              color: const Color(0xFFFAF0CA),
+              child: Text(
+                "寶物蒐集概況",
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(),
+              ),
+            ),
+            const SizedBox(height: 30.0),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                height: 180,
+                width: 0.8 * screenWidth,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                  ),
+                ),
+                child: Wrap(
+                  spacing: 5,
+                  runSpacing: 10,
+                  children: [
+                    for (int i = 0; i < 17; i++)
+                      Image.asset(
+                        height: 40,
+                        width: 40,
+                        'assets/images/treasure.png',
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20.0),
+            Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                height: 180,
+                width: 0.8 * screenWidth,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                  ),
+                ),
+                child: Wrap(
+                  spacing: 5,
+                  runSpacing: 10,
+                  children: [
+                    for (int i = 0; i < 12; i++)
+                      Image.asset(
+                        height: 40,
+                        width: 40,
+                        'assets/images/treasure.png',
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//more
 class GrowDialog extends StatefulWidget {
-  GrowDialog({super.key, required arguments});
+  const GrowDialog({super.key, required arguments});
 
   @override
   _GrowDialogState createState() => _GrowDialogState();
 }
 
-//more
 class _GrowDialogState extends State<GrowDialog> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
     return Material(
       child: SingleChildScrollView(
         child: Column(
@@ -209,15 +374,31 @@ class _GrowDialogState extends State<GrowDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFFFFFFF), Color(0xFF98D98E)],
+                    colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
                 ),
-                child: Image.asset(
-                  height: 100,
-                  width: 80,
-                  'assets/images/1.png',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      height: 120,
+                      width: 120,
+                      'assets/images/first.png',
+                    ),
+                    const SizedBox(
+                        width:
+                            5), // Add some spacing between the image and text
+                    const Text(
+                      '第一階段',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFF0D3B66),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -230,15 +411,29 @@ class _GrowDialogState extends State<GrowDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFFFFFFF), Color(0xFF98D98E)],
+                    colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
                 ),
-                child: Image.asset(
-                  height: 100,
-                  width: 80,
-                  'assets/images/3.png',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      height: 120,
+                      width: 120,
+                      'assets/images/second.png',
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      '第二階段',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFF0D3B66),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -251,15 +446,29 @@ class _GrowDialogState extends State<GrowDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFFFFFFF), Color(0xFF98D98E)],
+                    colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
                 ),
-                child: Image.asset(
-                  height: 100,
-                  width: 80,
-                  'assets/images/2.png',
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      height: 120,
+                      width: 120,
+                      'assets/images/third_unknown.png',
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
+                      '???',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFF0D3B66),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -270,7 +479,7 @@ class _GrowDialogState extends State<GrowDialog> {
   }
 }
 
-//地圖
+//map
 class ExerciseLevel extends StatefulWidget {
   const ExerciseLevel({super.key});
 
@@ -279,41 +488,53 @@ class ExerciseLevel extends StatefulWidget {
 }
 
 class _ExerciseLevel extends State<ExerciseLevel> {
+  double user_currentLevel = 1; // 初始等級均為1
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: LevelMap(
-          backgroundColor: Colors.white,
-          levelMapParams: LevelMapParams(
-            levelCount: 24,
-            //levelHeight: 50,
-            currentLevel: 4,
-            pathColor: Colors.black,
-            currentLevelImage: ImageParams(
-              path: "assets/images/1.png",
-              size: const Size(100, 100),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
             ),
-            lockedLevelImage: ImageParams(
-              path: "assets/images/lock.png",
-              size: const Size(20, 20),
-            ),
-            completedLevelImage: ImageParams(
-              path: "assets/images/completed.png",
-              size: const Size(80, 80),
-            ),
-            startLevelImage: ImageParams(
-              path: "assets/images/start.png",
-              size: const Size(80, 80),
-            ),
-            pathEndImage: ImageParams(
-              path: "assets/images/finish.png",
-              size: const Size(80, 80),
+          ),
+          child: LevelMap(
+            backgroundColor: Colors
+                .transparent, // Set the background color of LevelMap to transparent
+            levelMapParams: LevelMapParams(
+              levelCount: 24,
+              //levelHeight: 50,
+              currentLevel: user_currentLevel,
+              pathColor: Colors.black,
+              currentLevelImage: ImageParams(
+                path: "assets/images/second.png",
+                size: const Size(120, 120),
+              ),
+              lockedLevelImage: ImageParams(
+                path: "assets/images/lock.png",
+                size: const Size(30, 30),
+              ),
+              completedLevelImage: ImageParams(
+                path: "assets/images/completed.png",
+                size: const Size(100, 100),
+              ),
+              startLevelImage: ImageParams(
+                path: "assets/images/start.png",
+                size: const Size(80, 80),
+              ),
+              pathEndImage: ImageParams(
+                path: "assets/images/finish.png",
+                size: const Size(80, 80),
+              ),
             ),
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.black,
+          backgroundColor: const Color(0xFF0D3B66),
           child: const Icon(
             Icons.home,
             color: Colors.white,
