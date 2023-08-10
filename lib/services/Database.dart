@@ -447,8 +447,10 @@ class MilestoneDB {
 
   // Define the columns of the milestone table
   static get columns => [
-        "flag",
-        "steps",
+        "workoutGem",
+        "meditationGem",
+        "workoutFragment",
+        "meditationFragment",
       ];
 
   // Select milestone from userID
@@ -456,14 +458,24 @@ class MilestoneDB {
     return Map<String, dynamic>.from(await DB.select(db, uid) as Map);
   }
 
-  static Future<num?> getFlag() async {
+  static Future<num?> getWorkoutGem() async {
     final Map? user = await getMilestone();
-    return user!["flag"];
+    return user!["workoutGem"];
   }
 
-  static Future<String?> getSteps() async {
+  static Future<String?> getMeditationGem() async {
     final Map? user = await getMilestone();
-    return user!["steps"];
+    return user!["meditationGem"];
+  }
+
+  static Future<num?> getWorkoutFragment() async {
+    final Map? user = await getMilestone();
+    return user!["workoutFragment"];
+  }
+
+  static Future<String?> getMeditationFragment() async {
+    final Map? user = await getMilestone();
+    return user!["meditationFragment"];
   }
 
   // Update data {columnName: value} from userID
@@ -471,8 +483,8 @@ class MilestoneDB {
     return await DB.update("$db/$uid/", data);
   }
 
-  static Future<Map?> step() async {
-    String? step = await MilestoneDB.getSteps();
+  static Future<Map?> gem() async {
+    String? step = await MilestoneDB.getMeditationGem();
     if (step != null) {
       //step加一
       // var duration = value.split(', ').map(int.parse).toList();

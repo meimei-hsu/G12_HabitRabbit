@@ -498,7 +498,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
                 UserDB.updateByFeedback(type, feedbackData);
               }
               await PlanAlgo.execute();
-              MilestoneDB.step();
+              //MilestoneDB.step();
               //var profile = await UserDB.getPlanVariables(userID);
               // Map<String, dynamic> _likings = {}, _abilities = {};
               // _likings = profile[2];
