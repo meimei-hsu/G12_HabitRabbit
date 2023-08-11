@@ -1,15 +1,17 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:g12/services/Database.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:g12/screens/Routes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
+import 'package:g12/services/Database.dart';
+
 import 'package:g12/screens/ContractPage.dart';
 import 'package:g12/screens/HomePage.dart';
 import 'package:g12/screens/MilestonePage.dart';
+import 'package:g12/screens/Routes.dart';
 import 'package:g12/screens/StatisticPage.dart';
 import 'package:g12/screens/SettingsPage.dart';
 

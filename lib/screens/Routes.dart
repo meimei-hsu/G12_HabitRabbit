@@ -19,11 +19,18 @@ final routes = {
   '/register': (context) => const RegisterPage(),
   '/statistic': (context, {arguments}) => StatisticPage(arguments: arguments),
   '/countdown': (context, {arguments}) => CountdownPage(arguments: arguments),
-  '/exercise': (context, {arguments}) => ExercisePage(arguments: arguments),
   '/settings': (context, {arguments}) => SettingsPage(arguments: arguments),
   '/milestone': (context, {arguments}) => MilestonePage(arguments: arguments),
-  '/detail': (context, {arguments}) => HabitDetailPage(arguments: arguments),
   '/video': (context, {arguments}) => VideoPage(arguments: arguments),
+  /* ExercisePage */
+  '/exercise': (context, {arguments}) => DoExercisePage(arguments: arguments),
+  '/meditation': (context, {arguments}) =>
+      DoMeditationPage(arguments: arguments),
+  /* HabitDetailPage */
+  '/detail/exercise': (context, {arguments}) =>
+      ExerciseDetailPage(arguments: arguments),
+  '/detail/meditation': (context, {arguments}) =>
+      MeditationDetailPage(arguments: arguments),
   /* ContractPage */
   '/contract/initial': (context, {arguments}) =>
       FirstContractPage(arguments: arguments),

@@ -1,32 +1,193 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'package:banner_carousel/banner_carousel.dart';
+import 'package:chat_bubbles/chat_bubbles.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:motion_toast/resources/arrays.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:motion_toast/motion_toast.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
-import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
-import 'package:banner_carousel/banner_carousel.dart';
-import 'package:chat_bubbles/chat_bubbles.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
   @override
-  State<Homepage> createState() => _HomepageState();
+  State<Homepage> createState() => HomepageState();
 }
 
-class _HomepageState extends State<Homepage> {
+class HomepageState extends State<Homepage> {
   User? user = FirebaseAuth.instance.currentUser;
   bool isFetchingData = true;
 
-  @override
-  void initState() {
-    super.initState();
-    getPlanData();
-    //getMeditationPlanData();
-    getContractData();
+  // Plan 相關資料
+  Map workoutPlanList = {};
+  Map progressList = {};
+  List bothWeekWorkoutList = [];
+  int currentIndex = 0;
+
+  //Meditation Plan 相關資料
+  Map meditationPlanList = {};
+  Map meditationProgressList = {};
+  List bothWeekMeditationList = [];
+  int meditationCurrentIndex = 0;
+
+  // Contract 資料
+  Map contractData = {};
+
+  // Calendar 相關設定
+  DateTime today = Calendar.today();
+  DateTime _focusedDay = DateTime(
+      Calendar.today().year, Calendar.today().month, Calendar.today().day);
+
+  DateTime? _selectedDay = Calendar.today();
+
+  get firstDay => Calendar.firstDay();
+
+  get lastDay => firstDay.add(const Duration(days: 13));
+
+  get isThisWeek => Calendar.isThisWeek(_selectedDay!);
+
+  Widget getBannerCarousel() {
+    // TODO: 拉出重複部分
+    var workoutPlan = workoutPlanList[Calendar.toKey(_selectedDay!)];
+    var meditationPlan = meditationPlanList[Calendar.toKey(_selectedDay!)];
+
+    const String banner1 = "assets/images/Exercise.jpg";
+    const String banner2 = "assets/images/Meditation.jpg";
+
+    List<BannerModel> listBanners;
+
+    if (workoutPlan == null && meditationPlan == null) {
+      listBanners = [];
+    } else if (workoutPlan != null && meditationPlan == null) {
+      listBanners = [BannerModel(imagePath: banner1, id: "1")];
+    } else if (workoutPlan == null && meditationPlan != null) {
+      listBanners = [BannerModel(imagePath: banner2, id: "2")];
+    } else {
+      listBanners = [
+        BannerModel(imagePath: banner1, id: "1"),
+        BannerModel(imagePath: banner2, id: "2"),
+      ];
+    }
+
+    return (listBanners != [])
+        ? BannerCarousel(
+            height: 350,
+            //spaceBetween : 100,
+            banners: listBanners,
+            onTap: (id) async {
+              print(id);
+              // Exercise
+              if (id == "1") {
+                Navigator.pushNamed(context, '/detail/exercise', arguments: {
+                  'user': user,
+                  'isToday': (DateTime(_selectedDay!.year, _selectedDay!.month,
+                              _selectedDay!.day) ==
+                          _focusedDay)
+                      ? true
+                      : false,
+                  'percentage': progressList[Calendar.toKey(_selectedDay!)],
+                  'currentIndex': currentIndex,
+                  'workoutPlan': workoutPlanList[Calendar.toKey(_selectedDay!)]
+                });
+              }
+
+              // Meditation
+              if (id == "2") {
+                Navigator.pushNamed(context, '/detail/meditation', arguments: {
+                  'user': user,
+                  'isToday': (DateTime(_selectedDay!.year, _selectedDay!.month,
+                              _selectedDay!.day) ==
+                          _focusedDay)
+                      ? true
+                      : false,
+                  'percentage':
+                      meditationProgressList[Calendar.toKey(_selectedDay!)],
+                  //'currentIndex': currentIndex,
+                  'meditationPlan':
+                      meditationPlanList[Calendar.toKey(_selectedDay!)]
+                });
+              }
+            },
+          )
+        : Container();
+  }
+
+  String getDialogText() {
+    String dialogText = "";
+
+    var workoutPlan = workoutPlanList[Calendar.toKey(_selectedDay!)];
+    var meditationPlan = meditationPlanList[Calendar.toKey(_selectedDay!)];
+
+    var workoutProgress = progressList[Calendar.toKey(_selectedDay!)];
+    var meditationProgress =
+        meditationProgressList[Calendar.toKey(_selectedDay!)];
+
+    bool isBefore =
+        DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day)
+            .isBefore(_focusedDay);
+    bool isToday =
+        (DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day) ==
+            _focusedDay);
+
+    String time =
+        (isToday) ? "今天" : "${_selectedDay!.month} / ${_selectedDay!.day} ";
+
+    if (workoutPlan == null && meditationPlan == null) {
+      // 運動沒有、冥想沒有 --> 新增運動 + 冥想
+      // 今天之後 --> 新增；之前 --> 沒有
+      dialogText = (isBefore)
+          ? "$time沒有運動計畫\n$time沒有冥想計畫"
+          : "$time沒有運動計畫\n$time沒有冥想計畫\n點我新增計畫！";
+    } else if (workoutPlan != null && meditationPlan == null) {
+      // 運動有、冥想沒有 --> 運動完成度、新增冥想
+      // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
+      dialogText = (isBefore)
+          ? "$time的運動計畫完成了 $workoutProgress %\n沒有冥想計畫"
+          : (isToday)
+              ? "$time的運動計畫已完成 $workoutProgress %\n${(workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
+              : "$time有運動計畫\n記得要來完成噢~\n點我新增冥想計畫！";
+    } else if (workoutPlan == null && meditationPlan != null) {
+      // 運動沒有、冥想有 --> 冥想完成度、新增運動
+      // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
+      dialogText = (isBefore)
+          ? "$time的冥想計畫完成了 $meditationProgress %\n沒有運動計畫"
+          : (isToday)
+              ? "$time的冥想計畫已完成 $meditationProgress %\n${(meditationProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有運動計畫，點我新增！"
+              : "$time有冥想計畫\n記得要來完成噢~\n點我新增運動計畫！";
+    } else {
+      // 運動有、冥想有 --> 運動完成度、冥想完成度
+      // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
+      dialogText = (isBefore)
+          ? "$time的運動計畫完成了 $workoutProgress %\n冥想計畫完成了 $meditationProgress %"
+          : (isToday)
+              ? "$time的運動計畫已完成 $workoutProgress %\n冥想計畫已完成 $meditationProgress %${(workoutProgress == 100 && meditationProgress == 100) ? "\n很棒噢~~" : "\n繼續加油加油~~"}"
+              : "$time有運動和冥想計畫\n記得要來完成噢~";
+    }
+    return dialogText;
+  }
+
+  void _showAddExerciseDialog(
+      bool needAddWorkoutPlan, bool needAddMeditation) async {
+    await showDialog<double>(
+      context: context,
+      builder: (context) => AddExerciseDialog(arguments: {
+        "selectedDay": _selectedDay,
+        "addWorkout": needAddWorkoutPlan,
+        "addMeditation": needAddMeditation
+      }),
+    ).then((_) => refresh());
+  }
+
+  void _showChangeExerciseDayDialog() async {
+    await showDialog<double>(
+      context: context,
+      builder: (context) =>
+          ChangeExerciseDayDialog(arguments: {"selectedDay": _selectedDay}),
+    ).then((_) => refresh());
   }
 
   void getPlanData() async {
@@ -59,8 +220,8 @@ class _HomepageState extends State<Homepage> {
       meditationCurrentIndex = index ?? 0;
       isFetchingData = false;
     });
+    print("meditationPlanList: $meditationPlanList");
   }
-
 
   void getContractData() async {
     var contract = await ContractDB.getContract();
@@ -69,103 +230,19 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
-  // Plan 相關資料
-  Map workoutPlanList = {};
-  Map progressList = {};
-  List bothWeekWorkoutList = [];
-  int currentIndex = 0;
-
-  //Meditation Plan 相關資料
-  Map meditationPlanList = {};
-  Map meditationProgressList = {};
-  List bothWeekMeditationList = [];
-  int meditationCurrentIndex = 0;
-
-  // Contract 資料
-  Map contractData = {};
-
-  // Calendar 相關設定
-  DateTime today = Calendar.today();
-  DateTime _focusedDay = DateTime(
-      Calendar.today().year, Calendar.today().month, Calendar.today().day);
-
-  DateTime? _selectedDay = Calendar.today();
-
-  get firstDay => Calendar.firstDay();
-
-  get lastDay => firstDay.add(const Duration(days: 13));
-
-  get isThisWeek => Calendar.isThisWeek(_selectedDay!);
-
-  Widget getAddExerciseBtn() {
-    ElevatedButton addExerciseBtn = ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xfffaf0ca),
-      ),
-      onPressed: () {
-        _showAddExerciseDialog();
-      },
-      child: const Text(
-        "新增運動",
-        style: TextStyle(
-          color: Color(0xFF0D3B66),
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-    return addExerciseBtn;
-  }
-
-  void _showAddExerciseDialog() async {
-    await showDialog<double>(
-      context: context,
-      builder: (context) =>
-          AddExerciseDialog(arguments: {"selectedDay": _selectedDay}),
-    ).then((_) => refresh());
-  }
-
-  void _showChangeExerciseDayDialog() async {
-    await showDialog<double>(
-      context: context,
-      builder: (context) =>
-          ChangeExerciseDayDialog(arguments: {"selectedDay": _selectedDay}),
-    ).then((_) => refresh());
+  @override
+  void initState() {
+    super.initState();
+    getPlanData();
+    getMeditationPlanData();
+    getContractData();
   }
 
   void refresh() {
     getPlanData();
-    //getMeditationPlanData();
+    getMeditationPlanData();
     setState(() {});
   }
-
-  /*
-  final BorderRadius _borderRadius = const BorderRadius.only(
-    topLeft: Radius.circular(25),
-    topRight: Radius.circular(25),
-  );
-
-  ShapeBorder? bottomBarShape = const RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-    topLeft: Radius.circular(25),
-    topRight: Radius.circular(25),
-  ));
-  SnakeBarBehaviour snakeBarStyle = SnakeBarBehaviour.pinned;
-  EdgeInsets padding = EdgeInsets.zero;
-
-  int _selectedItemPosition = 2;
-  SnakeShape snakeShape = SnakeShape.circle;
-
-  bool showSelectedLabels = false;
-  bool showUnselectedLabels = false;
-
-  Color selectedColor = Colors.black;
-  Color unselectedColor = Colors.blueGrey;
-
-  Gradient selectedGradient =
-      const LinearGradient(colors: [Colors.red, Colors.amber]);
-  Gradient unselectedGradient =
-      const LinearGradient(colors: [Colors.red, Colors.blueGrey]);
-  */
 
   @override
   Widget build(BuildContext context) {
@@ -292,11 +369,12 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           const SizedBox(height: 10),
-          // FIXME: 今天的 button bar 跳到別天後再點回來會消失？
+          // TODO: 加入冥想判斷
           if (workoutPlanList[Calendar.toKey(_selectedDay!)] != null) ...[
             if (progressList[Calendar.toKey(_selectedDay!)] < 100 &&
-                _selectedDay!.isBefore(DateTime(_focusedDay.year,
-                        _focusedDay.month, _focusedDay.day)) ==
+                DateTime(_selectedDay!.year, _selectedDay!.month,
+                            _selectedDay!.day)
+                        .isBefore(_focusedDay) ==
                     false) ...[
               Container(
                   padding: const EdgeInsets.only(right: 10),
@@ -304,55 +382,6 @@ class _HomepageState extends State<Homepage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      // TODO: Delete after line pay function connecting
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Color(0x193598f5),
-                          shape: CircleBorder(),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.bug_report_outlined),
-                          iconSize: 40,
-                          color: const Color(0xff0d3b66),
-                          tooltip: "Line Pay Page",
-                          onPressed: () async {
-                            Navigator.pushNamed(context, '/pay',
-                                arguments: {'user': user});
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      // TODO: Delete after completing HabitDetailPage
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Color(0x193598f5),
-                          shape: CircleBorder(),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.accessibility),
-                          iconSize: 40,
-                          color: const Color(0xff0d3b66),
-                          tooltip: "Habit Detail Page",
-                          onPressed: () async {
-                            Navigator.pushNamed(context, '/detail', arguments: {
-                              'user': user,
-                              'isToday': (DateTime(
-                                          _selectedDay!.year,
-                                          _selectedDay!.month,
-                                          _selectedDay!.day) ==
-                                      _focusedDay)
-                                  ? true
-                                  : false,
-                              'percentage':
-                                  progressList[Calendar.toKey(_selectedDay!)],
-                              'currentIndex': currentIndex,
-                              'workoutPlan':
-                                  workoutPlanList[Calendar.toKey(_selectedDay!)]
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 10),
                       Ink(
                         decoration: const ShapeDecoration(
                           color: Color(0xfffaf0ca),
@@ -379,7 +408,7 @@ class _HomepageState extends State<Homepage> {
                           icon: const Icon(Icons.delete_outline),
                           iconSize: 40,
                           color: const Color(0xff0d3b66),
-                          tooltip: "刪除計畫",
+                          tooltip: "刪除運動計畫",
                           onPressed: () async {
                             await PlanDB.delete(Calendar.toKey(_selectedDay!));
                             refresh();
@@ -421,9 +450,39 @@ class _HomepageState extends State<Homepage> {
                             ).show(context);
                           },
                         ),
-                      )
+                      ),
+                      if (meditationPlanList[Calendar.toKey(_selectedDay!)] !=
+                          null) ...[
+                        if (meditationProgressList[
+                                    Calendar.toKey(_selectedDay!)] <
+                                100 &&
+                            DateTime(_selectedDay!.year, _selectedDay!.month,
+                                        _selectedDay!.day)
+                                    .isBefore(_focusedDay) ==
+                                false) ...[
+                          const SizedBox(width: 10),
+                          // TODO: Delete after coding (實際無刪除功能, 測試方便而加)
+                          Ink(
+                            decoration: const ShapeDecoration(
+                              color: Color(0xff0d3b66),
+                              shape: CircleBorder(),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              iconSize: 40,
+                              color: const Color(0xfffbb87f),
+                              tooltip: "刪除冥想計畫",
+                              onPressed: () async {
+                                await MeditationPlanDB.delete(
+                                    Calendar.toKey(_selectedDay!));
+                                refresh();
+                              },
+                            ),
+                          ),
+                        ]
+                      ]
                     ],
-                  ))
+                  )),
             ] else ...[
               Container()
             ]
@@ -431,172 +490,69 @@ class _HomepageState extends State<Homepage> {
             Container()
           ],
           const SizedBox(height: 0),
-          // TODO: 抓 workoutPlanList、progressList 資料判斷對話內容
-          Row(
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(
-                  left: 9,
-                  right: 0,
-                ),
-                child: BubbleSpecialThree(
-                  text: 'Hello Mary～\n今天的運動尚未完成\n今天的冥想尚未完成',
-                  color: Color(0xFFfdeed9),
+          Container(
+            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                BubbleSpecialThree(
+                  text: 'Hello ${user?.displayName}～\n${getDialogText()}',
+                  color: const Color(0xFFfdeed9),
                   tail: true,
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                     color: Color(0xFF4b3d70),
-                    fontSize: 17,
+                    fontSize: 16,
                     //fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 0),
-                child: Image.asset(
-                  "assets/images/rabbit.png",
-                  width: 125,
-                  height: 160,
-                ),
-              ),
-              //const SizedBox(height: 10),
-            ],
+                GestureDetector(
+                  onTap: () {
+                    var workoutPlan =
+                        workoutPlanList[Calendar.toKey(_selectedDay!)];
+                    var meditationPlan =
+                        meditationPlanList[Calendar.toKey(_selectedDay!)];
+
+                    bool isBefore = DateTime(_selectedDay!.year,
+                            _selectedDay!.month, _selectedDay!.day)
+                        .isBefore(_focusedDay);
+
+                    if (workoutPlan == null && meditationPlan == null) {
+                      // 運動沒有、冥想沒有 --> 新增運動 + 冥想
+                      // 今天之後 --> 新增；之前 --> 沒有
+                      (isBefore) ? null : _showAddExerciseDialog(true, true);
+                    } else if (workoutPlan != null && meditationPlan == null) {
+                      // 運動有、冥想沒有 --> 運動完成度、新增冥想
+                      // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
+                      (isBefore) ? null : _showAddExerciseDialog(false, true);
+                    } else if (workoutPlan == null && meditationPlan != null) {
+                      // 運動沒有、冥想有 --> 冥想完成度、新增運動
+                      // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
+                      (isBefore) ? null : _showAddExerciseDialog(true, false);
+                    } else {
+                      // 運動有、冥想有 --> 運動完成度、冥想完成度
+                      // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
+                      (isBefore) ? null : null;
+                    }
+                  }, // Image tapped
+                  child: Image.asset(
+                    "assets/images/rabbit.png",
+                    width: 125,
+                    height: 160,
+                  ),
+                )
+              ],
+            ),
           ),
           const SizedBox(height: 0),
-          // TODO: 判斷今天有無運動或冥想，有才放 widget
-          BannerCarousel(
-            height: 350,
-            //spaceBetween : 100,
-            banners: BannerImages.listBanners,
-            onTap: (id) async {
-              print(id);
-              if (id == "1") {
-                Navigator.pushNamed(context, '/detail', arguments: {
-                  'user': user,
-                  'isToday': (DateTime(_selectedDay!.year, _selectedDay!.month,
-                              _selectedDay!.day) ==
-                          _focusedDay)
-                      ? true
-                      : false,
-                  'percentage': progressList[Calendar.toKey(_selectedDay!)],
-                  'currentIndex': currentIndex,
-                  'workoutPlan': workoutPlanList[Calendar.toKey(_selectedDay!)]
-                });
-              }
-            },
-          ),
+          (workoutPlanList[Calendar.toKey(_selectedDay!)] != null ||
+                  meditationPlanList[Calendar.toKey(_selectedDay!)] != null)
+              ? getBannerCarousel()
+              : Container(),
           const SizedBox(height: 10),
         ],
       ),
-
-      /*bottomNavigationBar: SnakeNavigationBar.color(
-              behaviour: snakeBarStyle,
-              snakeShape: snakeShape,
-              shape: bottomBarShape,
-              padding: padding,
-              height: 80,
-              //backgroundColor: const Color(0xfffdeed9),
-              backgroundColor: const Color(0xffd4d6fc),
-              snakeViewColor: const Color(0xfffdfdf5),
-              selectedItemColor: const Color(0xff4b3d70),
-              unselectedItemColor: const Color(0xff4b3d70),
-
-              ///configuration for SnakeNavigationBar.color
-              // snakeViewColor: selectedColor,
-              // selectedItemColor:
-              //  snakeShape == SnakeShape.indicator ? selectedColor : null,
-              //unselectedItemColor: Colors.blueGrey,
-
-              ///configuration for SnakeNavigationBar.gradient
-              //snakeViewGradient: selectedGradient,
-              //selectedItemGradient: snakeShape == SnakeShape.indicator ? selectedGradient : null,
-              //unselectedItemGradient: unselectedGradient,
-
-              showUnselectedLabels: showUnselectedLabels,
-              showSelectedLabels: showSelectedLabels,
-
-              currentIndex: _selectedItemPosition,
-              //onTap: (index) => setState(() => _selectedItemPosition = index),
-              onTap: (index) async {
-                _selectedItemPosition = index;
-                if(index == 0){
-                  Navigator.pushNamed(context, '/statistic',
-                      arguments: {'user': user});
-                }
-                if(index == 1){
-                  Navigator.pushNamed(context, '/milestone',
-                      arguments: {'user': user});
-                }
-                if(index == 2){
-                  Navigator.pushNamed(context, '/');
-                }
-                if(index == 3){
-                  //從後端獲取是否有投入合約
-                  Map? contract = await ContractDB.getContract();
-                  if (contract != null){
-                    Navigator.pushNamed(context, '/contract/already',
-                        arguments: {'contractData': contractData,'user': user});
-                  }else
-                  Navigator.pushNamed(context, '/contract/initial',
-                      arguments: {'user': user});
-                }
-                 if(index == 4){
-              Navigator.pushNamed(context, '/settings',
-                  arguments: {'user': user});
-            }
-                print(index);
-              },
-              items: const [
-                BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.insights,
-                      size: 40,
-                    ),
-                    label: 'tickets'),
-                BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.workspace_premium_outlined,
-                      size: 40,
-                    ),
-                    label: 'calendar'),
-                BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.home_outlined,
-                      size: 40,
-                    ),
-                    label: 'home'),
-                BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.request_quote_outlined,
-                      size: 40,
-                    ),
-                    label: 'microphone'),
-                BottomNavigationBarItem(
-                    icon: Icon(
-                      Icons.manage_accounts_outlined,
-                      size: 40,
-                    ),
-                    label: 'search')
-              ],
-            )*/
     ));
   }
-}
-
-class BannerImages {
-  static const String banner1 =
-      "https://picjumbo.com/wp-content/uploads/the-golden-gate-bridge-sunset-1080x720.jpg";
-  static const String banner2 =
-      "https://cdn.mos.cms.futurecdn.net/Nxz3xSGwyGMaziCwiAC5WW-1024-80.jpg";
-  static const String banner3 = "https://wallpaperaccess.com/full/19921.jpg";
-  static const String banner4 =
-      "https://images.pexels.com/photos/2635817/pexels-photo-2635817.jpeg?auto=compress&crop=focalpoint&cs=tinysrgb&fit=crop&fp-y=0.6&h=500&sharp=20&w=1400";
-
-  static List<BannerModel> listBanners = [
-    BannerModel(imagePath: banner1, id: "1"),
-    BannerModel(imagePath: banner2, id: "2"),
-    // BannerModel(imagePath: banner3, id: "3"),
-    //BannerModel(imagePath: banner4, id: "4"),
-  ];
 }
 
 // 新增運動
@@ -611,6 +567,10 @@ class AddExerciseDialog extends StatefulWidget {
 
 class AddExerciseDialogState extends State<AddExerciseDialog> {
   int exerciseTime = 0;
+  int planToAdd = 0; // 0 = 運動, 1 = 冥想
+
+  late bool addWorkout;
+  late bool addMeditation;
 
   List<Widget> _getTimeBtnList() {
     List<OutlinedButton> btnList = [];
@@ -645,10 +605,24 @@ class AddExerciseDialogState extends State<AddExerciseDialog> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    addWorkout = widget.arguments['addWorkout'];
+    addMeditation = widget.arguments['addMeditation'];
+
+    if (addWorkout && !addMeditation) {
+      planToAdd = 0;
+    } else if (!addWorkout && addMeditation) {
+      planToAdd = 1;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text(
-        "新增運動",
+        "新增計畫",
         style: TextStyle(
           color: Color(0xff0d3b66),
           fontWeight: FontWeight.bold,
@@ -657,15 +631,53 @@ class AddExerciseDialogState extends State<AddExerciseDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text("你要在 ${widget.arguments['selectedDay'].month}/"
-              "${widget.arguments['selectedDay'].day} 新增幾分鐘的運動計畫呢？"),
+          (addWorkout && addMeditation)
+              ? Row(
+                  children: [
+                    const Text("新增 "),
+                    ToggleSwitch(
+                      minHeight: 35,
+                      initialLabelIndex: planToAdd,
+                      cornerRadius: 10.0,
+                      radiusStyle: true,
+                      labels: const ['運動', '冥想'],
+                      icons: const [
+                        Icons.fitness_center_outlined,
+                        Icons.self_improvement_outlined
+                      ],
+                      iconSize: 16,
+                      activeBgColors: const [
+                        [Color(0xfff6cdb7)],
+                        [Color(0xffd4d6fc)]
+                      ],
+                      activeFgColor: const Color(0xff4b4370),
+                      inactiveBgColor: const Color(0xfffdfdf5),
+                      inactiveFgColor: const Color(0xff4b4370),
+                      totalSwitches: 2,
+                      onToggle: (index) {
+                        planToAdd = index!;
+                        setState(() {});
+                      },
+                    ),
+                    const Text(" 計畫")
+                  ],
+                )
+              : Container(),
+          (planToAdd == 0)
+              ? Text("你要在 ${widget.arguments['selectedDay'].month}/"
+                  "${widget.arguments['selectedDay'].day} 新增幾分鐘的運動計畫呢？")
+              : Container(),
           const SizedBox(height: 20),
-          SizedBox(
-            height: MediaQuery.of(context).size.width * 0.1,
-            width: double.maxFinite,
-            child: ListView(
-                scrollDirection: Axis.horizontal, children: _getTimeBtnList()),
-          ),
+          (planToAdd == 0)
+              ? SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.1,
+                  width: double.maxFinite,
+                  child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: _getTimeBtnList()),
+                )
+              : Container(),
+          (planToAdd == 1) ? const Text("確定要新增冥想計畫嗎？") : Container(),
         ],
       ),
       actions: [
@@ -686,8 +698,12 @@ class AddExerciseDialogState extends State<AddExerciseDialog> {
             ),
             onPressed: () async {
               DateTime selectedDay = widget.arguments['selectedDay'];
-              await PlanAlgo.generate(selectedDay, exerciseTime);
-              print("$selectedDay add $exerciseTime minutes exercise plan.");
+              (planToAdd == 0)
+                  ? await PlanAlgo.generate(selectedDay, exerciseTime)
+                  : await MeditationPlanAlgo.generate(selectedDay);
+              print((planToAdd == 0)
+                  ? "$selectedDay add $exerciseTime minutes exercise plan."
+                  : "$selectedDay add meditation plan.");
               if (!mounted) return;
               Navigator.pop(context);
             },
@@ -703,6 +719,7 @@ class AddExerciseDialogState extends State<AddExerciseDialog> {
   }
 }
 
+// TODO: 修改冥想日
 // 修改運動日
 class ChangeExerciseDayDialog extends StatefulWidget {
   final Map arguments;

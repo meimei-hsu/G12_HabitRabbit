@@ -23,13 +23,19 @@ class CountdownPageState extends State<CountdownPage> {
       if (time == 1) {
         timer.cancel();
         ifEnd = true;
-        //Navigator.pushNamed(context, '/exercise');
-        Navigator.popAndPushNamed(context, '/exercise', arguments: {
-          'totalExerciseItemLength': widget.arguments['totalExerciseItemLength'],
-          'exerciseTime': widget.arguments['exerciseTime'],
-          'exerciseItem': widget.arguments['exerciseItem'],
-          'currentIndex': widget.arguments['currentIndex']
-        });
+        if (widget.arguments['type'] == 'exercise') {
+          Navigator.popAndPushNamed(context, '/exercise', arguments: {
+            'totalExerciseItemLength':
+                widget.arguments['totalExerciseItemLength'],
+            'exerciseTime': widget.arguments['exerciseTime'],
+            'exerciseItem': widget.arguments['exerciseItem'],
+            'currentIndex': widget.arguments['currentIndex']
+          });
+        } else {
+          Navigator.popAndPushNamed(context, '/meditation', arguments: {
+            'meditationPlan': widget.arguments['meditationPlan'].split(", ")[0]
+          });
+        }
         //timer = null;
       } else {
         time--;

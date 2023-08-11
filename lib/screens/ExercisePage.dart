@@ -7,16 +7,16 @@ import 'package:square_progress_bar/square_progress_bar.dart';
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
 
-class ExercisePage extends StatefulWidget {
+class DoExercisePage extends StatefulWidget {
   final Map arguments;
 
-  const ExercisePage({super.key, required this.arguments});
+  const DoExercisePage({super.key, required this.arguments});
 
   @override
-  ExercisePageState createState() => ExercisePageState();
+  DoExercisePageState createState() => DoExercisePageState();
 }
 
-class ExercisePageState extends State<ExercisePage> {
+class DoExercisePageState extends State<DoExercisePage> {
   String sport = "運動項目";
   late int totalTime;
   late int countdownTime;
@@ -244,7 +244,10 @@ class ExercisePageState extends State<ExercisePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          startTimer();
+          setState(() {
+            ifStart = false;
+          });
+          //startTimer();
           final shouldPop = await showDialog<bool>(
             context: context,
             builder: (context) {
@@ -291,7 +294,7 @@ class ExercisePageState extends State<ExercisePage> {
         },
         child: SafeArea(
             child: Scaffold(
-              backgroundColor: const Color(0xfffdfdf5),
+          backgroundColor: const Color(0xfffdfdf5),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -360,25 +363,242 @@ class ExercisePageState extends State<ExercisePage> {
               ),
               const SizedBox(height: 10),
               Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Color(0x193598f5),
-                          shape: CircleBorder(),
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            ifStart ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                            color: const Color(0xff0d3b66),
-                          ),
-                          iconSize: 60,
-                          color: const Color(0xff0d3b66),
-                          onPressed: () => startTimer(),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Ink(
+                    decoration: const ShapeDecoration(
+                      color: Color(0x193598f5),
+                      shape: CircleBorder(),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        ifStart
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                        color: const Color(0xff0d3b66),
+                      ),
+                      iconSize: 60,
+                      color: const Color(0xff0d3b66),
+                      onPressed: () => startTimer(),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        )));
+  }
+}
+
+class DoMeditationPage extends StatefulWidget {
+  final Map arguments;
+
+  const DoMeditationPage({super.key, required this.arguments});
+
+  @override
+  DoMeditationPageState createState() => DoMeditationPageState();
+}
+
+class DoMeditationPageState extends State<DoMeditationPage> {
+  late int totalTime;
+  late int countdownTime;
+  double _progress = 0.0;
+  int countDown = 6; // 60s
+  bool ifStart = false;
+  var period = const Duration(seconds: 1);
+
+  void _showFeedbackDialog() async {
+    await showDialog<double>(
+      context: context,
+      builder: (context) => const FeedbackDialog(),
+    );
+  }
+
+  void startTimer() {
+    if (ifStart) {
+      ifStart = false;
+    } else {
+      ifStart = true;
+    }
+
+    Timer.periodic(period, (timer) {
+      if (totalTime < 1) {
+        // TODO: update meditation progress
+        /*DurationDB.update({
+          Calendar.toKey(DateTime.now()):
+          "${currentIndex + 1}, ${widget.arguments['exerciseTime']}"
+        });*/
+        _showFeedbackDialog();
+        timer.cancel();
+        dispose();
+        //ifStart = true;
+        //Navigator.pushNamed(context, '/exercise');
+      } else if (ifStart == false) {
+        // TODO: .gif 暫停播放(偏難)
+        timer.cancel();
+      } else {
+        // Appbar timer
+        totalTime--;
+        _progress = (countdownTime - totalTime) / countdownTime;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    totalTime = 180; // initial totalTime --> 300s
+    countdownTime = totalTime;
+
+    startTimer();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+        onWillPop: () async {
+          setState(() {
+            ifStart = false;
+          });
+          //startTimer();
+          final shouldPop = await showDialog<bool>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text(
+                    '目前冥想已經完成 ${(_progress.toDouble() * 100).round()}% 囉！\n確定要退出，之後再繼續完成嗎？'),
+                actions: [
+                  OutlinedButton(
+                      child: const Text(
+                        "取消",
+                        style: TextStyle(
+                          color: Color(0xff0d3b66),
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
+                      onPressed: () {
+                        startTimer();
+                        Navigator.pop(context, false);
+                      }),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xfffbb87f),
+                      ),
+                      onPressed: () {
+                        // TODO: update meditation progress
+                        /*DurationDB.update({
+                          Calendar.toKey(DateTime.now()):
+                          "$currentIndex, ${widget.arguments['exerciseTime']}"
+                        });*/
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/', (Route<dynamic> route) => false);
+                      },
+                      child: const Text(
+                        "確定",
+                        style: TextStyle(
+                          color: Color(0xff0d3b66),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )),
+                ],
+              );
+            },
+          );
+          return shouldPop!;
+        },
+        child: SafeArea(
+            child: Scaffold(
+          backgroundColor: const Color(0xfffdfdf5),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              /*Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.only(left: 10),
+                height: 60,
+                width: MediaQuery.of(context).size.width,
+                color: const Color(0xfffaf0ca),
+                child: Text(
+                  constructTime(totalTime),
+                  //'$seconds',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                      color: Color(0xff0d3b66),
+                      fontSize: 32,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.bold,
+                      height: 1),
+                ),
+              ),*/
+              const SizedBox(height: 10),
+              Container(
+                decoration: const BoxDecoration(
+                    color: Color(0x193598f5),
+                    borderRadius: BorderRadius.all(Radius.circular(13))),
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.only(left: 10),
+                height: 60,
+                width: MediaQuery.of(context).size.width - 20,
+                child: Center(
+                    child: Text(
+                  widget.arguments['meditationPlan'],
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                      color: Color(0xff0d3b66),
+                      fontSize: 32,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.bold,
+                      height: 1),
+                )),
+              ),
+              const SizedBox(height: 10),
+              SquareProgressBar(
+                width: MediaQuery.of(context).size.width - 25,
+                // default: max available space
+                height: MediaQuery.of(context).size.width - 25,
+                // default: max available space
+                progress: _progress,
+                // provide the progress in a range from 0.0 to 1.0
+                solidBarColor: Colors.amber,
+                emptyBarColor: const Color(0xfffdeed9),
+                strokeWidth: 10,
+                gradientBarColor: const LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  colors: <Color>[Colors.pinkAccent, Colors.blueAccent],
+                  tileMode: TileMode.repeated,
+                ),
+                // 漸層顏色
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: Image.asset("assets/videos/v3.gif"),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Ink(
+                    decoration: const ShapeDecoration(
+                      color: Color(0x193598f5),
+                      shape: CircleBorder(),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        ifStart
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                        color: const Color(0xff0d3b66),
+                      ),
+                      iconSize: 60,
+                      color: const Color(0xff0d3b66),
+                      onPressed: () => startTimer(),
+                    ),
                   ),
+                ],
+              ),
               const SizedBox(height: 10),
             ],
           ),
@@ -512,3 +732,5 @@ class FeedbackDialogState extends State<FeedbackDialog> {
     );
   }
 }
+
+// TODO: 冥想回饋

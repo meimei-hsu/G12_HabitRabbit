@@ -3,16 +3,16 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 import 'package:g12/services/Database.dart';
 
-class HabitDetailPage extends StatefulWidget {
+class ExerciseDetailPage extends StatefulWidget {
   final Map arguments;
 
-  const HabitDetailPage({super.key, required this.arguments});
+  const ExerciseDetailPage({super.key, required this.arguments});
 
   @override
-  HabitDetailPageState createState() => HabitDetailPageState();
+  ExerciseDetailPageState createState() => ExerciseDetailPageState();
 }
 
-class HabitDetailPageState extends State<HabitDetailPage> {
+class ExerciseDetailPageState extends State<ExerciseDetailPage> {
   List<Widget> _getSportList(List content) {
     int length = content.length;
 
@@ -38,34 +38,6 @@ class HabitDetailPageState extends State<HabitDetailPage> {
             onTap: () {
               Navigator.pushNamed(context, '/video',
                   arguments: {'item': content[i][j]});
-              /*showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text(
-                        "${content[i][j]}",
-                        style: const TextStyle(
-                          color: Color(0xff0d3b66),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      //content: Image.asset("assets/videos/${content[i][j]}.gif"),
-                      content: Image.asset("assets/images/testPic.gif"),
-                      actions: [
-                        OutlinedButton(
-                            child: const Text(
-                              "返回",
-                              style: TextStyle(
-                                color: Color(0xff0d3b66),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            }),
-                      ],
-                    );
-                  });*/
             },
             visualDensity: const VisualDensity(vertical: 2),
           )
@@ -83,13 +55,7 @@ class HabitDetailPageState extends State<HabitDetailPage> {
         borderRadius = null;
       }
 
-      expansionTitleList.add(Container(
-          /*decoration: BoxDecoration(
-          color: const Color(0xfffdeed9),
-          border: Border.all(color: const Color(0xffffeed9)),
-          borderRadius: borderRadius,
-        ),*/
-          child: ExpansionTile(
+      expansionTitleList.add(ExpansionTile(
         title: Text(
           '${title[i]}',
           style: const TextStyle(
@@ -99,7 +65,7 @@ class HabitDetailPageState extends State<HabitDetailPage> {
               height: 1),
         ),
         children: itemList,
-      )));
+      ));
     }
     return expansionTitleList;
   }
@@ -148,7 +114,7 @@ class HabitDetailPageState extends State<HabitDetailPage> {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20))),
-                child: PlanDetailItem(
+                child: ExercisePlanDetailItem(
                   percentage: widget.arguments['percentage'],
                   workoutPlan: widget.arguments['workoutPlan'].split(", "),
                 ),
@@ -209,6 +175,7 @@ class HabitDetailPageState extends State<HabitDetailPage> {
                               }
                               Navigator.pushNamed(context, '/countdown',
                                   arguments: {
+                                    'type': 'exercise',
                                     'totalExerciseItemLength': items.length,
                                     'exerciseTime':
                                         items.sublist(currentIndex).length *
@@ -238,9 +205,143 @@ class HabitDetailPageState extends State<HabitDetailPage> {
   }
 }
 
+class MeditationDetailPage extends StatefulWidget {
+  final Map arguments;
+
+  const MeditationDetailPage({super.key, required this.arguments});
+
+  @override
+  MeditationDetailPageState createState() => MeditationDetailPageState();
+}
+
+class MeditationDetailPageState extends State<MeditationDetailPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: const Color(0xfffdfdf5),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_rounded,
+                color: Color(0xff4b4370)),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          elevation: 0,
+          title: const Text(
+            '冥想計畫',
+            textAlign: TextAlign.left,
+            style: TextStyle(
+                color: Color(0xff4b4370),
+                fontSize: 28,
+                letterSpacing: 2,
+                fontWeight: FontWeight.bold,
+                height: 1),
+          ),
+          backgroundColor: const Color(0xfffdfdf5),
+        ),
+        body: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.only(right: 20, left: 20),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(7.5),
+                    child: Image.asset("assets/images/personality_NGC.png")),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                margin: const EdgeInsets.only(right: 20, left: 20),
+                decoration: BoxDecoration(
+                    color: const Color(0xfffdeed9),
+                    border: Border.all(color: const Color(0xffffeed9)),
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
+                child: MeditationPlanDetailItem(
+                  percentage: widget.arguments['percentage'],
+                  meditationPlan:
+                      widget.arguments['meditationPlan'].split(", "),
+                ),
+              ),
+              /*const SizedBox(
+                height: 10,
+              ),*/
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20, left: 20),
+                  child: Theme(
+                      data: Theme.of(context)
+                          .copyWith(dividerColor: Colors.transparent),
+                      child: Column(
+                        children: [
+                          Image.asset("assets/videos/v3.gif"),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          const Text(
+                            "感覺這裡可以說明一下這個冥想項目能幹嘛，e.g. 放鬆什麼或是能助眠、能集中注意力之類的",
+                            style: TextStyle(fontSize: 16),
+                          )
+                        ],
+                      )),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: const EdgeInsets.only(right: 20, left: 20),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: ElevatedButton.icon(
+                      icon: const Icon(Icons.play_arrow_rounded,
+                          color: Color(0xff4b4370)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: (widget.arguments['isToday'])
+                            ? const Color(0xfff6cdb7)
+                            : const Color(0xffd4d6fc),
+                        shadowColor: const Color(0xfffdfdf5),
+                        minimumSize: const Size(0, 45),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: widget.arguments['isToday']
+                          ? () {
+                              print("True");
+                            Navigator.pushNamed(context, '/countdown',
+                                arguments: {
+                                  'type': 'meditation',
+                                  'meditationPlan': widget.arguments['meditationPlan'].split(", ")[0]
+                                });
+                            }
+                          : null,
+                      label: const Text(
+                        "開始冥想",
+                        style: TextStyle(
+                            color: Color(0xff4b4370),
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    )),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
 // Exercise Plan Detail
-class PlanDetailItem extends StatelessWidget {
-  const PlanDetailItem({
+class ExercisePlanDetailItem extends StatelessWidget {
+  const ExercisePlanDetailItem({
     super.key,
     required this.percentage,
     required this.workoutPlan,
@@ -314,6 +415,102 @@ class PlanDetailItem extends StatelessWidget {
                           ),
                           title: Text(
                             "${workoutPlan.length} 個項目",
+                            style: const TextStyle(
+                                color: Color(0xff4b4370),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 21.0),
+                          ),
+                          subtitle: const Text("TEXT"), // TODO: content?
+                          visualDensity: const VisualDensity(vertical: -4),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
+          ],
+        ));
+  }
+}
+
+// Meditation Plan Detail
+class MeditationPlanDetailItem extends StatelessWidget {
+  const MeditationPlanDetailItem({
+    super.key,
+    required this.percentage,
+    required this.meditationPlan,
+  });
+
+  final int percentage;
+  final List meditationPlan;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0),
+        child: Column(
+          children: [
+            const ListTile(
+              title: Text(
+                "冥想細節",
+                style: TextStyle(
+                    color: Color(0xff4b4370),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22),
+              ),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  flex: 3,
+                  child: CircularPercentIndicator(
+                    radius: 50.0,
+                    lineWidth: 10.0,
+                    animation: true,
+                    percent: percentage.toDouble() / 100,
+                    center: Text(
+                      "$percentage %",
+                      style: const TextStyle(
+                          color: Color(0xff4b4370),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24.0),
+                    ),
+                    circularStrokeCap: CircularStrokeCap.round,
+                    progressColor: const Color(0xff483d70),
+                  ),
+                ),
+                Expanded(
+                  flex: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        ListTile(
+                          leading: const Icon(
+                            Icons.timer_outlined,
+                            color: Color(0xff4b4370),
+                          ),
+                          title: Text(
+                            "${meditationPlan.length * 30} 分冥想", // TODO: 冥想時間？
+                            style: const TextStyle(
+                                color: Color(0xff4b4370),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 21.0),
+                          ),
+                          subtitle: const Text("TEXT"), // TODO: content?
+                          visualDensity: const VisualDensity(vertical: -4),
+                        ),
+                        ListTile(
+                          leading: const Icon(
+                            Icons.accessibility_new_outlined,
+                            color: Color(0xff4b4370),
+                          ),
+                          title: Text(
+                            "${meditationPlan[0]}", // TODO: 名稱對應中文
                             style: const TextStyle(
                                 color: Color(0xff4b4370),
                                 fontWeight: FontWeight.bold,
