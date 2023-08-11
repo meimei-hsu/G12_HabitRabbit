@@ -22,11 +22,20 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var ms = [
+    var mms = [
       '0, 24',
-      '0, 3',
+      '0, 24',
+      '0, 4',
+      '0, 7',
     ];
-    Map maryMilestone = Map.fromIterables(MilestoneDB.columns, ms);
+    var jms = [
+      '0, 24',
+      '0, 24',
+      '0, 5',
+      '0, 7',
+    ];
+    Map maryMilestone = Map.fromIterables(MilestoneDB.columns, mms);
+    Map johnMilestone = Map.fromIterables(MilestoneDB.columns, jms);
     var plan = ["4008", "4012", "4006", "3102", "3209"];
 
     return Scaffold(
@@ -43,7 +52,10 @@ class Home extends StatelessWidget {
                 // UserDB.updateByFeedback("cardio", [1, 1]);
                 UserDB.getAll();
                 WorkoutDB.toNames(plan);
+                //MilestoneDB.update(maryMilestone);
+                //MilestoneDB.update(johnMilestone);
                 MilestoneDB.update(maryMilestone);
+                //MilestoneDB.update(johnMilestone);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
               },
               child: const Text("test DB")),
@@ -463,12 +475,12 @@ class MilestoneDB {
     return user!["workoutGem"];
   }
 
-  static Future<String?> getMeditationGem() async {
+  static Future<num?> getMeditationGem() async {
     final Map? user = await getMilestone();
     return user!["meditationGem"];
   }
 
-  static Future<num?> getWorkoutFragment() async {
+  static Future<String?> getWorkoutFragment() async {
     final Map? user = await getMilestone();
     return user!["workoutFragment"];
   }
@@ -484,12 +496,12 @@ class MilestoneDB {
   }
 
   static Future<Map?> gem() async {
-    String? step = await MilestoneDB.getMeditationGem();
-    if (step != null) {
+   // String? step = await MilestoneDB.getMeditationGem();
+    //if (step != null) {
       //step加一
       // var duration = value.split(', ').map(int.parse).toList();
       // return MapEntry(key, (duration[0] / duration[1] * 100).round());
-    }
+   // }
     // if(){
     // 當step前後兩個數字相同，歸零，flag加一
     //contract flag加一

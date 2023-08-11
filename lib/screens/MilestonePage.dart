@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:level_map/level_map.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:g12/services/Database.dart';
+import 'dart:async';
 
 class MilestonePage extends StatefulWidget {
   final Map arguments;
@@ -384,8 +387,10 @@ class _QuizDialogState extends State<QuizDialog> {
                 child: Wrap(
                   spacing: 5,
                   runSpacing: 10,
+
                   children: [
-                    for (int i = 0; i < 17; i++)
+
+                    for (int i = 0; i < 17; i++)//運寶數量17個
                       Image.asset(
                         height: 35,
                         width: 35,
@@ -421,7 +426,7 @@ class _QuizDialogState extends State<QuizDialog> {
                   spacing: 5,
                   runSpacing: 10,
                   children: [
-                    for (int i = 0; i < 12; i++)
+                    for (int i = 0; i < 12; i++)//冥寶數量
                       Image.asset(
                         height: 35,
                         width: 35,
