@@ -13,7 +13,33 @@ class MilestonePage extends StatefulWidget {
   _MilestonePage createState() => _MilestonePage();
 }
 
+
+
+
 class _MilestonePage extends State<MilestonePage> {
+  int? _workoutGem;
+  int? _meditationGem;
+  String? _workoutFragment;
+  String? _meditationFragment;
+
+  void initState() {
+    super.initState();
+    _fetchExistingMilestoneData();
+
+  }
+
+  Future<void> _fetchExistingMilestoneData() async {
+    Map<dynamic, dynamic>? milestoneData = await MilestoneDB.getMilestone();
+    if (milestoneData != null) {
+      setState(() {
+        _workoutGem = milestoneData["workoutGem"];
+        _meditationGem = milestoneData["meditationGem"];
+        _workoutFragment = milestoneData["workoutFragment"];
+        _workoutFragment = milestoneData["workoutFragment"];
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -89,6 +115,8 @@ class _MilestonePage extends State<MilestonePage> {
 
 class CharacterWidget extends StatelessWidget {
   const CharacterWidget({super.key});
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -345,6 +373,28 @@ class QuizDialog extends StatefulWidget {
 }
 
 class _QuizDialogState extends State<QuizDialog> {
+  String? _workoutGem;
+  String? _meditationGem;
+  String? _workoutFragment;
+  String? _meditationFragment;
+
+  void initState() {
+    super.initState();
+    _fetchExistingMilestoneData();
+
+  }
+
+  Future<void> _fetchExistingMilestoneData() async {
+    Map<String?, dynamic>? milestoneData = await MilestoneDB.getMilestone();
+    if (milestoneData != null) {
+      setState(() {
+        _workoutGem = milestoneData["workoutGem"];
+        _meditationGem = milestoneData["meditationGem"];
+        _workoutFragment = milestoneData["workoutFragment"];
+        _workoutFragment = milestoneData["workoutFragment"];
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -389,13 +439,14 @@ class _QuizDialogState extends State<QuizDialog> {
                   runSpacing: 10,
 
                   children: [
+                    if(_workoutGem!=null)
+                      for (int i = 0; i < int.parse(_workoutGem!); i++) //運寶數量
+                        Image.asset(
+                          height: 35,
+                          width: 35,
+                          'assets/images/treasure.png',
+                        ),
 
-                    for (int i = 0; i < 17; i++)//運寶數量17個
-                      Image.asset(
-                        height: 35,
-                        width: 35,
-                        'assets/images/treasure.png',
-                      ),
                   ],
                 ),
               ),
@@ -426,7 +477,8 @@ class _QuizDialogState extends State<QuizDialog> {
                   spacing: 5,
                   runSpacing: 10,
                   children: [
-                    for (int i = 0; i < 12; i++)//冥寶數量
+                    if(_meditationGem!=null)
+                    for (int i = 0; i <int.parse(_meditationGem!) ; i++)//冥寶數量
                       Image.asset(
                         height: 35,
                         width: 35,

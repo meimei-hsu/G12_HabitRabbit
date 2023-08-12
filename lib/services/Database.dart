@@ -466,9 +466,15 @@ class MilestoneDB {
       ];
 
   // Select milestone from userID
-  static Future<Map?> getMilestone() async {
-    return Map<String, dynamic>.from(await DB.select(db, uid) as Map);
+  static Future<Map<String, dynamic>?> getMilestone() async {
+    var snapshot = await DB.select(db, uid);
+    return (snapshot != null)
+        ? Map<String, dynamic>.from(snapshot as Map)
+        : null;
   }
+  /*static Future<Map?> getMilestone() async {
+    return Map<String, dynamic>.from(await DB.select(db, uid) as Map);
+  }*/
 
   static Future<num?> getWorkoutGem() async {
     final Map? user = await getMilestone();
