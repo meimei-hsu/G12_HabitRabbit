@@ -481,6 +481,7 @@ class MilestoneDB {
     return user!["workoutGem"];
   }
 
+
   static Future<num?> getMeditationGem() async {
     final Map? user = await getMilestone();
     return user!["meditationGem"];
