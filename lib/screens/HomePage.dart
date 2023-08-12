@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:banner_carousel/banner_carousel.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:motion_toast/resources/arrays.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -60,20 +60,7 @@ class HomepageState extends State<Homepage> {
   bool isBefore = false;
   bool isToday = true;
 
-  // Loading mask 屬性
-  void configLoading() {
-    EasyLoading.instance
-      ..indicatorType = EasyLoadingIndicatorType.threeBounce
-      ..loadingStyle = EasyLoadingStyle.custom
-      ..indicatorSize = 50.0
-      ..radius = 20.0
-      ..backgroundColor = const Color(0xffd4d6fc)
-      ..indicatorColor = const Color(0xff4b3d70)
-      ..textColor = const Color(0xff4b3d70)
-      ..textPadding = const EdgeInsets.all(20)
-      ..userInteractions = true
-      ..dismissOnTap = false;
-  }
+  String time = "今天";
 
   Widget getBannerCarousel() {
     const String banner1 = "assets/images/Exercise.jpg";
@@ -133,15 +120,12 @@ class HomepageState extends State<Homepage> {
 
   String getDialogText() {
     String dialogText = "";
-    String time =
-        (isToday) ? "今天" : "${_selectedDay!.month} / ${_selectedDay!.day} ";
 
     if (workoutPlan == null && meditationPlan == null) {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
-      dialogText = (isBefore)
-          ? "$time沒有運動計畫\n$time沒有冥想計畫"
-          : "$time沒有運動計畫\n$time沒有冥想計畫\n點我新增計畫！";
+      dialogText =
+          (isBefore) ? "$time沒有運動計畫\n沒有冥想計畫" : "$time沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
     } else if (workoutPlan != null && meditationPlan == null) {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
@@ -168,20 +152,6 @@ class HomepageState extends State<Homepage> {
               : "$time有運動和冥想計畫\n記得要來完成噢~";
     }
     return dialogText;
-  }
-
-  void _showAddExerciseDialog(
-      bool needAddWorkoutPlan, bool needAddMeditation) async {
-    await showDialog<double>(
-      context: context,
-      builder: (context) => AddExerciseDialog(arguments: {
-        "selectedDay": _selectedDay,
-        "addWorkout": needAddWorkoutPlan,
-        "addMeditation": needAddMeditation
-      }),
-    ).then((_) {
-      refresh();
-    });
   }
 
   void _showChangeExerciseDayDialog() async {
@@ -214,8 +184,6 @@ class HomepageState extends State<Homepage> {
       workoutPlan = workoutPlanList[Calendar.toKey(_selectedDay!)];
       workoutProgress = progressList[Calendar.toKey(_selectedDay!)];
     });
-
-    EasyLoading.dismiss();
   }
 
   void getMeditationPlanData() async {
@@ -239,8 +207,6 @@ class HomepageState extends State<Homepage> {
       meditationProgress =
           meditationProgressList[Calendar.toKey(_selectedDay!)];
     });
-
-    EasyLoading.dismiss();
   }
 
   void getContractData() async {
@@ -254,18 +220,15 @@ class HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
 
-    configLoading();
-    EasyLoading.show(
-      status: '載入計畫中...',
-      maskType: EasyLoadingMaskType.clear,
-    );
-
     getPlanData();
     getMeditationPlanData();
     getContractData();
   }
 
   void refresh() {
+    setState(() {
+      isFetchingData = true;
+    });
     getPlanData();
     getMeditationPlanData();
     setState(() {});
@@ -286,6 +249,10 @@ class HomepageState extends State<Homepage> {
               _selectedDay!.year, _selectedDay!.month, _selectedDay!.day) ==
           _focusedDay);
     });
+    setState(() {
+      time =
+          (isToday) ? "今天" : "${_selectedDay!.month} / ${_selectedDay!.day} ";
+    });
   }
 
   @override
@@ -293,8 +260,37 @@ class HomepageState extends State<Homepage> {
     return SafeArea(
         child: Scaffold(
       backgroundColor: const Color(0xfffdfdf5),
-      body: (isInit)
-          ? Container()
+      body: (isInit || isFetchingData)
+          ? Center(
+              child: Container(
+                  padding:
+                      const EdgeInsets.only(right: 20, left: 20, bottom: 20),
+                  decoration: BoxDecoration(
+                      color: (isInit)
+                          ? const Color(0xffd4d6fc)
+                          : const Color(0xFFfdeed9),
+                      border: Border.all(
+                          color: (isInit)
+                              ? const Color(0xffd4d6fc)
+                              : const Color(0xFFfdeed9)),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(20))),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      LoadingAnimationWidget.horizontalRotatingDots(
+                        color: const Color(0xff4b3d70),
+                        size: 100,
+                      ),
+                      Text(
+                        (isInit) ? "載入計畫中..." : "重新整理中...",
+                        style: const TextStyle(
+                          color: Color(0xff4b3d70),
+                        ),
+                      )
+                    ],
+                  )))
           : Column(
               children: [
                 const SizedBox(
@@ -416,7 +412,7 @@ class HomepageState extends State<Homepage> {
                     },
                   ),
                 ),
-                const SizedBox(height: 10),
+                //const SizedBox(height: 10),
                 // TODO: 加入冥想判斷
                 if (workoutPlan != null) ...[
                   if (workoutProgress! < 100 && isBefore == false) ...[
@@ -528,10 +524,8 @@ class HomepageState extends State<Homepage> {
                 ] else ...[
                   Container()
                 ],
-                const SizedBox(height: 0),
                 Container(
-                  padding:
-                      const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  padding: const EdgeInsets.only(left: 10, right: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -545,48 +539,98 @@ class HomepageState extends State<Homepage> {
                           //fontWeight: FontWeight.bold,
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          if (workoutPlan == null && meditationPlan == null) {
-                            // 運動沒有、冥想沒有 --> 新增運動 + 冥想
-                            // 今天之後 --> 新增；之前 --> 沒有
-                            (isBefore)
-                                ? null
-                                : _showAddExerciseDialog(true, true);
-                          } else if (workoutPlan != null &&
-                              meditationPlan == null) {
-                            // 運動有、冥想沒有 --> 運動完成度、新增冥想
-                            // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
-                            (isBefore)
-                                ? null
-                                : _showAddExerciseDialog(false, true);
-                          } else if (workoutPlan == null &&
-                              meditationPlan != null) {
-                            // 運動沒有、冥想有 --> 冥想完成度、新增運動
-                            // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
-                            (isBefore)
-                                ? null
-                                : _showAddExerciseDialog(true, false);
-                          } else {
-                            // 運動有、冥想有 --> 運動完成度、冥想完成度
-                            // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
-                            (isBefore) ? null : null;
-                          }
-                        }, // Image tapped
-                        child: Image.asset(
-                          "assets/images/rabbit.png",
-                          width: 125,
-                          height: 160,
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            if (workoutPlan == null && meditationPlan == null) {
+                              // 運動沒有、冥想沒有 --> 新增運動 + 冥想
+                              // 今天之後 --> 新增；之前 --> 沒有
+                              (isBefore)
+                                  ? null
+                                  : showModalBottomSheet(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(20),
+                                            topLeft: Radius.circular(20)),
+                                      ),
+                                      backgroundColor: const Color(0xfffdeed9),
+                                      context: context,
+                                      builder: (context) {
+                                        return AddPlanBottomSheet(arguments: {
+                                          "selectedDay": _selectedDay,
+                                          "addWorkout": true,
+                                          "addMeditation": true,
+                                          "time": time,
+                                          "isToday": isToday
+                                        });
+                                      }).then((value) => refresh());
+                            } else if (workoutPlan != null &&
+                                meditationPlan == null) {
+                              // 運動有、冥想沒有 --> 運動完成度、新增冥想
+                              // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
+                              (isBefore)
+                                  ? null
+                                  : showModalBottomSheet(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(20),
+                                            topLeft: Radius.circular(20)),
+                                      ),
+                                      backgroundColor: const Color(0xfffdeed9),
+                                      context: context,
+                                      builder: (context) {
+                                        return AddPlanBottomSheet(arguments: {
+                                          "selectedDay": _selectedDay,
+                                          "addWorkout": false,
+                                          "addMeditation": true,
+                                          "time": time,
+                                          "isToday": isToday
+                                        });
+                                      }).then((value) => refresh());
+                            } else if (workoutPlan == null &&
+                                meditationPlan != null) {
+                              // 運動沒有、冥想有 --> 冥想完成度、新增運動
+                              // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
+                              (isBefore)
+                                  ? null
+                                  : showModalBottomSheet(
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(20),
+                                            topLeft: Radius.circular(20)),
+                                      ),
+                                      backgroundColor: const Color(0xfffdeed9),
+                                      context: context,
+                                      builder: (context) {
+                                        return AddPlanBottomSheet(arguments: {
+                                          "selectedDay": _selectedDay,
+                                          "addWorkout": true,
+                                          "addMeditation": false,
+                                          "time": time,
+                                          "isToday": isToday
+                                        });
+                                      }).then((value) => refresh());
+                            } else {
+                              // 運動有、冥想有 --> 運動完成度、冥想完成度
+                              // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
+                              (isBefore) ? null : null;
+                            }
+                          }, // Image tapped
+                          child: Image.asset(
+                            "assets/images/rabbit.png",
+                            width: 125,
+                            height: 160,
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 0),
+                const SizedBox(height: 5),
                 (workoutPlan != null || meditationPlan != null)
-                    ? getBannerCarousel()
+                    ? Expanded(child: getBannerCarousel())
                     : Container(),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
               ],
             ),
     ));
@@ -594,18 +638,21 @@ class HomepageState extends State<Homepage> {
 }
 
 // 新增運動
-class AddExerciseDialog extends StatefulWidget {
+class AddPlanBottomSheet extends StatefulWidget {
   final Map arguments;
 
-  const AddExerciseDialog({super.key, required this.arguments});
+  const AddPlanBottomSheet({super.key, required this.arguments});
 
   @override
-  AddExerciseDialogState createState() => AddExerciseDialogState();
+  AddPlanBottomSheetState createState() => AddPlanBottomSheetState();
 }
 
-class AddExerciseDialogState extends State<AddExerciseDialog> {
+class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
   int exerciseTime = 0;
   int planToAdd = 0; // 0 = 運動, 1 = 冥想
+
+  String time = "";
+  bool isToday = true;
 
   late bool addWorkout;
   late bool addMeditation;
@@ -619,11 +666,11 @@ class AddExerciseDialogState extends State<AddExerciseDialog> {
         style: OutlinedButton.styleFrom(
           shape: const CircleBorder(),
           side: const BorderSide(
-            color: Color(0xff0d3b66),
+            color: Color(0xff4b4370),
           ),
           backgroundColor: (exerciseTime == choice)
-              ? const Color(0xffffa493)
-              : Colors.white70,
+              ? const Color(0xfff6cdb7)
+              : const Color(0xfffdfdf5),
         ),
         onPressed: () {
           setState(() {
@@ -633,7 +680,7 @@ class AddExerciseDialogState extends State<AddExerciseDialog> {
         child: Text(
           "$choice",
           style: const TextStyle(
-            color: Color(0xff0d3b66),
+            color: Color(0xff4b4370),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -648,6 +695,8 @@ class AddExerciseDialogState extends State<AddExerciseDialog> {
 
     addWorkout = widget.arguments['addWorkout'];
     addMeditation = widget.arguments['addMeditation'];
+    time = widget.arguments['time'];
+    isToday = widget.arguments['isToday'];
 
     if (addWorkout && !addMeditation) {
       planToAdd = 0;
@@ -658,101 +707,129 @@ class AddExerciseDialogState extends State<AddExerciseDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text(
-        "新增計畫",
-        style: TextStyle(
-          color: Color(0xff0d3b66),
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Column(
+    return Container(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+            title: Text(
+              "新增$time的${((planToAdd == 0) ? "運動" : "冥想")}計畫",
+              style: const TextStyle(
+                  color: Color(0xff4b4370),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            trailing: IconButton(
+              icon: const Icon(
+                Icons.close_rounded,
+                color: Color(0xff4b4370),
+              ),
+              // FIXME: setting border doesn't work
+              style: IconButton.styleFrom(
+                shape: const CircleBorder(
+                    side: BorderSide(color: Color(0xff4b4370))),
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
           (addWorkout && addMeditation)
-              ? Row(
-                  children: [
-                    const Text("新增 "),
-                    ToggleSwitch(
-                      minHeight: 35,
-                      initialLabelIndex: planToAdd,
-                      cornerRadius: 10.0,
-                      radiusStyle: true,
-                      labels: const ['運動', '冥想'],
-                      icons: const [
-                        Icons.fitness_center_outlined,
-                        Icons.self_improvement_outlined
-                      ],
-                      iconSize: 16,
-                      activeBgColors: const [
-                        [Color(0xfff6cdb7)],
-                        [Color(0xffd4d6fc)]
-                      ],
-                      activeFgColor: const Color(0xff4b4370),
-                      inactiveBgColor: const Color(0xfffdfdf5),
-                      inactiveFgColor: const Color(0xff4b4370),
-                      totalSwitches: 2,
-                      onToggle: (index) {
-                        planToAdd = index!;
-                        setState(() {});
-                      },
-                    ),
-                    const Text(" 計畫")
+              ? ToggleSwitch(
+                  minWidth: MediaQuery.of(context).size.width,
+                  //minHeight: 35,
+                  initialLabelIndex: planToAdd,
+                  cornerRadius: 10.0,
+                  radiusStyle: true,
+                  labels: const ['運動', '冥想'],
+                  icons: const [
+                    Icons.fitness_center_outlined,
+                    Icons.self_improvement_outlined
                   ],
+                  fontSize: 18,
+                  iconSize: 20,
+                  activeBgColors: const [
+                    [Color(0xfff6cdb7)],
+                    [Color(0xffd4d6fc)]
+                  ],
+                  activeFgColor: const Color(0xff4b4370),
+                  inactiveBgColor: const Color(0xfffdfdf5),
+                  inactiveFgColor: const Color(0xff4b4370),
+                  totalSwitches: 2,
+                  onToggle: (index) {
+                    planToAdd = index!;
+                    setState(() {});
+                    print(planToAdd);
+                  },
                 )
               : Container(),
+          const SizedBox(
+            height: 10,
+          ),
           (planToAdd == 0)
-              ? Text("你要在 ${widget.arguments['selectedDay'].month}/"
-                  "${widget.arguments['selectedDay'].day} 新增幾分鐘的運動計畫呢？")
-              : Container(),
-          const SizedBox(height: 20),
-          (planToAdd == 0)
-              ? SizedBox(
-                  height: MediaQuery.of(context).size.width * 0.1,
-                  width: double.maxFinite,
-                  child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: _getTimeBtnList()),
+              ? Text(
+                  "你要在$time新增幾分鐘的運動計畫呢？",
+                  style:
+                      const TextStyle(color: Color(0xff4b4370), fontSize: 16),
                 )
               : Container(),
-          (planToAdd == 1) ? const Text("確定要新增冥想計畫嗎？") : Container(),
+          (planToAdd == 0) ? const SizedBox(height: 10) : Container(),
+          (planToAdd == 0)
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _getTimeBtnList(),
+                )
+              : Container(),
+          (planToAdd == 1)
+              ? const Text(
+                  "確定要新增冥想計畫嗎？",
+                  style: TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                )
+              : Container(),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 18),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                backgroundColor: (planToAdd == 0)
+                    ? const Color(0xfff6cdb7)
+                    : const Color(0xffd4d6fc),
+                shadowColor: Colors.transparent,
+                minimumSize: const Size.fromHeight(50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                DateTime selectedDay = widget.arguments['selectedDay'];
+                (planToAdd == 0)
+                    ? await PlanAlgo.generate(selectedDay, exerciseTime)
+                    : await MeditationPlanAlgo.generate(selectedDay);
+                print((planToAdd == 0)
+                    ? "$selectedDay add $exerciseTime minutes exercise plan."
+                    : "$selectedDay add meditation plan.");
+                if (!mounted) return;
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "確定",
+                style: TextStyle(
+                  color: Color(0xff4b4370),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
-      actions: [
-        OutlinedButton(
-            child: const Text(
-              "取消",
-              style: TextStyle(
-                color: Color(0xff0d3b66),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xfffbb87f),
-            ),
-            onPressed: () async {
-              DateTime selectedDay = widget.arguments['selectedDay'];
-              (planToAdd == 0)
-                  ? await PlanAlgo.generate(selectedDay, exerciseTime)
-                  : await MeditationPlanAlgo.generate(selectedDay);
-              print((planToAdd == 0)
-                  ? "$selectedDay add $exerciseTime minutes exercise plan."
-                  : "$selectedDay add meditation plan.");
-              if (!mounted) return;
-              Navigator.pop(context);
-            },
-            child: const Text(
-              "確定",
-              style: TextStyle(
-                color: Color(0xff0d3b66),
-                fontWeight: FontWeight.bold,
-              ),
-            )),
-      ],
     );
   }
 }
