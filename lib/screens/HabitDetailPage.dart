@@ -269,8 +269,10 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                 height: 10,
               ),*/
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20, left: 20),
+                  child: SingleChildScrollView(
+                child: Container(
+                  padding:
+                      const EdgeInsets.only(right: 20, left: 20, bottom: 10),
                   child: Theme(
                       data: Theme.of(context)
                           .copyWith(dividerColor: Colors.transparent),
@@ -287,7 +289,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                         ],
                       )),
                 ),
-              ),
+              )),
               const SizedBox(
                 height: 10,
               ),
@@ -312,11 +314,13 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                       onPressed: widget.arguments['isToday']
                           ? () {
                               print("True");
-                            Navigator.pushNamed(context, '/countdown',
-                                arguments: {
-                                  'type': 'meditation',
-                                  'meditationPlan': widget.arguments['meditationPlan'].split(", ")[0]
-                                });
+                              Navigator.pushNamed(context, '/countdown',
+                                  arguments: {
+                                    'type': 'meditation',
+                                    'meditationPlan': widget
+                                        .arguments['meditationPlan']
+                                        .split(", ")[0]
+                                  });
                             }
                           : null,
                       label: const Text(

@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
@@ -87,33 +86,11 @@ class StatisticPageState extends State<StatisticPage> {
     isAddingWeight = false;
 
     setState(() {});
-    EasyLoading.dismiss();
-  }
-
-  // Loading mask 屬性
-  void configLoading() {
-    EasyLoading.instance
-      ..indicatorType = EasyLoadingIndicatorType.threeBounce
-      ..loadingStyle = EasyLoadingStyle.custom
-      ..indicatorSize = 50.0
-      ..radius = 20.0
-      ..backgroundColor = const Color(0xffd4d6fc)
-      ..indicatorColor = const Color(0xff4b3d70)
-      ..textColor = const Color(0xff4b3d70)
-      ..textPadding = const EdgeInsets.all(20)
-      ..userInteractions = true
-      ..dismissOnTap = false;
   }
 
   @override
   void initState() {
     super.initState();
-
-    configLoading();
-    EasyLoading.show(
-      status: '載入數據中...',
-      maskType: EasyLoadingMaskType.clear,
-    );
 
     getUserData();
   }
@@ -143,7 +120,31 @@ class StatisticPageState extends State<StatisticPage> {
         automaticallyImplyLeading: false,
       ),
       body: (isInit)
-          ? Container()
+          ? Center(
+          child: Container(
+              padding:
+              const EdgeInsets.only(right: 20, left: 20, bottom: 20),
+              decoration: BoxDecoration(
+                  color: const Color(0xffd4d6fc),
+                  border: Border.all(color: const Color(0xffd4d6fc)),
+                  borderRadius:
+                  const BorderRadius.all(Radius.circular(20))),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  LoadingAnimationWidget.horizontalRotatingDots(
+                    color: const Color(0xff4b3d70),
+                    size: 100,
+                  ),
+                  const Text(
+                    "載入數據中...",
+                    style: TextStyle(
+                      color: Color(0xff4b3d70),
+                    ),
+                  )
+                ],
+              )))
           : Padding(
               padding: const EdgeInsets.all(10),
               //ListView可各分配空間給兩張圖
