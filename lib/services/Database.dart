@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -76,9 +77,10 @@ class Home extends StatelessWidget {
                 // print(await UserDB.isWorkoutDay(mary, DateTime(2023, 5, 21)));
                 // print(await UserDB.isWorkoutDay(mary, DateTime(2023, 5, 22)));
                 // print(await UserDB.isWorkoutDay("123", DateTime(2023, 5, 22)));
-                // print(await DurationDB.calcCompletion());
-                print(Calendar.daysPassed());
-                print(Calendar.daysComing());
+                // print(Calendar.daysPassed());
+                // print(Calendar.daysComing());
+                // print(await DurationDB.getConsecutiveDays());
+                print(await DurationDB.getMonthTotalTime());
               },
               child: const Text("test")),
         ],
@@ -98,10 +100,10 @@ class Tool {
 class Calendar {
   static DateTime today() => DateTime.now();
 
-  static DateTime firstDay() {
-    var td = today();
-    return (td.weekday == 7) ? td : td.subtract(Duration(days: td.weekday));
-  }
+  static DateTime firstDay() => getSunday(today());
+
+  static DateTime getSunday(DateTime date) =>
+      (date.weekday == 7) ? date : date.subtract(Duration(days: date.weekday));
 
   // Convert DateTime to String (i.e. plan's key)
   static String toKey(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
@@ -625,8 +627,7 @@ class MeditationDB {
             ids.where((item) => item[0] == "$category" && item[1] == "$type"));
       }
     }
-    retVal["mindfulness"] =
-        List.from(ids.where((item) => item[0] == "1"));
+    retVal["mindfulness"] = List.from(ids.where((item) => item[0] == "1"));
 
     return retVal;
   }
@@ -682,7 +683,8 @@ class PlanDB {
   }
 
   // Select all user's plans
-  static Future<Map?> getTable() async => await JournalDB.getTable(uid, table);
+  static Future<SplayTreeMap?> getTable() async =>
+      await JournalDB.getTable(uid, table);
 
   // Select the user's plan from the dates of given week
   static Future<Map?> getThisWeek() async =>
@@ -784,7 +786,8 @@ class MeditationPlanDB {
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Select all user's plans
-  static Future<Map?> getTable() async => await JournalDB.getTable(uid, table);
+  static Future<SplayTreeMap?> getTable() async =>
+      await JournalDB.getTable(uid, table);
 
   // Select the user's plan from the dates of given week
   static Future<Map?> getThisWeek() async =>
@@ -805,7 +808,7 @@ class MeditationPlanDB {
     var meditationNames = await MeditationDB.getAll();
     if (plans != null && meditationNames != null) {
       return plans.map((date, plan) => MapEntry(date,
-          plan.split(", ").map((value) =>meditationNames[value]).join(", ")));
+          plan.split(", ").map((value) => meditationNames[value]).join(", ")));
     }
     return null;
   }
@@ -887,12 +890,225 @@ class DurationDB {
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Select all durations
-  static Future<Map?> getTable() async => await JournalDB.getTable(uid, table);
+  static Future<SplayTreeMap?> getTable() async =>
+      await JournalDB.getTable(uid, table);
 
   // Select user's workout duration from given date
   static Future<int?> getFromDate(DateTime date) async {
     var duration = await JournalDB.getFromDate(uid, date, table);
     return (duration != null) ? int.parse(duration.split(', ')[0]) : null;
+  }
+
+  // Calculate the number of consecutive completion days
+  static Future<List?> getConsecutiveDays() async {
+    SplayTreeMap? durations = await getTable();
+    List retVal = []; // store the results
+
+    if (durations != null) {
+      List dates = durations.keys.toList();
+      List values = durations.values.toList();
+
+      List success = []; // store the completion status of the workout plans
+      for (var duration in values) {
+        List record = duration.split(", ");
+        // the 1st element of `record` is the completed minutes, and the 2nd element is the total minutes
+        // if the plan is completed (i.e. 1st element == 2nd), then set the status to 1 otherwise set to 0, and add to `success`
+        success.add((record[0] == record[1]) ? 1 : 0);
+      }
+
+      int count = 0; // store the number of consecutive days in a row
+      String? element;
+      for (int i = 0; i < success.length; i++) {
+        element ??= dates[i];
+        count++;
+        if (success[i] == 0) {
+          // format the result as "firstDay, lastDay, countDays"
+          element = "${element!}, ${dates[i - 1]}, ${--count}";
+          // store the result to `retVal` when the continuous record is broken and `count` is more than one
+          if (count > 1) retVal.add(element.split(", "));
+          // reset `count` and `element` variables for the next iteration
+          count = 0;
+          element = null;
+        }
+      }
+      // if all the elements in `success` are one (i.e. every day is completed)
+      if (retVal.isEmpty) {
+        String element = "${dates.first}, ${dates.last}, ${success.length}";
+        retVal.add(element.split(", "));
+      }
+
+      return retVal;
+    }
+    return null;
+  }
+
+  // Add up the total amount of workout time for each week
+  static Future<List?> getWeekTotalTime() async {
+    SplayTreeMap? durations = await getTable();
+    List retVal = []; // store the results
+
+    if (durations != null) {
+      List<DateTime> dates =
+          durations.keys.map((d) => DateTime.parse(d)).toList();
+      List<int> values =
+          durations.values.map((e) => int.parse(e.split(", ")[0])).toList();
+
+      DateTime sunday = Calendar.getSunday(dates.first); // 1st day of each week
+      int sum = 0; // the sum of workout time for the given week
+      for (int i = 0; i < dates.length; i++) {
+        if (sunday.difference(dates[i]).inDays * -1 < 7) {
+          sum += values[i];
+        } else {
+          // store the result to `retVal` when the difference to `sunday` is more than 7 days (1 week)
+          retVal.add([
+            Calendar.toKey(sunday),
+            Calendar.toKey(sunday.add(const Duration(days: 6))),
+            sum
+          ]);
+          // reset variables for next iteration
+          sunday = sunday.add(const Duration(days: 7));
+          sum = values[i];
+        }
+      }
+
+      return retVal;
+    }
+    return null;
+  }
+
+  // Add up the total amount of workout time for each month
+  static Future<List?> getMonthTotalTime() async {
+    SplayTreeMap? durations = await getTable();
+    List retVal = []; // store the results
+
+    if (durations != null) {
+      List<DateTime> dates =
+          durations.keys.map((d) => DateTime.parse(d)).toList();
+      List<int> values =
+          durations.values.map((e) => int.parse(e.split(", ")[0])).toList();
+
+      DateTime dayOne = dates.first.subtract(
+          Duration(days: dates.first.day - 1)); // 1st day of each month
+      int sum = 0; // the sum of workout time for the given week
+      for (int i = 0; i < dates.length; i++) {
+        if (dayOne.year == dates[i].year && dayOne.month == dates[i].month) {
+          sum += values[i];
+        } else {
+          DateTime nextDayOne = DateTime(dayOne.year, dayOne.month + 1, 1);
+
+          // store the result to `retVal` when the difference to `dayOne` is more than 1 month
+          retVal.add([
+            Calendar.toKey(dayOne),
+            Calendar.toKey(nextDayOne.subtract(const Duration(days: 1))),
+            sum
+          ]);
+
+          // reset variables for next iteration
+          dayOne = nextDayOne;
+          sum = values[i];
+        }
+      }
+
+      return retVal;
+    }
+    return null;
+  }
+
+  // Add up the total number of workout days for each month
+  static Future<List?> getMonthTotalDays() async {
+    SplayTreeMap? durations = await getTable();
+    List retVal = []; // store the results
+
+    if (durations != null) {
+      List<DateTime> dates =
+          durations.keys.map((d) => DateTime.parse(d)).toList();
+      List values = durations.values.toList();
+
+      List<int> success = []; // store the completion status of the workout plans
+      for (var duration in values) {
+        List record = duration.split(", ");
+        // the 1st element of `record` is the completed minutes, and the 2nd element is the total minutes
+        // if the plan is completed (i.e. 1st element == 2nd), then set the status to 1 otherwise set to 0, and add to `success`
+        success.add((record[0] == record[1]) ? 1 : 0);
+      }
+
+      DateTime dayOne = dates.first.subtract(
+          Duration(days: dates.first.day - 1)); // 1st day of each month
+      int count = 0; // the sum of workout days for the given month
+      for (int i = 0; i < dates.length; i++) {
+        if (dayOne.year == dates[i].year && dayOne.month == dates[i].month) {
+          count += success[i];
+        } else {
+          DateTime nextDayOne = DateTime(dayOne.year, dayOne.month + 1, 1);
+
+          // store the result to `retVal` when the difference to `dayOne`` is more than 1 month
+          retVal.add([
+            Calendar.toKey(dayOne),
+            Calendar.toKey(nextDayOne.subtract(const Duration(days: 1))),
+            count
+          ]);
+
+          // reset variables for next iteration
+          dayOne = nextDayOne;
+          count = success[i];
+        }
+      }
+
+      return retVal;
+    }
+    return null;
+  }
+
+  // Add up the total number of workout days for each year
+  static Future<List?> getYearTotalDays() async {
+    SplayTreeMap? durations = await getTable();
+    List retVal = []; // store the results
+
+    if (durations != null) {
+      List<DateTime> dates =
+      durations.keys.map((d) => DateTime.parse(d)).toList();
+      List values = durations.values.toList();
+
+      List<int> success = []; // store the completion status of the workout plans
+      for (var duration in values) {
+        List record = duration.split(", ");
+        // the 1st element of `record` is the completed minutes, and the 2nd element is the total minutes
+        // if the plan is completed (i.e. 1st element == 2nd), then set the status to 1 otherwise set to 0, and add to `success`
+        success.add((record[0] == record[1]) ? 1 : 0);
+      }
+
+      DateTime dayOne = DateTime(dates.first.year, 1, 1); // 1st day of each year
+      int count = 0; // the sum of workout days for the given month
+      for (int i = 0; i < dates.length; i++) {
+        if (dayOne.year == dates[i].year) {
+          count += success[i];
+        } else {
+          DateTime nextDayOne = DateTime(dayOne.year + 1, 1, 1);
+
+          // store the result to `retVal` when the difference to `dayOne` is more than 1 year
+          retVal.add([
+            Calendar.toKey(dayOne),
+            Calendar.toKey(nextDayOne.subtract(const Duration(days: 1))),
+            count
+          ]);
+
+          // reset variables for next iteration
+          dayOne = nextDayOne;
+          count = success[i];
+        }
+      }
+
+      if (retVal.isEmpty) {
+        retVal.add([
+          Calendar.toKey(dayOne),
+          Calendar.toKey(DateTime(dayOne.year + 1, 1, 1)),
+          count
+        ]);
+      }
+
+      return retVal;
+    }
+    return null;
   }
 
   // Calculate user's workout progress from given dates
@@ -928,7 +1144,7 @@ class DurationDB {
   // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
   static Future<bool> update(Map data) async {
     String key = data.keys.first;
-    String value = data.values.first;
+    String value = data.values.first.toString();
 
     if (value.contains(", ")) {
       // value: "duration, timeSpan"
@@ -957,7 +1173,8 @@ class MeditationDurationDB {
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Select all durations
-  static Future<Map?> getTable() async => await JournalDB.getTable(uid, table);
+  static Future<SplayTreeMap?> getTable() async =>
+      await JournalDB.getTable(uid, table);
 
   // Select user's workout duration from given date
   static Future<int?> getFromDate(DateTime date) async {
@@ -1027,7 +1244,8 @@ class WeightDB {
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Select all weight
-  static Future<Map?> getTable() async => await JournalDB.getTable(uid, table);
+  static Future<SplayTreeMap?> getTable() async =>
+      await JournalDB.getTable(uid, table);
 
   // Select the user's weight from the dates of given week
   static Future<Map?> getThisWeek() async =>

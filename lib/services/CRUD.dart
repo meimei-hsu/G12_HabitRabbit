@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:g12/services/Database.dart';
@@ -67,9 +69,12 @@ class JournalDB {
   static const db = "journal";
 
   // Select whole table of user's journal records
-  static Future<Map?> getTable(String userID, String table) async {
+  static Future<SplayTreeMap?> getTable(String userID, String table) async {
     var snapshot = await DB.selectAll("$db/$userID/$table");
-    return (snapshot != null) ? (snapshot.value) as Map : null;
+    return (snapshot != null)
+        ? SplayTreeMap<String, dynamic>.from(
+            (snapshot.value) as Map, (a, b) => a.compareTo(b))
+        : null;
   }
 
   // Select user's journal records from given dates

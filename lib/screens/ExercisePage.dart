@@ -124,10 +124,7 @@ class DoExercisePageState extends State<DoExercisePage> {
 
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
-        DurationDB.update({
-          Calendar.toKey(DateTime.now()):
-              "${currentIndex + 1}, ${widget.arguments['exerciseTime']}"
-        });
+        DurationDB.update({Calendar.toKey(DateTime.now()): currentIndex + 1});
         _showFeedbackDialog();
         timer.cancel();
         dispose();
@@ -272,10 +269,8 @@ class DoExercisePageState extends State<DoExercisePage> {
                         backgroundColor: const Color(0xfffbb87f),
                       ),
                       onPressed: () {
-                        DurationDB.update({
-                          Calendar.toKey(DateTime.now()):
-                              "$currentIndex, ${widget.arguments['exerciseTime']}"
-                        });
+                        DurationDB.update(
+                            {Calendar.toKey(DateTime.now()): currentIndex});
                         Navigator.pushNamedAndRemoveUntil(
                             context, '/', (Route<dynamic> route) => false);
                       },

@@ -60,16 +60,16 @@ class _MilestonePage extends State<MilestonePage> {
           backgroundColor: const Color(0xFFFDFDF5),
           automaticallyImplyLeading: false,
         ),*/
-        body: const SafeArea(
+        body: SafeArea(
           child: Padding(
-            padding: EdgeInsets.only(bottom: 16.0),
+            padding: const EdgeInsets.only(bottom: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(left: 20.0, top: 16.0),
+                  padding: const EdgeInsets.only(left: 20.0, top: 16.0),
                   child: Row(
-                    children: [
+                    children: const [
                       Text(
                         'Mary的角色',
                         style: TextStyle(
@@ -90,7 +90,7 @@ class _MilestonePage extends State<MilestonePage> {
                     ],
                   ),
                 ),
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(left: 32.0, right: 32.0, top: 20.0),
                   child: Text(
                     '請養成規律的運動與冥想習慣蒐集寶物讓我長大吧！',
@@ -103,7 +103,7 @@ class _MilestonePage extends State<MilestonePage> {
                     ),
                   ),
                 ),
-                Expanded(
+                const Expanded(
                   child: CharacterWidget(),
                 ),
               ],
