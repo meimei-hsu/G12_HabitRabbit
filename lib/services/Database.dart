@@ -29,14 +29,7 @@ class Home extends StatelessWidget {
       '0, 4',
       '0, 7',
     ];
-    var jms = [
-      '0, 24',
-      '0, 24',
-      '0, 5',
-      '0, 7',
-    ];
     Map maryMilestone = Map.fromIterables(MilestoneDB.columns, mms);
-    Map johnMilestone = Map.fromIterables(MilestoneDB.columns, jms);
     var plan = ["4008", "4012", "4006", "3102", "3209"];
 
     return Scaffold(
@@ -53,10 +46,8 @@ class Home extends StatelessWidget {
                 // UserDB.updateByFeedback("cardio", [1, 1]);
                 UserDB.getAll();
                 WorkoutDB.toNames(plan);
-                //MilestoneDB.update(maryMilestone);
-                //MilestoneDB.update(johnMilestone);
+                // MilestoneDB.update(maryMilestone);
                 MilestoneDB.update(maryMilestone);
-                //MilestoneDB.update(johnMilestone);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
               },
               child: const Text("test DB")),
@@ -86,14 +77,6 @@ class Home extends StatelessWidget {
         ],
       ),
     ));
-  }
-}
-
-class Tool {
-  // calculate the progress of the given data "completeNum, totalNum"
-  static int calcProgress(String str) {
-    var lst = str.split(', ').map(int.parse).toList();
-    return (lst[0] / lst[1] * 100).round(); // percentage
   }
 }
 
@@ -483,7 +466,6 @@ class MilestoneDB {
     return user!["workoutGem"];
   }
 
-
   static Future<num?> getMeditationGem() async {
     final Map? user = await getMilestone();
     return user!["meditationGem"];
@@ -505,12 +487,12 @@ class MilestoneDB {
   }
 
   static Future<Map?> gem() async {
-   // String? step = await MilestoneDB.getMeditationGem();
+    // String? step = await MilestoneDB.getMeditationGem();
     //if (step != null) {
-      //step加一
-      // var duration = value.split(', ').map(int.parse).toList();
-      // return MapEntry(key, (duration[0] / duration[1] * 100).round());
-   // }
+    //step加一
+    // var duration = value.split(', ').map(int.parse).toList();
+    // return MapEntry(key, (duration[0] / duration[1] * 100).round());
+    // }
     // if(){
     // 當step前後兩個數字相同，歸零，flag加一
     //contract flag加一
@@ -883,25 +865,24 @@ class MeditationPlanDB {
       await MeditationDurationDB.delete(date);
 }
 
-class DurationDB {
-  static const table = "duration";
-  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
-  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
-  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
+class Calculator {
+  // calculate the progress of the given data "completeNum, totalNum"
+  static int calcProgress(String str) {
+    var lst = str.split(', ').map(int.parse).toList();
+    return (lst[0] / lst[1] * 100).round(); // percentage
+  }
 
-  // Select all durations
-  static Future<SplayTreeMap?> getTable() async =>
-      await JournalDB.getTable(uid, table);
-
-  // Select user's workout duration from given date
-  static Future<int?> getFromDate(DateTime date) async {
-    var duration = await JournalDB.getFromDate(uid, date, table);
-    return (duration != null) ? int.parse(duration.split(', ')[0]) : null;
+  // Calculate the number of times user has completed a plan during this week
+  static Future<num?> calcCompletion(List habitDays) async {
+    int complete = 0;
+    for (String date in Calendar.thisWeek()) {
+      complete += (calcProgress(date) == 100) ? 1 : 0;
+    }
+    return (complete / habitDays.fold(0, (p, c) => c + p) * 100).round();
   }
 
   // Calculate the number of consecutive completion days
-  static Future<List?> getConsecutiveDays() async {
-    SplayTreeMap? durations = await getTable();
+  static Future<List?> getConsecutiveDays(SplayTreeMap? durations) async {
     List retVal = []; // store the results
 
     if (durations != null) {
@@ -942,9 +923,8 @@ class DurationDB {
     return null;
   }
 
-  // Add up the total amount of workout time for each week
-  static Future<List?> getWeekTotalTime() async {
-    SplayTreeMap? durations = await getTable();
+  // Add up the total amount of habit commitment time for each week
+  static Future<List?> getWeekTotalTime(SplayTreeMap? durations) async {
     List retVal = []; // store the results
 
     if (durations != null) {
@@ -954,7 +934,7 @@ class DurationDB {
           durations.values.map((e) => int.parse(e.split(", ")[0])).toList();
 
       DateTime sunday = Calendar.getSunday(dates.first); // 1st day of each week
-      int sum = 0; // the sum of workout time for the given week
+      int sum = 0; // the sum of habit time for the given week
       for (int i = 0; i < dates.length; i++) {
         if (sunday.difference(dates[i]).inDays * -1 < 7) {
           sum += values[i];
@@ -976,9 +956,8 @@ class DurationDB {
     return null;
   }
 
-  // Add up the total amount of workout time for each month
-  static Future<List?> getMonthTotalTime() async {
-    SplayTreeMap? durations = await getTable();
+  // Add up the total amount of habit commitment time for each month
+  static Future<List?> getMonthTotalTime(SplayTreeMap? durations) async {
     List retVal = []; // store the results
 
     if (durations != null) {
@@ -989,7 +968,7 @@ class DurationDB {
 
       DateTime dayOne = dates.first.subtract(
           Duration(days: dates.first.day - 1)); // 1st day of each month
-      int sum = 0; // the sum of workout time for the given week
+      int sum = 0; // the sum of habit time for the given week
       for (int i = 0; i < dates.length; i++) {
         if (dayOne.year == dates[i].year && dayOne.month == dates[i].month) {
           sum += values[i];
@@ -1014,9 +993,8 @@ class DurationDB {
     return null;
   }
 
-  // Add up the total number of workout days for each month
-  static Future<List?> getMonthTotalDays() async {
-    SplayTreeMap? durations = await getTable();
+  // Add up the total number of habit committed days for each month
+  static Future<List?> getMonthTotalDays(SplayTreeMap? durations) async {
     List retVal = []; // store the results
 
     if (durations != null) {
@@ -1024,7 +1002,8 @@ class DurationDB {
           durations.keys.map((d) => DateTime.parse(d)).toList();
       List values = durations.values.toList();
 
-      List<int> success = []; // store the completion status of the workout plans
+      List<int> success =
+          []; // store the completion status of the workout plans
       for (var duration in values) {
         List record = duration.split(", ");
         // the 1st element of `record` is the completed minutes, and the 2nd element is the total minutes
@@ -1034,7 +1013,7 @@ class DurationDB {
 
       DateTime dayOne = dates.first.subtract(
           Duration(days: dates.first.day - 1)); // 1st day of each month
-      int count = 0; // the sum of workout days for the given month
+      int count = 0; // the sum of habit days for the given month
       for (int i = 0; i < dates.length; i++) {
         if (dayOne.year == dates[i].year && dayOne.month == dates[i].month) {
           count += success[i];
@@ -1059,17 +1038,17 @@ class DurationDB {
     return null;
   }
 
-  // Add up the total number of workout days for each year
-  static Future<List?> getYearTotalDays() async {
-    SplayTreeMap? durations = await getTable();
+  // Add up the total number of habit committed days for each year
+  static Future<List?> getYearTotalDays(SplayTreeMap? durations) async {
     List retVal = []; // store the results
 
     if (durations != null) {
       List<DateTime> dates =
-      durations.keys.map((d) => DateTime.parse(d)).toList();
+          durations.keys.map((d) => DateTime.parse(d)).toList();
       List values = durations.values.toList();
 
-      List<int> success = []; // store the completion status of the workout plans
+      List<int> success =
+          []; // store the completion status of the workout plans
       for (var duration in values) {
         List record = duration.split(", ");
         // the 1st element of `record` is the completed minutes, and the 2nd element is the total minutes
@@ -1077,8 +1056,9 @@ class DurationDB {
         success.add((record[0] == record[1]) ? 1 : 0);
       }
 
-      DateTime dayOne = DateTime(dates.first.year, 1, 1); // 1st day of each year
-      int count = 0; // the sum of workout days for the given month
+      DateTime dayOne =
+          DateTime(dates.first.year, 1, 1); // 1st day of each year
+      int count = 0; // the sum of habit days for the given month
       for (int i = 0; i < dates.length; i++) {
         if (dayOne.year == dates[i].year) {
           count += success[i];
@@ -1110,15 +1090,50 @@ class DurationDB {
     }
     return null;
   }
+}
+
+class DurationDB {
+  static const table = "duration";
+  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
+  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
+  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
+
+  // Select all durations
+  static Future<SplayTreeMap?> getTable() async =>
+      await JournalDB.getTable(uid, table);
+
+  // Select user's workout duration from given date
+  static Future<int?> getFromDate(DateTime date) async {
+    var duration = await JournalDB.getFromDate(uid, date, table);
+    return (duration != null) ? int.parse(duration.split(', ')[0]) : null;
+  }
+
+  // Calculate the number of consecutive completion days
+  static Future<List?> getConsecutiveDays() async =>
+      Calculator.getConsecutiveDays(await getTable());
+
+  // Add up the total amount of workout time for each week
+  static Future<List?> getWeekTotalTime() async =>
+      Calculator.getWeekTotalTime(await getTable());
+
+  // Add up the total amount of workout time for each month
+  static Future<List?> getMonthTotalTime() async =>
+      Calculator.getMonthTotalTime(await getTable());
+
+  // Add up the total number of workout days for each month
+  static Future<List?> getMonthTotalDays() async =>
+      Calculator.getMonthTotalDays(await getTable());
+
+  // Add up the total number of workout days for each year
+  static Future<List?> getYearTotalDays() async =>
+      Calculator.getYearTotalDays(await getTable());
 
   // Calculate user's workout progress from given dates
   static Future<Map?> getWeekProgress() async {
     Map? durations = await JournalDB.getThisWeek(uid, table);
     if (durations != null) {
-      return durations.map((key, value) {
-        var duration = value.split(', ').map(int.parse).toList();
-        return MapEntry(key, (duration[0] / duration[1] * 100).round());
-      });
+      return durations
+          .map((key, value) => MapEntry(key, Calculator.calcProgress(value)));
     }
     return null;
   }
@@ -1126,19 +1141,13 @@ class DurationDB {
   // Calculate user's workout progress from given date
   static Future<num?> calcProgress(DateTime date) async {
     var record = (await JournalDB.getFromDate(uid, date, table));
-    return (record != null) ? Tool.calcProgress(record) : null;
+    return (record != null) ? Calculator.calcProgress(record) : null;
   }
 
   // Calculate the number of times user has completed a workout plan during this week
   static Future<num?> calcCompletion() async {
-    List? workoutDays = (await UserDB.getUser())?["workoutDays"];
-    int complete = 0;
-    for (String date in Calendar.thisWeek()) {
-      complete += (await calcProgress(DateTime.parse(date)) == 100) ? 1 : 0;
-    }
-    return (workoutDays != null)
-        ? (complete / workoutDays.fold(0, (p, c) => c + p) * 100).round()
-        : null;
+    List? days = (await UserDB.getUser())?["workoutDays"];
+    return (days != null) ? Calculator.calcCompletion(days) : null;
   }
 
   // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
@@ -1176,46 +1185,58 @@ class MeditationDurationDB {
   static Future<SplayTreeMap?> getTable() async =>
       await JournalDB.getTable(uid, table);
 
-  // Select user's workout duration from given date
+  // Select user's meditation duration from given date
   static Future<int?> getFromDate(DateTime date) async {
     var duration = await JournalDB.getFromDate(uid, date, table);
     return (duration != null) ? int.parse(duration.split(', ')[0]) : null;
   }
 
-  // Calculate user's workout progress from given dates
+  // Calculate the number of consecutive completion days
+  static Future<List?> getConsecutiveDays() async =>
+      Calculator.getConsecutiveDays(await getTable());
+
+  // Add up the total amount of meditation time for each week
+  static Future<List?> getWeekTotalTime() async =>
+      Calculator.getWeekTotalTime(await getTable());
+
+  // Add up the total amount of meditation time for each month
+  static Future<List?> getMonthTotalTime() async =>
+      Calculator.getMonthTotalTime(await getTable());
+
+  // Add up the total number of meditation days for each month
+  static Future<List?> getMonthTotalDays() async =>
+      Calculator.getMonthTotalDays(await getTable());
+
+  // Add up the total number of meditation days for each year
+  static Future<List?> getYearTotalDays() async =>
+      Calculator.getYearTotalDays(await getTable());
+
+  // Calculate user's meditation progress from given dates
   static Future<Map?> getWeekProgress() async {
     Map? durations = await JournalDB.getThisWeek(uid, table);
     if (durations != null) {
-      return durations.map((key, value) {
-        var duration = value.split(', ').map(int.parse).toList();
-        return MapEntry(key, (duration[0] / duration[1] * 100).round());
-      });
+      return durations
+          .map((key, value) => MapEntry(key, Calculator.calcProgress(value)));
     }
     return null;
   }
 
-  // Calculate user's workout progress from given date
+  // Calculate user's meditation progress from given date
   static Future<num?> calcProgress(DateTime date) async {
     var record = (await JournalDB.getFromDate(uid, date, table));
-    return (record != null) ? Tool.calcProgress(record) : null;
+    return (record != null) ? Calculator.calcProgress(record) : null;
   }
 
-  // Calculate the number of times user has completed a workout plan during this week
+  // Calculate the number of times user has completed a meditation plan during this week
   static Future<num?> calcCompletion() async {
-    List? meditationDays = (await UserDB.getUser())?["meditationDays"];
-    int complete = 0;
-    for (String date in Calendar.thisWeek()) {
-      complete += (await calcProgress(DateTime.parse(date)) == 100) ? 1 : 0;
-    }
-    return (meditationDays != null)
-        ? (complete / meditationDays.fold(0, (p, c) => c + p) * 100).round()
-        : null;
+    List? days = (await UserDB.getUser())?["meditationDays"];
+    return (days != null) ? Calculator.calcCompletion(days) : null;
   }
 
   // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
   static Future<bool> update(Map data) async {
     String key = data.keys.first;
-    String value = data.values.first;
+    String value = data.values.first.toString();
 
     if (value.contains(", ")) {
       // value: "duration, timeSpan"

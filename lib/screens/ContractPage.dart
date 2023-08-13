@@ -505,7 +505,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                               '\n您所投入的金額：${data["money"]}\n'
                               '\n合約開始日：${data["startDay"]}'
                               '\n合約結束日：${data["endDay"]}'
-                              '\n距離成功已完成：${Tool.calcProgress(data["flag"])}%',
+                              '\n距離成功已完成：${Calculator.calcProgress(data["flag"])}%',
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 color: Color(0xFF0D3B66),
@@ -555,7 +555,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                               '\n您所投入的金額：${data["money"]}\n'
                               '\n合約開始日：${data["startDay"]}'
                               '\n合約結束日：${data["endDay"]}'
-                              '\n距離成功已完成：${Tool.calcProgress(data["flag"])}%',
+                              '\n距離成功已完成：${Calculator.calcProgress(data["flag"])}%',
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 color: Color(0xFF0D3B66),
