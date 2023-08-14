@@ -5,6 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:g12/services/Database.dart';
 import 'dart:async';
 
+int? workoutGem;
+int? meditationGem;
+String? workoutFragment;
+String? meditationFragment;
+
 class MilestonePage extends StatefulWidget {
   final Map arguments;
   const MilestonePage({super.key, required this.arguments});
@@ -15,15 +20,7 @@ class MilestonePage extends StatefulWidget {
 
 }
 
-
-
-
 class _MilestonePage extends State<MilestonePage> {
-  int? _workoutGem;
-  int? _meditationGem;
-  String? _workoutFragment;
-  String? _meditationFragment;
-
   void initState() {
     super.initState();
     _fetchExistingMilestoneData();
@@ -34,10 +31,10 @@ class _MilestonePage extends State<MilestonePage> {
     Map<String?, dynamic>? milestoneData = await MilestoneDB.getMilestone();
     if (milestoneData != null) {
       setState(() {
-        _workoutGem = milestoneData["workoutGem"];
-        _meditationGem = milestoneData["meditationGem"];
-        _workoutFragment = milestoneData["workoutFragment"];
-        _workoutFragment = milestoneData["workoutFragment"];
+        workoutGem = milestoneData["workoutGem"];
+        meditationGem = milestoneData["meditationGem"];
+        workoutFragment = milestoneData["workoutFragment"];
+        workoutFragment = milestoneData["workoutFragment"];
       });
     }
   }
@@ -137,29 +134,8 @@ class CharacterWidget extends StatelessWidget {
   }
   }*/
   Widget build(BuildContext context) {
-    String? _workoutGem;
-    String? _meditationGem;
-    String? _workoutFragment;
-    String? _meditationFragment;
-    double? workoutPersent;
+    double? workoutPercent;
 
-    void getPlanData() async {
-      Map<String?, dynamic>? milestoneData = await MilestoneDB.getMilestone();
-      if (milestoneData != null) {
-
-        _workoutGem = milestoneData["workoutGem"];
-        _meditationGem = milestoneData["meditationGem"];
-        _workoutFragment = milestoneData["workoutFragment"];
-        _meditationFragment = milestoneData["meditationFragment"];
-
-        print("測試");
-        print(_workoutGem);
-        print(_workoutFragment);
-        workoutPersent=double.parse(_workoutGem!)/10;
-        print(workoutPersent);
-
-      };
-    }
     //getPlanData();
     /*double getworkoutPersent() {
 
@@ -181,7 +157,7 @@ class CharacterWidget extends StatelessWidget {
 
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    getPlanData();
+    //getPlanData();
     return Stack(
 
       children: [
