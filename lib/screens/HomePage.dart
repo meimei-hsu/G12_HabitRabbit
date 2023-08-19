@@ -4,8 +4,6 @@ import 'package:banner_carousel/banner_carousel.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:motion_toast/resources/arrays.dart';
-import 'package:motion_toast/motion_toast.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -58,6 +56,7 @@ class HomepageState extends State<Homepage> {
   get isThisWeek => Calendar.isThisWeek(_selectedDay!);
 
   bool isBefore = false;
+  bool isAfter = false;
   bool isToday = true;
 
   String time = "今天";
@@ -96,7 +95,10 @@ class HomepageState extends State<Homepage> {
               if (id == "1") {
                 Navigator.pushNamed(context, '/detail/exercise', arguments: {
                   'user': user,
+                  'day': _selectedDay,
                   'isToday': isToday ? true : false,
+                  'isBefore': isBefore ? true : false,
+                  'isAfter': isAfter? true:false,
                   'percentage': workoutProgress,
                   'currentIndex': currentIndex,
                   'workoutPlan': workoutPlan
@@ -107,7 +109,10 @@ class HomepageState extends State<Homepage> {
               if (id == "2") {
                 Navigator.pushNamed(context, '/detail/meditation', arguments: {
                   'user': user,
+                  'day': _selectedDay,
                   'isToday': isToday ? true : false,
+                  'isBefore': isBefore ? true : false,
+                  'isAfter': isAfter? true:false,
                   'percentage': meditationProgress,
                   //'currentIndex': currentIndex,
                   'meditationPlan': meditationPlan
@@ -152,16 +157,6 @@ class HomepageState extends State<Homepage> {
               : "$time有運動和冥想計畫\n記得要來完成噢~";
     }
     return dialogText;
-  }
-
-  void _showChangeExerciseDayDialog() async {
-    await showDialog<double>(
-      context: context,
-      builder: (context) =>
-          ChangeExerciseDayDialog(arguments: {"selectedDay": _selectedDay}),
-    ).then((_) {
-      refresh();
-    });
   }
 
   void getPlanData() async {
@@ -245,6 +240,9 @@ class HomepageState extends State<Homepage> {
       isBefore =
           DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day)
               .isBefore(_focusedDay);
+      isAfter =
+          DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day)
+              .isAfter(_focusedDay);
       isToday = (DateTime(
               _selectedDay!.year, _selectedDay!.month, _selectedDay!.day) ==
           _focusedDay);
@@ -413,117 +411,6 @@ class HomepageState extends State<Homepage> {
                   ),
                 ),
                 //const SizedBox(height: 10),
-                // TODO: 加入冥想判斷
-                if (workoutPlan != null) ...[
-                  if (workoutProgress! < 100 && isBefore == false) ...[
-                    Container(
-                        padding: const EdgeInsets.only(right: 10),
-                        height: 60,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Ink(
-                              decoration: const ShapeDecoration(
-                                color: Color(0xfffaf0ca),
-                                shape: CircleBorder(),
-                              ),
-                              child: IconButton(
-                                icon: const Icon(Icons.edit_calendar_outlined),
-                                iconSize: 40,
-                                color: const Color(0xff0d3b66),
-                                tooltip: "修改運動日",
-                                onPressed: () {
-                                  _showChangeExerciseDayDialog();
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            // TODO: Delete after coding (實際無刪除功能, 測試方便而加)
-                            Ink(
-                              decoration: const ShapeDecoration(
-                                color: Color(0xfffbb87f),
-                                shape: CircleBorder(),
-                              ),
-                              child: IconButton(
-                                icon: const Icon(Icons.delete_outline),
-                                iconSize: 40,
-                                color: const Color(0xff0d3b66),
-                                tooltip: "刪除運動計畫",
-                                onPressed: () async {
-                                  await PlanDB.delete(
-                                      Calendar.toKey(_selectedDay!));
-                                  refresh();
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Ink(
-                              decoration: const ShapeDecoration(
-                                color: Color(0xffffa493),
-                                shape: CircleBorder(),
-                              ),
-                              child: IconButton(
-                                icon: const Icon(Icons.cached),
-                                iconSize: 40,
-                                color: const Color(0xff0d3b66),
-                                tooltip: "重新計畫",
-                                onPressed: () {
-                                  PlanAlgo.regenerate(_selectedDay!);
-                                  refresh();
-                                  MotionToast(
-                                    icon: Icons.done_all_rounded,
-                                    primaryColor: const Color(0xffffa493),
-                                    description: Text(
-                                      "${_selectedDay?.month}/"
-                                      "${_selectedDay?.day} 的運動計畫已經更新囉！",
-                                      style: const TextStyle(
-                                        color: Color(0xff0d3b66),
-                                        fontSize: 16,
-                                        letterSpacing: 0,
-                                        fontWeight: FontWeight.bold,
-                                        height: 1,
-                                      ),
-                                    ),
-                                    position: MotionToastPosition.bottom,
-                                    animationType: AnimationType.fromBottom,
-                                    animationCurve: Curves.bounceIn,
-                                    //displaySideBar: false,
-                                  ).show(context);
-                                },
-                              ),
-                            ),
-                            if (meditationPlan != null) ...[
-                              if (meditationProgress! < 100 &&
-                                  isBefore == false) ...[
-                                const SizedBox(width: 10),
-                                // TODO: Delete after coding (實際無刪除功能, 測試方便而加)
-                                Ink(
-                                  decoration: const ShapeDecoration(
-                                    color: Color(0xff0d3b66),
-                                    shape: CircleBorder(),
-                                  ),
-                                  child: IconButton(
-                                    icon: const Icon(Icons.delete_outline),
-                                    iconSize: 40,
-                                    color: const Color(0xfffbb87f),
-                                    tooltip: "刪除冥想計畫",
-                                    onPressed: () async {
-                                      await MeditationPlanDB.delete(
-                                          Calendar.toKey(_selectedDay!));
-                                      refresh();
-                                    },
-                                  ),
-                                ),
-                              ]
-                            ]
-                          ],
-                        )),
-                  ] else ...[
-                    Container()
-                  ]
-                ] else ...[
-                  Container()
-                ],
                 Container(
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   child: Row(
@@ -563,7 +450,7 @@ class HomepageState extends State<Homepage> {
                                           "time": time,
                                           "isToday": isToday
                                         });
-                                      }).then((value) => refresh());
+                                      });
                             } else if (workoutPlan != null &&
                                 meditationPlan == null) {
                               // 運動有、冥想沒有 --> 運動完成度、新增冥想
@@ -586,7 +473,7 @@ class HomepageState extends State<Homepage> {
                                           "time": time,
                                           "isToday": isToday
                                         });
-                                      }).then((value) => refresh());
+                                      });
                             } else if (workoutPlan == null &&
                                 meditationPlan != null) {
                               // 運動沒有、冥想有 --> 冥想完成度、新增運動
@@ -609,7 +496,7 @@ class HomepageState extends State<Homepage> {
                                           "time": time,
                                           "isToday": isToday
                                         });
-                                      }).then((value) => refresh());
+                                      });
                             } else {
                               // 運動有、冥想有 --> 運動完成度、冥想完成度
                               // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
@@ -626,7 +513,7 @@ class HomepageState extends State<Homepage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 10),
                 (workoutPlan != null || meditationPlan != null)
                     ? Expanded(child: getBannerCarousel())
                     : Container(),
@@ -763,13 +650,13 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                   onToggle: (index) {
                     planToAdd = index!;
                     setState(() {});
-                    print(planToAdd);
                   },
                 )
               : Container(),
           const SizedBox(
             height: 10,
           ),
+          // TODO: 新增冥想類型?
           (planToAdd == 0)
               ? Text(
                   "你要在$time新增幾分鐘的運動計畫呢？",
@@ -816,7 +703,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                     ? "$selectedDay add $exerciseTime minutes exercise plan."
                     : "$selectedDay add meditation plan.");
                 if (!mounted) return;
-                Navigator.pop(context);
+                Navigator.pushNamed(context, "/");
               },
               child: const Text(
                 "確定",
@@ -830,202 +717,6 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
           ),
         ],
       ),
-    );
-  }
-}
-
-// TODO: 修改冥想日
-// 修改運動日
-class ChangeExerciseDayDialog extends StatefulWidget {
-  final Map arguments;
-
-  const ChangeExerciseDayDialog({super.key, required this.arguments});
-
-  @override
-  ChangeExerciseDayDialogState createState() => ChangeExerciseDayDialogState();
-}
-
-class ChangeExerciseDayDialogState extends State<ChangeExerciseDayDialog> {
-  late DateTime selectedDay;
-  late DateTime today;
-
-  String changedDayWeekday = "";
-  DateTime changedDayDate = DateTime.now();
-
-  @override
-  void initState() {
-    selectedDay = getDateOnly(widget.arguments['selectedDay']);
-    today = getDateOnly(Calendar.today());
-
-    super.initState();
-  }
-
-  DateTime getDateOnly(DateTime day) {
-    return DateTime(day.year, day.month, day.day);
-  }
-
-  List<Widget> _getAllowedDayList() {
-    List<OutlinedButton> allowedDayList = [];
-    List weekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
-
-    OutlinedButton getDayBtn(int i) {
-      OutlinedButton dayBtn = OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: const CircleBorder(),
-          side: const BorderSide(
-            color: Color(0xff0d3b66),
-          ),
-          backgroundColor: (changedDayWeekday == weekdayNameList[i])
-              ? const Color(0xffffa493)
-              : Colors.white70,
-        ),
-        onPressed: () {
-          setState(() {
-            changedDayWeekday = weekdayNameList[i];
-            changedDayDate = widget.arguments['selectedDay'].add(Duration(
-                days:
-                    (selectedDay.weekday == 7) ? 1 : i - selectedDay.weekday));
-          });
-        },
-        child: Text(
-          weekdayNameList[i],
-          style: const TextStyle(
-            color: Color(0xff0d3b66),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      );
-      return dayBtn;
-    }
-
-    if (selectedDay.weekday == 7) {
-      for (int i = 1; i <= 6; i++) {
-        allowedDayList.add(getDayBtn(i));
-      }
-    } else if (selectedDay == today) {
-      for (int i = selectedDay.weekday + 1; i <= 6; i++) {
-        allowedDayList.add(getDayBtn(i));
-      }
-    } else {
-      for (int i = selectedDay.weekday + 1; i <= 6; i++) {
-        allowedDayList.add(getDayBtn(i));
-      }
-      for (int i = selectedDay.weekday - 1; i >= 0; i--) {
-        if (today.weekday != 7) {
-          if (i >= today.weekday) {
-            allowedDayList.insert(0, getDayBtn(i));
-          }
-        } else {
-          allowedDayList.insert(0, getDayBtn(i));
-        }
-      }
-    }
-    return allowedDayList;
-  }
-
-  List<Widget> _getButtonList() {
-    List<ElevatedButton> btnList = [];
-
-    ElevatedButton cancelBtn = ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-        ),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: const Text(
-          "取消",
-          style: TextStyle(
-            color: Color(0xff0d3b66),
-            fontWeight: FontWeight.bold,
-          ),
-        ));
-    ElevatedButton confirmBtn = ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xfffbb87f),
-        ),
-        onPressed: () async {
-          // FIXME: 如果修改天數，換到已經有計畫的日子怎麼辦? (現在是直接蓋掉原本的)
-          DateTime originalDate = widget.arguments['selectedDay'];
-          await PlanDB.updateDate(originalDate, changedDayDate);
-          print("Change $selectedDay to $changedDayDate 星期$changedDayWeekday.");
-          if (!mounted) return;
-          Navigator.pop(context);
-        },
-        child: const Text(
-          "確定",
-          style: TextStyle(
-            color: Color(0xff0d3b66),
-            fontWeight: FontWeight.bold,
-          ),
-        ));
-    ElevatedButton confirmBtn2 = ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-        ),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: const Text(
-          "確認",
-          style: TextStyle(
-            color: Color(0xff0d3b66),
-            fontWeight: FontWeight.bold,
-          ),
-        ));
-
-    if (selectedDay.isBefore(today)) {
-      btnList.add(confirmBtn2);
-    } else {
-      if (!selectedDay.isAfter(today) && selectedDay.weekday == 6) {
-        btnList.add(confirmBtn2);
-      } else if (selectedDay.isAfter(today) && selectedDay.weekday == 6) {
-        btnList.add(confirmBtn2);
-      } else {
-        btnList.add(cancelBtn);
-        btnList.add(confirmBtn);
-      }
-    }
-    return btnList;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text(
-        "修改運動日",
-        style: TextStyle(
-          color: Color(0xff0d3b66),
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Column(mainAxisSize: MainAxisSize.min, children: [
-        if (selectedDay.isBefore(today)) ...[
-          const Text(
-            "逝者已矣，來者可追......\n認真運動吧！",
-            textAlign: TextAlign.center,
-          ),
-        ] else ...[
-          if (!selectedDay.isAfter(today) && selectedDay.weekday == 6) ...[
-            const Text("今天已經星期六囉~無法再換到別天了！")
-          ] else if (selectedDay.isAfter(today) &&
-              selectedDay.weekday == 6) ...[
-            const Text("星期六的計畫無法換到別天噢！")
-          ] else ...[
-            Text("你要將 ${widget.arguments['selectedDay'].month}/"
-                "${widget.arguments['selectedDay'].day} 的運動計畫移到哪天呢？"),
-            const SizedBox(height: 20),
-            SizedBox(
-              height: MediaQuery.of(context).size.width * 0.1,
-              width: double.maxFinite,
-              child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: _getAllowedDayList()),
-            ),
-          ]
-        ]
-      ]),
-      actions: _getButtonList(),
     );
   }
 }

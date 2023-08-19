@@ -62,6 +62,7 @@ dependencies:
   flutter_easyloading: ^3.0.5
   loading_animation_widget: ^1.2.0
   syncfusion_flutter_charts: ^21.2.4
+  awesome_dialog: ^3.1.0
 
 dev_dependencies:
   flutter_test:
