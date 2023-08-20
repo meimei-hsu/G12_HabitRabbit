@@ -867,18 +867,18 @@ class MeditationPlanDB {
 
 class Calculator {
   // calculate the progress of the given data "completeNum, totalNum"
-  static int calcProgress(String str) {
+  static num calcProgress(String str) {
     var lst = str.split(', ').map(int.parse).toList();
-    return (lst[0] / lst[1] * 100).round(); // percentage
+    return lst[0] / lst[1] * 100; // percentage
   }
 
   // Calculate the number of times user has completed a plan during this week
-  static Future<num?> calcCompletion(List habitDays) async {
+  static num calcCompletion(List habitDays) {
     int complete = 0;
     for (String date in Calendar.thisWeek()) {
-      complete += (calcProgress(date) == 100) ? 1 : 0;
+      complete += (calcProgress(date).round() == 100) ? 1 : 0;
     }
-    return (complete / habitDays.fold(0, (p, c) => c + p) * 100).round();
+    return complete / habitDays.fold(0, (p, c) => c + p) * 100;
   }
 
   // Calculate the number of consecutive completion days
@@ -1132,8 +1132,8 @@ class DurationDB {
   static Future<Map?> getWeekProgress() async {
     Map? durations = await JournalDB.getThisWeek(uid, table);
     if (durations != null) {
-      return durations
-          .map((key, value) => MapEntry(key, Calculator.calcProgress(value)));
+      return durations.map((key, value) =>
+          MapEntry(key, Calculator.calcProgress(value).round()));
     }
     return null;
   }
@@ -1141,13 +1141,13 @@ class DurationDB {
   // Calculate user's workout progress from given date
   static Future<num?> calcProgress(DateTime date) async {
     var record = (await JournalDB.getFromDate(uid, date, table));
-    return (record != null) ? Calculator.calcProgress(record) : null;
+    return (record != null) ? Calculator.calcProgress(record).round() : null;
   }
 
   // Calculate the number of times user has completed a workout plan during this week
   static Future<num?> calcCompletion() async {
     List? days = (await UserDB.getUser())?["workoutDays"];
-    return (days != null) ? Calculator.calcCompletion(days) : null;
+    return (days != null) ? Calculator.calcCompletion(days).round() : null;
   }
 
   // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}
@@ -1215,8 +1215,8 @@ class MeditationDurationDB {
   static Future<Map?> getWeekProgress() async {
     Map? durations = await JournalDB.getThisWeek(uid, table);
     if (durations != null) {
-      return durations
-          .map((key, value) => MapEntry(key, Calculator.calcProgress(value)));
+      return durations.map((key, value) =>
+          MapEntry(key, Calculator.calcProgress(value).round()));
     }
     return null;
   }
@@ -1224,13 +1224,13 @@ class MeditationDurationDB {
   // Calculate user's meditation progress from given date
   static Future<num?> calcProgress(DateTime date) async {
     var record = (await JournalDB.getFromDate(uid, date, table));
-    return (record != null) ? Calculator.calcProgress(record) : null;
+    return (record != null) ? Calculator.calcProgress(record).round() : null;
   }
 
   // Calculate the number of times user has completed a meditation plan during this week
   static Future<num?> calcCompletion() async {
     List? days = (await UserDB.getUser())?["meditationDays"];
-    return (days != null) ? Calculator.calcCompletion(days) : null;
+    return (days != null) ? Calculator.calcCompletion(days).round() : null;
   }
 
   // Update duration data {date: "duration, timeSpan"} from table {table/userID/duration/date}

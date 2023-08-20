@@ -95,7 +95,7 @@ class StatisticPageState extends State<StatisticPage> {
       for (MapEntry entry in exerciseDuration.entries) {
         var exerciseDate = DateTime.parse(entry.key);
         exerciseCompletionRateMap[exerciseDate] =
-            (await DurationDB.calcProgress(exerciseDate) == 100) ? 2 : 1;
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
       }
     }
 
@@ -104,7 +104,7 @@ class StatisticPageState extends State<StatisticPage> {
       for (MapEntry entry in meditationDuration.entries) {
         var meditationDate = DateTime.parse(entry.key);
         meditationCompletionRateMap[meditationDate] =
-            (await DurationDB.calcProgress(meditationDate) == 100) ? 2 : 1;
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
       }
     }
 

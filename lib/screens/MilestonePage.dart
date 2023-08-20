@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:level_map/level_map.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:g12/services/Database.dart';
 import 'dart:async';
 
-int? workoutGem;
-int? meditationGem;
-String? workoutFragment;
-String? meditationFragment;
+int workoutGem = 0;
+int meditationGem = 0;
+String workoutFragment = "";
+String meditationFragment = "";
+bool isFetchingData = true;
 
 class MilestonePage extends StatefulWidget {
   final Map arguments;
@@ -16,15 +16,12 @@ class MilestonePage extends StatefulWidget {
 
   @override
   _MilestonePage createState() => _MilestonePage();
-
-
 }
 
 class _MilestonePage extends State<MilestonePage> {
   void initState() {
     super.initState();
     _fetchExistingMilestoneData();
-
   }
 
   Future<void> _fetchExistingMilestoneData() async {
@@ -34,7 +31,8 @@ class _MilestonePage extends State<MilestonePage> {
         workoutGem = milestoneData["workoutGem"];
         meditationGem = milestoneData["meditationGem"];
         workoutFragment = milestoneData["workoutFragment"];
-        workoutFragment = milestoneData["workoutFragment"];
+        meditationFragment = milestoneData["meditationFragment"];
+        isFetchingData = false;
       });
     }
   }
@@ -100,8 +98,8 @@ class _MilestonePage extends State<MilestonePage> {
                     ),
                   ),
                 ),
-                const Expanded(
-                  child: CharacterWidget(),
+                Expanded(
+                  child: isFetchingData ? Container() : const CharacterWidget(),
                 ),
               ],
             ),
@@ -113,258 +111,192 @@ class _MilestonePage extends State<MilestonePage> {
 }
 
 class CharacterWidget extends StatelessWidget {
-
   const CharacterWidget({super.key});
   @override
-  /*void getPlanData() async {
-    Map<String?, dynamic>? milestoneData = await MilestoneDB.getMilestone();
-    if (milestoneData != null) {
-
-        /*_workoutGem = milestoneData["workoutGem"];
-        _meditationGem = milestoneData["meditationGem"];
-        _workoutFragment = milestoneData["workoutFragment"];
-        _workoutFragment = milestoneData["workoutFragment"];*/
-      };
-    }*/
-
-  @override
-  /*Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-  }*/
   Widget build(BuildContext context) {
-    double? workoutPercent;
-
-    //getPlanData();
-    /*double getworkoutPersent() {
-
-      getPlanData();
-      print("分開");
-      print(_workoutGem);
-      print(_workoutFragment?.split(", "));
-      if(workoutPersent!=null){
-        double a =workoutPersent!;
-      return a;}
-      print("這裡");
-      return 0;
-    }*/
-    //Map<String, dynamic>? milestoneData = await MilestoneDB.getMilestone() ;
-    //Future<Map<String, dynamic>?> milestoneData =  MilestoneDB.getMilestone() as Future<Map<String, dynamic>?>;
-    //Map<String, dynamic> milestoneData = await MilestoneDB.getMilestone() as Map<String, dynamic>;
-    //String? _workoutFragment = milestoneData["workoutFragment"];
-    //print(milestoneData["workoutgem"]);
+    double workoutPercent = Calculator.calcProgress(workoutFragment).toDouble();
+    double meditationPercent = Calculator.calcProgress(meditationFragment).toDouble();
+    double totalPercent = (workoutGem + meditationGem) / 48 * 100;
 
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    //getPlanData();
     return Stack(
-
       children: [
-
-          //FutureBuilder<Map<String, dynamic>?>(
-          // future: MilestoneDB.getMilestone(),
-          //builder(context,snapshot){
-
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: ClipPath(
-              clipper: CharacterCardBackgroundClipper(),
-              child: Container(
-                height: 0.7 * screenHeight,
-                width: 0.9 * screenWidth,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                  ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: ClipPath(
+            clipper: CharacterCardBackgroundClipper(),
+            child: Container(
+              height: 0.7 * screenHeight,
+              width: 0.9 * screenWidth,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
                 ),
               ),
             ),
           ),
-          Align(
-            alignment: const Alignment(2.5, -0.75),
-            //TODO: 根據等級改變角色
-            child: Image.asset(
-              'assets/images/second.png',
-              height: screenHeight * 0.45,
+        ),
+        Align(
+          alignment: const Alignment(2.5, -0.75),
+          //TODO: 根據等級改變角色
+          child: Image.asset(
+            'assets/images/second.png',
+            height: screenHeight * 0.45,
+          ),
+        ),
+        Align(
+          alignment: const Alignment(-0.75, 0.4),
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: FloatingActionButton(
+              onPressed: () {
+                _showQuizDialog(context);
+              },
+              backgroundColor: const Color(0xFFFDFDFD),
+              child: const Icon(Icons.quiz),
             ),
           ),
-          Align(
-            alignment: const Alignment(-0.75, 0.4),
-            child: SizedBox(
-              width: 40,
-              height: 40,
-              child: FloatingActionButton(
-                onPressed: () {
-                  _showQuizDialog(context);
-                },
-                backgroundColor: const Color(0xFFFDFDFD),
-                child: const Icon(Icons.quiz),
-              ),
+        ),
+        Align(
+          alignment: const Alignment(-0.5, 0.4),
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: FloatingActionButton(
+              onPressed: () {
+                _showGrowDialog(context);
+              },
+              backgroundColor: const Color(0xFFFDFDFD),
+              child: const Icon(Icons.more_horiz_outlined),
             ),
           ),
-          Align(
-            alignment: const Alignment(-0.5, 0.4),
-            child: SizedBox(
-              width: 40,
-              height: 40,
-              child: FloatingActionButton(
-                onPressed: () {
-                  _showGrowDialog(context);
-                },
-                backgroundColor: const Color(0xFFFDFDFD),
-                child: const Icon(Icons.more_horiz_outlined),
-              ),
+        ),
+        Align(
+          alignment: const Alignment(-0.25, 0.4),
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Level()),
+                );
+              },
+              backgroundColor: const Color(0xFFFDFDFD),
+              child: const Icon(Icons.map),
             ),
           ),
-          Align(
-            alignment: const Alignment(-0.25, 0.4),
-            child: SizedBox(
-              width: 40,
-              height: 40,
-              child: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Level()),
-                  );
-                },
-                backgroundColor: const Color(0xFFFDFDFD),
-                child: const Icon(Icons.map),
-              ),
+        ),
+        const Align(
+          alignment: Alignment(-0.65, 0.55),
+          child: Text(
+            '本周運動習慣已達成：',
+            style: TextStyle(
+              fontFamily: 'WorkSans',
+              color: Color(0xFF0D3B66),
+              fontSize: 15,
             ),
           ),
-          const Align(
-            alignment: Alignment(-0.65, 0.55),
-            child: Text(
-              '本周運動習慣已達成：',
-              style: TextStyle(
-                fontFamily: 'WorkSans',
-                color: Color(0xFF0D3B66),
-                fontSize: 15,
-              ),
-            ),
-          ),
-          Padding(
-
-            padding: const EdgeInsets.only(left: 35),
-            child:
-
-            Align(
-
-
-              alignment: const Alignment(2, 0.62),
-              child: LinearPercentIndicator(
-
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width * 0.85,
-                animation: true,
-                lineHeight: 15.0,
-
-                //String? fragment=milestoneData["workoutFragment"];
-                //TODO: 根據完成度改變 percent
-
-                percent: 0.8,
-                //percent:MilestoneDB.getWorkoutpercent(),
-                //if(_workoutGem!=null)
-                //percent:double.parse(_workoutGem!)/10,
-                center: const Text(
-                  "80.0%",
-                  style: TextStyle(
-                    color: Color(0xFFFDFDFD),
-                    fontSize: 10,
-                  ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 35),
+          child: Align(
+            alignment: const Alignment(2, 0.62),
+            child: LinearPercentIndicator(
+              width: MediaQuery.of(context).size.width * 0.85,
+              animation: true,
+              lineHeight: 15.0,
+              //TODO: 根據完成度改變 percent
+              percent: workoutPercent / 100,
+              center: Text(
+                "${workoutPercent.round()}%",
+                style: const TextStyle(
+                  color: Color(0xFFFDFDFD),
+                  fontSize: 10,
                 ),
-                barRadius: const Radius.circular(16),
-                backgroundColor: const Color(0xFFFDFDFD),
-                progressColor: const Color(0xFF0D3B66),
               ),
-
+              barRadius: const Radius.circular(16),
+              backgroundColor: const Color(0xFFFDFDFD),
+              progressColor: const Color(0xFF0D3B66),
             ),
           ),
-          const Align(
-            alignment: Alignment(-0.65, 0.69),
-            child: Text(
-              '本周冥想習慣已達成：',
-              style: TextStyle(
-                fontFamily: 'WorkSans',
-                color: Color(0xFF0D3B66),
-                fontSize: 15,
-              ),
+        ),
+        const Align(
+          alignment: Alignment(-0.65, 0.69),
+          child: Text(
+            '本周冥想習慣已達成：',
+            style: TextStyle(
+              fontFamily: 'WorkSans',
+              color: Color(0xFF0D3B66),
+              fontSize: 15,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 35),
-            child: Align(
-              alignment: const Alignment(2, 0.76),
-              child: LinearPercentIndicator(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width * 0.85,
-                animation: true,
-                lineHeight: 15.0,
-                //TODO: 根據完成度改變 percent
-                percent: 0.2,
-                center: const Text(
-                  "20.0%",
-                  style: TextStyle(
-                    color: Color(0xFFFDFDFD),
-                    fontSize: 10,
-                  ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 35),
+          child: Align(
+            alignment: const Alignment(2, 0.76),
+            child: LinearPercentIndicator(
+              width: MediaQuery.of(context).size.width * 0.85,
+              animation: true,
+              lineHeight: 15.0,
+              //TODO: 根據完成度改變 percent
+              percent: meditationPercent / 100,
+              center: Text(
+                "${meditationPercent.round()}%",
+                style: const TextStyle(
+                  color: Color(0xFFFDFDFD),
+                  fontSize: 10,
                 ),
-                barRadius: const Radius.circular(16),
-                backgroundColor: const Color(0xFFFDFDFD),
-                progressColor: const Color(0xFF0D3B66),
               ),
+              barRadius: const Radius.circular(16),
+              backgroundColor: const Color(0xFFFDFDFD),
+              progressColor: const Color(0xFF0D3B66),
             ),
           ),
-          const Align(
-            alignment: Alignment(-0.65, 0.83),
-            child: Text(
-              '距離達成所有習慣養成：',
-              style: TextStyle(
-                fontFamily: 'WorkSans',
-                color: Color(0xFF0D3B66),
-                fontSize: 15,
-              ),
+        ),
+        const Align(
+          alignment: Alignment(-0.65, 0.83),
+          child: Text(
+            '距離達成所有習慣養成：',
+            style: TextStyle(
+              fontFamily: 'WorkSans',
+              color: Color(0xFF0D3B66),
+              fontSize: 15,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 35),
-            child: Align(
-              alignment: const Alignment(2, 0.9),
-              child: LinearPercentIndicator(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width * 0.85,
-                animation: true,
-                lineHeight: 15.0,
-                //TODO: 根據完成度改變 percent
-                percent: 0.6,
-                center: const Text(
-                  "60.0%",
-                  style: TextStyle(
-                    color: Color(0xFFFDFDFD),
-                    fontSize: 10,
-                  ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 35),
+          child: Align(
+            alignment: const Alignment(2, 0.9),
+            child: LinearPercentIndicator(
+              width: MediaQuery.of(context).size.width * 0.85,
+              animation: true,
+              lineHeight: 15.0,
+              //TODO: 根據完成度改變 percent
+              percent: totalPercent / 100,
+              center: Text(
+                "${totalPercent.round()}%",
+                style: const TextStyle(
+                  color: Color(0xFFFDFDFD),
+                  fontSize: 10,
                 ),
-                barRadius: const Radius.circular(16),
-                backgroundColor: const Color(0xFFFDFDFD),
-                progressColor: const Color(0xFF0D3B66),
               ),
+              barRadius: const Radius.circular(16),
+              backgroundColor: const Color(0xFFFDFDFD),
+              progressColor: const Color(0xFF0D3B66),
             ),
           ),
-          // },
-          //),
-
+        ),
+        // },
+        //),
       ],
-
     );
   }
 
@@ -441,28 +373,6 @@ class QuizDialog extends StatefulWidget {
 }
 
 class _QuizDialogState extends State<QuizDialog> {
-  String? _workoutGem;
-  String? _meditationGem;
-  String? _workoutFragment;
-  String? _meditationFragment;
-
-  void initState() {
-    super.initState();
-    _fetchExistingMilestoneData();
-
-  }
-
-  Future<void> _fetchExistingMilestoneData() async {
-    Map<String?, dynamic>? milestoneData = await MilestoneDB.getMilestone();
-    if (milestoneData != null) {
-      setState(() {
-        _workoutGem = milestoneData["workoutGem"];
-        _meditationGem = milestoneData["meditationGem"];
-        _workoutFragment = milestoneData["workoutFragment"];
-        _workoutFragment = milestoneData["workoutFragment"];
-      });
-    }
-  }
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -505,21 +415,17 @@ class _QuizDialogState extends State<QuizDialog> {
                 child: Wrap(
                   spacing: 5,
                   runSpacing: 10,
-
                   children: [
-                    if(_workoutGem!=null)
-                      for (int i = 0; i < int.parse(_workoutGem!); i++) //運寶數量
+                      for (int i = 0; i < workoutGem; i++) //運寶數量
                         Image.asset(
                           height: 35,
                           width: 35,
                           'assets/images/treasure.png',
                         ),
-
                   ],
                 ),
               ),
             ),
-
             const SizedBox(height: 5.0),
             Text(
               '冥想寶物',
@@ -546,26 +452,23 @@ class _QuizDialogState extends State<QuizDialog> {
                   spacing: 5,
                   runSpacing: 10,
                   children: [
-                    if(_meditationGem!=null)
-                    for (int i = 0; i <int.parse(_meditationGem!) ; i++)//冥寶數量
-                      Image.asset(
-                        height: 35,
-                        width: 35,
-                        'assets/images/treasure.png',
-                      ),
+                      for (int i = 0;
+                          i < meditationGem;
+                          i++) //冥寶數量
+                        Image.asset(
+                          height: 35,
+                          width: 35,
+                          'assets/images/treasure.png',
+                        ),
                   ],
                 ),
               ),
             ),
           ],
-
         ),
       ),
-
     );
-
   }
-
 }
 
 //more
@@ -716,33 +619,7 @@ class Level extends StatefulWidget {
 }
 
 class _Level extends State<Level> {
-  String? _workoutGem;
-  String? _meditationGem;
-  String? _workoutFragment;
-  String? _meditationFragment;
-  double? l;
-  void initState() {
-    super.initState();
-    _fetchExistingMilestoneData();
-
-  }
-
-  Future<void> _fetchExistingMilestoneData() async {
-    Map<String?, dynamic>? milestoneData = await MilestoneDB.getMilestone();
-    if (milestoneData != null) {
-      setState(() {
-        _workoutGem = milestoneData["workoutGem"];
-        _meditationGem = milestoneData["meditationGem"];
-        _workoutFragment = milestoneData["workoutFragment"];
-        _workoutFragment = milestoneData["workoutFragment"];
-      });
-      l=double.parse(_workoutGem!)+double.parse(_meditationGem!);
-      print(l);
-    }
-  }
-  double user_currentLevel = 1; // 初始等級均為1
-
-  //double? user_currentLevel = l;
+  double level = (workoutGem + meditationGem).toDouble();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -762,7 +639,7 @@ class _Level extends State<Level> {
               levelCount: 48,
               //levelHeight: 50,
               //currentLevel: user_currentLevel,
-              currentLevel: l!,
+              currentLevel: level,
               pathColor: Colors.black,
               currentLevelImage: ImageParams(
                 path: "assets/images/second.png",

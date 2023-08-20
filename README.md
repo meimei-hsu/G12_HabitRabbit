@@ -6,24 +6,30 @@ A milestone habit App.
 
 ```
 ---CRUD.dart 
-    |---DB        (general database operations: create, read, update, delete)
-    |---JournalDB (database operations for JournalDB)
+    |---DB                  (general database operations: create, read, update, delete)
+    |---JournalDB           (database operations for JournalDB)
 ---Database.dart
-    |---Calendar  (get the days of the current and following weeks)
-    |---UserDB    (database operations for the users table)
-    |---ContractDB(database operations for the contract table)
-    |---WorkoutDB (database operations for the workouts table)
-    |---MeditateDB(database operations for the meditations table)
-    |---PlanDB    (database operations for the plan children of the journal table)
-    |---DurationDB(database operations for the duration children of the journal table)
-    |---WeightDB  (database operations for the weight children of the journal table)
+    |---Calendar            (get the days of the current and following weeks)
+    |---UserDB              (database operations for the users table)
+    |---ContractDB          (database operations for the contract table)
+    |---WorkoutDB           (database operations for the workouts table)
+    |---MeditateDB          (database operations for the meditations table)
+    |---PlanDB              (database operations for the workoutPlan children of the journal table)
+    |---MeditationPlanDB    (database operations for the meditationPlan children of the journal table)
+    |---Calculator          (statistic calculations for the DurationDB)
+    |---DurationDB          (database operations for the workoutDuration children of the journal table)
+    |---MeditationDurationDB(database operations for the meditationDuration children of the journal table)
+    |---WeightDB            (database operations for the weight children of the journal table)
 ---PlanAlgo.dart
-    |---PlanAlgo  (execute point of the planning algorithm)
-    |---Algorithm (generate plan from the planning algorithm)    
-    |---PlanData  (process the data in advance of running the algorithm)
+    |---PlanAlgo            (execute point of the workout planning algorithm)
+    |---Algorithm           (generate plan from the workout planning algorithm)    
+    |---PlanData            (process the workout data in advance of running the algorithm)
+    |---MeditationPlanAlgo  (execute point of the meditaion planning algorithm)
+    |---MeditationAlgorithm (generate plan from the meditaion planning algorithm)    
+    |---MeditationPlanData  (process the meditaion data in advance of running the algorithm)
 ---Authentication.dart
-    |---FireAuth  (user authentication by firebase)
-    |---Validate  (check if the users' input are correct)
+    |---FireAuth            (user authentication by firebase)
+    |---Validate            (check if the users' input are correct)
 ```
 
 ```
