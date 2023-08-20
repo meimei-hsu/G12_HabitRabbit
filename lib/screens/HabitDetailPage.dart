@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+
+import 'package:g12/screens/PageMaterial.dart';
 
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
@@ -191,95 +192,13 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     onSelected: (value) async {
                       if (value == 1) {
                         if (!isAfter && day?.weekday == 6) {
-                          AwesomeDialog(
-                            context: context,
-                            dialogType: DialogType.noHeader,
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            buttonsBorderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            dialogBackgroundColor: const Color(0xfffdfdf5),
-                            dismissOnTouchOutside: true,
-                            dismissOnBackKeyPress: true,
-                            headerAnimationLoop: false,
-                            animType: AnimType.bottomSlide,
-                            body: const Center(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "無法修改:(",
-                                    style: TextStyle(
-                                        color: Color(0xfff6cdb7),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "今天已經星期六囉~\n無法再將計畫換到別天了！",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Color(0xff4b4370),
-                                      fontSize: 16,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            btnOkText: '好吧',
-                            btnOkColor: const Color(0xfff6cdb7),
-                            buttonsTextStyle: const TextStyle(
-                                color: Color(0xff4b4370),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                            btnOkOnPress: () {},
-                          ).show();
+                          InformDialog()
+                              .get(context, "無法修改:(", "今天已經星期六囉~\n無法再將計畫換到別天了！")
+                              .show();
                         } else if (isAfter && day?.weekday == 6) {
-                          AwesomeDialog(
-                            context: context,
-                            dialogType: DialogType.noHeader,
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            buttonsBorderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            dialogBackgroundColor: const Color(0xfffdfdf5),
-                            dismissOnTouchOutside: true,
-                            dismissOnBackKeyPress: true,
-                            headerAnimationLoop: false,
-                            animType: AnimType.bottomSlide,
-                            body: const Center(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "無法修改:(",
-                                    style: TextStyle(
-                                        color: Color(0xfff6cdb7),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "星期六的計畫無法換到別天噢！",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Color(0xff4b4370),
-                                      fontSize: 16,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            btnOkText: '好吧',
-                            btnOkColor: const Color(0xfff6cdb7),
-                            buttonsTextStyle: const TextStyle(
-                                color: Color(0xff4b4370),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                            btnOkOnPress: () {},
-                          ).show();
+                          InformDialog()
+                              .get(context, "無法修改:(", "星期六的計畫無法換到別天噢！")
+                              .show();
                         } else {
                           showModalBottomSheet(
                               shape: const RoundedRectangleBorder(
@@ -298,99 +217,45 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                               });
                         }
                       } else if (value == 2) {
-                        AwesomeDialog(
-                                context: context,
-                                dialogType: DialogType.noHeader,
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                buttonsBorderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                dialogBackgroundColor: const Color(0xfffdfdf5),
-                                dismissOnTouchOutside: true,
-                                dismissOnBackKeyPress: true,
-                                headerAnimationLoop: false,
-                                animType: AnimType.bottomSlide,
-                                body: Center(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "確定要重新生成${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的運動計畫嗎？",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            color: Color(0xff4b4370),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                btnOkText: '確定',
-                                btnOkColor: const Color(0xfff6cdb7),
-                                buttonsTextStyle: const TextStyle(
-                                    color: Color(0xff4b4370),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                                btnOkOnPress: () {
-                                  PlanAlgo.regenerate(day!);
-                                  setState(() {
-                                    isFetchingData = true;
-                                  });
-                                  Timer(const Duration(seconds: 5), () async {
-                                    var plan = await PlanDB.getThisWeekByName();
-                                    var progress =
-                                        await DurationDB.getWeekProgress();
-                                    setState(() {
-                                      workoutPlan = plan?[Calendar.toKey(day!)];
-                                      workoutProgress =
-                                          progress?[Calendar.toKey(day!)];
-                                      isFetchingData = false;
-                                    });
-                                  });
-                                },
-                                btnCancelText: '取消',
-                                btnCancelColor: const Color(0xfffdfdf5),
-                                btnCancelOnPress: () {})
+                        btnOkOnPress() {
+                          PlanAlgo.regenerate(day!);
+                          setState(() {
+                            isFetchingData = true;
+                          });
+                          Timer(const Duration(seconds: 5), () async {
+                            var plan = await PlanDB.getThisWeekByName();
+                            var progress = await DurationDB.getWeekProgress();
+                            setState(() {
+                              workoutPlan = plan?[Calendar.toKey(day!)];
+                              workoutProgress = progress?[Calendar.toKey(day!)];
+                              isFetchingData = false;
+                            });
+                            InformDialog()
+                                .get(context, "完成重新生成:)",
+                                    "${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的運動計畫\n已經重新生成囉！")
+                                .show();
+                          });
+                        }
+
+                        ConfirmDialog()
+                            .get(
+                                context,
+                                "你確定嗎？",
+                                "確定要重新生成\n${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的運動計畫嗎？",
+                                btnOkOnPress)
                             .show();
                       } else {
-                        AwesomeDialog(
-                                context: context,
-                                dialogType: DialogType.noHeader,
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                buttonsBorderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                dialogBackgroundColor: const Color(0xfffdfdf5),
-                                dismissOnTouchOutside: true,
-                                dismissOnBackKeyPress: true,
-                                headerAnimationLoop: false,
-                                animType: AnimType.bottomSlide,
-                                body: Center(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "確定要刪除${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的運動計畫嗎？",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            color: Color(0xff4b4370),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                btnOkText: '確定',
-                                btnOkColor: const Color(0xfff6cdb7),
-                                buttonsTextStyle: const TextStyle(
-                                    color: Color(0xff4b4370),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                                btnOkOnPress: () async {
-                                  await PlanDB.delete(Calendar.toKey(day!));
-                                  Navigator.pushNamed(context, "/");
-                                },
-                                btnCancelText: '取消',
-                                btnCancelColor: const Color(0xfffdfdf5),
-                                btnCancelOnPress: () {})
+                        btnOkOnPress() async {
+                          await PlanDB.delete(Calendar.toKey(day!));
+                          Navigator.pushNamed(context, "/");
+                        }
+
+                        ConfirmDialog()
+                            .get(
+                                context,
+                                "你確定嗎？",
+                                "確定要刪除\n${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的運動計畫嗎？",
+                                btnOkOnPress)
                             .show();
                       }
                     },
@@ -664,95 +529,13 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                     onSelected: (value) async {
                       if (value == 1) {
                         if (!isAfter && day?.weekday == 6) {
-                          AwesomeDialog(
-                            context: context,
-                            dialogType: DialogType.noHeader,
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            buttonsBorderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            dialogBackgroundColor: const Color(0xfffdfdf5),
-                            dismissOnTouchOutside: true,
-                            dismissOnBackKeyPress: true,
-                            headerAnimationLoop: false,
-                            animType: AnimType.bottomSlide,
-                            body: const Center(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "無法修改:(",
-                                    style: TextStyle(
-                                        color: Color(0xfff6cdb7),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "今天已經星期六囉~\n無法再將計畫換到別天了！",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Color(0xff4b4370),
-                                      fontSize: 16,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            btnOkText: '好吧',
-                            btnOkColor: const Color(0xfff6cdb7),
-                            buttonsTextStyle: const TextStyle(
-                                color: Color(0xff4b4370),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                            btnOkOnPress: () {},
-                          ).show();
+                          InformDialog()
+                              .get(context, "無法修改:(", "今天已經星期六囉~\n無法再將計畫換到別天了！")
+                              .show();
                         } else if (isAfter && day?.weekday == 6) {
-                          AwesomeDialog(
-                            context: context,
-                            dialogType: DialogType.noHeader,
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            buttonsBorderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            dialogBackgroundColor: const Color(0xfffdfdf5),
-                            dismissOnTouchOutside: true,
-                            dismissOnBackKeyPress: true,
-                            headerAnimationLoop: false,
-                            animType: AnimType.bottomSlide,
-                            body: const Center(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "無法修改:(",
-                                    style: TextStyle(
-                                        color: Color(0xfff6cdb7),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "星期六的計畫無法換到別天噢！",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Color(0xff4b4370),
-                                      fontSize: 16,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            btnOkText: '好吧',
-                            btnOkColor: const Color(0xfff6cdb7),
-                            buttonsTextStyle: const TextStyle(
-                                color: Color(0xff4b4370),
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                            btnOkOnPress: () {},
-                          ).show();
+                          InformDialog()
+                              .get(context, "無法修改:(", "星期六的計畫無法換到別天噢！")
+                              .show();
                         } else {
                           showModalBottomSheet(
                               shape: const RoundedRectangleBorder(
@@ -771,102 +554,48 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                               });
                         }
                       } else if (value == 2) {
-                        AwesomeDialog(
-                                context: context,
-                                dialogType: DialogType.noHeader,
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                buttonsBorderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                dialogBackgroundColor: const Color(0xfffdfdf5),
-                                dismissOnTouchOutside: true,
-                                dismissOnBackKeyPress: true,
-                                headerAnimationLoop: false,
-                                animType: AnimType.bottomSlide,
-                                body: Center(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "確定要重新生成${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的冥想計畫嗎？",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            color: Color(0xff4b4370),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                btnOkText: '確定',
-                                btnOkColor: const Color(0xfff6cdb7),
-                                buttonsTextStyle: const TextStyle(
-                                    color: Color(0xff4b4370),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                                btnOkOnPress: () {
-                                  MeditationPlanAlgo.regenerate(day!);
-                                  setState(() {
-                                    isFetchingData = true;
-                                  });
-                                  Timer(const Duration(seconds: 5), () async {
-                                    var plan = await MeditationPlanDB
-                                        .getThisWeekByName();
-                                    var progress = await MeditationDurationDB
-                                        .getWeekProgress();
-                                    setState(() {
-                                      meditationPlan =
-                                          plan?[Calendar.toKey(day!)];
-                                      meditationProgress =
-                                          progress?[Calendar.toKey(day!)];
-                                      isFetchingData = false;
-                                    });
-                                  });
-                                },
-                                btnCancelText: '取消',
-                                btnCancelColor: const Color(0xfffdfdf5),
-                                btnCancelOnPress: () {})
+                        btnOkOnPress() {
+                          MeditationPlanAlgo.regenerate(day!);
+                          setState(() {
+                            isFetchingData = true;
+                          });
+                          Timer(const Duration(seconds: 5), () async {
+                            var plan =
+                                await MeditationPlanDB.getThisWeekByName();
+                            var progress =
+                                await MeditationDurationDB.getWeekProgress();
+                            setState(() {
+                              meditationPlan = plan?[Calendar.toKey(day!)];
+                              meditationProgress =
+                                  progress?[Calendar.toKey(day!)];
+                              isFetchingData = false;
+                            });
+                            InformDialog()
+                                .get(context, "完成重新生成:)",
+                                    "${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的冥想計畫\n已經重新生成囉！")
+                                .show();
+                          });
+                        }
+
+                        ConfirmDialog()
+                            .get(
+                                context,
+                                "你確定嗎？",
+                                "確定要重新生成\n${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的冥想計畫嗎？",
+                                btnOkOnPress)
                             .show();
                       } else {
-                        AwesomeDialog(
-                                context: context,
-                                dialogType: DialogType.noHeader,
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                buttonsBorderRadius: const BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                dialogBackgroundColor: const Color(0xfffdfdf5),
-                                dismissOnTouchOutside: true,
-                                dismissOnBackKeyPress: true,
-                                headerAnimationLoop: false,
-                                animType: AnimType.bottomSlide,
-                                body: Center(
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "確定要刪除${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的冥想計畫嗎？",
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            color: Color(0xfff6cdb7),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                btnOkText: '確定',
-                                btnOkColor: const Color(0xfff6cdb7),
-                                buttonsTextStyle: const TextStyle(
-                                    color: Color(0xff4b4370),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                                btnOkOnPress: () async {
-                                  await MeditationPlanDB.delete(
-                                      Calendar.toKey(day!));
-                                  Navigator.pushNamed(context, "/");
-                                },
-                                btnCancelText: '取消',
-                                btnCancelColor: const Color(0xfffdfdf5),
-                                btnCancelOnPress: () {})
+                        btnOkOnPress() async {
+                          await MeditationPlanDB.delete(Calendar.toKey(day!));
+                          Navigator.pushNamed(context, "/");
+                        }
+
+                        ConfirmDialog()
+                            .get(
+                                context,
+                                "你確定嗎？",
+                                "確定要刪除\n${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的冥想計畫嗎？",
+                                btnOkOnPress)
                             .show();
                       }
                     },
@@ -1240,11 +969,11 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
         style: OutlinedButton.styleFrom(
           shape: const CircleBorder(),
           side: const BorderSide(
-            color: Color(0xff0d3b66),
+            color: Color(0xff4b4370),
           ),
           backgroundColor: (changedDayWeekday == weekdayNameList[i])
-              ? const Color(0xffffa493)
-              : Colors.white70,
+              ? const Color(0xfff6cdb7)
+              : const Color(0xfffdfdf5),
         ),
         onPressed: () {
           setState(() {
@@ -1256,7 +985,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
         child: Text(
           weekdayNameList[i],
           style: const TextStyle(
-            color: Color(0xff0d3b66),
+            color: Color(0xff4b4370),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -1321,17 +1050,18 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
             ),
           ),
           Text(
-              "你要將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫換到哪天呢？"),
-          const SizedBox(height: 20),
+              "你要將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫換到哪天呢？",
+              style: const TextStyle(color: Color(0xff4b4370), fontSize: 16)),
+          const SizedBox(height: 10),
           SizedBox(
             height: MediaQuery.of(context).size.width * 0.1,
-            width: double.maxFinite,
+            width: MediaQuery.of(context).size.width * 0.8,
             child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: _getAllowedDayList()),
           ),
           const SizedBox(
-            height: 10,
+            height: 15,
           ),
           Container(
             padding: const EdgeInsets.only(left: 20, right: 18),
@@ -1355,8 +1085,17 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
                 print(
                     "Change $day's ${(type == 0) ? "workout plan" : "meditation plan"} to $changedDayDate 星期$changedDayWeekday.");
                 if (!mounted) return;
-                Navigator.pop(context);
-                //Navigator.pushNamed(context, "/");
+
+                btnOkOnPress() {
+                  Navigator.pushNamed(context, "/");
+                  print("Change!!!");
+                }
+
+                InformDialog()
+                    .get(context, "修改完成:)",
+                        "已經將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫\n換到 ${changedDayDate.month} / ${changedDayDate.day} 星期$changedDayWeekday囉！",
+                        btnOkOnPress: btnOkOnPress)
+                    .show();
               },
               child: const Text(
                 "確定",

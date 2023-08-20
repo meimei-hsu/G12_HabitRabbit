@@ -249,7 +249,7 @@ class HomepageState extends State<Homepage> {
     });
     setState(() {
       time =
-          (isToday) ? "今天" : "${_selectedDay!.month} / ${_selectedDay!.day} ";
+          (isToday) ? "今天" : " ${_selectedDay!.month} / ${_selectedDay!.day} ";
     });
   }
 

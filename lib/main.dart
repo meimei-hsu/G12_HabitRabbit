@@ -58,7 +58,14 @@ class BottomNavigationControllerState
   // 目前選擇頁索引值
   int _currentIndex = 2; // 預設值 = homepage
   // TODO: 確認 arguments 會不會有問題
-  List<Widget> pages = [];
+  // 先初始一個 list 才不會出現 RangeError (index): Invalid value: Valid value range is empty: 2
+  List<Widget> pages = [
+    const StatisticPage(arguments: {}),
+    const MilestonePage(arguments: {}),
+    const Homepage(),
+    const AlreadyContractPage(),
+    const SettingsPage(arguments: {}),
+  ];
 
   //判斷有無立合約決定要跳頁面
   @override
