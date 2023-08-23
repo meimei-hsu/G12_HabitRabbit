@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
@@ -593,9 +594,42 @@ class StatisticPageState extends State<StatisticPage> {
                                 visualDensity:
                                     const VisualDensity(vertical: -4),
                               ),
-                              (consecutiveDays == 0)
-                                  ? const Text("連續完成運動天數 coming soon")
-                                  : const Text("連續完成冥想天數 coming soon")
+                              (consecutiveDays ==0)
+                                  ? SfCartesianChart(
+                                primaryXAxis: CategoryAxis(
+                                  axisLine: const AxisLine(
+                                    color: Color(0xff4b4370),
+                                    width: 0.6,
+                                  ),
+                                ),
+                                primaryYAxis: NumericAxis(
+                                  axisLine: const AxisLine(width: 0),
+                                  labelStyle: const TextStyle(
+                                    fontSize: 10,
+                                  ),
+                                  numberFormat: NumberFormat('#,##0 天'),
+                                ),
+                                series: <BarSeries<ChartData, String>>[
+                                  BarSeries<ChartData, String>(
+                                    dataSource: [
+                                      ChartData('4/30-5/2', 2),
+                                      ChartData('5/6-5/13', 5),
+                                    ],
+                                    xValueMapper: (ChartData data, _) => data.x,
+                                    yValueMapper: (ChartData data, _) => data.y,
+                                    color: const Color(0xffd4d6fc),
+                                    borderRadius:
+                                    const BorderRadius.only(
+                                        topRight:
+                                        Radius.circular(10),
+                                        bottomRight:
+                                        Radius.circular(10)
+                                    ),
+                                    width: 0.4,
+                                  ),
+                                ],
+                              )
+                                  : const Text("冥想沒有連續完成天數"),
                             ])),
                         const SizedBox(
                           height: 15,
@@ -649,8 +683,72 @@ class StatisticPageState extends State<StatisticPage> {
                                     const VisualDensity(vertical: -4),
                               ),
                               (accumulatedTime == 0)
-                                  ? const Text("運動累積時長 coming soon")
-                                  : const Text("冥想累積時長 coming soon")
+                                  ? SfCircularChart(
+                                  legend: Legend(isVisible: true),
+                                  series: <CircularSeries<ChartData, String>>[
+                                    DoughnutSeries<ChartData, String>(
+                                      dataSource: [
+                                        ChartData('瑜珈', 30),
+                                        ChartData('有氧', 40),
+                                        ChartData('重訓', 20),
+                                      ],
+                                      innerRadius: '40%',
+                                      xValueMapper: (ChartData data, _) => data.x,
+                                      yValueMapper: (ChartData data, _) => data.y,
+                                      //顯示數字(趴數)
+                                      dataLabelSettings: const DataLabelSettings(
+                                        isVisible: true,
+                                      ),
+                                      // 刪掉動畫
+                                      animationDuration: 0,
+                                      animationDelay: 0,
+                                      /*pointColorMapper: (ChartData data, _) {
+          if (data.x == '瑜珈') {
+            return const Color.fromRGBO(246, 205, 183, 0.4);
+          } else if (data.x == '有氧') {
+            return const Color.fromRGBO(246, 205, 183, 0.6);
+          } else if (data.x == '重訓') {
+            return const Color.fromRGBO(246, 205, 183, 0.8);
+          }
+          return const Color(0xfff6cdb7);
+        },*/
+                                    ),
+                                  ])
+                                  : SfCircularChart(
+                                  legend: Legend(isVisible: true),
+                                  series: <CircularSeries<ChartData,
+                                      String>>[
+                                    DoughnutSeries<ChartData, String>(
+                                      dataSource: [
+                                        ChartData('正念', 20),
+                                        ChartData('身體掃描', 30),
+                                        ChartData('視覺化', 25),
+                                        ChartData('慈愛', 25),
+                                      ],
+                                      innerRadius: '40%',
+                                      xValueMapper: (ChartData data, _) => data.x,
+                                      yValueMapper: (ChartData data, _) => data.y,
+                                      dataLabelSettings:
+                                      const DataLabelSettings(
+                                        isVisible: true,
+                                      ),
+                                      // 刪掉動畫
+                                      animationDuration: 0,
+                                      animationDelay: 0,
+                                      /*pointColorMapper: (ChartData data, _) {
+          if (data.x == '正念') {
+            return const Color.fromRGBO(212, 214, 252, 0.35);
+          } else if (data.x == '身體掃描') {
+            return const Color.fromRGBO(212, 214, 252, 0.5);
+          } else if (data.x == '視覺化') {
+            return const Color.fromRGBO(212, 214, 252, 0.65);
+          } else if (data.x == '慈愛') {
+            return const Color.fromRGBO(212, 214, 252, 0.8);
+          }
+          return const Color(0xffd4d6fc);
+        },*/
+                                    ),
+                                  ]),
                             ])),
                         const SizedBox(
                           height: 15,
