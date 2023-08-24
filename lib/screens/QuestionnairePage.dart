@@ -243,7 +243,8 @@ class OptionsWidget extends StatelessWidget {
     } else {
       // Q10
       return GridView.count(
-        crossAxisCount: 2, // number of columns
+        crossAxisCount: 2,
+        // number of columns
         mainAxisSpacing: 8,
         crossAxisSpacing: 8,
         childAspectRatio: 1.7,
@@ -308,21 +309,24 @@ class OptionsWidget extends StatelessWidget {
     }
   }
 
-  // FIXME: Overflow problem: option's description in part 2
   Widget buildDescription(Option option) {
     final color = getForeground(option);
 
     if (question.selectedOptions.contains(option)) {
-      return Row(children: [
-        const SizedBox(width: 12),
-        SizedBox(
-          width: 200,
-          child: Text(
-            option.description,
-            style: TextStyle(
-                color: color, fontSize: 16, fontStyle: FontStyle.italic),
-          ),
-        ),
+      return Column(children: [
+        Row(children: [
+          const SizedBox(width: 12),
+          Expanded(
+              child: SizedBox(
+            width: 200,
+            child: Text(
+              option.description,
+              style: TextStyle(
+                  color: color, fontSize: 16, fontStyle: FontStyle.italic),
+            ),
+          )),
+        ]),
+        const SizedBox(height: 15,)
       ]);
     } else {
       return Container();
@@ -546,6 +550,8 @@ class _PartOnePageState extends State<PartOnePage> {
   TextEditingController heightController = TextEditingController();
   TextEditingController weightController = TextEditingController();
 
+  final ScrollController _scrollController = ScrollController();
+
   bool checkCompletion() {
     for (String key in keys) {
       if (userInfo[key] == "") return false;
@@ -576,234 +582,244 @@ class _PartOnePageState extends State<PartOnePage> {
     super.dispose();
   }
 
+  // FIXME: Overflow problem has fixed, but there is also "Incorrect use of ParentDataWidget." problem need to fix.
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset:
-            false, // prevent overflow problem when onscreen keyboard displayed
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(backgroundColor: Colors.white, elevation: 0.0),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(36, 48, 36, 12),
-              child: Container(
-                alignment: Alignment.center,
-                height: MediaQuery.of(context).size.height * 0.75,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 48),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(
-                        '性別',
-                        style: getQuestionStyle(),
-                      ),
+        body: ListView(controller: _scrollController, children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(35, 50, 35, 0),
+            child: Container(
+              alignment: Alignment.center,
+              height: MediaQuery.of(context).size.height * 0.7,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.fromLTRB(5, 18, 5, 18),
+              child: Expanded(
+                  child: SingleChildScrollView(
+                      child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //const SizedBox(height: 35),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      '性別',
+                      style: getQuestionStyle(),
                     ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  getBackgroundColor("gender", "男"), // 按鈕顏色設定
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                userInfo['gender'] = "男";
-                                isComplete = checkCompletion();
-                              });
-                            },
-                            child: Text(
-                              "男",
-                              style: TextStyle(
-                                color:
-                                    getForegroundColor("gender", "男"), // 字體顏色設定
-                                fontSize: 18,
-                              ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                getBackgroundColor("gender", "男"), // 按鈕顏色設定
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              userInfo['gender'] = "男";
+                              isComplete = checkCompletion();
+                            });
+                          },
+                          child: Text(
+                            "男",
+                            style: TextStyle(
+                              color: getForegroundColor("gender", "男"),
+                              // 字體顏色設定
+                              fontSize: 18,
                             ),
                           ),
-                          const SizedBox(width: 20),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  getBackgroundColor("gender", "女"),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                userInfo['gender'] = "女";
-                                isComplete = checkCompletion();
-                              });
-                            },
-                            child: Text(
-                              "女",
-                              style: TextStyle(
-                                color: getForegroundColor("gender", "女"),
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 30),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  getBackgroundColor("gender", "其他"),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                userInfo['gender'] = "其他";
-                                isComplete = checkCompletion();
-                              });
-                            },
-                            child: Text(
-                              "其他",
-                              style: TextStyle(
-                                color: getForegroundColor("gender", "其他"),
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 36),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(
-                        '生日',
-                        style: getQuestionStyle(),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Container(
-                        width: 250,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.transparent),
-                          borderRadius: BorderRadius.circular(15),
                         ),
-                        child: DatePickerCupertino(
-                          hintText: '請選擇日期',
-                          style: const TextStyle(
+                        const SizedBox(width: 25),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: getBackgroundColor("gender", "女"),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              userInfo['gender'] = "女";
+                              isComplete = checkCompletion();
+                            });
+                          },
+                          child: Text(
+                            "女",
+                            style: TextStyle(
+                              color: getForegroundColor("gender", "女"),
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 25),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: getBackgroundColor("gender", "其他"),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              userInfo['gender'] = "其他";
+                              isComplete = checkCompletion();
+                            });
+                          },
+                          child: Text(
+                            "其他",
+                            style: TextStyle(
+                              color: getForegroundColor("gender", "其他"),
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 36),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      '生日',
+                      style: getQuestionStyle(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30),
+                    child: Container(
+                      width: 250,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.transparent),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: DatePickerCupertino(
+                        hintText: '請選擇日期',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 15,
+                        ),
+                        onDateTimeChanged: (date) {
+                          setState(() {
+                            userInfo['birthday'] = Calendar.toKey(date);
+                            isComplete = checkCompletion();
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 36),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      '身高',
+                      style: getQuestionStyle(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30),
+                    child: Container(
+                      width: 250,
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          color: Colors.white),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 15, vertical: 9),
+                          border: InputBorder.none,
+                          hintText: '請輸入您的身高(cm)',
+                          hintStyle: TextStyle(
                             color: Colors.black,
                             fontSize: 15,
                           ),
-                          onDateTimeChanged: (date) {
-                            setState(() {
-                              userInfo['birthday'] = Calendar.toKey(date);
-                              isComplete = checkCompletion();
-                            });
-                          },
                         ),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          setState(() {
+                            userInfo['height'] = value;
+                            isComplete = checkCompletion();
+                          });
+                        },
                       ),
                     ),
-                    const SizedBox(height: 36),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(
-                        '身高',
-                        style: getQuestionStyle(),
-                      ),
+                  ),
+                  const SizedBox(height: 36),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Text(
+                      '體重',
+                      style: getQuestionStyle(),
                     ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Container(
-                        width: 250,
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            color: Colors.white),
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 9),
-                            border: InputBorder.none,
-                            hintText: '請輸入您的身高(cm)',
-                            hintStyle: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                            ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30),
+                    child: Container(
+                      width: 250,
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          color: Colors.white),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 15, vertical: 9),
+                          border: InputBorder.none,
+                          hintText: '請輸入您的體重(kg)',
+                          hintStyle: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
                           ),
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            setState(() {
-                              userInfo['height'] = value;
-                              isComplete = checkCompletion();
-                            });
-                          },
                         ),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            _scrollController.animateTo(
+                                _scrollController.position.maxScrollExtent,
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeOut);
+                          });
+
+                          setState(() {
+                            userInfo['weight'] = value;
+                            isComplete = checkCompletion();
+                          });
+                        },
                       ),
                     ),
-                    const SizedBox(height: 36),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(
-                        '體重',
-                        style: getQuestionStyle(),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Container(
-                        width: 250,
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            color: Colors.white),
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 9),
-                            border: InputBorder.none,
-                            hintText: '請輸入您的體重(kg)',
-                            hintStyle: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                            ),
-                          ),
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            setState(() {
-                              userInfo['weight'] = value;
-                              isComplete = checkCompletion();
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                ],
+              ))),
             ),
-            isComplete
-                // FIXME: Overflow problem: IconButton to turn page
-                ? IconButton(
-                    onPressed: () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const TitlePage(arguments: {"part": 1}))),
-                    icon: const Icon(Icons.arrow_circle_right_outlined))
-                : Container(),
-          ],
-        ),
+          ),
+          isComplete
+              ? Container(
+                  padding: const EdgeInsets.only(top: 20, bottom: 30),
+                  child: IconButton(
+                      onPressed: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const TitlePage(arguments: {"part": 1}))),
+                      icon: const Icon(
+                        Icons.arrow_circle_right_outlined,
+                        size: 50,
+                      )),
+                )
+              : Container(),
+        ]),
       ),
     );
   }
@@ -820,6 +836,9 @@ class PartTwoPage extends StatefulWidget {
 class _PartTwoPageState extends State<PartTwoPage> {
   late PageController pageController;
   late ScrollController scrollController;
+
+  final ScrollController _scrollController = ScrollController();
+
   late Question question;
   bool isComplete = false;
 
@@ -832,22 +851,24 @@ class _PartTwoPageState extends State<PartTwoPage> {
     question = questions_2.first;
   }
 
+  // FIXME: Overflow problem has fixed, but there is also "Incorrect use of ParentDataWidget." problem need to fix.
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: buildAppBar(context),
-        body: Column(
+        body: ListView(
+          controller: _scrollController,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(36, 24, 36, 12),
+              padding: const EdgeInsets.fromLTRB(35, 30, 35, 0),
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.75,
+                height: MediaQuery.of(context).size.height * 0.7,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black, width: 2),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+                padding: const EdgeInsets.fromLTRB(5, 18, 5, 18),
                 child: QuestionsWidget(
                   controller: pageController,
                   onChangedPage: (index) => nextQuestion(index: index),
@@ -856,17 +877,19 @@ class _PartTwoPageState extends State<PartTwoPage> {
               ),
             ),
             isComplete
-                // FIXME: Overflow problem: IconButton to turn page
-                ? IconButton(
-                    onPressed: () {
-                      processInput(); // update the data into userInfo
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const TitlePage(arguments: {"part": 2})));
-                    },
-                    icon: const Icon(Icons.arrow_circle_right_outlined))
+                ? Container(
+                    padding: const EdgeInsets.only(top: 15, bottom: 20),
+                    child: IconButton(
+                        onPressed: () {
+                          processInput(); // update the data into userInfo
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const TitlePage(arguments: {"part": 2})));
+                        },
+                        icon: const Icon(Icons.arrow_circle_right_outlined,
+                            size: 50)))
                 : Container(),
           ],
         ),
@@ -1032,7 +1055,8 @@ class _PartTwoPageState extends State<PartTwoPage> {
         // Get the liking of the three meditation types
         for (Option option in answer) {
           // Count the occurrences for each type (liking score)
-          userInfo[option.data] += 1;
+          // TODO: 確認是否正確（原本是 userInfo[option.data] += 1，但這樣會出現 null 錯誤，所以先改成 = 1）
+          userInfo[option.data] = 1;
         }
 
         for (String type in [

@@ -98,7 +98,7 @@ class HomepageState extends State<Homepage> {
                   'day': _selectedDay,
                   'isToday': isToday ? true : false,
                   'isBefore': isBefore ? true : false,
-                  'isAfter': isAfter? true:false,
+                  'isAfter': isAfter ? true : false,
                   'percentage': workoutProgress,
                   'currentIndex': currentIndex,
                   'workoutPlan': workoutPlan
@@ -112,7 +112,7 @@ class HomepageState extends State<Homepage> {
                   'day': _selectedDay,
                   'isToday': isToday ? true : false,
                   'isBefore': isBefore ? true : false,
-                  'isAfter': isAfter? true:false,
+                  'isAfter': isAfter ? true : false,
                   'percentage': meditationProgress,
                   //'currentIndex': currentIndex,
                   'meditationPlan': meditationPlan
@@ -518,6 +518,12 @@ class HomepageState extends State<Homepage> {
                     ? Expanded(child: getBannerCarousel())
                     : Container(),
                 const SizedBox(height: 5),
+                // TODO: delete after QuestionnairePage testing
+                IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/questionnaire", arguments: {"part": 0});
+                    },
+                    icon: Icon(Icons.accessibility_outlined, size:40))
               ],
             ),
     ));
