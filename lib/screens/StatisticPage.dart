@@ -270,6 +270,7 @@ class StatisticPageState extends State<StatisticPage> {
                                   onPressed: () async {
                                     showModalBottomSheet(
                                         isScrollControlled: true,
+                                        isDismissible: false,
                                         shape: const RoundedRectangleBorder(
                                           borderRadius: BorderRadius.only(
                                               topRight: Radius.circular(20),
@@ -282,9 +283,15 @@ class StatisticPageState extends State<StatisticPage> {
                                           return StatefulBuilder(builder:
                                               (BuildContext context,
                                                   StateSetter setModalState) {
-                                            return SingleChildScrollView(
-                                                child: getAddWeightBottomSheet(
-                                                    setModalState));
+                                            return AnimatedPadding(
+                                                padding: MediaQuery.of(context)
+                                                    .viewInsets,
+                                                duration: const Duration(
+                                                    milliseconds: 10),
+                                                child: SingleChildScrollView(
+                                                    child:
+                                                        getAddWeightBottomSheet(
+                                                            setModalState)));
                                           });
                                         });
                                   },
@@ -1078,9 +1085,9 @@ class StatisticPageState extends State<StatisticPage> {
   );
 
   DateTime selectedDate = DateTime.now();
+
 ////////////////////// Parameter of AddWeightBottomSheet //////////////////////
 
-  // FIXME: keyboard cover the date picker(modal sheet)
   // 新增體重 bottom sheet
   Widget getAddWeightBottomSheet(StateSetter setModalState) {
     String showingDate =
@@ -1113,6 +1120,9 @@ class StatisticPageState extends State<StatisticPage> {
               ),
               onPressed: () {
                 weightController.clear();
+                setState(() {
+                  selectedDate = DateTime.now();
+                });
                 Navigator.pop(context);
               },
             ),
@@ -1178,8 +1188,7 @@ class StatisticPageState extends State<StatisticPage> {
                   Icons.accessibility_outlined,
                   color: Color(0xff4b4370),
                 ),
-                labelText:
-                    "日期：$showingDate",
+                labelText: "日期：$showingDate",
                 disabledBorder: const NonUniformOutlineInputBorder(
                   hideBottomSide: true,
                   borderRadius: BorderRadius.only(
@@ -1294,7 +1303,7 @@ class StatisticPageState extends State<StatisticPage> {
                   });
 
                   double weight = double.tryParse(weightController.text) ?? 0;
-                  if (weight > 0 && selectedDate != null) {
+                  if (weight > 0) {
                     Map<String, double> addedData = {
                       Calendar.toKey(selectedDate): weight
                     };
@@ -1302,6 +1311,9 @@ class StatisticPageState extends State<StatisticPage> {
                     getUserData();
                   }
                   weightController.clear();
+                  setState(() {
+                    selectedDate = DateTime.now();
+                  });
                 }
               },
               child: const Text(
@@ -1313,6 +1325,9 @@ class StatisticPageState extends State<StatisticPage> {
                 ),
               ),
             ),
+          ),
+          const SizedBox(
+            height: 20,
           ),
         ]));
   }
