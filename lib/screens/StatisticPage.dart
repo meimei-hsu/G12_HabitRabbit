@@ -1,11 +1,13 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
 import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
+import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -31,7 +33,6 @@ class StatisticPageState extends State<StatisticPage> {
   Map<String, double> weightDataMap = {};
   late double weight;
   late double avgWeight = 0.0;
-  late DateTime? selectedDate;
   late double minY = 0.0;
   late double maxY = 0.0;
 
@@ -267,7 +268,25 @@ class StatisticPageState extends State<StatisticPage> {
                                   color: const Color(0xff4b4370),
                                   tooltip: "新增體重",
                                   onPressed: () async {
-                                    _showAddWeightDialog();
+                                    showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(20),
+                                              topLeft: Radius.circular(20)),
+                                        ),
+                                        backgroundColor:
+                                            const Color(0xfffdeed9),
+                                        context: context,
+                                        builder: (context) {
+                                          return StatefulBuilder(builder:
+                                              (BuildContext context,
+                                                  StateSetter setModalState) {
+                                            return SingleChildScrollView(
+                                                child: getAddWeightBottomSheet(
+                                                    setModalState));
+                                          });
+                                        });
                                   },
                                 ),
                                 visualDensity:
@@ -594,41 +613,39 @@ class StatisticPageState extends State<StatisticPage> {
                                 visualDensity:
                                     const VisualDensity(vertical: -4),
                               ),
-                              (consecutiveDays ==0)
+                              (consecutiveDays == 0)
                                   ? SfCartesianChart(
-                                primaryXAxis: CategoryAxis(
-                                  axisLine: const AxisLine(
-                                    color: Color(0xff4b4370),
-                                    width: 0.6,
-                                  ),
-                                ),
-                                primaryYAxis: NumericAxis(
-                                  axisLine: const AxisLine(width: 0),
-                                  labelStyle: const TextStyle(
-                                    fontSize: 10,
-                                  ),
-                                  numberFormat: NumberFormat('#,##0 天'),
-                                ),
-                                series: <BarSeries<ChartData, String>>[
-                                  BarSeries<ChartData, String>(
-                                    dataSource: [
-                                      ChartData('4/30-5/2', 2),
-                                      ChartData('5/6-5/13', 5),
-                                    ],
-                                    xValueMapper: (ChartData data, _) => data.x,
-                                    yValueMapper: (ChartData data, _) => data.y,
-                                    color: const Color(0xffd4d6fc),
-                                    borderRadius:
-                                    const BorderRadius.only(
-                                        topRight:
-                                        Radius.circular(10),
-                                        bottomRight:
-                                        Radius.circular(10)
-                                    ),
-                                    width: 0.4,
-                                  ),
-                                ],
-                              )
+                                      primaryXAxis: CategoryAxis(
+                                        axisLine: const AxisLine(
+                                          color: Color(0xff4b4370),
+                                          width: 0.6,
+                                        ),
+                                      ),
+                                      primaryYAxis: NumericAxis(
+                                        axisLine: const AxisLine(width: 0),
+                                        labelStyle: const TextStyle(
+                                          fontSize: 10,
+                                        ),
+                                        numberFormat: NumberFormat('#,##0 天'),
+                                      ),
+                                      series: <BarSeries<ChartData, String>>[
+                                        BarSeries<ChartData, String>(
+                                          dataSource: [
+                                            ChartData('4/30-5/2', 2),
+                                            ChartData('5/6-5/13', 5),
+                                          ],
+                                          xValueMapper: (ChartData data, _) =>
+                                              data.x,
+                                          yValueMapper: (ChartData data, _) =>
+                                              data.y,
+                                          color: const Color(0xffd4d6fc),
+                                          borderRadius: const BorderRadius.only(
+                                              topRight: Radius.circular(10),
+                                              bottomRight: Radius.circular(10)),
+                                          width: 0.4,
+                                        ),
+                                      ],
+                                    )
                                   : const Text("冥想沒有連續完成天數"),
                             ])),
                         const SizedBox(
@@ -684,25 +701,29 @@ class StatisticPageState extends State<StatisticPage> {
                               ),
                               (accumulatedTime == 0)
                                   ? SfCircularChart(
-                                  legend: Legend(isVisible: true),
-                                  series: <CircularSeries<ChartData, String>>[
-                                    DoughnutSeries<ChartData, String>(
-                                      dataSource: [
-                                        ChartData('瑜珈', 30),
-                                        ChartData('有氧', 40),
-                                        ChartData('重訓', 20),
-                                      ],
-                                      innerRadius: '40%',
-                                      xValueMapper: (ChartData data, _) => data.x,
-                                      yValueMapper: (ChartData data, _) => data.y,
-                                      //顯示數字(趴數)
-                                      dataLabelSettings: const DataLabelSettings(
-                                        isVisible: true,
-                                      ),
-                                      // 刪掉動畫
-                                      animationDuration: 0,
-                                      animationDelay: 0,
-                                      /*pointColorMapper: (ChartData data, _) {
+                                      legend: Legend(isVisible: true),
+                                      series: <
+                                          CircularSeries<ChartData, String>>[
+                                          DoughnutSeries<ChartData, String>(
+                                            dataSource: [
+                                              ChartData('瑜珈', 30),
+                                              ChartData('有氧', 40),
+                                              ChartData('重訓', 20),
+                                            ],
+                                            innerRadius: '40%',
+                                            xValueMapper: (ChartData data, _) =>
+                                                data.x,
+                                            yValueMapper: (ChartData data, _) =>
+                                                data.y,
+                                            //顯示數字(趴數)
+                                            dataLabelSettings:
+                                                const DataLabelSettings(
+                                              isVisible: true,
+                                            ),
+                                            // 刪掉動畫
+                                            animationDuration: 0,
+                                            animationDelay: 0,
+                                            /*pointColorMapper: (ChartData data, _) {
           if (data.x == '瑜珈') {
             return const Color.fromRGBO(246, 205, 183, 0.4);
           } else if (data.x == '有氧') {
@@ -712,30 +733,32 @@ class StatisticPageState extends State<StatisticPage> {
           }
           return const Color(0xfff6cdb7);
         },*/
-                                    ),
-                                  ])
+                                          ),
+                                        ])
                                   : SfCircularChart(
-                                  legend: Legend(isVisible: true),
-                                  series: <CircularSeries<ChartData,
-                                      String>>[
-                                    DoughnutSeries<ChartData, String>(
-                                      dataSource: [
-                                        ChartData('正念', 20),
-                                        ChartData('身體掃描', 30),
-                                        ChartData('視覺化', 25),
-                                        ChartData('慈愛', 25),
-                                      ],
-                                      innerRadius: '40%',
-                                      xValueMapper: (ChartData data, _) => data.x,
-                                      yValueMapper: (ChartData data, _) => data.y,
-                                      dataLabelSettings:
-                                      const DataLabelSettings(
-                                        isVisible: true,
-                                      ),
-                                      // 刪掉動畫
-                                      animationDuration: 0,
-                                      animationDelay: 0,
-                                      /*pointColorMapper: (ChartData data, _) {
+                                      legend: Legend(isVisible: true),
+                                      series: <
+                                          CircularSeries<ChartData, String>>[
+                                          DoughnutSeries<ChartData, String>(
+                                            dataSource: [
+                                              ChartData('正念', 20),
+                                              ChartData('身體掃描', 30),
+                                              ChartData('視覺化', 25),
+                                              ChartData('慈愛', 25),
+                                            ],
+                                            innerRadius: '40%',
+                                            xValueMapper: (ChartData data, _) =>
+                                                data.x,
+                                            yValueMapper: (ChartData data, _) =>
+                                                data.y,
+                                            dataLabelSettings:
+                                                const DataLabelSettings(
+                                              isVisible: true,
+                                            ),
+                                            // 刪掉動畫
+                                            animationDuration: 0,
+                                            animationDelay: 0,
+                                            /*pointColorMapper: (ChartData data, _) {
           if (data.x == '正念') {
             return const Color.fromRGBO(212, 214, 252, 0.35);
           } else if (data.x == '身體掃描') {
@@ -747,8 +770,8 @@ class StatisticPageState extends State<StatisticPage> {
           }
           return const Color(0xffd4d6fc);
         },*/
-                                    ),
-                                  ]),
+                                          ),
+                                        ]),
                             ])),
                         const SizedBox(
                           height: 15,
@@ -970,87 +993,6 @@ class StatisticPageState extends State<StatisticPage> {
     ));
   }
 
-  _showAddWeightDialog() async {
-    TextEditingController weightController = TextEditingController();
-    TextEditingController dateController = TextEditingController();
-    DateTime? selectedDate;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add Weight'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: weightController,
-                decoration: const InputDecoration(
-                  labelText: 'Weight',
-                ),
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-              ),
-              const SizedBox(height: 1),
-              InkWell(
-                onTap: () async {
-                  final DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2023),
-                    lastDate: DateTime.now(),
-                  );
-                  if (pickedDate != null) {
-                    selectedDate = pickedDate;
-                    dateController.text = Calendar.toKey(selectedDate!);
-                  }
-                },
-                child: IgnorePointer(
-                  child: TextField(
-                    controller: dateController,
-                    decoration: const InputDecoration(
-                      labelText: 'Date',
-                    ),
-                    keyboardType: TextInputType.datetime,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                setState(() {
-                  isAddingWeight = true;
-                });
-
-                double weight = double.tryParse(weightController.text) ?? 0;
-                if (weight > 0 && selectedDate != null) {
-                  Map<String, double> addedData = {
-                    Calendar.toKey(selectedDate!): weight
-                  };
-                  await WeightDB.update(addedData);
-                  getUserData();
-                }
-                weightController.clear(); // Clear weight text field
-                dateController.clear(); // Clear date text field
-
-                Navigator.pop(context);
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   List<FlSpot> _getWeightData() {
     if (weightDataList.isEmpty) {
       return [];
@@ -1112,6 +1054,267 @@ class StatisticPageState extends State<StatisticPage> {
     }
 
     return chartData;
+  }
+
+////////////////////// Parameter of AddWeightBottomSheet //////////////////////
+  TextEditingController weightController = TextEditingController();
+
+  GlobalKey<FormState> checkFormKey = GlobalKey<FormState>();
+
+  OutlineInputBorder enabledBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(20),
+    borderSide: const BorderSide(
+      color: Color(0xff4b4370),
+      width: 3,
+    ),
+  );
+
+  OutlineInputBorder focusedAndErrorBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(20),
+    borderSide: const BorderSide(
+      color: Color(0xfff6cdb7),
+      width: 3,
+    ),
+  );
+
+  DateTime selectedDate = DateTime.now();
+////////////////////// Parameter of AddWeightBottomSheet //////////////////////
+
+  // FIXME: keyboard cover the date picker(modal sheet)
+  // 新增體重 bottom sheet
+  Widget getAddWeightBottomSheet(StateSetter setModalState) {
+    String showingDate =
+        "${selectedDate.year} / ${selectedDate.month} / ${selectedDate.day}";
+
+    return Container(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+            title: const Text(
+              "新增體重",
+              style: TextStyle(
+                  color: Color(0xff4b4370),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            trailing: IconButton(
+              icon: const Icon(
+                Icons.close_rounded,
+                color: Color(0xff4b4370),
+              ),
+              // FIXME: setting border doesn't work
+              style: IconButton.styleFrom(
+                shape: const CircleBorder(
+                    side: BorderSide(color: Color(0xff4b4370))),
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+              ),
+              onPressed: () {
+                weightController.clear();
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              child: Form(
+                key: checkFormKey,
+                child: TextFormField(
+                  controller: weightController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "請輸入體重！";
+                    } else if (double.parse(value) == 0) {
+                      return "體重不得為 0！";
+                    }
+                    return null;
+                  },
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    prefixIcon: const Icon(
+                      Icons.monitor_weight_outlined,
+                      color: Color(0xff4b4370),
+                    ),
+                    labelText: '體重',
+                    hintText: '單位為「公斤」',
+                    enabledBorder: enabledBorder,
+                    errorBorder: focusedAndErrorBorder,
+                    focusedBorder: focusedAndErrorBorder,
+                    focusedErrorBorder: focusedAndErrorBorder,
+                    labelStyle: const TextStyle(color: Color(0xff4b4370)),
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    errorStyle: const TextStyle(
+                        height: 1,
+                        color: Color(0xfff6cdb7),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
+                    errorMaxLines: 1,
+                    filled: true,
+                    fillColor: const Color(0xfffdfdf5),
+                  ),
+                  cursorColor: const Color(0xfff6cdb7),
+                  style: const TextStyle(
+                      color: Color(0xff4b4370),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                ),
+              )),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.only(right: 20, left: 20),
+            child: TextField(
+              enabled: false,
+              decoration: InputDecoration(
+                isDense: true,
+                prefixIcon: const Icon(
+                  Icons.accessibility_outlined,
+                  color: Color(0xff4b4370),
+                ),
+                labelText:
+                    "日期：$showingDate",
+                disabledBorder: const NonUniformOutlineInputBorder(
+                  hideBottomSide: true,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                  borderSide: BorderSide(
+                    color: Color(0xff4b4370),
+                    width: 3,
+                  ),
+                ),
+                labelStyle: const TextStyle(color: Color(0xff4b4370)),
+                filled: true,
+                fillColor: const Color(0xfffdfdf5),
+              ),
+              style: const TextStyle(
+                  color: Color(0xff4b4370),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(right: 20, left: 20),
+            child: Container(
+                height: 200,
+                padding: const EdgeInsets.only(bottom: 20, right: 20, left: 20),
+                decoration: const ShapeDecoration(
+                    color: Color(0xfffdfdf5),
+                    shape: NonUniformOutlineInputBorder(
+                        hideTopSide: true,
+                        borderSide:
+                            BorderSide(color: Color(0xff4b4370), width: 3),
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20)))),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: ScrollDatePicker(
+                        selectedDate: selectedDate,
+                        maximumDate: DateTime.now(),
+                        options: const DatePickerOptions(
+                            backgroundColor: Color(0xfffdfdf5)),
+                        scrollViewOptions: const DatePickerScrollViewOptions(
+                            year: ScrollViewDetailOptions(
+                              textStyle: TextStyle(
+                                  color: Color(0xff4b4370),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                              selectedTextStyle: TextStyle(
+                                  color: Color(0xff4b4370),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                              margin: EdgeInsets.only(right: 20, left: 20),
+                            ),
+                            month: ScrollViewDetailOptions(
+                              textStyle: TextStyle(
+                                  color: Color(0xff4b4370),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                              selectedTextStyle: TextStyle(
+                                  color: Color(0xff4b4370),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                              margin: EdgeInsets.only(right: 20, left: 20),
+                            ),
+                            day: ScrollViewDetailOptions(
+                              textStyle: TextStyle(
+                                  color: Color(0xff4b4370),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                              selectedTextStyle: TextStyle(
+                                  color: Color(0xff4b4370),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                              margin: EdgeInsets.only(right: 20, left: 20),
+                            )),
+                        onDateTimeChanged: (DateTime value) {
+                          setModalState(() {
+                            selectedDate = value;
+                            showingDate =
+                                "${selectedDate.year} / ${selectedDate.month} / ${selectedDate.day}";
+                          });
+                        },
+                      ),
+                    )
+                  ],
+                )),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 18),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                backgroundColor: const Color(0xfff6cdb7),
+                shadowColor: Colors.transparent,
+                minimumSize: const Size.fromHeight(50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                checkFormKey.currentState?.save();
+
+                if (checkFormKey.currentState!.validate()) {
+                  Navigator.pop(context);
+                  setState(() {
+                    isAddingWeight = true;
+                  });
+
+                  double weight = double.tryParse(weightController.text) ?? 0;
+                  if (weight > 0 && selectedDate != null) {
+                    Map<String, double> addedData = {
+                      Calendar.toKey(selectedDate): weight
+                    };
+                    await WeightDB.update(addedData);
+                    getUserData();
+                  }
+                  weightController.clear();
+                }
+              },
+              child: const Text(
+                "確定",
+                style: TextStyle(
+                  color: Color(0xff4b4370),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ]));
   }
 }
 
