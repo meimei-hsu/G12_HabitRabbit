@@ -43,6 +43,12 @@ class StatisticPageState extends State<StatisticPage> {
   //late String exerciseDate;
   //late String meditationDate;
 
+  //連續完成天數
+  List consecutiveExerciseDaysList = [];
+  List consecutiveMeditationDaysList = [];
+  late double continuousExerciseDays = 0;
+  late double continuousMeditationDays = 0;
+
   // 每月成功天數
   List exerciseMonthDaysList = [];
   List meditationMonthDaysList = [];
@@ -107,6 +113,59 @@ class StatisticPageState extends State<StatisticPage> {
         var meditationDate = DateTime.parse(entry.key);
         meditationCompletionRateMap[meditationDate] =
             (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+      }
+    }
+
+    //連續成功天數
+    if (exerciseDuration != null) {
+      DateTime? startDate;
+      DateTime? endDate;
+      for (MapEntry entry in exerciseDuration.entries) {
+        var exercise = DateTime.parse(entry.key);
+        int completionStatus = (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+
+        if (completionStatus == 2) {
+          if (continuousExerciseDays == 0) {
+            startDate = exercise;
+          }
+          continuousExerciseDays++;
+          endDate = exercise;
+        } else {
+          if (continuousExerciseDays >= 2) {
+            consecutiveExerciseDaysList.add([startDate, endDate, continuousExerciseDays]);
+          }
+          continuousExerciseDays = 0;
+        }
+        exerciseCompletionRateMap[exercise] = completionStatus;
+      }
+      if (continuousExerciseDays >= 2) {
+        consecutiveExerciseDaysList.add([startDate, endDate, continuousExerciseDays]);
+      }
+    }
+
+    if (meditationDuration != null) {
+      DateTime? startDate;
+      DateTime? endDate;
+      for (MapEntry entry in meditationDuration.entries) {
+        var meditation = DateTime.parse(entry.key);
+        int completionStatus = (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+
+        if (completionStatus == 2) {
+          if (continuousMeditationDays == 0) {
+            startDate = meditation;
+          }
+          continuousMeditationDays++;
+          endDate = meditation;
+        } else {
+          if (continuousMeditationDays >= 2) {
+            consecutiveMeditationDaysList.add([startDate, endDate, continuousMeditationDays]);
+          }
+          continuousMeditationDays = 0;
+        }
+        meditationCompletionRateMap[meditation] = completionStatus;
+      }
+      if (continuousMeditationDays >= 2) {
+        consecutiveMeditationDaysList.add([startDate, endDate, continuousMeditationDays]);
       }
     }
 
@@ -622,38 +681,105 @@ class StatisticPageState extends State<StatisticPage> {
                               ),
                               (consecutiveDays == 0)
                                   ? SfCartesianChart(
-                                      primaryXAxis: CategoryAxis(
-                                        axisLine: const AxisLine(
-                                          color: Color(0xff4b4370),
-                                          width: 0.6,
-                                        ),
-                                      ),
-                                      primaryYAxis: NumericAxis(
-                                        axisLine: const AxisLine(width: 0),
-                                        labelStyle: const TextStyle(
-                                          fontSize: 10,
-                                        ),
-                                        numberFormat: NumberFormat('#,##0 天'),
-                                      ),
-                                      series: <BarSeries<ChartData, String>>[
-                                        BarSeries<ChartData, String>(
-                                          dataSource: [
-                                            ChartData('4/30-5/2', 2),
-                                            ChartData('5/6-5/13', 5),
-                                          ],
-                                          xValueMapper: (ChartData data, _) =>
-                                              data.x,
-                                          yValueMapper: (ChartData data, _) =>
-                                              data.y,
-                                          color: const Color(0xffd4d6fc),
-                                          borderRadius: const BorderRadius.only(
-                                              topRight: Radius.circular(10),
-                                              bottomRight: Radius.circular(10)),
-                                          width: 0.4,
-                                        ),
-                                      ],
-                                    )
-                                  : const Text("冥想沒有連續完成天數"),
+                                plotAreaBorderWidth: 0,
+                                primaryXAxis: CategoryAxis(
+                                  axisLine: const AxisLine(
+                                    color: Color(0xff4b4370),
+                                    width: 0.6,
+                                  ),
+                                  labelStyle: const TextStyle(
+                                      color: Color(0xff4b4370),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                  majorTickLines:
+                                  const MajorTickLines(size: 0),
+                                  majorGridLines: const MajorGridLines(
+                                    color: Colors.transparent,
+                                  ),
+                                ),
+                                primaryYAxis: NumericAxis(
+                                  axisLine: const AxisLine(width: 0),
+                                  interval: 3,
+                                  labelStyle: const TextStyle(fontSize: 0),
+                                  numberFormat: NumberFormat('#,##0 天'),
+                                  majorTickLines:
+                                  const MajorTickLines(size: 0),
+                                  /*majorGridLines: const MajorGridLines(
+      color: Color(0xff4b4370),
+    ),*/
+                                ),
+                                series: <BarSeries<ChartData, String>>[
+                                  BarSeries<ChartData, String>(
+                                    dataSource: getExerciseConsecutiveDaysChartData(),
+                                    xValueMapper: (ChartData data, _) => data.x,
+                                    yValueMapper: (ChartData data, _) => data.y,
+                                    dataLabelSettings:
+                                    const DataLabelSettings(
+                                        isVisible: true,
+                                        textStyle: TextStyle(
+                                            color: Color(0xff4b4370),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold)),
+                                    color: const Color(0xffd4d6fc),
+                                    borderRadius:
+                                    const BorderRadius.only(
+                                        topRight: Radius.circular(10),
+                                        bottomRight: Radius.circular(10)
+                                    ),
+                                  ),
+                                ],
+                              )
+                              /*: SfCartesianChart(
+  plotAreaBorderWidth: 0,
+  primaryXAxis: CategoryAxis(
+    axisLine: const AxisLine(
+      color: Color(0xff4b4370),
+      width: 0.6,
+    ),
+    labelStyle: const TextStyle(
+        color: Color(0xff4b4370),
+        fontSize: 14,
+        fontWeight: FontWeight.bold),
+    majorTickLines:
+    const MajorTickLines(size: 0),
+    majorGridLines: const MajorGridLines(
+      color: Colors.transparent,
+    ),
+  ),
+  primaryYAxis: NumericAxis(
+    axisLine: const AxisLine(width: 0),
+    interval: 3,
+    labelStyle: const TextStyle(fontSize: 0),
+    numberFormat: NumberFormat('#,##0 天'),
+    majorTickLines:
+    const MajorTickLines(size: 0),
+    /*majorGridLines: const MajorGridLines(
+      color: Color(0xff4b4370),
+    ),*/
+  ),
+  series: <BarSeries<ChartData, String>>[
+    BarSeries<ChartData, String>(
+      dataSource: getExerciseConsecutiveDaysChartData(),
+      xValueMapper: (ChartData data, _) => data.x,
+      yValueMapper: (ChartData data, _) => data.y,
+      dataLabelSettings:
+      const DataLabelSettings(
+          isVisible: true,
+          textStyle: TextStyle(
+              color: Color(0xff4b4370),
+              fontSize: 14,
+              fontWeight: FontWeight.bold)),
+      color: const Color(0xffd4d6fc),
+      borderRadius:
+      const BorderRadius.only(
+          topRight: Radius.circular(10),
+          bottomRight: Radius.circular(10)
+      ),
+    ),
+  ],
+)*/
+                                  : const Text("冥想沒有連續完成天數"), //TODO:要刪掉的
+
                             ])),
                         const SizedBox(
                           height: 15,
@@ -1060,6 +1186,46 @@ class StatisticPageState extends State<StatisticPage> {
       chartData.add(ChartData(monthEng, meditationMonthDaysList[i][2]));
     }
 
+    return chartData;
+  }
+
+  List<ChartData> getExerciseConsecutiveDaysChartData() {
+    List<ChartData> chartData = [];
+
+    print("ExerciseConsecutiveDaysList: $consecutiveExerciseDaysList");
+
+    for (int i = 0; i < consecutiveExerciseDaysList.length; i++) {
+      DateTime startDate = consecutiveExerciseDaysList[i][0];
+      DateTime endDate = consecutiveExerciseDaysList[i][1];
+      double consecutiveDays = consecutiveExerciseDaysList[i][2];
+
+      DateFormat dateFormat = DateFormat('MM/dd');
+      String startLabel = dateFormat.format(startDate);
+      String endLabel = dateFormat.format(endDate);
+
+      String label = "$startLabel - $endLabel";
+      chartData.add(ChartData(label, consecutiveDays.toInt()));
+    }
+    return chartData;
+  }
+
+  List<ChartData> getMeditationConsecutiveDaysChartData() {
+    List<ChartData> chartData = [];
+
+    print("MeditationConsecutiveDaysList: $consecutiveMeditationDaysList");
+
+    for (int i = 0; i < consecutiveMeditationDaysList.length; i++) {
+      DateTime startDate = consecutiveMeditationDaysList[i][0];
+      DateTime endDate = consecutiveMeditationDaysList[i][1];
+      double consecutiveDays = consecutiveMeditationDaysList[i][2];
+
+      DateFormat dateFormat = DateFormat('MM/dd');
+      String startLabel = dateFormat.format(startDate);
+      String endLabel = dateFormat.format(endDate);
+
+      String label = "$startLabel - $endLabel";
+      chartData.add(ChartData(label, consecutiveDays.toInt()));
+    }
     return chartData;
   }
 
