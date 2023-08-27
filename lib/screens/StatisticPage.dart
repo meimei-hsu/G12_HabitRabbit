@@ -790,57 +790,52 @@ class StatisticPageState extends State<StatisticPage> {
                                   ),
                                 ],
                               )
-                              /*: SfCartesianChart(
-  plotAreaBorderWidth: 0,
-  primaryXAxis: CategoryAxis(
-    axisLine: const AxisLine(
-      color: Color(0xff4b4370),
-      width: 0.6,
-    ),
-    labelStyle: const TextStyle(
-        color: Color(0xff4b4370),
-        fontSize: 14,
-        fontWeight: FontWeight.bold),
-    majorTickLines:
-    const MajorTickLines(size: 0),
-    majorGridLines: const MajorGridLines(
-      color: Colors.transparent,
-    ),
-  ),
-  primaryYAxis: NumericAxis(
-    axisLine: const AxisLine(width: 0),
-    interval: 3,
-    labelStyle: const TextStyle(fontSize: 0),
-    numberFormat: NumberFormat('#,##0 天'),
-    majorTickLines:
-    const MajorTickLines(size: 0),
-    /*majorGridLines: const MajorGridLines(
-      color: Color(0xff4b4370),
-    ),*/
-  ),
-  series: <BarSeries<ChartData, String>>[
-    BarSeries<ChartData, String>(
-      dataSource: getExerciseConsecutiveDaysChartData(),
-      xValueMapper: (ChartData data, _) => data.x,
-      yValueMapper: (ChartData data, _) => data.y,
-      dataLabelSettings:
-      const DataLabelSettings(
-          isVisible: true,
-          textStyle: TextStyle(
-              color: Color(0xff4b4370),
-              fontSize: 14,
-              fontWeight: FontWeight.bold)),
-      color: const Color(0xffd4d6fc),
-      borderRadius:
-      const BorderRadius.only(
-          topRight: Radius.circular(10),
-          bottomRight: Radius.circular(10)
-      ),
-    ),
-  ],
-)*/
-                                  : const Text("冥想沒有連續完成天數"), //TODO:要刪掉留上面
-
+                                  : SfCartesianChart(
+                                  plotAreaBorderWidth: 0,
+                                  primaryXAxis: CategoryAxis(
+                                    axisLine: const AxisLine(
+                                      color: Color(0xff4b4370),
+                                      width: 0.6,
+                                    ),
+                                    labelStyle: const TextStyle(
+                                        color: Color(0xff4b4370),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
+                                    majorTickLines:
+                                    const MajorTickLines(size: 0),
+                                    majorGridLines: const MajorGridLines(
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                  primaryYAxis: NumericAxis(
+                                    axisLine: const AxisLine(width: 0),
+                                    interval: 3,
+                                    labelStyle: const TextStyle(fontSize: 0),
+                                    numberFormat: NumberFormat('#,##0 天'),
+                                    majorTickLines:
+                                    const MajorTickLines(size: 0),
+                                  ),
+                                  series: <BarSeries<ChartData, String>>[
+                                    BarSeries<ChartData, String>(
+                                      dataSource: getMeditationConsecutiveDaysChartData(),
+                                      xValueMapper: (ChartData data, _) => data.x,
+                                      yValueMapper: (ChartData data, _) => data.y,
+                                      dataLabelSettings:
+                                      const DataLabelSettings(
+                                          isVisible: true,
+                                          textStyle: TextStyle(
+                                              color: Color(0xff4b4370),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold)),
+                                      color: const Color(0xffd4d6fc),
+                                      borderRadius:
+                                      const BorderRadius.only(
+                                          topRight: Radius.circular(10),
+                                          bottomRight: Radius.circular(10)
+                                      ),
+                                    ),
+                                  ],
+                              )
                             ])),
                         const SizedBox(
                           height: 15,
@@ -897,7 +892,7 @@ class StatisticPageState extends State<StatisticPage> {
                                   ? SfCircularChart(
                                       legend: Legend(
                                           isVisible: true,
-                                          textStyle: TextStyle(
+                                          textStyle: const TextStyle(
                                               color: Color(0xff4b4370),
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold)
@@ -925,15 +920,12 @@ class StatisticPageState extends State<StatisticPage> {
                                                 const DataLabelSettings(
                                               isVisible: true,
                                             ),
-                                            // 刪掉動畫
-                                            animationDuration: 0,
-                                            animationDelay: 0,
                                           ),
                                         ])
                                   : SfCircularChart(
                                       legend: Legend(
                                           isVisible: true,
-                                          textStyle: TextStyle(
+                                          textStyle: const TextStyle(
                                               color: Color(0xff4b4370),
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold)
@@ -962,9 +954,6 @@ class StatisticPageState extends State<StatisticPage> {
                                                 const DataLabelSettings(
                                               isVisible: true,
                                             ),
-                                            // 刪掉動畫
-                                            animationDuration: 0,
-                                            animationDelay: 0,
                                           ),
                                         ]),
                             ])),
