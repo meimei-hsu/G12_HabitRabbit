@@ -508,6 +508,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                               '\n距離成功已完成：${Calculator.calcProgress(data["flag"])}%',
                               style: const TextStyle(
                                 fontSize: 18.0,
+                                letterSpacing: 1.2,
                                 color: Color(0xFF0D3B66),
                               ),
                             );
@@ -558,6 +559,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                               '\n距離成功已完成：${Calculator.calcProgress(data["flag"])}%',
                               style: const TextStyle(
                                 fontSize: 18.0,
+                                letterSpacing: 1.2,
                                 color: Color(0xFF0D3B66),
                               ),
                             );

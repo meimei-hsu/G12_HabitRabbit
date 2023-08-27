@@ -49,6 +49,25 @@ class StatisticPageState extends State<StatisticPage> {
   late double continuousExerciseDays = 0;
   late double continuousMeditationDays = 0;
 
+  //累積時長
+  Map<String, int> exerciseTypeCountMap = {
+    "cardio": 0,
+    "yoga": 0,
+    "strength": 0,
+  };
+  Map<String, double> exerciseTypePercentageMap = {};
+  List percentageExerciseList = [];
+
+  Map<String, int> meditationTypeCountMap = {
+    "mindfulness": 0,
+    "relax": 0,
+    "visualize": 0,
+    "kindness": 0,
+  };
+  Map<String, double> meditationTypePercentageMap = {};
+  List percentageMeditationList = [];
+
+
   // 每月成功天數
   List exerciseMonthDaysList = [];
   List meditationMonthDaysList = [];
@@ -166,6 +185,51 @@ class StatisticPageState extends State<StatisticPage> {
       }
       if (continuousMeditationDays >= 2) {
         consecutiveMeditationDaysList.add([startDate, endDate, continuousMeditationDays]);
+      }
+    }
+
+    //累積時長
+    if (exerciseDuration != null) {
+      for (MapEntry entry in exerciseDuration.entries) {
+        var exerciseDate = DateTime.parse(entry.key);
+        int completionStatus = (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+
+        if (completionStatus == 2) {
+          var type = await PlanDB.getWorkoutType(exerciseDate) ?? "unknown";
+          if (exerciseTypeCountMap.containsKey(type)) {
+            exerciseTypeCountMap[type] = exerciseTypeCountMap[type]! + 1;
+
+            int totalExerciseTypeCount = exerciseTypeCountMap.values.reduce((sum, count) => sum + count);
+
+            exerciseTypeCountMap.forEach((type, count) {
+              double percentage = (count / totalExerciseTypeCount) * 100;
+              exerciseTypePercentageMap[type] = percentage;
+              percentageExerciseList.add([type, percentage.toInt()]);
+            });
+          }
+        }
+      }
+    }
+
+    if (meditationDuration != null) {
+      for (MapEntry entry in meditationDuration.entries) {
+        var meditationDate = DateTime.parse(entry.key);
+        int completionStatus = (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+
+        if (completionStatus == 2) {
+          var type = await PlanDB.getWorkoutType(meditationDate) ?? "unknown";
+          if (meditationTypeCountMap.containsKey(type)) {
+            meditationTypeCountMap[type] = meditationTypeCountMap[type]! + 1;
+
+            int totalMeditationTypeCount = meditationTypeCountMap.values.reduce((sum, count) => sum + count);
+
+            meditationTypeCountMap.forEach((type, count) {
+              double percentage = (count / totalMeditationTypeCount) * 100;
+              meditationTypePercentageMap[type] = percentage;
+              percentageMeditationList.add([type, percentage.toInt()]);
+            });
+          }
+        }
       }
     }
 
@@ -704,9 +768,6 @@ class StatisticPageState extends State<StatisticPage> {
                                   numberFormat: NumberFormat('#,##0 天'),
                                   majorTickLines:
                                   const MajorTickLines(size: 0),
-                                  /*majorGridLines: const MajorGridLines(
-      color: Color(0xff4b4370),
-    ),*/
                                 ),
                                 series: <BarSeries<ChartData, String>>[
                                   BarSeries<ChartData, String>(
@@ -778,7 +839,7 @@ class StatisticPageState extends State<StatisticPage> {
     ),
   ],
 )*/
-                                  : const Text("冥想沒有連續完成天數"), //TODO:要刪掉的
+                                  : const Text("冥想沒有連續完成天數"), //TODO:要刪掉留上面
 
                             ])),
                         const SizedBox(
@@ -834,20 +895,31 @@ class StatisticPageState extends State<StatisticPage> {
                               ),
                               (accumulatedTime == 0)
                                   ? SfCircularChart(
-                                      legend: Legend(isVisible: true),
+                                      legend: Legend(
+                                          isVisible: true,
+                                          textStyle: TextStyle(
+                                              color: Color(0xff4b4370),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold)
+                                      ),
                                       series: <
                                           CircularSeries<ChartData, String>>[
                                           DoughnutSeries<ChartData, String>(
-                                            dataSource: [
-                                              ChartData('瑜珈', 30),
-                                              ChartData('有氧', 40),
-                                              ChartData('重訓', 20),
-                                            ],
+                                            dataSource: getExerciseTypePercentageChartData(),
                                             innerRadius: '40%',
-                                            xValueMapper: (ChartData data, _) =>
-                                                data.x,
-                                            yValueMapper: (ChartData data, _) =>
-                                                data.y,
+                                            xValueMapper: (ChartData data, _) => data.x,
+                                            yValueMapper: (ChartData data, _) => data.y,
+                                            pointColorMapper: (ChartData data, _) {
+                                              if (data.x == "有氧") {
+                                                return const Color(0xffd4d6fc);
+                                              } else if (data.x == "重訓") {
+                                                return const Color(0xffEDEEFC);
+                                              } else if (data.x == "瑜珈") {
+                                                return const Color(0xffA1A7FC);
+                                              } else {
+                                                return Colors.grey;
+                                              }
+                                            },
                                             //顯示數字(趴數)
                                             dataLabelSettings:
                                                 const DataLabelSettings(
@@ -856,34 +928,36 @@ class StatisticPageState extends State<StatisticPage> {
                                             // 刪掉動畫
                                             animationDuration: 0,
                                             animationDelay: 0,
-                                            /*pointColorMapper: (ChartData data, _) {
-          if (data.x == '瑜珈') {
-            return const Color.fromRGBO(246, 205, 183, 0.4);
-          } else if (data.x == '有氧') {
-            return const Color.fromRGBO(246, 205, 183, 0.6);
-          } else if (data.x == '重訓') {
-            return const Color.fromRGBO(246, 205, 183, 0.8);
-          }
-          return const Color(0xfff6cdb7);
-        },*/
                                           ),
                                         ])
                                   : SfCircularChart(
-                                      legend: Legend(isVisible: true),
+                                      legend: Legend(
+                                          isVisible: true,
+                                          textStyle: TextStyle(
+                                              color: Color(0xff4b4370),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold)
+                                      ),
                                       series: <
                                           CircularSeries<ChartData, String>>[
                                           DoughnutSeries<ChartData, String>(
-                                            dataSource: [
-                                              ChartData('正念', 20),
-                                              ChartData('身體掃描', 30),
-                                              ChartData('視覺化', 25),
-                                              ChartData('慈愛', 25),
-                                            ],
+                                            dataSource:getMeditationTypePercentageChartData(),
                                             innerRadius: '40%',
-                                            xValueMapper: (ChartData data, _) =>
-                                                data.x,
-                                            yValueMapper: (ChartData data, _) =>
-                                                data.y,
+                                            xValueMapper: (ChartData data, _) => data.x,
+                                            yValueMapper: (ChartData data, _) => data.y,
+                                            pointColorMapper: (ChartData data, _) {
+                                              if (data.x == "正念冥想") {
+                                                return const Color(0xffd4d6fc);
+                                              } else if (data.x == "放鬆冥想") {
+                                                return const Color(0xffEDEEFC);
+                                              } else if (data.x == "想像冥想") {
+                                                return const Color(0xffA1A7FC);
+                                              } else if (data.x == "慈愛冥想") {
+                                                return const Color(0xff5661FC);
+                                              } else {
+                                                return Colors.grey;
+                                              }
+                                            },
                                             dataLabelSettings:
                                                 const DataLabelSettings(
                                               isVisible: true,
@@ -891,18 +965,6 @@ class StatisticPageState extends State<StatisticPage> {
                                             // 刪掉動畫
                                             animationDuration: 0,
                                             animationDelay: 0,
-                                            /*pointColorMapper: (ChartData data, _) {
-          if (data.x == '正念') {
-            return const Color.fromRGBO(212, 214, 252, 0.35);
-          } else if (data.x == '身體掃描') {
-            return const Color.fromRGBO(212, 214, 252, 0.5);
-          } else if (data.x == '視覺化') {
-            return const Color.fromRGBO(212, 214, 252, 0.65);
-          } else if (data.x == '慈愛') {
-            return const Color.fromRGBO(212, 214, 252, 0.8);
-          }
-          return const Color(0xffd4d6fc);
-        },*/
                                           ),
                                         ]),
                             ])),
@@ -1192,7 +1254,7 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getExerciseConsecutiveDaysChartData() {
     List<ChartData> chartData = [];
 
-    print("ExerciseConsecutiveDaysList: $consecutiveExerciseDaysList");
+    print("exerciseConsecutiveDaysList: $consecutiveExerciseDaysList");
 
     for (int i = 0; i < consecutiveExerciseDaysList.length; i++) {
       DateTime startDate = consecutiveExerciseDaysList[i][0];
@@ -1212,7 +1274,7 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getMeditationConsecutiveDaysChartData() {
     List<ChartData> chartData = [];
 
-    print("MeditationConsecutiveDaysList: $consecutiveMeditationDaysList");
+    print("meditationConsecutiveDaysList: $consecutiveMeditationDaysList");
 
     for (int i = 0; i < consecutiveMeditationDaysList.length; i++) {
       DateTime startDate = consecutiveMeditationDaysList[i][0];
@@ -1228,6 +1290,45 @@ class StatisticPageState extends State<StatisticPage> {
     }
     return chartData;
   }
+
+  Map<String, String> typeTranslationMap = {
+    "cardio": "有氧",
+    "yoga": "瑜珈",
+    "strength": "重訓",
+    "mindfulness": "正念冥想",
+    "relax": "放鬆冥想",
+    "visualize": "想像冥想",
+    "kindness": "慈愛冥想",
+  };
+
+  String translateTypeToChinese(String englishType) {
+    return typeTranslationMap[englishType] ?? englishType;
+  }
+
+  List<ChartData> getExerciseTypePercentageChartData() {
+    List<ChartData> chartData = [];
+
+    print("exercisePercentageList: $exerciseTypePercentageMap");
+
+    for (var entry in exerciseTypePercentageMap.entries) {
+      String chineseType = translateTypeToChinese(entry.key);
+      chartData.add(ChartData(chineseType, entry.value.toInt()));
+    }
+    return chartData;
+  }
+
+  List<ChartData> getMeditationTypePercentageChartData() {
+    List<ChartData> chartData = [];
+
+    print("meditationPercentageList: $meditationTypePercentageMap");
+
+    for (var entry in meditationTypePercentageMap.entries) {
+      String chineseType = translateTypeToChinese(entry.key);
+      chartData.add(ChartData(chineseType, entry.value.toInt()));
+    }
+    return chartData;
+  }
+
 
 ////////////////////// Parameter of AddWeightBottomSheet //////////////////////
   TextEditingController weightController = TextEditingController();
