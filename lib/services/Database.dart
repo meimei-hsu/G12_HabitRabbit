@@ -44,11 +44,12 @@ class Home extends StatelessWidget {
                 // UserDB.insert(maryProfile);
                 // UserDB.update(mary, {"weight": 47});
                 // UserDB.updateByFeedback("cardio", [1, 1]);
-                UserDB.getAll();
-                WorkoutDB.toNames(plan);
+                // UserDB.getAll();
+                // WorkoutDB.toNames(plan);
                 // MilestoneDB.update(maryMilestone);
-                MilestoneDB.update(maryMilestone);
+                // MilestoneDB.update(maryMilestone);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
+                ClockDB.updateForecast(DateTime.parse("2023-08-31"));
               },
               child: const Text("test DB")),
           TextButton(
@@ -74,6 +75,43 @@ class Home extends StatelessWidget {
                 print(await DurationDB.getMonthTotalTime());
               },
               child: const Text("test")),
+          TextButton(
+            onPressed: () async {
+              SplayTreeMap? actual = await ClockDB.getTable();
+              if (actual != null) {
+                SplayTreeMap forecast = SplayTreeMap.from(actual);
+                List dates = actual.keys.toList();
+
+                for (int i = 0; i < dates.length - 1; i++) {
+                  // start the forecasting from the second day (1st day prediction is equal to the actual data)
+                  var pred = Calculator.forecastStartTime(
+                      actual[dates[i]], forecast[dates[i]]);
+                  forecast[dates[i + 1]] = pred;
+                }
+                print("actual:\n$actual");
+                print("forecast:\n$forecast");
+
+                List bias = [];
+                List neg = [];
+                for (int i = 0; i < dates.length; i++) {
+                  // calculate the deviation value of the forecast
+                  var dev = Calculator.convertToMinutes(forecast[dates[i]]) -
+                      Calculator.convertToMinutes(actual[dates[i]]);
+                  bias.add(dev);
+                  if (dev < 0) neg.add(dev);
+                }
+                print("bias:\n$bias");
+
+                // analyze the forecasting method's performance
+                print("MAE: ${bias.fold(0, (p, c) => c + p) / bias.length}");
+                print("# of negatives: ${neg.length / bias.length * 100}%");
+                print("平均提前 ${neg.fold(0, (p, c) => c + p) / neg.length} 分鐘");
+              } else {
+                print("fail to fetch data");
+              }
+            },
+            child: const Text("forecasting"),
+          ),
         ],
       ),
     ));
@@ -866,9 +904,29 @@ class MeditationPlanDB {
 }
 
 class Calculator {
-  // calculate the progress of the given data "completeNum, totalNum"
-  static num calcProgress(String str) {
-    var lst = str.split(', ').map(int.parse).toList();
+  // Convert the time "hh:mm" to "mm"
+  static num convertToMinutes(String time) {
+    var lst = time.split(':').map(int.parse).toList();
+    return lst[0] * 60 + lst[1];
+  }
+
+  // Forecast the starting time from the previous records with exponential smoothing
+  static String forecastStartTime(String actualTime, String predictedTime) {
+    double alpha = 0.8;
+    // convert the time data from String to int (e.g. "09:00" -> 540)
+    num y = convertToMinutes(actualTime),
+        yHat = convertToMinutes(predictedTime);
+    // make prediction by exponential smoothing method
+    num pred = y + alpha * (y - yHat);
+    // return result
+    String hh = "${pred ~/ 60}".padLeft(2, "0");
+    String mm = "${(pred % 60).round()}".padLeft(2, "0");
+    return "$hh:$mm";
+  }
+
+  // Calculate the progress of the given data "completeNum, totalNum"
+  static num calcProgress(String duration) {
+    var lst = duration.split(', ').map(int.parse).toList();
     return lst[0] / lst[1] * 100; // percentage
   }
 
@@ -882,7 +940,7 @@ class Calculator {
   }
 
   // Calculate the number of consecutive completion days
-  static Future<List?> getConsecutiveDays(SplayTreeMap? durations) async {
+  static List? getConsecutiveDays(SplayTreeMap? durations) {
     List retVal = []; // store the results
 
     if (durations != null) {
@@ -924,7 +982,7 @@ class Calculator {
   }
 
   // Add up the total amount of habit commitment time for each week
-  static Future<List?> getWeekTotalTime(SplayTreeMap? durations) async {
+  static List? getWeekTotalTime(SplayTreeMap? durations) {
     List retVal = []; // store the results
 
     if (durations != null) {
@@ -957,7 +1015,7 @@ class Calculator {
   }
 
   // Add up the total amount of habit commitment time for each month
-  static Future<List?> getMonthTotalTime(SplayTreeMap? durations) async {
+  static List? getMonthTotalTime(SplayTreeMap? durations) {
     List retVal = []; // store the results
 
     if (durations != null) {
@@ -994,7 +1052,7 @@ class Calculator {
   }
 
   // Add up the total number of habit committed days for each month
-  static Future<List?> getMonthTotalDays(SplayTreeMap? durations) async {
+  static List? getMonthTotalDays(SplayTreeMap? durations) {
     List retVal = []; // store the results
 
     if (durations != null) {
@@ -1039,7 +1097,7 @@ class Calculator {
   }
 
   // Add up the total number of habit committed days for each year
-  static Future<List?> getYearTotalDays(SplayTreeMap? durations) async {
+  static List? getYearTotalDays(SplayTreeMap? durations) {
     List retVal = []; // store the results
 
     if (durations != null) {
@@ -1258,9 +1316,10 @@ class MeditationDurationDB {
       await JournalDB.delete(uid, date, table);
 }
 
-class TimeDB {
-  static const table = "time";
-  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
+class ClockDB {
+  static const table = "clock";
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
   // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
@@ -1279,16 +1338,33 @@ class TimeDB {
   static Future<Map?> getFromDates(List<String> dates) async =>
       await JournalDB.getFromDates(uid, dates, table);
 
-  static Future<double?> getFromDate(DateTime date) async {
-    var weight = await JournalDB.getFromDate(uid, date, table);
-    return (weight != null) ? double.parse(weight) : null;
+  static Future<String?> getFromDate(DateTime date) async {
+    var startTime = await JournalDB.getFromDate(uid, date, table);
+    return (startTime != null) ? startTime : null;
   }
 
-  // Update start time data {date: "09:00"} from table {table/userID/weight/date}
-  static Future<bool> update(Map<String, double> data) async =>
-      await JournalDB.update(uid, data, table);
+  // Get the start time prediction
+  static Future<String?> getPrediction() async =>
+      await DB.select("journal/$uid/$table", "forecast") as String;
 
-  // Delete start time data {table/userID/time/date}
+  // Update start time data {date: "09:00"} from table {table/userID/clock/date}
+  // Update when user first start the video/audio in that day
+  static Future<bool> update(Map<String, String> data) async =>
+      await JournalDB.update(uid, data, table) &
+      await updateForecast(DateTime.now());
+
+  // Update the forecast data {"forecast": "09:00"} from table {table/userID/clock/forecast}
+  static Future<bool> updateForecast(DateTime today) async {
+    String? actualTime = await getFromDate(today);
+    String? predictedTime = await getPrediction();
+    if (actualTime != null && predictedTime != null) {
+      String forecast = Calculator.forecastStartTime(actualTime, predictedTime);
+      return update({"forecast": forecast});
+    }
+    return false;
+  }
+
+  // Delete start time data {table/userID/clock/date}
   static Future<bool> delete(String date) async =>
       await JournalDB.delete(uid, date, table);
 }
