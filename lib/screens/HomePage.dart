@@ -548,7 +548,7 @@ class HomepageState extends State<Homepage> {
                               backgroundColor: const Color(0xfffdeed9),
                               context: context,
                               builder: (context) {
-                                return const Wrap(children: [
+                                return Wrap(children: const [
                                   FeedbackBottomSheet(
                                     arguments: {"type": 0},
                                   )
@@ -571,7 +571,7 @@ class HomepageState extends State<Homepage> {
                               backgroundColor: const Color(0xfffdeed9),
                               context: context,
                               builder: (context) {
-                                return const Wrap(children: [
+                                return Wrap(children: const [
                                   FeedbackBottomSheet(
                                     arguments: {"type": 1},
                                   )

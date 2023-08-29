@@ -168,13 +168,12 @@ class DoExercisePageState extends State<DoExercisePage> {
             enableDrag: false,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20),
-                  topLeft: Radius.circular(20)),
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
             ),
             backgroundColor: const Color(0xfffdeed9),
             context: context,
             builder: (context) {
-              return const Wrap(children: [
+              return Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 0},
                 )
@@ -522,13 +521,12 @@ class DoMeditationPageState extends State<DoMeditationPage> {
             enableDrag: false,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20),
-                  topLeft: Radius.circular(20)),
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
             ),
             backgroundColor: const Color(0xfffdeed9),
             context: context,
             builder: (context) {
-              return const Wrap(children: [
+              return Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 1},
                 )
@@ -943,109 +941,109 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
           (type == 0)
               ? Container()
               : const SizedBox(
-            height: 10,
-          ),
+                  height: 10,
+                ),
           (type == 0)
               ? Container()
               : const Divider(
-            thickness: 1.5,
-            indent: 20,
-            endIndent: 20,
-          ),
+                  thickness: 1.5,
+                  indent: 20,
+                  endIndent: 20,
+                ),
           (type == 0)
               ? Container()
               : const Text(
-            "最近狀況調查",
-            style: TextStyle(
-                color: Color(0xff4b4370),
-                fontSize: 18,
-                fontWeight: FontWeight.bold),
-          ),
+                  "最近狀況調查",
+                  style: TextStyle(
+                      color: Color(0xff4b4370),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
+                ),
           (type == 0)
               ? Container()
               : const SizedBox(
-            height: 10,
-          ),
+                  height: 10,
+                ),
           (type == 0)
               ? Container()
               : Container(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
                     children: [
-                      const Text(
-                        "最近是否有憂慮、失眠、\n或是壓力大的情況？",
-                        style: TextStyle(
-                            color: Color(0xff4b4370), fontSize: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "最近是否有憂慮、失眠、\n或是壓力大的情況？",
+                            style: TextStyle(
+                                color: Color(0xff4b4370), fontSize: 16),
+                          ),
+                          RoundCheckBox(
+                            isChecked: isAnxious,
+                            borderColor: const Color(0xff4b4370),
+                            uncheckedColor: const Color(0xfffdfdf5),
+                            checkedColor: const Color(0xfff6cdb7),
+                            size: 30,
+                            onTap: (selected) {
+                              setState(() {
+                                isAnxious = selected!;
+                              });
+                            },
+                          ),
+                        ],
                       ),
-                      RoundCheckBox(
-                        isChecked: isAnxious,
-                        borderColor: const Color(0xff4b4370),
-                        uncheckedColor: const Color(0xfffdfdf5),
-                        checkedColor: const Color(0xfff6cdb7),
-                        size: 30,
-                        onTap: (selected) {
-                          setState(() {
-                            isAnxious = selected!;
-                          });
-                        },
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "最近是否有一個短期目標需要衝刺？",
+                            style: TextStyle(
+                                color: Color(0xff4b4370), fontSize: 16),
+                          ),
+                          RoundCheckBox(
+                            isChecked: haveToSprint,
+                            borderColor: const Color(0xff4b4370),
+                            uncheckedColor: const Color(0xfffdfdf5),
+                            checkedColor: const Color(0xfff6cdb7),
+                            size: 30,
+                            onTap: (selected) {
+                              setState(() {
+                                haveToSprint = selected!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "最近是否感到情感上的滿足？",
+                            style: TextStyle(
+                                color: Color(0xff4b4370), fontSize: 16),
+                          ),
+                          RoundCheckBox(
+                            isChecked: isSatisfied,
+                            borderColor: const Color(0xff4b4370),
+                            uncheckedColor: const Color(0xfffdfdf5),
+                            checkedColor: const Color(0xfff6cdb7),
+                            size: 30,
+                            onTap: (selected) {
+                              setState(() {
+                                isSatisfied = selected!;
+                              });
+                            },
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "最近是否有一個短期目標需要衝刺？",
-                        style: TextStyle(
-                            color: Color(0xff4b4370), fontSize: 16),
-                      ),
-                      RoundCheckBox(
-                        isChecked: haveToSprint,
-                        borderColor: const Color(0xff4b4370),
-                        uncheckedColor: const Color(0xfffdfdf5),
-                        checkedColor: const Color(0xfff6cdb7),
-                        size: 30,
-                        onTap: (selected) {
-                          setState(() {
-                            haveToSprint = selected!;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "最近是否感到情感上的滿足？",
-                        style: TextStyle(
-                            color: Color(0xff4b4370), fontSize: 16),
-                      ),
-                      RoundCheckBox(
-                        isChecked: isSatisfied,
-                        borderColor: const Color(0xff4b4370),
-                        uncheckedColor: const Color(0xfffdfdf5),
-                        checkedColor: const Color(0xfff6cdb7),
-                        size: 30,
-                        onTap: (selected) {
-                          setState(() {
-                            isSatisfied = selected!;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              )),
+                  )),
           const SizedBox(
             height: 20,
           ),
@@ -1062,19 +1060,21 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                 ),
               ),
               onPressed: () async {
-                if (type == 0) { // 運動
+                if (type == 0) {
+                  // 運動
                   feedbackData.add(satisfiedScore.toInt());
                   feedbackData.add(tiredScore.toInt());
                   print("Exercise feedbackData: $feedbackData");
 
                   Navigator.pushNamedAndRemoveUntil(
-                    context, '/', (Route<dynamic> route) => false);
+                      context, '/', (Route<dynamic> route) => false);
                   var type = await PlanDB.getWorkoutType(DateTime.now());
                   if (type != null) {
                     UserDB.updateByFeedback(type, feedbackData);
                   }
                   await PlanAlgo.execute();
-                } else { // 冥想
+                } else {
+                  // 冥想
                   feedbackData.add(satisfiedScore.toInt());
                   feedbackData.add(tiredScore.toInt());
                   // True = 1, false = 0
@@ -1102,4 +1102,3 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
         ]));
   }
 }
-

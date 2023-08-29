@@ -1258,6 +1258,41 @@ class MeditationDurationDB {
       await JournalDB.delete(uid, date, table);
 }
 
+class TimeDB {
+  static const table = "time";
+  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
+  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
+  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
+
+  // Select all start time records
+  static Future<SplayTreeMap?> getTable() async =>
+      await JournalDB.getTable(uid, table);
+
+  // Select the user's start time from the dates of given week
+  static Future<Map?> getThisWeek() async =>
+      await JournalDB.getThisWeek(uid, table);
+
+  static Future<Map?> getNextWeek() async =>
+      await JournalDB.getNextWeek(uid, table);
+
+  // Select user's start time from given dates
+  static Future<Map?> getFromDates(List<String> dates) async =>
+      await JournalDB.getFromDates(uid, dates, table);
+
+  static Future<double?> getFromDate(DateTime date) async {
+    var weight = await JournalDB.getFromDate(uid, date, table);
+    return (weight != null) ? double.parse(weight) : null;
+  }
+
+  // Update start time data {date: "09:00"} from table {table/userID/weight/date}
+  static Future<bool> update(Map<String, double> data) async =>
+      await JournalDB.update(uid, data, table);
+
+  // Delete start time data {table/userID/time/date}
+  static Future<bool> delete(String date) async =>
+      await JournalDB.delete(uid, date, table);
+}
+
 class WeightDB {
   static const table = "weight";
   static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
