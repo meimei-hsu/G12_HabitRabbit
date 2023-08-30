@@ -472,7 +472,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
             controller: _pageController,
             children: [
               Align(
-                alignment: Alignment(0.0, -0.3),
+                alignment: const Alignment(0.0, -0.3),
                 child: Container(
                   margin: const EdgeInsets.only(right: 10.0),
                   padding: const EdgeInsets.all(12.0),
@@ -523,7 +523,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                 ),
               ),
               Align(
-                alignment: Alignment(0.0, -0.3),
+                alignment: const Alignment(0.0, -0.3),
                 child: Container(
                   margin: const EdgeInsets.only(left: 10.0),
                   padding: const EdgeInsets.all(12.0),
@@ -576,7 +576,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
           ),
           Positioned(
             right: 5,
-            bottom: 200,
+            bottom: 240,
             child: Container(
               margin: const EdgeInsets.only(left: 25.0, right: 25.0),
               padding: const EdgeInsets.all(8.0),
@@ -625,7 +625,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                       ),
                     ),
                   ),
-                  /*const Text(
+                  const Text(
                     '/',
                     style: TextStyle(
                       fontSize: 15.0,
@@ -634,16 +634,16 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/');
+                      Navigator.pop(context);
                     },
                     child: const Text(
-                      '回主頁',
+                      '返回',
                       style: TextStyle(
                         fontSize: 15.0,
                         color: Color(0xFF0D3B66),
                       ),
                     ),
-                  )*/
+                  )
                 ],
               ),
             ),

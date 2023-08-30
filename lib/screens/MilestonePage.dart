@@ -112,6 +112,12 @@ class _MilestonePage extends State<MilestonePage> {
 
 class CharacterWidget extends StatelessWidget {
   const CharacterWidget({super.key});
+
+  Future<bool> hasContract() async {
+    final contractDetails = await ContractDB.getContract();
+    return contractDetails != null;
+  }
+
   @override
   Widget build(BuildContext context) {
     double workoutPercent = Calculator.calcProgress(workoutFragment).toDouble();
@@ -189,6 +195,26 @@ class CharacterWidget extends StatelessWidget {
               },
               backgroundColor: const Color(0xFFFDFDFD),
               child: const Icon(Icons.map),
+            ),
+          ),
+        ),
+        Align(
+          alignment: const Alignment(0, 0.4),
+          child: SizedBox(
+            width: 40,
+            height: 40,
+            child: FloatingActionButton(
+              onPressed: () async {
+                final hasExistingContract = await hasContract();
+
+                if (hasExistingContract) {
+                  Navigator.pushNamed(context, '/contract/already');
+                } else {
+                  Navigator.pushNamed(context, '/contract/initial');
+                }
+              },
+              backgroundColor: const Color(0xFFFDFDFD),
+              child: const Icon(Icons.request_quote_outlined),
             ),
           ),
         ),

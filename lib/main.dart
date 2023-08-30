@@ -6,9 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'package:g12/services/Database.dart';
-
-import 'package:g12/screens/ContractPage.dart';
+import 'package:g12/screens/CommunityPage.dart';
 import 'package:g12/screens/HomePage.dart';
 import 'package:g12/screens/MilestonePage.dart';
 import 'package:g12/screens/Routes.dart';
@@ -63,47 +61,9 @@ class BottomNavigationControllerState
     const StatisticPage(arguments: {}),
     const MilestonePage(arguments: {}),
     const Homepage(),
-    const AlreadyContractPage(),
+    const CommunityPage(arguments: {}),
     const SettingsPage(arguments: {}),
   ];
-
-  //判斷有無立合約決定要跳頁面
-  @override
-  void initState() {
-    super.initState();
-    determinePage().then((pages) {
-      setState(() {
-        this.pages = pages;
-      });
-    });
-  }
-
-  Future<List<Widget>> determinePage() async {
-    final hasExistingContract = await hasContract();
-
-    if (hasExistingContract) {
-      return [
-        const StatisticPage(arguments: {}),
-        const MilestonePage(arguments: {}),
-        const Homepage(),
-        const AlreadyContractPage(),
-        const SettingsPage(arguments: {}),
-      ];
-    } else {
-      return [
-        const StatisticPage(arguments: {}),
-        const MilestonePage(arguments: {}),
-        const Homepage(),
-        const FirstContractPage(arguments: {}),
-        const SettingsPage(arguments: {}),
-      ];
-    }
-  }
-
-  Future<bool> hasContract() async {
-    final contractDetails = await ContractDB.getContract();
-    return contractDetails != null;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +113,7 @@ class BottomNavigationControllerState
                 label: 'home'),
             BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.request_quote_outlined,
+                  Icons.supervisor_account_outlined,
                   size: 40,
                 ),
                 label: 'microphone'),

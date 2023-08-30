@@ -124,6 +124,9 @@ flutter:
     - assets/images/treasure.png
     - assets/images/Exercise.jpg
     - assets/images/Meditation.jpg
+    - assets/images/image.png
+    - assets/images/Friend_A.png
+    - assets/images/Friend_B.png
     # To add assets to your application, add an assets section, like this:
     # assets:
     #   - images/a_dot_burr.jpeg

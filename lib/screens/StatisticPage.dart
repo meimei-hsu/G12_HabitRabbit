@@ -217,7 +217,7 @@ class StatisticPageState extends State<StatisticPage> {
         int completionStatus = (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
         if (completionStatus == 2) {
-          var type = await PlanDB.getWorkoutType(meditationDate) ?? "unknown";
+          var type = await MeditationPlanDB.getMeditationType(meditationDate) ?? "unknown";
           if (meditationTypeCountMap.containsKey(type)) {
             meditationTypeCountMap[type] = meditationTypeCountMap[type]! + 1;
 
@@ -854,7 +854,7 @@ class StatisticPageState extends State<StatisticPage> {
                             child: Column(children: [
                               ListTile(
                                 title: const Text(
-                                  '累積時長',
+                                  '累積比例',
                                   //(accumulatedTime == 0) ? '累積運動時長' : '累積冥想時長',
                                   style: TextStyle(
                                       color: Color(0xff4b4370),
@@ -906,9 +906,9 @@ class StatisticPageState extends State<StatisticPage> {
                                             yValueMapper: (ChartData data, _) => data.y,
                                             pointColorMapper: (ChartData data, _) {
                                               if (data.x == "有氧") {
-                                                return const Color(0xffd4d6fc);
-                                              } else if (data.x == "重訓") {
                                                 return const Color(0xffEDEEFC);
+                                              } else if (data.x == "重訓") {
+                                                return const Color(0xffd4d6fc);
                                               } else if (data.x == "瑜珈") {
                                                 return const Color(0xffA1A7FC);
                                               } else {
@@ -930,8 +930,7 @@ class StatisticPageState extends State<StatisticPage> {
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold)
                                       ),
-                                      series: <
-                                          CircularSeries<ChartData, String>>[
+                                      series: <CircularSeries<ChartData, String>>[
                                           DoughnutSeries<ChartData, String>(
                                             dataSource:getMeditationTypePercentageChartData(),
                                             innerRadius: '40%',
@@ -939,9 +938,9 @@ class StatisticPageState extends State<StatisticPage> {
                                             yValueMapper: (ChartData data, _) => data.y,
                                             pointColorMapper: (ChartData data, _) {
                                               if (data.x == "正念冥想") {
-                                                return const Color(0xffd4d6fc);
-                                              } else if (data.x == "放鬆冥想") {
                                                 return const Color(0xffEDEEFC);
+                                              } else if (data.x == "放鬆冥想") {
+                                                return const Color(0xffd4d6fc);
                                               } else if (data.x == "想像冥想") {
                                                 return const Color(0xffA1A7FC);
                                               } else if (data.x == "慈愛冥想") {

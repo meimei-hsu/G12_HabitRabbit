@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:g12/screens/CommunityPage.dart';
 import 'package:g12/screens/ContractPage.dart';
 import 'package:g12/screens/CountdownPage.dart';
 import 'package:g12/screens/ExercisePage.dart';
@@ -21,6 +21,7 @@ final routes = {
   '/countdown': (context, {arguments}) => CountdownPage(arguments: arguments),
   '/settings': (context, {arguments}) => SettingsPage(arguments: arguments),
   '/milestone': (context, {arguments}) => MilestonePage(arguments: arguments),
+  '/community': (context, {arguments}) => CommunityPage(arguments: arguments),
   '/video': (context, {arguments}) => VideoPage(arguments: arguments),
   /* ExercisePage */
   '/exercise': (context, {arguments}) => DoExercisePage(arguments: arguments),
