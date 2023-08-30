@@ -75,6 +75,86 @@ class PlanAlgo {
     var plan = await algo.arrangeWorkout(db, workoutType[idx], timeSpan);
     await PlanDB.update({date: plan});
   }
+
+  // Adjust the difficulty if user's completion rate is not as expected
+  // if the completion rate is less than half for three days, then return 1
+  // else if the completion rate is zero for three days, then return 0
+  // else, return -1
+  static Future<int> adjust() async {
+    var data = await DurationDB.getTable();
+
+    if (data != null) {
+      Algorithm algo = Algorithm();
+      var db = await algo.initializeThisWeek();
+
+      List dates = data.keys.toList();
+      int today = dates.indexOf(Calendar.toKey(DateTime.now()));
+
+      int lessThanHalf = 0; // count the consecutive days when completion < 50%
+      int zero = 0; // count the consecutive days when completion = 0%
+
+      for (int i = today; i >= 0; i--) {
+        // calculate the completion rate
+        var completionRate = Calculator.calcProgress(dates[i]);
+        // count the days that are not as expected
+        if (completionRate < 50) {
+          if (completionRate == 0) zero++;
+          if (zero == 3) {
+            // adjust the difficulty of next day and the day after
+            for (i = 1; i <= 2; i++) {
+              String? type = await PlanDB.getWorkoutType(dates[today + i]);
+              if (type != null) {
+                var plan = (i == 1)
+                    ? await algo.getFiveMinWorkout(db, type)
+                    : await algo.getTenMinWorkout(db, type);
+                await PlanDB.update({dates[today + i]: plan.join(", ")});
+              }
+            }
+            // return 0 to trigger app notification
+            return 0;
+          }
+
+          if (++lessThanHalf == 3) {
+            int? planLong = await PlanDB.getPlanLong(dates[today]);
+            if (planLong != null) {
+              planLong ~/= 3;
+
+              // adjust the difficulty of next day and the day after
+              for (i = 1; i <= 2; i++) {
+                String? type = await PlanDB.getWorkoutType(dates[today + i]);
+                if (type != null) {
+                  String plan = "";
+                  switch (planLong) {
+                    case 5:
+                      plan = (await algo.getFiveMinWorkout(db, type)).join(", ");
+                      break;
+                    case 10:
+                      plan = (await algo.getTenMinWorkout(db, type)).join(", ");
+                      break;
+                    case 15:
+                      plan = (await algo.getTenMinWorkout(db, type)).join(", ");
+                      plan += (await algo.getFiveMinWorkout(db, type)).join(", ");
+                      break;
+                    case 20:
+                      plan = (await algo.getTenMinWorkout(db, type)).join(", ");
+                      plan += (await algo.getTenMinWorkout(db, type)).join(", ");
+                      break;
+                  }
+                  await PlanDB.update({dates[today + i]: plan});
+                }
+              }
+            }
+            // return 1 to provoke the character dialog for asking to adjust difficulty permanently
+            return 1;
+          }
+        } else {
+          // return -1 to do nothing (i.e. didn't fail to meet the expectation)
+          return -1;
+        }
+      }
+    }
+    return -1;
+  }
 }
 
 class Algorithm {
@@ -146,7 +226,7 @@ class Algorithm {
     int ability = db.abilities['${type}Ability'];
     ability = ((type == 'cardio') ? ability / 33 : ability / 20).ceil();
     timeSpan ??= db.workoutTime;
-    int nLoops = timeSpan~/ 15; // total rounds
+    int nLoops = timeSpan ~/ 15; // total rounds
     int nSame = db.nSame; // number of repetitions
     bool same = (nSame > 0) ? true : false;
 
@@ -186,7 +266,7 @@ class Algorithm {
     // Get difficulty level and plan settings
     int diff = 0; // difficulty level for 5 minute workout session: easy
     timeSpan ??= db.workoutTime;
-    int nLoops = timeSpan~/ 15 - 1; // total rounds
+    int nLoops = timeSpan ~/ 15 - 1; // total rounds
 
     // Generate the list of workouts from random
     Random rand = Random();
@@ -381,8 +461,7 @@ class MeditationPlanAlgo {
 
     List meditationType = ["mindfulness", "relax", "visualize", "kindness"];
     int idx = Random().nextInt(4);
-    var meditationPlan =
-        await algo.arrangeMeditation(db, meditationType[idx]);
+    var meditationPlan = await algo.arrangeMeditation(db, meditationType[idx]);
     await MeditationPlanDB.update({date: meditationPlan});
   }
 }
@@ -495,8 +574,7 @@ class MeditationPlanData {
     var profile = await UserDB.getMeditationPlanVariables();
 
     meditationTime = profile![0]['meditationTime'];
-    meditationDays =
-        Map.fromIterables(weekDates, profile[0]['meditationDays']);
+    meditationDays = Map.fromIterables(weekDates, profile[0]['meditationDays']);
     likings = profile[1];
     sumLikings = likings.values.toList().fold(0, (p, c) => c + p);
     nDays = meditationDays.values.toList().fold(0, (p, c) => c + p);
