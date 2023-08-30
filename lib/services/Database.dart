@@ -23,13 +23,6 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var mms = [
-      '0, 24',
-      '0, 24',
-      '0, 4',
-      '0, 7',
-    ];
-    Map maryMilestone = Map.fromIterables(MilestoneDB.columns, mms);
     var plan = ["4008", "4012", "4006", "3102", "3209"];
 
     return Scaffold(
@@ -45,9 +38,7 @@ class Home extends StatelessWidget {
                 // UserDB.update(mary, {"weight": 47});
                 // UserDB.updateByFeedback("cardio", [1, 1]);
                 // UserDB.getAll();
-                // WorkoutDB.toNames(plan);
-                // MilestoneDB.update(maryMilestone);
-                // MilestoneDB.update(maryMilestone);
+                WorkoutDB.toNames(plan);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
                 ClockDB.updateForecast(DateTime.parse("2023-08-31"));
               },
@@ -77,35 +68,52 @@ class Home extends StatelessWidget {
               child: const Text("test")),
           TextButton(
             onPressed: () async {
-              SplayTreeMap? actual = await ClockDB.getTable();
+              SplayTreeMap? actual = await ClockDB.getTable()?..remove("forecast");
               if (actual != null) {
                 SplayTreeMap forecast = SplayTreeMap.from(actual);
                 List dates = actual.keys.toList();
 
+                List yHat = ["", "", "", "", "", "", ""];
+                Map cache = {};
                 for (int i = 0; i < dates.length - 1; i++) {
-                  // start the forecasting from the second day (1st day prediction is equal to the actual data)
-                  var pred = Calculator.forecastStartTime(
-                      actual[dates[i]], forecast[dates[i]]);
-                  forecast[dates[i + 1]] = pred;
+                  var weekday = DateTime.parse(dates[i]).weekday - 1;
+
+                  // forecast start time
+                  if (yHat.contains(weekday)) {
+                    yHat[weekday] = Calculator.forecastStartTime(
+                        actual[dates[i]], yHat[weekday]);
+                  } else {
+                    yHat[weekday] = actual[dates[i]];
+                  }
+
+                  // write back the forecast if it's in `cache` (i.e. unsaved data)
+                  if (cache.containsKey(weekday)) {
+                    forecast[dates[i]] = cache[weekday];
+                    cache.remove(weekday);
+                  }
+
+                  // temporary store the result
+                  cache[weekday] = yHat[weekday];
                 }
                 print("actual:\n$actual");
                 print("forecast:\n$forecast");
+                print("yHat:\n$yHat");
 
                 List bias = [];
-                List neg = [];
+                List pos = [];
                 for (int i = 0; i < dates.length; i++) {
                   // calculate the deviation value of the forecast
                   var dev = Calculator.convertToMinutes(forecast[dates[i]]) -
                       Calculator.convertToMinutes(actual[dates[i]]);
                   bias.add(dev);
-                  if (dev < 0) neg.add(dev);
+                  if (dev > 0) pos.add(dev);
                 }
                 print("bias:\n$bias");
 
                 // analyze the forecasting method's performance
                 print("MAE: ${bias.fold(0, (p, c) => c + p) / bias.length}");
-                print("# of negatives: ${neg.length / bias.length * 100}%");
-                print("平均提前 ${neg.fold(0, (p, c) => c + p) / neg.length} 分鐘");
+                print("遲到通知 ${pos.length / bias.length * 100} %");
+                print("平均提前 ${pos.fold(0, (p, c) => c + p) / pos.length} 分鐘");
               } else {
                 print("fail to fetch data");
               }
@@ -117,6 +125,12 @@ class Home extends StatelessWidget {
     ));
   }
 }
+
+// Set userID
+// Mary: "j6QYBrgbLIQH7h8iRyslntFFKV63"
+// John: "1UFfKQ4ONxf5rGQIro8vpcyUM9z1"
+String uid =
+    FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
 
 class Calendar {
   static DateTime today() => DateTime.now();
@@ -167,9 +181,6 @@ General Database: database records that occurs occasionally
 
 class UserDB {
   static const db = "users";
-  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
-  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
-  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Define the columns of the user table
   static get columns => [
@@ -430,9 +441,6 @@ class UserDB {
 
 class ContractDB {
   static const db = "contract";
-  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
-  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
-  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Define the columns of the user table
   static get columns => [
@@ -476,9 +484,6 @@ class ContractDB {
 
 class MilestoneDB {
   static const db = "milestone";
-  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
-  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
-  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Define the columns of the milestone table
   static get columns => [
@@ -671,9 +676,6 @@ Journal Database: database records that occurs daily
 
 class PlanDB {
   static const table = "plan";
-  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
-  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
-  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Format the String of plan into List of workouts, grouped by workout sets
   static List toList(String planStr) {
@@ -801,9 +803,6 @@ class PlanDB {
 
 class MeditationPlanDB {
   static const table = "meditationPlan";
-  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
-  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
-  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Select all user's plans
   static Future<SplayTreeMap?> getTable() async =>
@@ -1152,9 +1151,6 @@ class Calculator {
 
 class DurationDB {
   static const table = "duration";
-  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
-  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
-  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Select all durations
   static Future<SplayTreeMap?> getTable() async =>
@@ -1235,9 +1231,6 @@ class DurationDB {
 
 class MeditationDurationDB {
   static const table = "meditationDuration";
-  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
-  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
-  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Select all durations
   static Future<SplayTreeMap?> getTable() async =>
@@ -1318,10 +1311,6 @@ class MeditationDurationDB {
 
 class ClockDB {
   static const table = "clock";
-  static get uid =>
-      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
-  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
-  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Select all start time records
   static Future<SplayTreeMap?> getTable() async =>
@@ -1344,8 +1333,8 @@ class ClockDB {
   }
 
   // Get the start time prediction
-  static Future<String?> getPrediction() async =>
-      await DB.select("journal/$uid/$table", "forecast") as String;
+  static Future<String?> getPrediction(int weekday) async =>
+      await DB.select("journal/$uid/$table", "forecast_$weekday") as String;
 
   // Update start time data {date: "09:00"} from table {table/userID/clock/date}
   // Update when user first start the video/audio in that day
@@ -1356,10 +1345,10 @@ class ClockDB {
   // Update the forecast data {"forecast": "09:00"} from table {table/userID/clock/forecast}
   static Future<bool> updateForecast(DateTime today) async {
     String? actualTime = await getFromDate(today);
-    String? predictedTime = await getPrediction();
+    String? predictedTime = await getPrediction(today.weekday);
     if (actualTime != null && predictedTime != null) {
       String forecast = Calculator.forecastStartTime(actualTime, predictedTime);
-      return update({"forecast": forecast});
+      return update({"forecast_${today.weekday}": forecast});
     }
     return false;
   }
@@ -1369,11 +1358,57 @@ class ClockDB {
       await JournalDB.delete(uid, date, table);
 }
 
+class MeditationClockDB {
+  static const table = "meditationClock";
+
+  // Select all start time records
+  static Future<SplayTreeMap?> getTable() async =>
+      await JournalDB.getTable(uid, table);
+
+  // Select the user's start time from the dates of given week
+  static Future<Map?> getThisWeek() async =>
+      await JournalDB.getThisWeek(uid, table);
+
+  static Future<Map?> getNextWeek() async =>
+      await JournalDB.getNextWeek(uid, table);
+
+  // Select user's start time from given dates
+  static Future<Map?> getFromDates(List<String> dates) async =>
+      await JournalDB.getFromDates(uid, dates, table);
+
+  static Future<String?> getFromDate(DateTime date) async {
+    var startTime = await JournalDB.getFromDate(uid, date, table);
+    return (startTime != null) ? startTime : null;
+  }
+
+  // Get the start time prediction
+  static Future<String?> getPrediction(int weekday) async =>
+      await DB.select("journal/$uid/$table", "forecast_$weekday") as String;
+
+  // Update start time data {date: "09:00"} from table {table/userID/meditationClock/date}
+  // Update when user first start the video/audio in that day
+  static Future<bool> update(Map<String, String> data) async =>
+      await JournalDB.update(uid, data, table) &
+      await updateForecast(DateTime.now());
+
+  // Update the forecast data {"forecast": "09:00"} from table {table/userID/meditationClock/forecast}
+  static Future<bool> updateForecast(DateTime today) async {
+    String? actualTime = await getFromDate(today);
+    String? predictedTime = await getPrediction(today.weekday);
+    if (actualTime != null && predictedTime != null) {
+      String forecast = Calculator.forecastStartTime(actualTime, predictedTime);
+      return update({"forecast_${today.weekday}": forecast});
+    }
+    return false;
+  }
+
+  // Delete start time data {table/userID/meditationClock/date}
+  static Future<bool> delete(String date) async =>
+      await JournalDB.delete(uid, date, table);
+}
+
 class WeightDB {
   static const table = "weight";
-  static get uid => FirebaseAuth.instance.currentUser?.uid ?? "";
-  // static get uid => "j6QYBrgbLIQH7h8iRyslntFFKV63";  //Mary
-  // static get uid => "1UFfKQ4ONxf5rGQIro8vpcyUM9z1";  //John
 
   // Select all weight
   static Future<SplayTreeMap?> getTable() async =>
