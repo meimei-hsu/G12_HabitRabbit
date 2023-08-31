@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:g12/screens/FriendStatusPage.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key, required arguments});
@@ -257,10 +258,10 @@ class _FriendListPageState extends State<FriendListPage> {
                     Expanded(child: Container()),
                     InkWell(
                       onTap: () {
-                        /*Navigator.push(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const FriendStatusPage()));*/
+                                builder: (context) => const FriendStatusPage()));
                         // TODO: 看到朋友的部分畫面
                       },
                       child: const Padding(
