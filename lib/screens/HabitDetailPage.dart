@@ -45,7 +45,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
             contentPadding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
             title: Text(
               '${content[i][j]}',
-              style: const TextStyle(color: Color(0xff4b4370), fontSize: 18),
+              style: const TextStyle(color: Color(0xff4b4370), fontSize: 20),
             ),
             leading: ClipRRect(
                 borderRadius: BorderRadius.circular(7.5),
@@ -138,11 +138,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.edit_calendar_outlined,
                                 color: Color(0xff4b4370)),
                             SizedBox(
@@ -150,32 +150,34 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             ),
                             Text(
                               "修改日期",
-                              style: TextStyle(color: Color(0xff4b4370)),
+                              style: TextStyle(
+                                  color: Color(0xff4b4370), fontSize: 16),
                             )
                           ],
                         ),
                       ),
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.cached, color: Color(0xff4b4370)),
                             SizedBox(
                               width: 10,
                             ),
                             Text(
                               "重新計畫",
-                              style: TextStyle(color: Color(0xff4b4370)),
+                              style: TextStyle(
+                                  color: Color(0xff4b4370), fontSize: 16),
                             )
                           ],
                         ),
                       ),
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.delete_outline,
                                 color: Colors.deepOrangeAccent),
                             SizedBox(
@@ -183,7 +185,8 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             ),
                             Text(
                               "刪除計畫",
-                              style: TextStyle(color: Colors.deepOrangeAccent),
+                              style: TextStyle(
+                                  color: Colors.deepOrangeAccent, fontSize: 16),
                             )
                           ],
                         ),
@@ -348,6 +351,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                   ? const Color(0xfff6cdb7)
                                   : const Color(0xffd4d6fc),
                               shadowColor: const Color(0xfffdfdf5),
+                              elevation: 0,
                               minimumSize: const Size(0, 45),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -387,7 +391,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                               "開始運動",
                               style: TextStyle(
                                   color: Color(0xff4b4370),
-                                  fontSize: 22,
+                                  fontSize: 24,
                                   fontWeight: FontWeight.bold),
                             ),
                           )),
@@ -475,11 +479,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.edit_calendar_outlined,
                                 color: Color(0xff4b4370)),
                             SizedBox(
@@ -487,32 +491,34 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             ),
                             Text(
                               "修改日期",
-                              style: TextStyle(color: Color(0xff4b4370)),
+                              style: TextStyle(
+                                  color: Color(0xff4b4370), fontSize: 16),
                             )
                           ],
                         ),
                       ),
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.cached, color: Color(0xff4b4370)),
                             SizedBox(
                               width: 10,
                             ),
                             Text(
                               "重新計畫",
-                              style: TextStyle(color: Color(0xff4b4370)),
+                              style: TextStyle(
+                                  color: Color(0xff4b4370), fontSize: 16),
                             )
                           ],
                         ),
                       ),
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.delete_outline,
                                 color: Colors.deepOrangeAccent),
                             SizedBox(
@@ -520,7 +526,8 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             ),
                             Text(
                               "刪除計畫",
-                              style: TextStyle(color: Colors.deepOrangeAccent),
+                              style: TextStyle(
+                                  color: Colors.deepOrangeAccent, fontSize: 16),
                             )
                           ],
                         ),
@@ -716,7 +723,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                               "開始冥想",
                               style: TextStyle(
                                   color: Color(0xff4b4370),
-                                  fontSize: 22,
+                                  fontSize: 24,
                                   fontWeight: FontWeight.bold),
                             ),
                           )),
@@ -755,7 +762,7 @@ class ExercisePlanDetailItem extends StatelessWidget {
                 style: TextStyle(
                     color: Color(0xff4b4370),
                     fontWeight: FontWeight.bold,
-                    fontSize: 22),
+                    fontSize: 24),
               ),
             ),
             Row(
@@ -773,7 +780,7 @@ class ExercisePlanDetailItem extends StatelessWidget {
                       style: const TextStyle(
                           color: Color(0xff4b4370),
                           fontWeight: FontWeight.bold,
-                          fontSize: 24.0),
+                          fontSize: 22.0),
                     ),
                     circularStrokeCap: CircularStrokeCap.round,
                     progressColor: const Color(0xff483d70),
@@ -796,7 +803,7 @@ class ExercisePlanDetailItem extends StatelessWidget {
                             style: const TextStyle(
                                 color: Color(0xff4b4370),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 21.0),
+                                fontSize: 22.0),
                           ),
                           subtitle: const Text("TEXT"), // TODO: content?
                           visualDensity: const VisualDensity(vertical: -4),
@@ -811,7 +818,7 @@ class ExercisePlanDetailItem extends StatelessWidget {
                             style: const TextStyle(
                                 color: Color(0xff4b4370),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 21.0),
+                                fontSize: 22.0),
                           ),
                           subtitle: const Text("TEXT"), // TODO: content?
                           visualDensity: const VisualDensity(vertical: -4),
@@ -851,7 +858,7 @@ class MeditationPlanDetailItem extends StatelessWidget {
                 style: TextStyle(
                     color: Color(0xff4b4370),
                     fontWeight: FontWeight.bold,
-                    fontSize: 22),
+                    fontSize: 24),
               ),
             ),
             Row(
@@ -869,7 +876,7 @@ class MeditationPlanDetailItem extends StatelessWidget {
                       style: const TextStyle(
                           color: Color(0xff4b4370),
                           fontWeight: FontWeight.bold,
-                          fontSize: 24.0),
+                          fontSize: 22.0),
                     ),
                     circularStrokeCap: CircularStrokeCap.round,
                     progressColor: const Color(0xff483d70),
@@ -892,7 +899,7 @@ class MeditationPlanDetailItem extends StatelessWidget {
                             style: const TextStyle(
                                 color: Color(0xff4b4370),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 21.0),
+                                fontSize: 22.0),
                           ),
                           subtitle: const Text("TEXT"), // TODO: content?
                           visualDensity: const VisualDensity(vertical: -4),
@@ -907,7 +914,7 @@ class MeditationPlanDetailItem extends StatelessWidget {
                             style: const TextStyle(
                                 color: Color(0xff4b4370),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 21.0),
+                                fontSize: 22.0),
                           ),
                           subtitle: const Text("TEXT"), // TODO: content?
                           visualDensity: const VisualDensity(vertical: -4),
@@ -960,13 +967,15 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
   }
 
   List<Widget> _getAllowedDayList() {
-    List<OutlinedButton> allowedDayList = [];
+    List<Widget> allowedDayList = [];
     List weekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
 
     OutlinedButton getDayBtn(int i) {
       OutlinedButton dayBtn = OutlinedButton(
         style: OutlinedButton.styleFrom(
-          shape: const CircleBorder(),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
           side: const BorderSide(
             color: Color(0xff4b4370),
           ),
@@ -995,16 +1004,30 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
     if (day.weekday == 7) {
       for (int i = 1; i <= 6; i++) {
         allowedDayList.add(getDayBtn(i));
+        allowedDayList.add(const SizedBox(
+          width: 10,
+        ));
       }
     } else if (isToday) {
       for (int i = day.weekday + 1; i <= 6; i++) {
         allowedDayList.add(getDayBtn(i));
+        allowedDayList.add(const SizedBox(
+          width: 10,
+        ));
       }
     } else {
       for (int i = day.weekday + 1; i <= 6; i++) {
         allowedDayList.add(getDayBtn(i));
+        allowedDayList.add(const SizedBox(
+          width: 10,
+        ));
       }
       for (int i = day.weekday - 1; i >= 0; i--) {
+        allowedDayList.insert(
+            0,
+            const SizedBox(
+              width: 10,
+            ));
         if (today.weekday != 7) {
           if (i >= today.weekday) {
             allowedDayList.insert(0, getDayBtn(i));
@@ -1031,21 +1054,24 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
-            trailing: IconButton(
-              icon: const Icon(
-                Icons.close_rounded,
-                color: Color(0xff4b4370),
+            trailing: Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xff4b4370), width: 2),
+                color: Colors.transparent,
+                shape: BoxShape.circle,
               ),
-              // FIXME: setting border doesn't work
-              style: IconButton.styleFrom(
-                shape: const CircleBorder(
-                    side: BorderSide(color: Color(0xff4b4370))),
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: Color(0xff4b4370),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
             ),
           ),
           Text(
@@ -1054,7 +1080,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
           const SizedBox(height: 10),
           SizedBox(
             height: MediaQuery.of(context).size.width * 0.1,
-            width: MediaQuery.of(context).size.width * 0.8,
+            width: MediaQuery.of(context).size.width * 0.85,
             child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: _getAllowedDayList()),

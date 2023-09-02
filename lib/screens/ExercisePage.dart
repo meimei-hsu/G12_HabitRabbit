@@ -113,14 +113,6 @@ class DoExercisePageState extends State<DoExercisePage> {
 
   /*  GIF 輪播 */
 
-  void _showFeedbackDialog() async {
-    await showDialog<double>(
-      context: context,
-      builder: (context) => const FeedbackDialog(),
-    );
-  }
-
-  // TODO: check if work successfully (運動退出 dialog)
   Future<bool> checkExit() async {
     var canExit;
 
@@ -173,7 +165,7 @@ class DoExercisePageState extends State<DoExercisePage> {
             backgroundColor: const Color(0xfffdeed9),
             context: context,
             builder: (context) {
-              return Wrap(children: const [
+              return const Wrap(children: [
                 FeedbackBottomSheet(
                   arguments: {"type": 0},
                 )
@@ -294,54 +286,6 @@ class DoExercisePageState extends State<DoExercisePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: checkExit,
-        /*() async {
-          setState(() {
-            ifStart = false;
-          });
-          //startTimer();
-
-          final shouldPop = await showDialog<bool>(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text(
-                    '目前運動已經完成 ${(currentIndex / totalExerciseItemLength * 100).round()}% 囉！\n確定要退出，之後再繼續完成嗎？\nCurrent Index: $currentIndex, totalExerciseItemLength: $totalExerciseItemLength'),
-                actions: [
-                  OutlinedButton(
-                      child: const Text(
-                        "取消",
-                        style: TextStyle(
-                          color: Color(0xff0d3b66),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      onPressed: () {
-                        startTimer();
-                        Navigator.pop(context, false);
-                      }),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xfffbb87f),
-                      ),
-                      onPressed: () {
-                        DurationDB.update(
-                            {Calendar.toKey(DateTime.now()): currentIndex});
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/', (Route<dynamic> route) => false);
-                      },
-                      child: const Text(
-                        "確定",
-                        style: TextStyle(
-                          color: Color(0xff0d3b66),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )),
-                ],
-              );
-            },
-          );
-          return shouldPop!;
-        },*/
         child: SafeArea(
             child: Scaffold(
           backgroundColor: const Color(0xfffdfdf5),
@@ -359,7 +303,7 @@ class DoExercisePageState extends State<DoExercisePage> {
                   //'$seconds',
                   textAlign: TextAlign.left,
                   style: const TextStyle(
-                      color: Color(0xff0d3b66),
+                      color: Color(0xff4b4370),
                       fontSize: 32,
                       letterSpacing: 0,
                       fontWeight: FontWeight.bold,
@@ -369,7 +313,7 @@ class DoExercisePageState extends State<DoExercisePage> {
               const SizedBox(height: 10),
               Container(
                 decoration: const BoxDecoration(
-                    color: Color(0x193598f5),
+                    color: Color(0xfff6cdb7),
                     borderRadius: BorderRadius.all(Radius.circular(13))),
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.only(left: 10),
@@ -380,7 +324,7 @@ class DoExercisePageState extends State<DoExercisePage> {
                   sport,
                   textAlign: TextAlign.left,
                   style: const TextStyle(
-                      color: Color(0xff0d3b66),
+                      color: Color(0xff4b4370),
                       fontSize: 32,
                       letterSpacing: 0,
                       fontWeight: FontWeight.bold,
@@ -388,36 +332,38 @@ class DoExercisePageState extends State<DoExercisePage> {
                 )),
               ),
               const SizedBox(height: 10),
+              // TODO: Change the gradient color of SquareProgressBar
               SquareProgressBar(
-                width: MediaQuery.of(context).size.width - 25,
-                // default: max available space
-                height: MediaQuery.of(context).size.width - 25,
-                // default: max available space
-                progress: _progress,
-                // provide the progress in a range from 0.0 to 1.0
-                solidBarColor: Colors.amber,
-                emptyBarColor: const Color(0xfffdeed9),
-                strokeWidth: 10,
-                gradientBarColor: const LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: <Color>[Colors.pinkAccent, Colors.blueAccent],
-                  tileMode: TileMode.repeated,
-                ),
-                // 漸層顏色
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width - 40,
-                  child: buildVideoBanner(
-                      _getVideoList(widget.arguments['exerciseItem'])),
-                ),
-              ),
+                  width: MediaQuery.of(context).size.width - 25,
+                  // default: max available space
+                  height: MediaQuery.of(context).size.width - 25,
+                  // default: max available space
+                  progress: _progress,
+                  // provide the progress in a range from 0.0 to 1.0
+                  solidBarColor: Colors.amber,
+                  emptyBarColor: const Color(0xfff6cdb7),
+                  strokeWidth: 10,
+                  gradientBarColor: const LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: <Color>[Colors.pinkAccent, Colors.blueAccent],
+                    tileMode: TileMode.repeated,
+                  ),
+                  // 漸層顏色
+                  child: Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width - 40,
+                      child: buildVideoBanner(
+                          _getVideoList(widget.arguments['exerciseItem'])),
+                    ),
+                  )),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Ink(
                     decoration: const ShapeDecoration(
-                      color: Color(0x193598f5),
+                      color: Color(0xfff6cdb7),
                       shape: CircleBorder(),
                     ),
                     child: IconButton(
@@ -425,10 +371,10 @@ class DoExercisePageState extends State<DoExercisePage> {
                         ifStart
                             ? Icons.pause_rounded
                             : Icons.play_arrow_rounded,
-                        color: const Color(0xff0d3b66),
+                        color: const Color(0xff4b4370),
                       ),
                       iconSize: 60,
-                      color: const Color(0xff0d3b66),
+                      color: const Color(0xff4b4370),
                       onPressed: () => startTimer(),
                     ),
                   ),
@@ -458,14 +404,6 @@ class DoMeditationPageState extends State<DoMeditationPage> {
   bool ifStart = false;
   var period = const Duration(seconds: 1);
 
-  void _showFeedbackDialog() async {
-    await showDialog<double>(
-      context: context,
-      builder: (context) => const FeedbackDialog(),
-    );
-  }
-
-  // TODO: check if work successfully (冥想退出 dialog)
   Future<bool> checkExit() async {
     var canExit;
 
@@ -526,7 +464,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
             backgroundColor: const Color(0xfffdeed9),
             context: context,
             builder: (context) {
-              return Wrap(children: const [
+              return const Wrap(children: [
                 FeedbackBottomSheet(
                   arguments: {"type": 1},
                 )
@@ -561,55 +499,6 @@ class DoMeditationPageState extends State<DoMeditationPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: checkExit,
-        /*() async {
-          setState(() {
-            ifStart = false;
-          });
-          //startTimer();
-          final shouldPop = await showDialog<bool>(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text(
-                    '目前冥想已經完成 ${(_progress.toDouble() * 100).round()}% 囉！\n確定要退出，之後再繼續完成嗎？'),
-                actions: [
-                  OutlinedButton(
-                      child: const Text(
-                        "取消",
-                        style: TextStyle(
-                          color: Color(0xff0d3b66),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      onPressed: () {
-                        startTimer();
-                        Navigator.pop(context, false);
-                      }),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xfffbb87f),
-                      ),
-                      onPressed: () {
-                        /*DurationDB.update({
-                          Calendar.toKey(DateTime.now()):
-                          "$currentIndex, ${widget.arguments['exerciseTime']}"
-                        });*/
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/', (Route<dynamic> route) => false);
-                      },
-                      child: const Text(
-                        "確定",
-                        style: TextStyle(
-                          color: Color(0xff0d3b66),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )),
-                ],
-              );
-            },
-          );
-          return shouldPop!;
-        },*/
         child: SafeArea(
             child: Scaffold(
           backgroundColor: const Color(0xfffdfdf5),
@@ -627,7 +516,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
                   //'$seconds',
                   textAlign: TextAlign.left,
                   style: const TextStyle(
-                      color: Color(0xff0d3b66),
+                      color: Color(0xff4b4370),
                       fontSize: 32,
                       letterSpacing: 0,
                       fontWeight: FontWeight.bold,
@@ -637,7 +526,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
               const SizedBox(height: 10),
               Container(
                 decoration: const BoxDecoration(
-                    color: Color(0x193598f5),
+                    color: Color(0xffd4d6fc),
                     borderRadius: BorderRadius.all(Radius.circular(13))),
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.only(left: 10),
@@ -648,7 +537,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
                   widget.arguments['meditationPlan'],
                   textAlign: TextAlign.left,
                   style: const TextStyle(
-                      color: Color(0xff0d3b66),
+                      color: Color(0xff4b4370),
                       fontSize: 32,
                       letterSpacing: 0,
                       fontWeight: FontWeight.bold,
@@ -657,34 +546,35 @@ class DoMeditationPageState extends State<DoMeditationPage> {
               ),
               const SizedBox(height: 10),
               SquareProgressBar(
-                width: MediaQuery.of(context).size.width - 25,
-                // default: max available space
-                height: MediaQuery.of(context).size.width - 25,
-                // default: max available space
-                progress: _progress,
-                // provide the progress in a range from 0.0 to 1.0
-                solidBarColor: Colors.amber,
-                emptyBarColor: const Color(0xfffdeed9),
-                strokeWidth: 10,
-                gradientBarColor: const LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: <Color>[Colors.pinkAccent, Colors.blueAccent],
-                  tileMode: TileMode.repeated,
-                ),
-                // 漸層顏色
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width - 40,
-                  child: Image.asset("assets/videos/v3.gif"),
-                ),
-              ),
+                  width: MediaQuery.of(context).size.width - 25,
+                  // default: max available space
+                  height: MediaQuery.of(context).size.width - 25,
+                  // default: max available space
+                  progress: _progress,
+                  // provide the progress in a range from 0.0 to 1.0
+                  solidBarColor: Colors.amber,
+                  emptyBarColor: const Color(0xffd4d6fc),
+                  strokeWidth: 10,
+                  gradientBarColor: const LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: <Color>[Colors.pinkAccent, Colors.blueAccent],
+                    tileMode: TileMode.repeated,
+                  ),
+                  // 漸層顏色
+                  child: Center(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width - 40,
+                      child: Image.asset("assets/videos/v3.gif"),
+                    ),
+                  )),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Ink(
                     decoration: const ShapeDecoration(
-                      color: Color(0x193598f5),
+                      color: Color(0xffd4d6fc),
                       shape: CircleBorder(),
                     ),
                     child: IconButton(
@@ -692,10 +582,10 @@ class DoMeditationPageState extends State<DoMeditationPage> {
                         ifStart
                             ? Icons.pause_rounded
                             : Icons.play_arrow_rounded,
-                        color: const Color(0xff0d3b66),
+                        color: const Color(0xff4b4370),
                       ),
                       iconSize: 60,
-                      color: const Color(0xff0d3b66),
+                      color: const Color(0xff4b4370),
                       onPressed: () => startTimer(),
                     ),
                   ),
@@ -728,7 +618,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
       title: const Text('每日運動回饋',
           style: TextStyle(
             backgroundColor: Colors.yellow,
-            color: Color(0xff0d3b66),
+            color: Color(0xff4b4370),
           )),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         Container(
@@ -738,7 +628,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
             textAlign: TextAlign.left,
             style: TextStyle(
                 //backgroundColor: Colors.yellow,
-                color: Color(0xff0d3b66),
+                color: Color(0xff4b4370),
                 fontSize: 25,
                 letterSpacing: 0,
                 fontWeight: FontWeight.bold,
@@ -762,7 +652,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
           textAlign: TextAlign.left,
           style: TextStyle(
               //backgroundColor: Colors.yellow,
-              color: Color(0xff0d3b66),
+              color: Color(0xff4b4370),
               fontSize: 20,
               letterSpacing: 0,
               fontWeight: FontWeight.bold,
@@ -775,7 +665,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
             textAlign: TextAlign.left,
             style: TextStyle(
                 //backgroundColor: Colors.yellow,
-                color: Color(0xff0d3b66),
+                color: Color(0xff4b4370),
                 fontSize: 25,
                 letterSpacing: 0,
                 fontWeight: FontWeight.bold,
@@ -799,7 +689,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
           textAlign: TextAlign.left,
           style: TextStyle(
               //backgroundColor: Colors.yellow,
-              color: Color(0xff0d3b66),
+              color: Color(0xff4b4370),
               fontSize: 20,
               letterSpacing:
                   0 /*percentages not used in flutter. defaulting to zero*/,
@@ -885,7 +775,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
               "${(type == 0) ? "運動" : "冥想"}回饋",
               style: const TextStyle(
                   color: Color(0xff4b4370),
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold),
             ),
           ),
@@ -912,7 +802,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
             "是否滿意今天的${(type == 0) ? "運動" : "冥想"}計劃呢？",
             style: const TextStyle(
                 color: Color(0xff4b4370),
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: FontWeight.bold),
           ),
           const SizedBox(
@@ -928,10 +818,11 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
             endIndent: 20,
           ),
           Text(
-            (type == 0) ? "今天的運動計劃做起來是否會很疲憊呢？" : "今天的冥想計劃是否會太長或太短呢？",
+            (type == 0) ? "今天的運動計劃\n做起來是否會很疲憊呢？" : "今天的冥想計劃\n是否會太長或太短呢？",
+            textAlign: TextAlign.center,
             style: const TextStyle(
                 color: Color(0xff4b4370),
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: FontWeight.bold),
           ),
           const SizedBox(
@@ -956,7 +847,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                   "最近狀況調查",
                   style: TextStyle(
                       color: Color(0xff4b4370),
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
           (type == 0)
@@ -976,7 +867,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           const Text(
                             "最近是否有憂慮、失眠、\n或是壓力大的情況？",
                             style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 16),
+                                color: Color(0xff4b4370), fontSize: 18),
                           ),
                           RoundCheckBox(
                             isChecked: isAnxious,
@@ -1001,7 +892,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           const Text(
                             "最近是否有一個短期目標需要衝刺？",
                             style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 16),
+                                color: Color(0xff4b4370), fontSize: 18),
                           ),
                           RoundCheckBox(
                             isChecked: haveToSprint,
@@ -1026,7 +917,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           const Text(
                             "最近是否感到情感上的滿足？",
                             style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 16),
+                                color: Color(0xff4b4370), fontSize: 18),
                           ),
                           RoundCheckBox(
                             isChecked: isSatisfied,
@@ -1054,6 +945,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                 padding: const EdgeInsets.only(right: 10, left: 10),
                 backgroundColor: const Color(0xfff6cdb7),
                 shadowColor: Colors.transparent,
+                elevation: 0,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -1093,7 +985,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                 "確定",
                 style: TextStyle(
                   color: Color(0xff4b4370),
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),

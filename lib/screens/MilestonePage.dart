@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:level_map/level_map.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -15,10 +16,13 @@ class MilestonePage extends StatefulWidget {
   const MilestonePage({super.key, required this.arguments});
 
   @override
-  _MilestonePage createState() => _MilestonePage();
+  MilestonePageState createState() => MilestonePageState();
 }
 
-class _MilestonePage extends State<MilestonePage> {
+class MilestonePageState extends State<MilestonePage> {
+  User? user = FirebaseAuth.instance.currentUser;
+
+  @override
   void initState() {
     super.initState();
     _fetchExistingMilestoneData();
@@ -61,25 +65,25 @@ class _MilestonePage extends State<MilestonePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Padding(
+                 Padding(
                   padding: const EdgeInsets.only(left: 20.0, top: 16.0),
                   child: Row(
-                    children: const [
+                    children: [
                       Text(
-                        'Mary的角色',
-                        style: TextStyle(
+                        '${user?.displayName!} 的角色',
+                        style: const TextStyle(
                           fontFamily: 'WorkSans',
-                          color: Color(0xFF0D3B66),
+                          color: Color(0xff4b3d70),
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1.1,
                         ),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       //TODO: 根據等級改變Icon
-                      Icon(
+                      const Icon(
                         Icons.looks_two,
-                        color: Color(0xFF0D3B66),
+                        color: Color(0xff4b3d70),
                         size: 40,
                       ),
                     ],
@@ -91,7 +95,7 @@ class _MilestonePage extends State<MilestonePage> {
                     '請養成規律的運動與冥想習慣蒐集寶物讓我長大吧！',
                     style: TextStyle(
                       fontFamily: 'WorkSans',
-                      color: Color(0xFF0D3B66),
+                      color: Color(0xff4b3d70),
                       fontSize: 25,
                       fontWeight: FontWeight.normal,
                       letterSpacing: 1.1,
@@ -162,8 +166,8 @@ class CharacterWidget extends StatelessWidget {
               onPressed: () {
                 _showQuizDialog(context);
               },
-              backgroundColor: const Color(0xFFFDFDFD),
-              child: const Icon(Icons.quiz),
+              backgroundColor: const Color(0xfffdfdf5),
+              child: const Icon(Icons.quiz, color: Color(0xff4b3d70)),
             ),
           ),
         ),
@@ -176,8 +180,8 @@ class CharacterWidget extends StatelessWidget {
               onPressed: () {
                 _showGrowDialog(context);
               },
-              backgroundColor: const Color(0xFFFDFDFD),
-              child: const Icon(Icons.more_horiz_outlined),
+              backgroundColor: const Color(0xfffdfdf5),
+              child: const Icon(Icons.more_horiz_outlined, color: Color(0xff4b3d70)),
             ),
           ),
         ),
@@ -193,8 +197,8 @@ class CharacterWidget extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const Level()),
                 );
               },
-              backgroundColor: const Color(0xFFFDFDFD),
-              child: const Icon(Icons.map),
+              backgroundColor: const Color(0xfffdfdf5),
+              child: const Icon(Icons.map, color: Color(0xff4b3d70)),
             ),
           ),
         ),
@@ -213,8 +217,8 @@ class CharacterWidget extends StatelessWidget {
                   Navigator.pushNamed(context, '/contract/initial');
                 }
               },
-              backgroundColor: const Color(0xFFFDFDFD),
-              child: const Icon(Icons.request_quote_outlined),
+              backgroundColor: const Color(0xfffdfdf5),
+              child: const Icon(Icons.request_quote_outlined, color: Color(0xff4b3d70)),
             ),
           ),
         ),
@@ -224,7 +228,7 @@ class CharacterWidget extends StatelessWidget {
             '本周運動習慣已達成：',
             style: TextStyle(
               fontFamily: 'WorkSans',
-              color: Color(0xFF0D3B66),
+              color: Color(0xff4b3d70),
               fontSize: 15,
             ),
           ),
@@ -242,13 +246,13 @@ class CharacterWidget extends StatelessWidget {
               center: Text(
                 "${workoutPercent.round()}%",
                 style: const TextStyle(
-                  color: Color(0xFFFDFDFD),
+                  color: Color(0xfffdfdf5),
                   fontSize: 10,
                 ),
               ),
               barRadius: const Radius.circular(16),
-              backgroundColor: const Color(0xFFFDFDFD),
-              progressColor: const Color(0xFF0D3B66),
+              backgroundColor: const Color(0xfffdfdf5),
+              progressColor: const Color(0xff4b3d70),
             ),
           ),
         ),
@@ -258,7 +262,7 @@ class CharacterWidget extends StatelessWidget {
             '本周冥想習慣已達成：',
             style: TextStyle(
               fontFamily: 'WorkSans',
-              color: Color(0xFF0D3B66),
+              color: Color(0xff4b3d70),
               fontSize: 15,
             ),
           ),
@@ -276,13 +280,13 @@ class CharacterWidget extends StatelessWidget {
               center: Text(
                 "${meditationPercent.round()}%",
                 style: const TextStyle(
-                  color: Color(0xFFFDFDFD),
+                  color: Color(0xfffdfdf5),
                   fontSize: 10,
                 ),
               ),
               barRadius: const Radius.circular(16),
-              backgroundColor: const Color(0xFFFDFDFD),
-              progressColor: const Color(0xFF0D3B66),
+              backgroundColor: const Color(0xfffdfdf5),
+              progressColor: const Color(0xff4b3d70),
             ),
           ),
         ),
@@ -292,7 +296,7 @@ class CharacterWidget extends StatelessWidget {
             '距離達成所有習慣養成：',
             style: TextStyle(
               fontFamily: 'WorkSans',
-              color: Color(0xFF0D3B66),
+              color: Color(0xff4b3d70),
               fontSize: 15,
             ),
           ),
@@ -310,13 +314,13 @@ class CharacterWidget extends StatelessWidget {
               center: Text(
                 "${totalPercent.round()}%",
                 style: const TextStyle(
-                  color: Color(0xFFFDFDFD),
+                  color: Color(0xfffdfdf5),
                   fontSize: 10,
                 ),
               ),
               barRadius: const Radius.circular(16),
-              backgroundColor: const Color(0xFFFDFDFD),
-              progressColor: const Color(0xFF0D3B66),
+              backgroundColor: const Color(0xfffdfdf5),
+              progressColor: const Color(0xff4b3d70),
             ),
           ),
         ),
@@ -329,10 +333,12 @@ class CharacterWidget extends StatelessWidget {
   void _showGrowDialog(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.black.withOpacity(0.5),
+      backgroundColor: const Color(0xFFFAF0CA),
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20),
+            topLeft: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
         return const Padding(
@@ -347,11 +353,13 @@ class CharacterWidget extends StatelessWidget {
 void _showQuizDialog(BuildContext context) {
   showModalBottomSheet(
     context: context,
-    backgroundColor: Colors.black.withOpacity(0.5),
+    backgroundColor: const Color(0xFFFAF0CA),
     // Darkened background color
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      borderRadius: BorderRadius.only(
+          topRight: Radius.circular(20),
+          topLeft: Radius.circular(20)),
     ),
     builder: (BuildContext context) {
       return const Padding(
@@ -395,42 +403,65 @@ class QuizDialog extends StatefulWidget {
   const QuizDialog({super.key, required arguments});
 
   @override
-  _QuizDialogState createState() => _QuizDialogState();
+  QuizDialogState createState() => QuizDialogState();
 }
 
-class _QuizDialogState extends State<QuizDialog> {
+class QuizDialogState extends State<QuizDialog> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Material(
+      color: const Color(0xFFFAF0CA),
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16.0),
-              color: const Color(0xFFFAF0CA),
-              child: Text(
+            ListTile(
+              contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+              title: const Text(
                 "寶物蒐集概況",
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(),
+                style: TextStyle(
+                    color: Color(0xff4b4370),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xff4b4370), width: 2),
+                  color: Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(
+                    Icons.close_rounded,
+                    color: Color(0xff4b4370),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 10.0),
-            Text(
+            const Text(
               '運動寶物',
               style: TextStyle(
-                fontSize: 15,
-                color: Color(0xFF0D3B66),
+                fontSize: 20,
+                color: Color(0xff4b3d70),
+                fontWeight: FontWeight.bold
               ),
             ),
-            const SizedBox(height: 5.0),
+            const SizedBox(height: 10.0),
             Align(
               alignment: Alignment.topCenter,
               child: Container(
+                padding: const EdgeInsets.all(10),
                 height: 170,
-                width: 0.8 * screenWidth,
+                width: 0.9 * screenWidth,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
                     colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
                     begin: Alignment.topRight,
@@ -452,22 +483,24 @@ class _QuizDialogState extends State<QuizDialog> {
                 ),
               ),
             ),
-            const SizedBox(height: 5.0),
-            Text(
+            const SizedBox(height: 20.0),
+            const Text(
               '冥想寶物',
               style: TextStyle(
-                fontSize: 15,
-                color: Color(0xFF0D3B66),
+                fontSize: 20,
+                color: Color(0xff4b3d70),
+                  fontWeight: FontWeight.bold
               ),
             ),
-            const SizedBox(height: 5.0),
+            const SizedBox(height: 10.0),
             Align(
               alignment: Alignment.topCenter,
               child: Container(
+                padding: const EdgeInsets.all(10),
                 height: 170,
-                width: 0.8 * screenWidth,
+                width: 0.9 * screenWidth,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
                     colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
                     begin: Alignment.topRight,
@@ -490,6 +523,7 @@ class _QuizDialogState extends State<QuizDialog> {
                 ),
               ),
             ),
+            const SizedBox(height: 15,)
           ],
         ),
       ),
@@ -502,34 +536,55 @@ class GrowDialog extends StatefulWidget {
   const GrowDialog({super.key, required arguments});
 
   @override
-  _GrowDialogState createState() => _GrowDialogState();
+  GrowDialogState createState() => GrowDialogState();
 }
 
-class _GrowDialogState extends State<GrowDialog> {
+class GrowDialogState extends State<GrowDialog> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Material(
+      color: const Color(0xFFFAF0CA),
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16.0),
-              color: const Color(0xFFFAF0CA),
-              child: Text(
+            ListTile(
+              contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+              title: const Text(
                 "角色進化圖",
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(),
+                style: TextStyle(
+                    color: Color(0xff4b4370),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xff4b4370), width: 2),
+                  color: Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(
+                    Icons.close_rounded,
+                    color: Color(0xff4b4370),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
             ),
-            const SizedBox(height: 30.0),
+            const SizedBox(height: 10.0),
             Align(
               alignment: Alignment.topCenter,
               child: Container(
                 height: 120,
-                width: 0.8 * screenWidth,
+                width: 0.9 * screenWidth,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
                     colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
                     begin: Alignment.topRight,
@@ -547,26 +602,26 @@ class _GrowDialogState extends State<GrowDialog> {
                     ),
                     const SizedBox(
                         width:
-                            5), // Add some spacing between the image and text
+                            25), // Add some spacing between the image and text
                     const Text(
                       '第一階段',
                       style: TextStyle(
                         fontSize: 20,
-                        color: Color(0xFF0D3B66),
+                        color: Color(0xff4b3d70),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 15.0),
             Align(
               alignment: Alignment.topCenter,
               child: Container(
                 height: 120,
-                width: 0.8 * screenWidth,
+                width: 0.9 * screenWidth,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
                     colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
                     begin: Alignment.topRight,
@@ -582,26 +637,26 @@ class _GrowDialogState extends State<GrowDialog> {
                       width: 120,
                       'assets/images/second.png',
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 25),
                     const Text(
                       '第二階段',
                       style: TextStyle(
                         fontSize: 20,
-                        color: Color(0xFF0D3B66),
+                        color: Color(0xff4b3d70),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 15.0),
             Align(
               alignment: Alignment.topCenter,
               child: Container(
                 height: 120,
-                width: 0.8 * screenWidth,
+                width: 0.9 * screenWidth,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
                     colors: [Color(0xFFFFFFFF), Color(0xFFFAF0CA)],
                     begin: Alignment.topRight,
@@ -617,18 +672,19 @@ class _GrowDialogState extends State<GrowDialog> {
                       width: 120,
                       'assets/images/third_unknown.png',
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 25),
                     const Text(
                       '???',
                       style: TextStyle(
                         fontSize: 20,
-                        color: Color(0xFF0D3B66),
+                        color: Color(0xff4b3d70),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
+            const SizedBox(height: 15,)
           ],
         ),
       ),
@@ -641,10 +697,10 @@ class Level extends StatefulWidget {
   const Level({super.key});
 
   @override
-  _Level createState() => _Level();
+  LevelState createState() => LevelState();
 }
 
-class _Level extends State<Level> {
+class LevelState extends State<Level> {
   double level = (workoutGem + meditationGem).toDouble();
   @override
   Widget build(BuildContext context) {
@@ -691,7 +747,7 @@ class _Level extends State<Level> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: const Color(0xFF0D3B66),
+          backgroundColor: const Color(0xff4b3d70),
           child: const Icon(
             Icons.arrow_back,
             color: Colors.white,

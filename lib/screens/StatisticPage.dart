@@ -73,7 +73,7 @@ class StatisticPageState extends State<StatisticPage> {
   List meditationMonthDaysList = [];
   late double maxExerciseDays = 0;
   late double maxMeditationDays = 0;
-  late TooltipBehavior _tooltipBehavior;
+  //late TooltipBehavior _tooltipBehavior;
 
   // toggle switch control (0 = 運動, 1 = 冥想)
   int planProgress = 0;
@@ -251,10 +251,7 @@ class StatisticPageState extends State<StatisticPage> {
     for (int i = 0; i < meditationMonthDaysList.length; i++) {
       meditationDays.add(meditationMonthDaysList[i][2].toDouble());
     }
-    if (meditationDays.isNotEmpty) {
-      // TODO: 這個判斷之後應該可以刪掉？
-      maxMeditationDays = meditationDays.reduce(max) + 10;
-    }
+    maxMeditationDays = meditationDays.reduce(max) + 10;
 
     // After getting user's data, hide the loading mask
     isInit = false;
@@ -265,7 +262,7 @@ class StatisticPageState extends State<StatisticPage> {
 
   @override
   void initState() {
-    _tooltipBehavior = TooltipBehavior(
+    /*_tooltipBehavior = TooltipBehavior(
       enable: true,
       shouldAlwaysShow: true,
       activationMode: ActivationMode.longPress,
@@ -299,7 +296,7 @@ class StatisticPageState extends State<StatisticPage> {
               ],
             ));
       },
-    );
+    );*/
     super.initState();
 
     getUserData();
@@ -386,6 +383,7 @@ class StatisticPageState extends State<StatisticPage> {
                                       fontSize: 22.0),
                                 ),
                                 trailing: IconButton(
+                                  padding: const EdgeInsets.only(top:5, left: 20),
                                   icon: const Icon(Icons.add_box_rounded),
                                   iconSize: 28,
                                   color: const Color(0xff4b4370),
@@ -495,7 +493,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                         color: const Color(
                                                                 0xff4b3d70)
                                                             .withOpacity(0.7),
-                                                        fontSize: 14,
+                                                        fontSize: 15,
                                                         fontWeight:
                                                             FontWeight.bold)),
                                                 color: const Color(0xff4b3d70)
@@ -529,7 +527,7 @@ class StatisticPageState extends State<StatisticPage> {
                                               getTextStyles: (value) =>
                                                   const TextStyle(
                                                       color: Color(0xff4b3d70),
-                                                      fontSize: 12,
+                                                      fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold),
                                               getTitles: (value) {
@@ -543,7 +541,7 @@ class StatisticPageState extends State<StatisticPage> {
                                               getTextStyles: (value) =>
                                                   const TextStyle(
                                                       color: Color(0xff4b3d70),
-                                                      fontSize: 12,
+                                                      fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold),
                                               getTitles: (value) {
@@ -753,7 +751,7 @@ class StatisticPageState extends State<StatisticPage> {
                                   ),
                                   labelStyle: const TextStyle(
                                       color: Color(0xff4b4370),
-                                      fontSize: 14,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold),
                                   majorTickLines:
                                   const MajorTickLines(size: 0),
@@ -779,7 +777,7 @@ class StatisticPageState extends State<StatisticPage> {
                                         isVisible: true,
                                         textStyle: TextStyle(
                                             color: Color(0xff4b4370),
-                                            fontSize: 14,
+                                            fontSize: 15,
                                             fontWeight: FontWeight.bold)),
                                     color: const Color(0xffd4d6fc),
                                     borderRadius:
@@ -799,7 +797,7 @@ class StatisticPageState extends State<StatisticPage> {
                                     ),
                                     labelStyle: const TextStyle(
                                         color: Color(0xff4b4370),
-                                        fontSize: 14,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold),
                                     majorTickLines:
                                     const MajorTickLines(size: 0),
@@ -825,7 +823,7 @@ class StatisticPageState extends State<StatisticPage> {
                                           isVisible: true,
                                           textStyle: TextStyle(
                                               color: Color(0xff4b4370),
-                                              fontSize: 14,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.bold)),
                                       color: const Color(0xffd4d6fc),
                                       borderRadius:
@@ -894,7 +892,7 @@ class StatisticPageState extends State<StatisticPage> {
                                           isVisible: true,
                                           textStyle: const TextStyle(
                                               color: Color(0xff4b4370),
-                                              fontSize: 14,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.bold)
                                       ),
                                       series: <
@@ -919,6 +917,10 @@ class StatisticPageState extends State<StatisticPage> {
                                             dataLabelSettings:
                                                 const DataLabelSettings(
                                               isVisible: true,
+                                                  textStyle: TextStyle(
+                                                      color: Color(0xff4b4370),
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                         ])
@@ -927,7 +929,7 @@ class StatisticPageState extends State<StatisticPage> {
                                           isVisible: true,
                                           textStyle: const TextStyle(
                                               color: Color(0xff4b4370),
-                                              fontSize: 14,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.bold)
                                       ),
                                       series: <CircularSeries<ChartData, String>>[
@@ -952,6 +954,10 @@ class StatisticPageState extends State<StatisticPage> {
                                             dataLabelSettings:
                                                 const DataLabelSettings(
                                               isVisible: true,
+                                                  textStyle: TextStyle(
+                                                      color: Color(0xff4b4370),
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                         ]),
@@ -1034,7 +1040,7 @@ class StatisticPageState extends State<StatisticPage> {
                                           ),
                                           labelStyle: const TextStyle(
                                               color: Color(0xff4b4370),
-                                              fontSize: 14,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.bold),
                                           // set 0 or transparent color to hide grid lines and tick lines
                                           majorTickLines:
@@ -1060,8 +1066,7 @@ class StatisticPageState extends State<StatisticPage> {
                                             color: Color(0xff4b4370),
                                           ),
                                         ),
-                                        // TODO: need tooltip? or just show days above columns like now
-                                        tooltipBehavior: _tooltipBehavior,
+                                        //tooltipBehavior: _tooltipBehavior,
                                         series: <
                                             ChartSeries<ChartData, String>>[
                                           ColumnSeries<ChartData, String>(
@@ -1077,7 +1082,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                     textStyle: TextStyle(
                                                         color:
                                                             Color(0xff4b4370),
-                                                        fontSize: 14,
+                                                        fontSize: 15,
                                                         fontWeight:
                                                             FontWeight.bold)),
                                             color: const Color(0xffd4d6fc),
@@ -1089,9 +1094,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                         Radius.circular(10)),
                                           )
                                         ]))
-                                : (meditationMonthDaysList.isNotEmpty)
-                                    // TODO: 這個判斷之後應該可以刪掉?
-                                    ? Container(
+                                : Container(
                                         padding: const EdgeInsets.fromLTRB(
                                             10, 0, 10, 0),
                                         child: SfCartesianChart(
@@ -1104,7 +1107,7 @@ class StatisticPageState extends State<StatisticPage> {
                                               ),
                                               labelStyle: const TextStyle(
                                                   color: Color(0xff4b4370),
-                                                  fontSize: 14,
+                                                  fontSize: 15,
                                                   fontWeight: FontWeight.bold),
                                               // set 0 or transparent color to hide grid lines and tick lines
                                               majorTickLines:
@@ -1133,8 +1136,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                 color: Color(0xff4b4370),
                                               ),
                                             ),
-                                            // TODO: need tooltip? or just show days above columns like now
-                                            tooltipBehavior: _tooltipBehavior,
+                                            //tooltipBehavior: _tooltipBehavior,
                                             series: <
                                                 ChartSeries<ChartData, String>>[
                                               ColumnSeries<ChartData, String>(
@@ -1152,7 +1154,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                         textStyle: TextStyle(
                                                             color: Color(
                                                                 0xff4b4370),
-                                                            fontSize: 14,
+                                                            fontSize: 15,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .bold)),
@@ -1165,8 +1167,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                             Radius.circular(
                                                                 10)),
                                               )
-                                            ]))
-                                    : const Text("冥想沒成功過，加油好嗎:(((("),
+                                            ])),
                           ]),
                         ),
                       ]),
@@ -1225,7 +1226,6 @@ class StatisticPageState extends State<StatisticPage> {
     List<ChartData> chartData = [];
 
     if (meditationMonthDaysList.isEmpty) {
-      print("meditationMonthDaysList is empty!");
       return [];
     }
 
@@ -1358,15 +1358,39 @@ class StatisticPageState extends State<StatisticPage> {
               "新增體重",
               style: TextStyle(
                   color: Color(0xff4b4370),
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold),
             ),
-            trailing: IconButton(
+            trailing: Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xff4b4370), width: 2),
+                color: Colors.transparent,
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: Color(0xff4b4370),
+                ),
+                onPressed: () {
+                  weightController.clear();
+                  setState(() {
+                    selectedDate = DateTime.now();
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            // TODO: delete after confirming which style
+            /*trailing: IconButton(
+              padding: const EdgeInsets.only(top: 5, right: 20),
               icon: const Icon(
                 Icons.close_rounded,
                 color: Color(0xff4b4370),
               ),
-              // FIXME: setting border doesn't work
               style: IconButton.styleFrom(
                 shape: const CircleBorder(
                     side: BorderSide(color: Color(0xff4b4370))),
@@ -1380,7 +1404,7 @@ class StatisticPageState extends State<StatisticPage> {
                 });
                 Navigator.pop(context);
               },
-            ),
+            ),*/
           ),
           const SizedBox(
             height: 10,
@@ -1426,7 +1450,7 @@ class StatisticPageState extends State<StatisticPage> {
                   cursorColor: const Color(0xfff6cdb7),
                   style: const TextStyle(
                       color: Color(0xff4b4370),
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold),
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
@@ -1460,7 +1484,7 @@ class StatisticPageState extends State<StatisticPage> {
               ),
               style: const TextStyle(
                   color: Color(0xff4b4370),
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
           ),
@@ -1575,7 +1599,7 @@ class StatisticPageState extends State<StatisticPage> {
                 "確定",
                 style: TextStyle(
                   color: Color(0xff4b4370),
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),

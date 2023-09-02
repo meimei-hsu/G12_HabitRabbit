@@ -9,7 +9,7 @@ import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-import 'PageMaterial.dart';
+import 'package:g12/screens/PageMaterial.dart';
 
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
@@ -426,7 +426,7 @@ class HomepageState extends State<Homepage> {
                         tail: true,
                         textStyle: const TextStyle(
                           color: Color(0xFF4b3d70),
-                          fontSize: 16,
+                          fontSize: 18,
                           //fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -548,7 +548,7 @@ class HomepageState extends State<Homepage> {
                               backgroundColor: const Color(0xfffdeed9),
                               context: context,
                               builder: (context) {
-                                return Wrap(children: const [
+                                return const Wrap(children: [
                                   FeedbackBottomSheet(
                                     arguments: {"type": 0},
                                   )
@@ -571,7 +571,7 @@ class HomepageState extends State<Homepage> {
                               backgroundColor: const Color(0xfffdeed9),
                               context: context,
                               builder: (context) {
-                                return Wrap(children: const [
+                                return const Wrap(children: [
                                   FeedbackBottomSheet(
                                     arguments: {"type": 1},
                                   )
@@ -600,6 +600,8 @@ class AddPlanBottomSheet extends StatefulWidget {
 
 class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
   int exerciseTime = 0;
+  // TODO: meditationType 要回傳 string 還是 int value
+  String meditationType = "正念禪";
   int planToAdd = 0; // 0 = 運動, 1 = 冥想
 
   String time = "";
@@ -615,7 +617,9 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
       int choice = 15 * i;
       btnList.add(OutlinedButton(
         style: OutlinedButton.styleFrom(
-          shape: const CircleBorder(),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
           side: const BorderSide(
             color: Color(0xff4b4370),
           ),
@@ -632,6 +636,43 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
           "$choice",
           style: const TextStyle(
             color: Color(0xff4b4370),
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ));
+    }
+    return btnList;
+  }
+
+  List<Widget> _getMeditationTypeBtnList() {
+    List meditationTypeList = ["正念禪", "工作禪", "慈心禪"];
+    List<OutlinedButton> btnList = [];
+
+    for (final type in meditationTypeList) {
+      String choice = type;
+      btnList.add(OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          side: const BorderSide(
+            color: Color(0xff4b4370),
+          ),
+          backgroundColor: (meditationType == choice)
+              ? const Color(0xfff6cdb7)
+              : const Color(0xfffdfdf5),
+        ),
+        onPressed: () {
+          setState(() {
+            meditationType = choice;
+          });
+        },
+        child: Text(
+          choice,
+          style: const TextStyle(
+            color: Color(0xff4b4370),
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -669,24 +710,27 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
               "新增$time的${((planToAdd == 0) ? "運動" : "冥想")}計畫",
               style: const TextStyle(
                   color: Color(0xff4b4370),
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold),
             ),
-            trailing: IconButton(
-              icon: const Icon(
-                Icons.close_rounded,
-                color: Color(0xff4b4370),
+            trailing: Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xff4b4370), width: 2),
+                color: Colors.transparent,
+                shape: BoxShape.circle,
               ),
-              // FIXME: setting border doesn't work
-              style: IconButton.styleFrom(
-                shape: const CircleBorder(
-                    side: BorderSide(color: Color(0xff4b4370))),
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: Color(0xff4b4370),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
             ),
           ),
           (addWorkout && addMeditation)
@@ -720,27 +764,27 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
           const SizedBox(
             height: 10,
           ),
-          // TODO: 新增冥想類型?
           (planToAdd == 0)
               ? Text(
                   "你要在$time新增幾分鐘的運動計畫呢？",
                   style:
-                      const TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                      const TextStyle(color: Color(0xff4b4370), fontSize: 18),
                 )
-              : Container(),
-          (planToAdd == 0) ? const SizedBox(height: 10) : Container(),
+              : Text(
+                  "你要在$time新增什麼類型的冥想計畫呢？",
+                  style:
+                      const TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                ),
+          const SizedBox(height: 10),
           (planToAdd == 0)
               ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: _getTimeBtnList(),
                 )
-              : Container(),
-          (planToAdd == 1)
-              ? const Text(
-                  "確定要新增冥想計畫嗎？",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 16),
-                )
-              : Container(),
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: _getMeditationTypeBtnList(),
+                ),
           const SizedBox(
             height: 10,
           ),
@@ -753,6 +797,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                     ? const Color(0xfff6cdb7)
                     : const Color(0xffd4d6fc),
                 shadowColor: Colors.transparent,
+                elevation: 0,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -762,10 +807,12 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                 DateTime selectedDay = widget.arguments['selectedDay'];
                 (planToAdd == 0)
                     ? await PlanAlgo.generate(selectedDay, exerciseTime)
+                // TODO: generate meditation plan with meditationType
                     : await MeditationPlanAlgo.generate(selectedDay);
+
                 print((planToAdd == 0)
                     ? "$selectedDay add $exerciseTime minutes exercise plan."
-                    : "$selectedDay add meditation plan.");
+                    : "$selectedDay add $meditationType meditation plan.");
                 if (!mounted) return;
                 Navigator.pushNamed(context, "/");
               },
@@ -773,7 +820,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                 "確定",
                 style: TextStyle(
                   color: Color(0xff4b4370),
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -834,7 +881,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
               "${(type == 0) ? "運動" : "冥想"}回饋",
               style: const TextStyle(
                   color: Color(0xff4b4370),
-                  fontSize: 20,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold),
             ),
           ),
@@ -860,7 +907,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
             "是否滿意今天的${(type == 0) ? "運動" : "冥想"}計劃呢？",
             style: const TextStyle(
                 color: Color(0xff4b4370),
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: FontWeight.bold),
           ),
           const SizedBox(
@@ -876,10 +923,11 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
             endIndent: 20,
           ),
           Text(
-            (type == 0) ? "今天的運動計劃做起來是否會很疲憊呢？" : "今天的冥想計劃是否會太長或太短呢？",
+            (type == 0) ? "今天的運動計劃\n做起來是否會很疲憊呢？" : "今天的冥想計劃\n是否會太長或太短呢？",
+            textAlign: TextAlign.center,
             style: const TextStyle(
                 color: Color(0xff4b4370),
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: FontWeight.bold),
           ),
           const SizedBox(
@@ -904,7 +952,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                   "最近狀況調查",
                   style: TextStyle(
                       color: Color(0xff4b4370),
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
           (type == 0)
@@ -924,7 +972,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           const Text(
                             "最近是否有憂慮、失眠、\n或是壓力大的情況？",
                             style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 16),
+                                color: Color(0xff4b4370), fontSize: 18),
                           ),
                           RoundCheckBox(
                             isChecked: isAnxious,
@@ -949,7 +997,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           const Text(
                             "最近是否有一個短期目標需要衝刺？",
                             style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 16),
+                                color: Color(0xff4b4370), fontSize: 18),
                           ),
                           RoundCheckBox(
                             isChecked: haveToSprint,
@@ -974,7 +1022,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           const Text(
                             "最近是否感到情感上的滿足？",
                             style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 16),
+                                color: Color(0xff4b4370), fontSize: 18),
                           ),
                           RoundCheckBox(
                             isChecked: isSatisfied,
@@ -1002,6 +1050,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                 padding: const EdgeInsets.only(right: 10, left: 10),
                 backgroundColor: const Color(0xfff6cdb7),
                 shadowColor: Colors.transparent,
+                elevation: 0,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -1035,7 +1084,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                 "確定",
                 style: TextStyle(
                   color: Color(0xff4b4370),
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),

@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:g12/screens/PageMaterial.dart';
+
 import 'package:g12/services/Database.dart';
-import 'dart:async';
 
 // Define global variables for ContractPage
 User? user = FirebaseAuth.instance.currentUser;
@@ -16,14 +20,15 @@ Map contractData = {
   "result": false,
 };
 
+// TODO: change firstContractPage and SecondContractPage button style and text style
 class FirstContractPage extends StatefulWidget {
   const FirstContractPage({super.key, required arguments});
 
   @override
-  _FirstContractPage createState() => _FirstContractPage();
+  FirstContractPageState createState() => FirstContractPageState();
 }
 
-class _FirstContractPage extends State<FirstContractPage> {
+class FirstContractPageState extends State<FirstContractPage> {
   int tapCount = 0;
   final DateTime startDay = DateTime.now();
   final List<String> dialogs = [
@@ -61,7 +66,12 @@ class _FirstContractPage extends State<FirstContractPage> {
               height: 1),
         ),
         backgroundColor: const Color(0xFFFDFDF5),
-        automaticallyImplyLeading: false,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_rounded,
+              color: Color(0xff4b4370)),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: GestureDetector(
         onTap: updateDialog,
@@ -78,7 +88,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(15.0),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -87,7 +97,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                       dialogs[tapCount],
                       style: const TextStyle(
                         fontSize: 18.0,
-                        color: Color(0xFF0D3B66),
+                        color: Color(0xff4b3d70),
                       ),
                     ),
                     if (tapCount != 1 &&
@@ -99,7 +109,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                         '➤ 點擊前往下一步',
                         style: TextStyle(
                           fontSize: 12.0,
-                          color: Color(0xFF0D3B66),
+                          color: Color(0xff4b3d70),
                         ),
                       ),
                     ],
@@ -115,7 +125,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                                 });
                               },
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: const Color(0xFF0D3B66),
+                                foregroundColor: const Color(0xff4b3d70),
                                 backgroundColor: const Color(0xFFFDFDFD),
                               ),
                               child: const Text('確定！我要挑戰'),
@@ -128,7 +138,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                                 Navigator.pushNamed(context, '/');
                               },
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: const Color(0xFF0D3B66),
+                                foregroundColor: const Color(0xff4b3d70),
                                 backgroundColor: const Color(0xFFFDFDFD),
                               ),
                               child: const Text('先不要...謝謝再連絡'),
@@ -150,7 +160,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                                 });
                               },
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: const Color(0xFF0D3B66),
+                                foregroundColor: const Color(0xff4b3d70),
                                 backgroundColor: const Color(0xFFFDFDFD),
                               ),
                               child: const Text('運動'),
@@ -166,7 +176,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                                 });
                               },
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: const Color(0xFF0D3B66),
+                                foregroundColor: const Color(0xff4b3d70),
                                 backgroundColor: const Color(0xFFFDFDFD),
                               ),
                               child: const Text('冥想'),
@@ -191,7 +201,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              foregroundColor: const Color(0xFF0D3B66),
+                              foregroundColor: const Color(0xff4b3d70),
                               backgroundColor: const Color(0xFFFDFDFD),
                             ),
                             child: const Text('基礎：一個月內至少達成3週目標'),
@@ -209,7 +219,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              foregroundColor: const Color(0xFF0D3B66),
+                              foregroundColor: const Color(0xff4b3d70),
                               backgroundColor: const Color(0xFFFDFDFD),
                             ),
                             child: const Text('進階：兩個月內至少達成7週目標'),
@@ -227,7 +237,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              foregroundColor: const Color(0xFF0D3B66),
+                              foregroundColor: const Color(0xff4b3d70),
                               backgroundColor: const Color(0xFFFDFDFD),
                             ),
                             child: const Text('困難：四個月內至少達成15週目標'),
@@ -248,7 +258,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                           decoration: const InputDecoration(
                             labelText: '輸入金額',
                             labelStyle: TextStyle(
-                              color: Color(0xFF0D3B66),
+                              color: Color(0xff4b3d70),
                             ),
                           ),
                         ),
@@ -266,7 +276,7 @@ class _FirstContractPage extends State<FirstContractPage> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: const Color(0xFF0D3B66),
+                          foregroundColor: const Color(0xff4b3d70),
                           backgroundColor: const Color(0xFFFDFDFD),
                         ),
                         child: const Text('確定'),
@@ -314,7 +324,12 @@ class SecondContractPageState extends State<SecondContractPage> {
               height: 1),
         ),
         backgroundColor: const Color(0xFFFDFDF5),
-        automaticallyImplyLeading: false, // 將返回上一頁的按鈕移除
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_rounded,
+              color: Color(0xff4b4370)),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Stack(
         children: [
@@ -329,12 +344,21 @@ class SecondContractPageState extends State<SecondContractPage> {
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                 ),
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(15.0),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('已簽約合約內容'),
+                  const Text(
+                    '已簽約合約內容',
+                    style: TextStyle(
+                        fontSize: 22.0,
+                        color: Color(0xff4b3d70),
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   Text(
                     '立契約人於約定期間積極養成  ${contractData["type"]}  習慣'
                     '\n選擇方案為  ${contractData["plan"]}'
@@ -343,7 +367,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                     '若達成設定目標則由系統將全數金額退還。',
                     style: const TextStyle(
                       fontSize: 18.0,
-                      color: Color(0xFF0D3B66),
+                      color: Color(0xff4b3d70),
                     ),
                   ),
                   const SizedBox(height: 16.0),
@@ -353,49 +377,21 @@ class SecondContractPageState extends State<SecondContractPage> {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('確定要執行嗎？'),
-                                  content: const Text('確認後將無法取消或進行修改'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        ContractDB.update(contractData);
-                                        Navigator.pushNamed(context, '/pay',
-                                            arguments: {
-                                              'user': user,
-                                              'money': contractData["money"],
-                                            });
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor:
-                                            const Color(0xFF0D3B66),
-                                        backgroundColor:
-                                            const Color(0xFFFDFDFD),
-                                      ),
-                                      child: const Text('確定'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor:
-                                            const Color(0xFF0D3B66),
-                                        backgroundColor:
-                                            const Color(0xFFFDFDFD),
-                                      ),
-                                      child: const Text('取消'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            btnOkOnPress() async {
+                              ContractDB.update(contractData);
+                              Navigator.pushNamed(context, '/pay', arguments: {
+                                'user': user,
+                                'money': contractData["money"],
+                              });
+                            }
+
+                            ConfirmDialog()
+                                .get(context, '確定要執行嗎？',
+                                    "一旦執行動作後就無法進行修改或刪除。您確定要繼續嗎？", btnOkOnPress)
+                                .show();
                           },
                           style: ElevatedButton.styleFrom(
-                            foregroundColor: const Color(0xFF0D3B66),
+                            foregroundColor: const Color(0xff4b3d70),
                             backgroundColor: const Color(0xFFFDFDFD),
                           ),
                           child: const Text('確定'),
@@ -406,7 +402,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                             Navigator.pushNamed(context, '/contract/initial');
                           },
                           style: ElevatedButton.styleFrom(
-                            foregroundColor: const Color(0xFF0D3B66),
+                            foregroundColor: const Color(0xff4b3d70),
                             backgroundColor: const Color(0xFFFDFDFD),
                           ),
                           child: const Text('取消/重新輸入'),
@@ -437,10 +433,10 @@ class AlreadyContractPage extends StatefulWidget {
   const AlreadyContractPage({super.key});
 
   @override
-  _AlreadyContractPageState createState() => _AlreadyContractPageState();
+  AlreadyContractPageState createState() => AlreadyContractPageState();
 }
 
-class _AlreadyContractPageState extends State<AlreadyContractPage> {
+class AlreadyContractPageState extends State<AlreadyContractPage> {
   final PageController _pageController = PageController(
     initialPage: 0,
     viewportFraction: 0.9,
@@ -464,8 +460,14 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
               height: 1),
         ),
         backgroundColor: const Color(0xFFFDFDF5),
-        automaticallyImplyLeading: false,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_rounded,
+              color: Color(0xff4b4370)),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
+      // FIXME: fix the position
       body: Stack(
         children: [
           PageView(
@@ -474,15 +476,14 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
               Align(
                 alignment: const Alignment(0.0, -0.3),
                 child: Container(
-                  margin: const EdgeInsets.only(right: 10.0),
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [Color(0xFFFFFFFF), Color(0xfffdeed9)],
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
                     ),
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -509,7 +510,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 letterSpacing: 1.2,
-                                color: Color(0xFF0D3B66),
+                                color: Color(0xff4b3d70),
                               ),
                             );
                           } else {
@@ -526,14 +527,14 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                 alignment: const Alignment(0.0, -0.3),
                 child: Container(
                   margin: const EdgeInsets.only(left: 10.0),
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [Color(0xFFFFFFFF), Color(0xfffdeed9)],
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
                     ),
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -560,7 +561,7 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 letterSpacing: 1.2,
-                                color: Color(0xFF0D3B66),
+                                color: Color(0xff4b3d70),
                               ),
                             );
                           } else {
@@ -576,9 +577,9 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
           ),
           Positioned(
             right: 5,
-            bottom: 240,
+            bottom: 235,
             child: Container(
-              margin: const EdgeInsets.only(left: 25.0, right: 25.0),
+              margin: const EdgeInsets.only(right: 5.0),
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
@@ -594,56 +595,20 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
 
                         if (workoutContractExists && meditationContractExists) {
                           // Show the dialog message for one second and then hide it
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const AlertDialog(
-                                content: Text(
-                                  '每種類型合約僅能建立一次',
-                                  style: TextStyle(
-                                    fontSize: 20.0,
-                                    color: Color(0xFF0D3B66),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                          Timer(const Duration(seconds: 1), () {
-                            Navigator.of(context)
-                                .pop(); // Close the dialog after one second
-                          });
+                          InformDialog().get(context, "無法新增:(", "每種類型合約僅能建立一次！").show();
                         } else {
-                          _showOptionsDialog(context);
+                          _showOptionsBottomSheet(context);
                         }
                       });
                     },
                     child: const Text(
                       '新增合約',
                       style: TextStyle(
-                        fontSize: 15.0,
-                        color: Color(0xFF0D3B66),
-                      ),
+                          fontSize: 18.0,
+                          color: Color(0xff4b3d70),
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const Text(
-                    '/',
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: Color(0xFF0D3B66),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      '返回',
-                      style: TextStyle(
-                        fontSize: 15.0,
-                        color: Color(0xFF0D3B66),
-                      ),
-                    ),
-                  )
                 ],
               ),
             ),
@@ -661,33 +626,31 @@ class _AlreadyContractPageState extends State<AlreadyContractPage> {
     );
   }
 
-  void _showOptionsDialog(BuildContext context) {
+  void _showOptionsBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor:
-          Colors.black.withOpacity(0.5), // Darkened background color
-      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(20), topLeft: Radius.circular(20)),
       ),
+      backgroundColor: const Color(0xfffdeed9),
+      // Darkened background color
+      isScrollControlled: true,
       builder: (BuildContext context) {
-        return const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: OptionsDialog(),
-        );
+        return const OptionsBottomSheet();
       },
     );
   }
 }
 
-class OptionsDialog extends StatefulWidget {
-  const OptionsDialog({super.key});
+class OptionsBottomSheet extends StatefulWidget {
+  const OptionsBottomSheet({super.key});
 
   @override
-  _OptionsDialogState createState() => _OptionsDialogState();
+  OptionsBottomSheetState createState() => OptionsBottomSheetState();
 }
 
-class _OptionsDialogState extends State<OptionsDialog> {
+class OptionsBottomSheetState extends State<OptionsBottomSheet> {
   String? _type;
   String? _plan;
   int? _money;
@@ -713,190 +676,253 @@ class _OptionsDialogState extends State<OptionsDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16.0),
-              color: Colors.grey.shade200,
-              child: Text(
+            ListTile(
+              contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+              title: const Text(
                 "建立新的承諾合約",
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(),
+                style: TextStyle(
+                    color: Color(0xff4b4370),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xff4b4370), width: 2),
+                  color: Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(
+                    Icons.close_rounded,
+                    color: Color(0xff4b4370),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ),
             ),
             const SizedBox(height: 10.0),
-            const Text("選擇類型"),
-            SizedBox(
-              width: double.infinity,
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
-                runSpacing: 16.0,
-                spacing: 16.0,
-                children: <Widget>[
-                  const SizedBox(width: 0.0),
-                  ActionChip(
-                    label: const Text("運動"),
-                    labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _type == "運動"
-                        ? const Color(0xFFFAF0CA)
-                        : Colors.black26,
-                    onPressed: () async {
-                      //檢查是否有運動合約
-                      bool hasWorkoutContract =
-                          await ContractDB.getWorkout() != null;
-                      if (hasWorkoutContract) {
-                        _showDialog("已建立過運動合約，不允許二次投入");
-                      } else {
-                        _selectType("運動");
-                      }
-                    },
-                  ),
-                  ActionChip(
-                    label: const Text("冥想"),
-                    labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _type == "冥想"
-                        ? const Color(0xFFFAF0CA)
-                        : Colors.black26,
-                    onPressed: () async {
-                      //檢查是否有冥想合約
-                      bool hasMeditationContract =
-                          await ContractDB.getMeditation() != null;
-                      if (hasMeditationContract) {
-                        _showDialog("已建立過冥想合約，不允許二次投入");
-                      } else {
-                        _selectType("冥想");
-                      }
-                    },
-                  ),
-                ],
-              ),
+            const Text(
+              "你要新增什麼類型的合約呢？",
+              style: TextStyle(
+                  color: Color(0xff4b4370),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 20.0),
-            const Text("選擇方案"),
-            SizedBox(
-              width: double.infinity,
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
-                runSpacing: 16.0,
-                spacing: 16.0,
-                children: <Widget>[
-                  const SizedBox(width: 0.0),
-                  ActionChip(
-                    label: const Text("基礎"),
-                    labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _plan == "基礎"
-                        ? const Color(0xFFFAF0CA)
-                        : Colors.black26,
-                    onPressed: () => _selectPlan("基礎"),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                  ActionChip(
-                    label: const Text("進階"),
-                    labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _plan == "進階"
-                        ? const Color(0xFFFAF0CA)
-                        : Colors.black26,
-                    onPressed: () => _selectPlan("進階"),
+                  side: const BorderSide(
+                    color: Color(0xff4b4370),
                   ),
-                  ActionChip(
-                    label: const Text("困難"),
-                    labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _plan == "困難"
-                        ? const Color(0xFFFAF0CA)
-                        : Colors.black26,
-                    onPressed: () => _selectPlan("困難"),
+                  backgroundColor: (_type == "運動")
+                      ? const Color(0xfff6cdb7)
+                      : const Color(0xfffdfdf5),
+                ),
+                onPressed: () async {
+                  //檢查是否有運動合約
+                  bool hasWorkoutContract =
+                      await ContractDB.getWorkout() != null;
+                  if (hasWorkoutContract) {
+                    InformDialog()
+                        .get(context, "警告！", "已建立過運動合約，不允許二次投入")
+                        .show();
+                  } else {
+                    _selectType("運動");
+                  }
+                },
+                child: const Text(
+                  "運動",
+                  style: TextStyle(
+                    color: Color(0xff4b4370),
+                    fontSize: 16,
                   ),
-                ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20.0),
-            const Text("選擇投入金額"),
-            SizedBox(
-              width: double.infinity,
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
-                runSpacing: 16.0,
-                spacing: 16.0,
-                children: <Widget>[
-                  const SizedBox(width: 0.0),
-                  ActionChip(
-                    label: const Text("100"),
-                    labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _money == 100
-                        ? const Color(0xFFFAF0CA)
-                        : Colors.black26,
-                    onPressed: () => _selectAmount(100),
-                  ),
-                  ActionChip(
-                    label: const Text("150"),
-                    labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _money == 150
-                        ? const Color(0xFFFAF0CA)
-                        : Colors.black26,
-                    onPressed: () => _selectAmount(150),
-                  ),
-                  ActionChip(
-                    label: const Text("200"),
-                    labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _money == 200
-                        ? const Color(0xFFFAF0CA)
-                        : Colors.black26,
-                    onPressed: () => _selectAmount(200),
-                  ),
-                  ActionChip(
-                    label: const Text("250"),
-                    labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _money == 250
-                        ? const Color(0xFFFAF0CA)
-                        : Colors.black26,
-                    onPressed: () => _selectAmount(250),
-                  ),
-                  ActionChip(
-                    label: const Text("300"),
-                    labelStyle: const TextStyle(color: Color(0xFF0D3B66)),
-                    backgroundColor: _money == 300
-                        ? const Color(0xFFFAF0CA)
-                        : Colors.black26,
-                    onPressed: () => _selectAmount(300),
-                  ),
-                ],
+              const SizedBox(
+                width: 10,
               ),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  side: const BorderSide(
+                    color: Color(0xff4b4370),
+                  ),
+                  backgroundColor: (_type == "冥想")
+                      ? const Color(0xfff6cdb7)
+                      : const Color(0xfffdfdf5),
+                ),
+                onPressed: () async {
+                  //檢查是否有冥想合約
+                  bool hasMeditationContract =
+                      await ContractDB.getMeditation() != null;
+                  if (hasMeditationContract) {
+                    InformDialog()
+                        .get(context, "警告！", "已建立過冥想合約，不允許二次投入")
+                        .show();
+                  } else {
+                    _selectType("冥想");
+                  }
+                },
+                child: const Text(
+                  "冥想",
+                  style: TextStyle(
+                    color: Color(0xff4b4370),
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ]),
+            const SizedBox(height: 15.0),
+            const Text(
+              "你想選擇哪種方案？",
+              style: TextStyle(
+                  color: Color(0xff4b4370),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _getPlanBtnList(),
+            ),
+            const SizedBox(height: 15.0),
+            const Text(
+              "你想投入多少金額呢？",
+              style: TextStyle(
+                  color: Color(0xff4b4370),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10.0),
+            SizedBox(
+              height: MediaQuery.of(context).size.width * 0.1,
+              width: MediaQuery.of(context).size.width * 0.85,
+              child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: _getMoneyBtnList()),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             processing
                 ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _startContract,
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: const Color(0xFF0D3B66),
-                      backgroundColor: const Color(0xFFFDFDFD),
+                : Container(
+                    padding: const EdgeInsets.only(left: 20, right: 18),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.only(right: 10, left: 10),
+                        backgroundColor: const Color(0xfff6cdb7),
+                        shadowColor: Colors.transparent,
+                        elevation: 0,
+                        minimumSize: const Size.fromHeight(50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () {
+                        _startContract();
+                      },
+                      child: const Text(
+                        "確定",
+                        style: TextStyle(
+                          color: Color(0xff4b4370),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    child: const Text("確認執行"),
                   ),
-            const SizedBox(height: 20.0),
+            const SizedBox(
+              height: 10,
+            ),
           ],
         ),
-      ),
-    );
+      );
   }
 
-  void _showDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        Future.delayed(const Duration(seconds: 1), () {
-          Navigator.of(context).pop(); // Close the dialog after 3 seconds
-        });
-        return AlertDialog(
-          title: const Text("警告"),
-          content: Text(message),
-        );
-      },
-    );
+
+  List<Widget> _getPlanBtnList() {
+    List programList = ["基礎", "進階", "困難"];
+    List<Widget> btnList = [];
+
+    for (final program in programList) {
+      String choice = program;
+      btnList.add(OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          side: const BorderSide(
+            color: Color(0xff4b4370),
+          ),
+          backgroundColor: (_plan == choice)
+              ? const Color(0xfff6cdb7)
+              : const Color(0xfffdfdf5),
+        ),
+        onPressed: () {
+          _selectPlan(choice);
+        },
+        child: Text(
+          choice,
+          style: const TextStyle(
+            color: Color(0xff4b4370),
+            fontSize: 16,
+          ),
+        ),
+      ));
+      btnList.add(const SizedBox(
+        width: 10,
+      ));
+    }
+    return btnList;
+  }
+
+  List<Widget> _getMoneyBtnList() {
+    List moneyList = [100, 150, 200, 250, 300];
+    List<Widget> btnList = [];
+
+    for (final money in moneyList) {
+      int choice = money;
+      btnList.add(OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          side: const BorderSide(
+            color: Color(0xff4b4370),
+          ),
+          backgroundColor: (_money == choice)
+              ? const Color(0xfff6cdb7)
+              : const Color(0xfffdfdf5),
+        ),
+        onPressed: () {
+          _selectAmount(choice);
+        },
+        child: Text(
+          "$choice",
+          style: const TextStyle(
+            color: Color(0xff4b4370),
+            fontSize: 16,
+          ),
+        ),
+      ));
+      btnList.add(const SizedBox(
+        width: 10,
+      ));
+    }
+    return btnList;
   }
 
   _selectType(String t) {
@@ -941,32 +967,9 @@ class _OptionsDialogState extends State<OptionsDialog> {
   }
 
   void _startContract() async {
-    bool confirmed = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("確認執行動作"),
-          content: const Text("一旦執行動作後就無法進行修改或刪除。您確定要繼續嗎？"),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("確認"),
-              onPressed: () {
-                ContractDB.update(contractData);
-                Navigator.of(context).pop(true); // Return true if confirmed
-              },
-            ),
-            TextButton(
-              child: const Text("取消"),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-          ],
-        );
-      },
-    );
-
-    if (confirmed == true) {
+    btnOkOnPress() async {
+      ContractDB.update(contractData);
+      Navigator.of(context).pop(true);
       setState(() {
         processing = true;
       });
@@ -976,5 +979,10 @@ class _OptionsDialogState extends State<OptionsDialog> {
         'money': _money,
       });
     }
+
+    ConfirmDialog()
+        .get(context, "確認執行動作", "一旦執行動作後就無法進行修改或刪除。您確定要繼續嗎？", btnOkOnPress)
+        .show();
   }
+
 }

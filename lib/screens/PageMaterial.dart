@@ -111,7 +111,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "不滿意",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
                 )
               ],
             );
@@ -125,7 +125,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
                 )
               ],
             );
@@ -139,7 +139,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "還行",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
                 )
               ],
             );
@@ -153,7 +153,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
                 )
               ],
             );
@@ -167,7 +167,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "非常滿意",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
                 )
               ],
             );
@@ -201,7 +201,7 @@ class RatingScoreBar {
                 Text(
                   (type == 0) ? "完全不累" : "太短",
                   style:
-                      const TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                      const TextStyle(color: Color(0xff4b4370), fontSize: 18),
                 )
               ],
             );
@@ -215,7 +215,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
                 )
               ],
             );
@@ -229,7 +229,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "剛好",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
                 )
               ],
             );
@@ -243,7 +243,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
                 )
               ],
             );
@@ -258,7 +258,7 @@ class RatingScoreBar {
                 Text(
                   (type == 0) ? "非常累" : "太長",
                   style:
-                      const TextStyle(color: Color(0xff4b4370), fontSize: 16),
+                      const TextStyle(color: Color(0xff4b4370), fontSize: 18),
                 )
               ],
             );
