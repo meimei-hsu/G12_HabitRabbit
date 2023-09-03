@@ -522,13 +522,24 @@ class HomepageState extends State<Homepage> {
                     ? Expanded(child: getBannerCarousel())
                     : Container(),
                 const SizedBox(height: 5),
-                // TODO: delete after QuestionnairePage testing
-                IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, "/questionnaire",
-                          arguments: {"part": 0});
-                    },
-                    icon: const Icon(Icons.quiz_rounded, size: 40)),
+                // TODO: delete after QuestionnairePage & ContractPage testing
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/contract/initial",
+                              arguments: {});
+                        },
+                        icon: const Icon(Icons.workspace_premium_outlined, size: 40)),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/questionnaire",
+                              arguments: {"part": 0});
+                        },
+                        icon: const Icon(Icons.quiz_rounded, size: 40)),
+                  ],
+                ),
                 const SizedBox(height: 5),
                 // TODO: delete after ExercisePage's feedback testing
                 Row(
