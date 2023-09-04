@@ -17,16 +17,13 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
       child: Scaffold(
         backgroundColor: const Color(0xfffdfdf5),
         appBar: AppBar(
-          elevation: 0,
-          title: const Text(
-            '返回',
-            style: TextStyle(
-              color: Color(0xff000000),
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
           backgroundColor: const Color(0xfffdfdf5),
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_rounded,
+                color: Color(0xff4b4370)),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           //automaticallyImplyLeading: false,
         ),
         body: SingleChildScrollView(
