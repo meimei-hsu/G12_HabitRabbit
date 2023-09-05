@@ -94,18 +94,21 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
                                       dataSource: [
                                         ChartData('個人等級', 20),
                                         ChartData('角色等級', 40),
-                                        ChartData('寶物數量', 14),
+                                        ChartData('運動寶物', 14),
+                                        ChartData('冥想寶物', 15),
                                       ],
                                       xValueMapper: (ChartData data, _) => data.x,
                                       yValueMapper: (ChartData data, _) => data.y,
                                       cornerStyle: CornerStyle.bothCurve,
                                       pointColorMapper: (ChartData data, _) {
                                         if (data.x == "個人等級") {
-                                          return const Color(0xffEDEEFC);
+                                          return const Color(0xff5661FC);
                                         } else if (data.x == "角色等級") {
-                                          return const Color(0xffd4d6fc);
-                                        } else if (data.x == "寶物數量") {
                                           return const Color(0xffA1A7FC);
+                                        } else if (data.x == "運動寶物") {
+                                          return const Color(0xffd4d6fc);
+                                        } else if (data.x == "冥想寶物") {
+                                          return const Color(0xffEDEEFC);
                                         } else {
                                           return Colors.grey;
                                         }

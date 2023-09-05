@@ -113,7 +113,7 @@ class BottomNavigationControllerState
                 label: 'home'),
             BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.supervisor_account_outlined,
+                  Icons.groups,
                   size: 40,
                 ),
                 label: 'microphone'),
