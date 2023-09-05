@@ -34,8 +34,8 @@ Map userInfo = {
   "strengthLiking": 40,
   "cardioLiking": 40,
   "yogaLiking": 40,
-  "relaxLiking": 0,
-  "visualizeLiking": 0,
+  "mindfulnessLiking": 0,
+  "workLiking": 0,
   "kindnessLiking": 0,
 };
 
@@ -149,18 +149,18 @@ final questions_2 = [
     text: "想提升或改善的面向\n(複選)",
     isMultiChoice: true,
     options: [
-      Option(text: "壓力", data: "bodyScan"),
-      Option(text: "憂慮", data: "bodyScan"),
-      Option(text: "失眠", data: "bodyScan"),
-      Option(text: "效率", data: "visualize"),
-      Option(text: "動機", data: "visualize"),
-      Option(text: "平靜", data: "visualize"),
-      Option(text: "自愛", data: "kindness"),
-      Option(text: "感激", data: "kindness"),
-      Option(text: "人際", data: "kindness"),
-      Option(text: "專注力", data: "bodyScan"),
-      Option(text: "創造力", data: "visualize"),
-      Option(text: "情緒健康", data: "kindness"),
+      Option(text: "壓力", data: "mindfulnessLiking"),
+      Option(text: "憂慮", data: "mindfulnessLiking"),
+      Option(text: "效率", data: "workLiking"),
+      Option(text: "動機", data: "workLiking"),
+      Option(text: "平靜", data: "mindfulnessLiking"),
+      Option(text: "自愛", data: "kindnessLiking"),
+      Option(text: "感激", data: "kindnessLiking"),
+      Option(text: "人際", data: "kindnessLiking"),
+      Option(text: "專注力", data: "workLiking"),
+      Option(text: "創造力", data: "workLiking"),
+      Option(text: "覺察力", data: "mindfulnessLiking"),
+      Option(text: "情緒健康", data: "kindnessLiking"),
     ],
   ),
 ];
@@ -1055,13 +1055,12 @@ class _PartTwoPageState extends State<PartTwoPage> {
         // Get the liking of the three meditation types
         for (Option option in answer) {
           // Count the occurrences for each type (liking score)
-          // TODO: 確認是否正確（原本是 userInfo[option.data] += 1，但這樣會出現 null 錯誤，所以先改成 = 1）
-          userInfo[option.data] = 1;
+          userInfo[option.data] += 1;
         }
 
         for (String type in [
-          "relaxLiking",
-          "visualizeLiking",
+          "mindfulnessLiking",
+          "workLiking",
           "kindnessLiking"
         ]) {
           // Multiply the liking score by 5 then add the base score 40

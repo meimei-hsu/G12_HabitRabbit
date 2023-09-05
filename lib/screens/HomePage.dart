@@ -118,7 +118,7 @@ class HomepageState extends State<Homepage> {
                   'isBefore': isBefore ? true : false,
                   'isAfter': isAfter ? true : false,
                   'percentage': meditationProgress,
-                  //'currentIndex': currentIndex,
+                  'meditationTime': await UserDB.getMeditationTime(),
                   'meditationPlan': meditationPlan
                 });
               }
@@ -531,7 +531,8 @@ class HomepageState extends State<Homepage> {
                           Navigator.pushNamed(context, "/contract/initial",
                               arguments: {});
                         },
-                        icon: const Icon(Icons.workspace_premium_outlined, size: 40)),
+                        icon: const Icon(Icons.workspace_premium_outlined,
+                            size: 40)),
                     IconButton(
                         onPressed: () {
                           Navigator.pushNamed(context, "/questionnaire",
@@ -559,7 +560,7 @@ class HomepageState extends State<Homepage> {
                               backgroundColor: const Color(0xfffdeed9),
                               context: context,
                               builder: (context) {
-                                return const Wrap(children: [
+                                return Wrap(children: const [
                                   FeedbackBottomSheet(
                                     arguments: {"type": 0},
                                   )
@@ -582,7 +583,7 @@ class HomepageState extends State<Homepage> {
                               backgroundColor: const Color(0xfffdeed9),
                               context: context,
                               builder: (context) {
-                                return const Wrap(children: [
+                                return Wrap(children: const [
                                   FeedbackBottomSheet(
                                     arguments: {"type": 1},
                                   )
@@ -611,8 +612,7 @@ class AddPlanBottomSheet extends StatefulWidget {
 
 class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
   int exerciseTime = 0;
-  // TODO: meditationType 要回傳 string 還是 int value
-  String meditationType = "正念禪";
+  int meditationType = 1;
   int planToAdd = 0; // 0 = 運動, 1 = 冥想
 
   String time = "";
@@ -670,13 +670,13 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
           side: const BorderSide(
             color: Color(0xff4b4370),
           ),
-          backgroundColor: (meditationType == choice)
+          backgroundColor: (meditationTypeList[meditationType - 1] == choice)
               ? const Color(0xfff6cdb7)
               : const Color(0xfffdfdf5),
         ),
         onPressed: () {
           setState(() {
-            meditationType = choice;
+            meditationType = meditationTypeList.indexOf(choice) + 1;
           });
         },
         child: Text(
@@ -818,8 +818,8 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                 DateTime selectedDay = widget.arguments['selectedDay'];
                 (planToAdd == 0)
                     ? await PlanAlgo.generate(selectedDay, exerciseTime)
-                // TODO: generate meditation plan with meditationType
-                    : await MeditationPlanAlgo.generate(selectedDay);
+                    : await MeditationPlanAlgo.generate(
+                        selectedDay, meditationType);
 
                 print((planToAdd == 0)
                     ? "$selectedDay add $exerciseTime minutes exercise plan."

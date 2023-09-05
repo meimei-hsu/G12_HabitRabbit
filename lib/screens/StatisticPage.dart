@@ -195,7 +195,7 @@ class StatisticPageState extends State<StatisticPage> {
         int completionStatus = (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
         if (completionStatus == 2) {
-          var type = await PlanDB.getWorkoutType(exerciseDate) ?? "unknown";
+          var type = await PlanDB.getType(exerciseDate) ?? "unknown";
           if (exerciseTypeCountMap.containsKey(type)) {
             exerciseTypeCountMap[type] = exerciseTypeCountMap[type]! + 1;
 
@@ -217,7 +217,7 @@ class StatisticPageState extends State<StatisticPage> {
         int completionStatus = (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
         if (completionStatus == 2) {
-          var type = await MeditationPlanDB.getMeditationType(meditationDate) ?? "unknown";
+          var type = await MeditationPlanDB.getType(meditationDate) ?? "unknown";
           if (meditationTypeCountMap.containsKey(type)) {
             meditationTypeCountMap[type] = meditationTypeCountMap[type]! + 1;
 

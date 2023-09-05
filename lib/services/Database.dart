@@ -68,7 +68,8 @@ class Home extends StatelessWidget {
               child: const Text("test")),
           TextButton(
             onPressed: () async {
-              SplayTreeMap? actual = await ClockDB.getTable()?..remove("forecast");
+              SplayTreeMap? actual = await ClockDB.getTable()
+                ?..remove("forecast");
               if (actual != null) {
                 SplayTreeMap forecast = SplayTreeMap.from(actual);
                 List dates = actual.keys.toList();
@@ -199,8 +200,8 @@ class UserDB {
         "meditationDays",
         "workoutGoals",
         "meditationGoals",
-        "relaxLiking",
-        "visualizeLiking",
+        "mindfulnessLiking",
+        "workLiking",
         "kindnessLiking",
         "strengthLiking",
         "cardioLiking",
@@ -222,29 +223,6 @@ class UserDB {
     return (snapshot != null)
         ? Map<String, dynamic>.from(snapshot as Map)
         : null;
-  }
-
-  // Select meditation dynamic data from userID
-  static Future<List<Map<String, dynamic>>?>
-      getMeditationPlanVariables() async {
-    final Map? user = await getUser();
-
-    if (user != null) {
-      return [
-        {
-          'meditationTime': user["meditationTime"],
-          'meditationDays':
-              user['meditationDays'].split('').map(int.parse).toList(),
-        },
-        {
-          'relaxLiking': user["relaxLiking"],
-          'visualizeLiking': user["visualizeLiking"],
-          'kindnessLiking': user["kindnessLiking"],
-        },
-      ];
-    } else {
-      return null;
-    }
   }
 
 // Select workout dynamic data from userID
@@ -274,6 +252,29 @@ class UserDB {
     }
   }
 
+  // Select meditation dynamic data from userID
+  static Future<List<Map<String, dynamic>>?>
+      getMeditationPlanVariables() async {
+    final Map? user = await getUser();
+
+    if (user != null) {
+      return [
+        {
+          'meditationTime': user["meditationTime"],
+          'meditationDays':
+              user['meditationDays'].split('').map(int.parse).toList(),
+        },
+        {
+          'mindfulnessLiking': user["mindfulnessLiking"],
+          'workLiking': user["workLiking"],
+          'kindnessLiking': user["kindnessLiking"],
+        },
+      ];
+    } else {
+      return null;
+    }
+  }
+
   static Future<Map?> getLikings() async {
     return (await getPlanVariables())?[1];
   }
@@ -290,7 +291,7 @@ class UserDB {
     return (await getMeditationPlanVariables())?[1];
   }
 
-  static Future<int?> getMeditationTimeSpan() async {
+  static Future<int?> getMeditationTime() async {
     return (await getUser())?["meditationTime"] as int;
   }
 
@@ -331,7 +332,7 @@ class UserDB {
   }
 
   static Future<List?> getBothWeekWorkoutDays() async {
-    List? workoutDays = (await getPlanVariables())?[1]["workoutDays"];
+    List? workoutDays = (await getPlanVariables())?[0]["workoutDays"];
     if (workoutDays != null) {
       List retVal = [];
       List thisWeek = Calendar.thisWeek();
@@ -349,7 +350,7 @@ class UserDB {
 
   static Future<List?> getBothWeekMeditationDays() async {
     List? meditationDays =
-        (await getMeditationPlanVariables())?[1]["meditationDays"];
+        (await getMeditationPlanVariables())?[0]["meditationDays"];
     if (meditationDays != null) {
       List retVal = [];
       List thisWeek = Calendar.thisWeek();
@@ -369,7 +370,7 @@ class UserDB {
   static Future<bool?> isWorkoutDay(DateTime date) async {
     int idx = Calendar.bothWeeks().indexOf(Calendar.toKey(date));
     idx = (idx >= 7) ? idx - 7 : idx;
-    List? workoutDays = (await getPlanVariables())?[1]["workoutDays"];
+    List? workoutDays = (await getPlanVariables())?[0]["workoutDays"];
     bool isWorkoutDay = (workoutDays?[idx] == 1) ? true : false;
     return (workoutDays != null) ? isWorkoutDay : null;
   }
@@ -378,7 +379,7 @@ class UserDB {
     int idx = Calendar.bothWeeks().indexOf(Calendar.toKey(date));
     idx = (idx >= 7) ? idx - 7 : idx;
     List? meditationDays =
-        (await getMeditationPlanVariables())?[1]["meditationDays"];
+        (await getMeditationPlanVariables())?[0]["meditationDays"];
     bool isMeditationDay = (meditationDays?[idx] == 1) ? true : false;
     return (meditationDays != null) ? isMeditationDay : null;
   }
@@ -400,9 +401,10 @@ class UserDB {
       }
       data[item + "Ability"] += data["conscientiousness"] * cMul;
     }
-    data["bodyScan"] += data["neuroticism"] * mMul;
-    data["visualize"] -= data["conscientiousness"] * mMul;
-    data["kindness"] -= data["agreeableness"] * mMul;
+
+    data["mindfulnessLiking"] += data["neuroticism"] * mMul;
+    data["workLiking"] -= data["conscientiousness"] * mMul;
+    data["kindnessLiking"] -= data["agreeableness"] * mMul;
 
     // Add userName column
     data["userName"] = FirebaseAuth.instance.currentUser?.displayName;
@@ -417,18 +419,40 @@ class UserDB {
   }
 
   // Update plan variables by user's feedback [滿意度, 疲憊度]
-  static Future<bool> updateByFeedback(String type, List feedback) async {
+  static Future<bool> updateWorkoutFeedback(String type, List feedback) async {
     final List? data = await getPlanVariables();
 
     if (data != null) {
       String index1 = "${type}Liking", index2 = "${type}Ability";
-      num liking = data[2][index1], ability = data[3][index2];
+      num liking = data[1][index1], ability = data[2][index2];
 
       List adjVal = [-5, -2, 0, 2, 5];
       liking += adjVal[feedback[0] - 1];
-      ability += adjVal[feedback[0] - 1];
+      ability -= adjVal[feedback[0] - 1];
 
       return await update({index1: liking, index2: ability});
+    }
+    return false;
+  }
+
+  static Future<bool> updateMeditationFeedback(
+      String type, List feedback) async {
+    final List? data = await getMeditationPlanVariables();
+
+    if (data != null) {
+      Map updateVal = data[1];
+
+      String index = "${type}Liking";
+      List keys = updateVal.keys.toList();
+
+      List adjVal = [-5, -2, 0, 2, 5];
+      updateVal[index] += adjVal[feedback[0] - 1];
+
+      for (int i = 0; i < 3; i++) {
+        updateVal[keys[i]] += (feedback[i + 1] == 1) ? 10 : 0;
+      }
+
+      return await update(updateVal);
     }
     return false;
   }
@@ -638,21 +662,20 @@ class MeditationDB {
     List ids = meditations!.keys.toList();
 
     Map retVal = {
-      "mindfulness": [],
-      "relax": [[], [], [], []],
-      "visualize": [[], [], [], []],
-      "kindness": [[], [], [], []],
+      "mindfulness": [[], [], [], [], [], [], []],
+      "work": [[], [], [], [], [], [], []],
+      "kindness": [[], [], [], [], [], [], []],
+      "sleep": [[], [], [], [], [], [], []],
     };
     List keys = retVal.keys.toList();
 
     // Get the list of workoutID from the given type and difficulty
-    for (int category = 2; category <= 4; category++) {
-      for (int type = 1; type <= 4; type++) {
+    for (int category = 1; category <= 4; category++) {
+      for (int type = 1; type <= 7; type++) {
         retVal[keys[category - 1]][type - 1] = List.from(
             ids.where((item) => item[0] == "$category" && item[1] == "$type"));
       }
     }
-    retVal["mindfulness"] = List.from(ids.where((item) => item[0] == "1"));
 
     return retVal;
   }
@@ -752,7 +775,7 @@ class PlanDB {
     return (await getFromDate(date))?.split(", ").length;
   }
 
-  static Future<String?> getWorkoutType(DateTime date) async {
+  static Future<String?> getType(DateTime date) async {
     // The third element of the plan is the first workout after the warmup,
     // and its first character's index (which indicates the workout type) is 18.
     switch ((await getFromDate(date))?[18]) {
@@ -852,16 +875,17 @@ class MeditationPlanDB {
     return (await getFromDate(date))?.split(", ").length;
   }
 
-  static Future<String?> getMeditationType(DateTime date) async {
+  static Future<String?> getType(DateTime date) async {
+    // the first character indicates the meditation type
     switch ((await getFromDate(date))?[0]) {
       case '1':
         return "mindfulness";
       case '2':
-        return "relax";
+        return "work";
       case '3':
-        return "visualize";
-      case '4':
         return "kindness";
+      case '4':
+        return "sleep";
       default:
         return null;
     }
@@ -878,11 +902,15 @@ class MeditationPlanDB {
   }
 
   // Update plan data {date: plan} from table {table/userID/plan/date}
-  static Future<bool> update(Map<String, String> data) async =>
-      await JournalDB.update(uid, data, table) &&
-      await MeditationDurationDB.update(data.map((key, value) {
-        return MapEntry(key, "0, ${value.split(", ").length}");
-      }));
+  static Future<bool> update(Map<String, String> data) async {
+    int? meditationTime = await UserDB.getMeditationTime();
+    return (meditationTime != null)
+        ? await JournalDB.update(uid, data, table) &&
+            await MeditationDurationDB.update(data.map((key, value) {
+              return MapEntry(key, "0, $meditationTime");
+            }))
+        : false;
+  }
 
   // Update the plan's date to given date (coming days of current week)
   static Future<bool> updateDate(DateTime original, DateTime modified) async {

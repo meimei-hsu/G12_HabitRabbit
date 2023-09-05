@@ -47,7 +47,7 @@ class InformDialog {
 class ConfirmDialog {
   AwesomeDialog get(
       BuildContext context, String title, String desc, Function btnOkOnPress,
-      {Function? btnCancelOnPress}) {
+      {Function? btnCancelOnPress, List? options}) {
     return AwesomeDialog(
         context: context,
         dialogType: DialogType.noHeader,
@@ -74,7 +74,7 @@ class ConfirmDialog {
             color: Color(0xfff6cdb7),
             fontSize: 20,
             fontWeight: FontWeight.bold),
-        btnOkText: '確定',
+        btnOkText: (options != null) ? options[0] : '確定',
         btnOkColor: const Color(0xfff6cdb7),
         buttonsTextStyle: const TextStyle(
             color: Color(0xff4b4370),
@@ -83,7 +83,7 @@ class ConfirmDialog {
         btnOkOnPress: () {
           btnOkOnPress();
         },
-        btnCancelText: '取消',
+        btnCancelText: (options != null) ? options[1] : '取消',
         btnCancelColor: const Color(0xfffdfdf5),
         btnCancelOnPress: () {
           (btnCancelOnPress != null) ? btnCancelOnPress() : null;

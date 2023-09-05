@@ -168,8 +168,10 @@ class _FriendListPageState extends State<FriendListPage> {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: '快輸社交碼 加入新朋友！',
-                    contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(50),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 20),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50),
                     ),
                   ),
                   style: const TextStyle(
@@ -221,7 +223,8 @@ class _FriendListPageState extends State<FriendListPage> {
                   ),
                 )
               : ListView.separated(
-                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
+                  padding:
+                      const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
                   itemCount: entries.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
@@ -236,7 +239,8 @@ class _FriendListPageState extends State<FriendListPage> {
                             padding: EdgeInsets.only(left: 16.0),
                             child: CircleAvatar(
                               radius: 25,
-                              backgroundImage: AssetImage('assets/images/Friend_B.png'),
+                              backgroundImage:
+                                  AssetImage('assets/images/Friend_B.png'),
                             ),
                           ),
                           const SizedBox(width: 15),
@@ -251,8 +255,11 @@ class _FriendListPageState extends State<FriendListPage> {
                           Expanded(child: Container()),
                           InkWell(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) => const FriendStatusPage()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const FriendStatusPage()));
                               // TODO: 看到朋友的部分畫面
                             },
                             child: const Padding(
@@ -340,9 +347,9 @@ class _FriendListPageState extends State<FriendListPage> {
                     color: const Color(0xFFFFFFFF),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: const [
                       Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Icon(Icons.emoji_events),
@@ -404,16 +411,40 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   //TODO: 抓前十名的資料
   final List<String> FriendPersonalRank = <String>[
-    'Andy', 'Bethany', 'Daniel', 'Chloe', 'Mary'
+    'Andy',
+    'Bethany',
+    'Daniel',
+    'Chloe',
+    'Mary'
   ];
   final List<String> WholePersonalRank = <String>[
-    'Andy', 'Frank', 'Bethany', 'John', 'Daniel', 'Kevin', 'Angel', 'Chloe', 'Mary'
+    'Andy',
+    'Frank',
+    'Bethany',
+    'John',
+    'Daniel',
+    'Kevin',
+    'Angel',
+    'Chloe',
+    'Mary'
   ];
   final List<String> FriendRoleRank = <String>[
-    'Chloe', 'Andy', 'Mary', 'Daniel', 'Bethany'
+    'Chloe',
+    'Andy',
+    'Mary',
+    'Daniel',
+    'Bethany'
   ];
   final List<String> WholeRoleRank = <String>[
-    'Chloe', 'Andy', 'Frank', 'Mary', 'Daniel', 'Kevin', 'Angel', 'Bethany', 'John'
+    'Chloe',
+    'Andy',
+    'Frank',
+    'Mary',
+    'Daniel',
+    'Kevin',
+    'Angel',
+    'Bethany',
+    'John'
   ];
   final List<String> FriendExerciseRank = <String>['Mary'];
   final List<String> WholeExerciseRank = <String>['Mary', 'Kevin', 'Angel'];
@@ -458,70 +489,73 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(child: Padding(
+    return SingleChildScrollView(
+        child: Padding(
       padding: const EdgeInsets.only(top: 30),
-          child: ListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Container(
-                      padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
-                      margin: const EdgeInsets.only(right: 20, left: 20),
-                      decoration: BoxDecoration(
-                        color: const Color(0xfffdeed9),
-                        border: Border.all(color: const Color(0xffffeed9)),
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: const Text(
-                              "個人等級排行榜",
-                              style: TextStyle(
-                                color: Color(0xff4b4370),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22.0,
-                              ),
-                            ),
-                            trailing: ToggleSwitch(
-                              minHeight: 35,
-                              initialLabelIndex: personalRank,
-                              cornerRadius: 10.0,
-                              radiusStyle: true,
-                              labels: const ['好友', '全用戶'],
-                              activeBgColors: const [
-                                [Color(0xfff6cdb7)],
-                                [Color(0xffd4d6fc)],
-                              ],
-                              activeFgColor: const Color(0xff4b4370),
-                              inactiveBgColor: const Color(0xfffdfdf5),
-                              inactiveFgColor: const Color(0xff4b4370),
-                              totalSwitches: 2,
-                              onToggle: (index) {
-                                personalRank = index!;
-                                setState(() {});
-                              },
-                            ),
+      child: ListView(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Container(
+                  padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+                  margin: const EdgeInsets.only(right: 20, left: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xfffdeed9),
+                    border: Border.all(color: const Color(0xffffeed9)),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: const Text(
+                          "個人等級排行榜",
+                          style: TextStyle(
+                            color: Color(0xff4b4370),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22.0,
                           ),
-                          Column(children: [
-                            (personalRank == 0) ? SizedBox(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
-                                itemCount: getPersonalRankList().length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final int rank = index + 1;
+                        ),
+                        trailing: ToggleSwitch(
+                          minHeight: 35,
+                          initialLabelIndex: personalRank,
+                          cornerRadius: 10.0,
+                          radiusStyle: true,
+                          labels: const ['好友', '全用戶'],
+                          activeBgColors: const [
+                            [Color(0xfff6cdb7)],
+                            [Color(0xffd4d6fc)],
+                          ],
+                          activeFgColor: const Color(0xff4b4370),
+                          inactiveBgColor: const Color(0xfffdfdf5),
+                          inactiveFgColor: const Color(0xff4b4370),
+                          totalSwitches: 2,
+                          onToggle: (index) {
+                            personalRank = index!;
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                      Column(children: [
+                        (personalRank == 0)
+                            ? SizedBox(
+                                child: ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
+                                  itemCount: getPersonalRankList().length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final int rank = index + 1;
 
-                                  return Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Row(
-                                      children: [
+                                    return Container(
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffffffff),
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      child: Row(children: [
                                         const SizedBox(width: 15),
                                         Text(
                                           '$rank',
@@ -532,11 +566,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           ),
                                         ),
                                         const Padding(
-                                          padding:
-                                          EdgeInsets.only(left: 16.0),
+                                          padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundImage: AssetImage('assets/images/Friend_B.png'),
+                                            backgroundImage: AssetImage(
+                                                'assets/images/Friend_B.png'),
                                           ),
                                         ),
                                         const SizedBox(width: 15),
@@ -549,29 +583,34 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           ),
                                         ),
                                       ]),
-                                  );
-                                },
-                                separatorBuilder: (BuildContext context, int index) {
-                                  return const SizedBox(height: 5,);
-                                },
-                              ),
-                            ) : SizedBox(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
-                                itemCount: getPersonalRankList().length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final int rank = index + 1;
+                                    );
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const SizedBox(
+                                      height: 5,
+                                    );
+                                  },
+                                ),
+                              )
+                            : SizedBox(
+                                child: ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
+                                  itemCount: getPersonalRankList().length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final int rank = index + 1;
 
-                                  return Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Row(
-                                      children: [
+                                    return Container(
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffffffff),
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      child: Row(children: [
                                         const SizedBox(width: 15),
                                         Text(
                                           '$rank',
@@ -582,11 +621,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           ),
                                         ),
                                         const Padding(
-                                          padding:
-                                          EdgeInsets.only(left: 16.0),
+                                          padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundImage: AssetImage('assets/images/Friend_B.png'),
+                                            backgroundImage: AssetImage(
+                                                'assets/images/Friend_B.png'),
                                           ),
                                         ),
                                         const SizedBox(width: 15),
@@ -599,15 +638,18 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           ),
                                         ),
                                       ]),
-                                  );
-                                },
-                                separatorBuilder: (BuildContext context, int index) {
-                                  return const SizedBox(height: 5,);
-                                },
-                              ),
-                            )
-                          ]),
-                          /*//若使用者的排名不在前十才須被列出
+                                    );
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const SizedBox(
+                                      height: 5,
+                                    );
+                                  },
+                                ),
+                              )
+                      ]),
+                      /*//若使用者的排名不在前十才須被列出
                           const SizedBox(height: 20),
                           Container(
                             height: 30,
@@ -648,446 +690,471 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                   ),
                                 ]),
                           ),*/
-                        ],
-                      )),
-                  const SizedBox(height: 15),
-                  Container(
-                      padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
-                      margin: const EdgeInsets.only(right: 20, left: 20),
-                      decoration: BoxDecoration(
-                        color: const Color(0xfffdeed9),
-                        border: Border.all(color: const Color(0xffffeed9)),
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: const Text(
-                              "角色等級排行榜",
-                              style: TextStyle(
-                                color: Color(0xff4b4370),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22.0,
-                              ),
-                            ),
-                            trailing: ToggleSwitch(
-                              minHeight: 35,
-                              initialLabelIndex: roleRank,
-                              cornerRadius: 10.0,
-                              radiusStyle: true,
-                              labels: const ['好友', '全用戶'],
-                              activeBgColors: const [
-                                [Color(0xfff6cdb7)],
-                                [Color(0xffd4d6fc)],
-                              ],
-                              activeFgColor: const Color(0xff4b4370),
-                              inactiveBgColor: const Color(0xfffdfdf5),
-                              inactiveFgColor: const Color(0xff4b4370),
-                              totalSwitches: 2,
-                              onToggle: (index) {
-                                roleRank = index!;
-                                setState(() {});
-                              },
-                            ),
-                          ),
-                          Column(children: [
-                            (roleRank == 0) ? SizedBox(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
-                                itemCount: getRoleRankList().length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final int rank = index + 1;
-
-                                  return Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding:
-                                          EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundImage: AssetImage('assets/images/Friend_B.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          getRoleRankList()[index],
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                  );
-                                },
-                                separatorBuilder: (BuildContext context, int index) {
-                                  return const SizedBox(height: 5,);
-                                },
-                              ),
-                            ) : SizedBox(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
-                                itemCount: getRoleRankList().length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final int rank = index + 1;
-
-                                  return Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding:
-                                          EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundImage: AssetImage('assets/images/Friend_B.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          getRoleRankList()[index],
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                  );
-                                },
-                                separatorBuilder: (BuildContext context, int index) {
-                                  return const SizedBox(height: 5,);
-                                },
-                              ),
-                            )
-                          ]),
-                        ],
-                      )),
-                  const SizedBox(height: 15),
-                  Container(
-                      padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
-                      margin: const EdgeInsets.only(right: 20, left: 20),
-                      decoration: BoxDecoration(
-                        color: const Color(0xfffdeed9),
-                        border: Border.all(color: const Color(0xffffeed9)),
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: const Text(
-                              "運動寶物排行榜",
-                              style: TextStyle(
-                                color: Color(0xff4b4370),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22.0,
-                              ),
-                            ),
-                            trailing: ToggleSwitch(
-                              minHeight: 35,
-                              initialLabelIndex: exerciseRank,
-                              cornerRadius: 10.0,
-                              radiusStyle: true,
-                              labels: const ['好友', '全用戶'],
-                              activeBgColors: const [
-                                [Color(0xfff6cdb7)],
-                                [Color(0xffd4d6fc)],
-                              ],
-                              activeFgColor: const Color(0xff4b4370),
-                              inactiveBgColor: const Color(0xfffdfdf5),
-                              inactiveFgColor: const Color(0xff4b4370),
-                              totalSwitches: 2,
-                              onToggle: (index) {
-                                exerciseRank = index!;
-                                setState(() {});
-                              },
-                            ),
-                          ),
-                          Column(children: [
-                            (exerciseRank == 0) ? SizedBox(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
-                                itemCount: getExerciseRankList().length,
-                                itemBuilder:
-                                    (BuildContext context, int index) {
-                                  final int rank = index + 1;
-
-                                  return Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding:
-                                          EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundImage: AssetImage('assets/images/Friend_B.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          getExerciseRankList()[index],
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                  );
-                                },
-                                separatorBuilder: (BuildContext context, int index) {
-                                  return const SizedBox(height: 5,);
-                                },
-                              ),
-                            ) : SizedBox(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
-                                itemCount: getExerciseRankList().length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final int rank = index + 1;
-
-                                  return Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding:
-                                          EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundImage: AssetImage('assets/images/Friend_B.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          getExerciseRankList()[index],
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                  );
-                                },
-                                separatorBuilder: (BuildContext context, int index) {
-                                  return const SizedBox(height: 5,);
-                                },
-                              ),
-                            )
-                          ]),
-                        ],
-                      )),
-                  const SizedBox(height: 15),
-                  Container(
-                      padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
-                      margin: const EdgeInsets.only(right: 20, left: 20),
-                      decoration: BoxDecoration(
-                        color: const Color(0xfffdeed9),
-                        border: Border.all(color: const Color(0xffffeed9)),
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: const Text(
-                              "冥想寶物排行榜",
-                              style: TextStyle(
-                                color: Color(0xff4b4370),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22.0,
-                              ),
-                            ),
-                            trailing: ToggleSwitch(
-                              minHeight: 35,
-                              initialLabelIndex: meditationRank,
-                              cornerRadius: 10.0,
-                              radiusStyle: true,
-                              labels: const ['好友', '全用戶'],
-                              activeBgColors: const [
-                                [Color(0xfff6cdb7)],
-                                [Color(0xffd4d6fc)],
-                              ],
-                              activeFgColor: const Color(0xff4b4370),
-                              inactiveBgColor: const Color(0xfffdfdf5),
-                              inactiveFgColor: const Color(0xff4b4370),
-                              totalSwitches: 2,
-                              onToggle: (index) {
-                                meditationRank = index!;
-                                setState(() {});
-                              },
-                            ),
-                          ),
-                          Column(children: [
-                            (meditationRank == 0) ? SizedBox(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
-                                itemCount: getMeditationRankList().length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final int rank = index + 1;
-
-                                  return Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding:
-                                          EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundImage: AssetImage('assets/images/Friend_B.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          getMeditationRankList()[index],
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                  );
-                                },
-                                separatorBuilder: (BuildContext context, int index) {
-                                  return const SizedBox(height: 5,);
-                                },
-                              ),
-                            ) : SizedBox(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
-                                itemCount: getMeditationRankList().length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final int rank = index + 1;
-
-                                  return Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding:
-                                          EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundImage: AssetImage('assets/images/Friend_B.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          getMeditationRankList()[index],
-                                          style: const TextStyle(
-                                            color: Color(0xff4b3d70),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                  );
-                                },
-                                separatorBuilder: (BuildContext context, int index) {
-                                  return const SizedBox(height: 5,);
-                                },
-                              ),
-                            )
-                          ]),
-                        ])
+                    ],
+                  )),
+              const SizedBox(height: 15),
+              Container(
+                  padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+                  margin: const EdgeInsets.only(right: 20, left: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xfffdeed9),
+                    border: Border.all(color: const Color(0xffffeed9)),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
-                ]),
-              ]),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: const Text(
+                          "角色等級排行榜",
+                          style: TextStyle(
+                            color: Color(0xff4b4370),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22.0,
+                          ),
+                        ),
+                        trailing: ToggleSwitch(
+                          minHeight: 35,
+                          initialLabelIndex: roleRank,
+                          cornerRadius: 10.0,
+                          radiusStyle: true,
+                          labels: const ['好友', '全用戶'],
+                          activeBgColors: const [
+                            [Color(0xfff6cdb7)],
+                            [Color(0xffd4d6fc)],
+                          ],
+                          activeFgColor: const Color(0xff4b4370),
+                          inactiveBgColor: const Color(0xfffdfdf5),
+                          inactiveFgColor: const Color(0xff4b4370),
+                          totalSwitches: 2,
+                          onToggle: (index) {
+                            roleRank = index!;
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                      Column(children: [
+                        (roleRank == 0)
+                            ? SizedBox(
+                                child: ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
+                                  itemCount: getRoleRankList().length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final int rank = index + 1;
+
+                                    return Container(
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffffffff),
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      child: Row(children: [
+                                        const SizedBox(width: 15),
+                                        Text(
+                                          '$rank',
+                                          style: const TextStyle(
+                                            color: Color(0xff4b3d70),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 16.0),
+                                          child: CircleAvatar(
+                                            radius: 15,
+                                            backgroundImage: AssetImage(
+                                                'assets/images/Friend_B.png'),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 15),
+                                        Text(
+                                          getRoleRankList()[index],
+                                          style: const TextStyle(
+                                            color: Color(0xff4b3d70),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ]),
+                                    );
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const SizedBox(
+                                      height: 5,
+                                    );
+                                  },
+                                ),
+                              )
+                            : SizedBox(
+                                child: ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
+                                  itemCount: getRoleRankList().length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final int rank = index + 1;
+
+                                    return Container(
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffffffff),
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      child: Row(children: [
+                                        const SizedBox(width: 15),
+                                        Text(
+                                          '$rank',
+                                          style: const TextStyle(
+                                            color: Color(0xff4b3d70),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 16.0),
+                                          child: CircleAvatar(
+                                            radius: 15,
+                                            backgroundImage: AssetImage(
+                                                'assets/images/Friend_B.png'),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 15),
+                                        Text(
+                                          getRoleRankList()[index],
+                                          style: const TextStyle(
+                                            color: Color(0xff4b3d70),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ]),
+                                    );
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const SizedBox(
+                                      height: 5,
+                                    );
+                                  },
+                                ),
+                              )
+                      ]),
+                    ],
+                  )),
+              const SizedBox(height: 15),
+              Container(
+                  padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+                  margin: const EdgeInsets.only(right: 20, left: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xfffdeed9),
+                    border: Border.all(color: const Color(0xffffeed9)),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: const Text(
+                          "運動寶物排行榜",
+                          style: TextStyle(
+                            color: Color(0xff4b4370),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22.0,
+                          ),
+                        ),
+                        trailing: ToggleSwitch(
+                          minHeight: 35,
+                          initialLabelIndex: exerciseRank,
+                          cornerRadius: 10.0,
+                          radiusStyle: true,
+                          labels: const ['好友', '全用戶'],
+                          activeBgColors: const [
+                            [Color(0xfff6cdb7)],
+                            [Color(0xffd4d6fc)],
+                          ],
+                          activeFgColor: const Color(0xff4b4370),
+                          inactiveBgColor: const Color(0xfffdfdf5),
+                          inactiveFgColor: const Color(0xff4b4370),
+                          totalSwitches: 2,
+                          onToggle: (index) {
+                            exerciseRank = index!;
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                      Column(children: [
+                        (exerciseRank == 0)
+                            ? SizedBox(
+                                child: ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
+                                  itemCount: getExerciseRankList().length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final int rank = index + 1;
+
+                                    return Container(
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffffffff),
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      child: Row(children: [
+                                        const SizedBox(width: 15),
+                                        Text(
+                                          '$rank',
+                                          style: const TextStyle(
+                                            color: Color(0xff4b3d70),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 16.0),
+                                          child: CircleAvatar(
+                                            radius: 15,
+                                            backgroundImage: AssetImage(
+                                                'assets/images/Friend_B.png'),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 15),
+                                        Text(
+                                          getExerciseRankList()[index],
+                                          style: const TextStyle(
+                                            color: Color(0xff4b3d70),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ]),
+                                    );
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const SizedBox(
+                                      height: 5,
+                                    );
+                                  },
+                                ),
+                              )
+                            : SizedBox(
+                                child: ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
+                                  itemCount: getExerciseRankList().length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final int rank = index + 1;
+
+                                    return Container(
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xffffffff),
+                                        borderRadius: BorderRadius.circular(50),
+                                      ),
+                                      child: Row(children: [
+                                        const SizedBox(width: 15),
+                                        Text(
+                                          '$rank',
+                                          style: const TextStyle(
+                                            color: Color(0xff4b3d70),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const Padding(
+                                          padding: EdgeInsets.only(left: 16.0),
+                                          child: CircleAvatar(
+                                            radius: 15,
+                                            backgroundImage: AssetImage(
+                                                'assets/images/Friend_B.png'),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 15),
+                                        Text(
+                                          getExerciseRankList()[index],
+                                          style: const TextStyle(
+                                            color: Color(0xff4b3d70),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ]),
+                                    );
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
+                                    return const SizedBox(
+                                      height: 5,
+                                    );
+                                  },
+                                ),
+                              )
+                      ]),
+                    ],
+                  )),
+              const SizedBox(height: 15),
+              Container(
+                  padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+                  margin: const EdgeInsets.only(right: 20, left: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xfffdeed9),
+                    border: Border.all(color: const Color(0xffffeed9)),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: Column(children: [
+                    ListTile(
+                      title: const Text(
+                        "冥想寶物排行榜",
+                        style: TextStyle(
+                          color: Color(0xff4b4370),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22.0,
+                        ),
+                      ),
+                      trailing: ToggleSwitch(
+                        minHeight: 35,
+                        initialLabelIndex: meditationRank,
+                        cornerRadius: 10.0,
+                        radiusStyle: true,
+                        labels: const ['好友', '全用戶'],
+                        activeBgColors: const [
+                          [Color(0xfff6cdb7)],
+                          [Color(0xffd4d6fc)],
+                        ],
+                        activeFgColor: const Color(0xff4b4370),
+                        inactiveBgColor: const Color(0xfffdfdf5),
+                        inactiveFgColor: const Color(0xff4b4370),
+                        totalSwitches: 2,
+                        onToggle: (index) {
+                          meditationRank = index!;
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    Column(children: [
+                      (meditationRank == 0)
+                          ? SizedBox(
+                              child: ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: const EdgeInsets.only(
+                                    left: 40.0, top: 10.0, right: 40.0),
+                                itemCount: getMeditationRankList().length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final int rank = index + 1;
+
+                                  return Container(
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xffffffff),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    child: Row(children: [
+                                      const SizedBox(width: 15),
+                                      Text(
+                                        '$rank',
+                                        style: const TextStyle(
+                                          color: Color(0xff4b3d70),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 16.0),
+                                        child: CircleAvatar(
+                                          radius: 15,
+                                          backgroundImage: AssetImage(
+                                              'assets/images/Friend_B.png'),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 15),
+                                      Text(
+                                        getMeditationRankList()[index],
+                                        style: const TextStyle(
+                                          color: Color(0xff4b3d70),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return const SizedBox(
+                                    height: 5,
+                                  );
+                                },
+                              ),
+                            )
+                          : SizedBox(
+                              child: ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                padding: const EdgeInsets.only(
+                                    left: 40.0, top: 10.0, right: 40.0),
+                                itemCount: getMeditationRankList().length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final int rank = index + 1;
+
+                                  return Container(
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xffffffff),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    child: Row(children: [
+                                      const SizedBox(width: 15),
+                                      Text(
+                                        '$rank',
+                                        style: const TextStyle(
+                                          color: Color(0xff4b3d70),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 16.0),
+                                        child: CircleAvatar(
+                                          radius: 15,
+                                          backgroundImage: AssetImage(
+                                              'assets/images/Friend_B.png'),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 15),
+                                      Text(
+                                        getMeditationRankList()[index],
+                                        style: const TextStyle(
+                                          color: Color(0xff4b3d70),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ]),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return const SizedBox(
+                                    height: 5,
+                                  );
+                                },
+                              ),
+                            )
+                    ]),
+                  ])),
+            ]),
+          ]),
     ));
   }
 }
@@ -1108,11 +1175,11 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
 
   // Define the page content based on index
   final List<Widget Function(int)> pageBuilders = [
-        (int index) => _buildPageContent("初級", "Lv.1 以上可選"),
-        (int index) => _buildPageContent("入門", "Lv.5 以上可選"),
-        (int index) => _buildPageContent("中級", "Lv.10 以上可選"),
-        (int index) => _buildPageContent("進階", "Lv.15 以上可選"),
-        (int index) => _buildPageContent("高級", "Lv.20 以上可選"),
+    (int index) => _buildPageContent("初級", "Lv.1 以上可選"),
+    (int index) => _buildPageContent("入門", "Lv.5 以上可選"),
+    (int index) => _buildPageContent("中級", "Lv.10 以上可選"),
+    (int index) => _buildPageContent("進階", "Lv.15 以上可選"),
+    (int index) => _buildPageContent("高級", "Lv.20 以上可選"),
   ];
 
   static Widget _buildPageContent(String title, String subtitle) {

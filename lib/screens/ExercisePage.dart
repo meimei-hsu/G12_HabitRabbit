@@ -116,14 +116,40 @@ class DoExercisePageState extends State<DoExercisePage> {
   Future<bool> checkExit() async {
     var canExit;
 
+    /*
     btnCancelOnPress() {
       startTimer();
       canExit = false;
     }
+     */
 
-    btnOkOnPress() {
+    btnNoOnPress() {
       DurationDB.update({Calendar.toKey(DateTime.now()): currentIndex});
       canExit = true;
+      showModalBottomSheet(
+          isDismissible: false,
+          isScrollControlled: true,
+          enableDrag: false,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+          ),
+          backgroundColor: const Color(0xfffdeed9),
+          context: context,
+          builder: (context) {
+            return Wrap(children: const [
+              FeedbackBottomSheet(
+                arguments: {"type": 0},
+              )
+            ]);
+          });
+      dispose();
+    }
+
+    btnYesOnPress() {
+      DurationDB.update({Calendar.toKey(DateTime.now()): currentIndex});
+      canExit = true;
+      // TODO: 30分鐘後通知使用者回來繼續完成計畫
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
     }
@@ -134,10 +160,11 @@ class DoExercisePageState extends State<DoExercisePage> {
 
     AwesomeDialog dlg = ConfirmDialog().get(
         context,
-        "你確定嗎？",
-        "目前運動已經完成 ${(currentIndex / totalExerciseItemLength * 100).round()}% 囉！\n確定要退出，之後再繼續完成嗎？",
-        btnOkOnPress,
-        btnCancelOnPress: btnCancelOnPress);
+        "退出計畫",
+        "目前運動已經完成 ${(currentIndex / totalExerciseItemLength * 100).round()}% 囉！\n請問今天會回來繼續完成嗎？",
+        btnYesOnPress,
+        btnCancelOnPress: btnNoOnPress,
+        options: ["會，請等等通知我", "不會，明天再回來"]);
 
     await dlg.show();
     return Future.value(canExit);
@@ -152,7 +179,7 @@ class DoExercisePageState extends State<DoExercisePage> {
 
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
-        DurationDB.update({Calendar.toKey(DateTime.now()): currentIndex + 1});
+        DurationDB.update({Calendar.toKey(DateTime.now()): countdownTime});
         //_showFeedbackDialog();
         showModalBottomSheet(
             isDismissible: false,
@@ -165,7 +192,7 @@ class DoExercisePageState extends State<DoExercisePage> {
             backgroundColor: const Color(0xfffdeed9),
             context: context,
             builder: (context) {
-              return const Wrap(children: [
+              return Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 0},
                 )
@@ -407,18 +434,42 @@ class DoMeditationPageState extends State<DoMeditationPage> {
   Future<bool> checkExit() async {
     var canExit;
 
+    /*
     btnCancelOnPress() {
       startTimer();
       canExit = false;
     }
+     */
 
-    btnOkOnPress() {
-      // TODO: update meditation progress
-      /*DurationDB.update({
-                          Calendar.toKey(DateTime.now()):
-                          "$currentIndex, ${widget.arguments['exerciseTime']}"
-                        });*/
+    btnNoOnPress() {
+      MeditationDurationDB.update({
+        Calendar.toKey(DateTime.now()):
+            (widget.arguments['meditationTime'] * _progress).round()
+      });
       canExit = true;
+      showModalBottomSheet(
+          isDismissible: false,
+          isScrollControlled: true,
+          enableDrag: false,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+          ),
+          backgroundColor: const Color(0xfffdeed9),
+          context: context,
+          builder: (context) {
+            return Wrap(children: const [
+              FeedbackBottomSheet(
+                arguments: {"type": 1},
+              )
+            ]);
+          });
+      dispose();
+    }
+
+    btnYesOnPress() {
+      canExit = true;
+      // TODO: 30分鐘後通知使用者回來繼續完成計畫
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
     }
@@ -429,10 +480,11 @@ class DoMeditationPageState extends State<DoMeditationPage> {
 
     AwesomeDialog dlg = ConfirmDialog().get(
         context,
-        "你確定嗎？",
-        "目前冥想已經完成 ${(_progress.toDouble() * 100).round()}% 囉！\n確定要退出，之後再繼續完成嗎？'",
-        btnOkOnPress,
-        btnCancelOnPress: btnCancelOnPress);
+        "退出計畫",
+        "目前冥想已經完成 ${(_progress.toDouble() * 100).round()}% 囉！\n請問今天會回來繼續完成嗎？'",
+        btnYesOnPress,
+        btnCancelOnPress: btnNoOnPress,
+        options: ["會，請等等通知我", "不會，明天再回來"]);
 
     await dlg.show();
     return Future.value(canExit);
@@ -447,11 +499,10 @@ class DoMeditationPageState extends State<DoMeditationPage> {
 
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
-        // TODO: update meditation progress
-        /*DurationDB.update({
+        MeditationDurationDB.update({
           Calendar.toKey(DateTime.now()):
-          "${currentIndex + 1}, ${widget.arguments['exerciseTime']}"
-        });*/
+              (widget.arguments['meditationTime'] * _progress).round()
+        });
         //_showFeedbackDialog();
         showModalBottomSheet(
             isDismissible: false,
@@ -464,7 +515,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
             backgroundColor: const Color(0xfffdeed9),
             context: context,
             builder: (context) {
-              return const Wrap(children: [
+              return Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 1},
                 )
@@ -489,7 +540,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
   @override
   void initState() {
     super.initState();
-    totalTime = 180; // initial totalTime --> 300s
+    totalTime = widget.arguments['meditationTime'] * 6; // totalTime = 300s
     countdownTime = totalTime;
 
     startTimer();
@@ -706,9 +757,9 @@ class FeedbackDialogState extends State<FeedbackDialog> {
               print("FeedbackData: $feedbackData");
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false);
-              var type = await PlanDB.getWorkoutType(DateTime.now());
+              var type = await PlanDB.getType(DateTime.now());
               if (type != null) {
-                UserDB.updateByFeedback(type, feedbackData);
+                UserDB.updateWorkoutFeedback(type, feedbackData);
               }
               await PlanAlgo.execute();
               //MilestoneDB.step();
@@ -809,26 +860,38 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
             height: 10,
           ),
           RatingScoreBar().getSatisfiedScoreBar(onSatisfiedScoreUpdate),
-          const SizedBox(
-            height: 10,
-          ),
-          const Divider(
-            thickness: 1.5,
-            indent: 20,
-            endIndent: 20,
-          ),
-          Text(
-            (type == 0) ? "今天的運動計劃\n做起來是否會很疲憊呢？" : "今天的冥想計劃\n是否會太長或太短呢？",
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-                color: Color(0xff4b4370),
-                fontSize: 20,
-                fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          RatingScoreBar().getTiredScoreBar(onTiredScoreUpdate, type),
+          // Exercise-specific questions:
+          (type == 0)
+              ? const SizedBox(
+                  height: 10,
+                )
+              : Container(),
+          (type == 0)
+              ? const Divider(
+                  thickness: 1.5,
+                  indent: 20,
+                  endIndent: 20,
+                )
+              : Container(),
+          (type == 0)
+              ? const Text(
+                  "今天的運動計劃\n做起來是否會很疲憊呢？",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Color(0xff4b4370),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                )
+              : Container(),
+          (type == 0)
+              ? const SizedBox(
+                  height: 10,
+                )
+              : Container(),
+          (type == 0)
+              ? RatingScoreBar().getTiredScoreBar(onTiredScoreUpdate, type)
+              : Container(),
+          // Meditation-specific questions:
           (type == 0)
               ? Container()
               : const SizedBox(
@@ -960,24 +1023,27 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
 
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (Route<dynamic> route) => false);
-                  var type = await PlanDB.getWorkoutType(DateTime.now());
+                  var type = await PlanDB.getType(DateTime.now());
                   if (type != null) {
-                    UserDB.updateByFeedback(type, feedbackData);
+                    UserDB.updateWorkoutFeedback(type, feedbackData);
                   }
                   await PlanAlgo.execute();
                 } else {
                   // 冥想
                   feedbackData.add(satisfiedScore.toInt());
-                  feedbackData.add(tiredScore.toInt());
                   // True = 1, false = 0
                   feedbackData.add((isAnxious) ? 1 : 0);
                   feedbackData.add((haveToSprint) ? 1 : 0);
                   feedbackData.add((isSatisfied) ? 1 : 0);
                   print("Meditation feedbackData: $feedbackData");
 
-                  // TODO: 冥想回饋 (updateByFeedback() function)
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (Route<dynamic> route) => false);
+                  var type = await MeditationPlanDB.getType(DateTime.now());
+                  if (type != null) {
+                    UserDB.updateMeditationFeedback(type, feedbackData);
+                  }
+                  await MeditationPlanAlgo.execute();
                 }
                 //Navigator.pop(context);
               },

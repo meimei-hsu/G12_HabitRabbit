@@ -57,7 +57,7 @@ class PlanAlgo {
     var db = await algo.initializeThisWeek();
     var date = Calendar.toKey(dateTime);
 
-    var workoutType = await PlanDB.getWorkoutType(dateTime);
+    var workoutType = await PlanDB.getType(dateTime);
     var timeSpan = await PlanDB.getPlanLong(dateTime);
     if (workoutType != null) {
       var plan = await algo.arrangeWorkout(db, workoutType, timeSpan);
@@ -102,7 +102,7 @@ class PlanAlgo {
           if (zero == 3) {
             // adjust the difficulty of next day and the day after
             for (i = 1; i <= 2; i++) {
-              String? type = await PlanDB.getWorkoutType(dates[today + i]);
+              String? type = await PlanDB.getType(dates[today + i]);
               if (type != null) {
                 var plan = (i == 1)
                     ? await algo.getFiveMinWorkout(db, type)
@@ -121,23 +121,26 @@ class PlanAlgo {
 
               // adjust the difficulty of next day and the day after
               for (i = 1; i <= 2; i++) {
-                String? type = await PlanDB.getWorkoutType(dates[today + i]);
+                String? type = await PlanDB.getType(dates[today + i]);
                 if (type != null) {
                   String plan = "";
                   switch (planLong) {
                     case 5:
-                      plan = (await algo.getFiveMinWorkout(db, type)).join(", ");
+                      plan =
+                          (await algo.getFiveMinWorkout(db, type)).join(", ");
                       break;
                     case 10:
                       plan = (await algo.getTenMinWorkout(db, type)).join(", ");
                       break;
                     case 15:
                       plan = (await algo.getTenMinWorkout(db, type)).join(", ");
-                      plan += (await algo.getFiveMinWorkout(db, type)).join(", ");
+                      plan +=
+                          (await algo.getFiveMinWorkout(db, type)).join(", ");
                       break;
                     case 20:
                       plan = (await algo.getTenMinWorkout(db, type)).join(", ");
-                      plan += (await algo.getTenMinWorkout(db, type)).join(", ");
+                      plan +=
+                          (await algo.getTenMinWorkout(db, type)).join(", ");
                       break;
                   }
                   await PlanDB.update({dates[today + i]: plan});
@@ -447,21 +450,21 @@ class MeditationPlanAlgo {
     var db = await algo.initializeThisWeek();
     var date = Calendar.toKey(dateTime);
 
-    var meditationType = await MeditationPlanDB.getMeditationType(dateTime);
+    var meditationType = await MeditationPlanDB.getType(dateTime);
     if (meditationType != null) {
       var plan = await algo.arrangeMeditation(db, meditationType);
       await MeditationPlanDB.update({date: plan});
     }
   }
 
-  static generate(DateTime dateTime) async {
+  static generate(DateTime dateTime, int meditationType) async {
     MeditationAlgorithm algo = MeditationAlgorithm();
     var db = await algo.initializeThisWeek();
     var date = Calendar.toKey(dateTime);
 
-    List meditationType = ["mindfulness", "relax", "visualize", "kindness"];
-    int idx = Random().nextInt(4);
-    var meditationPlan = await algo.arrangeMeditation(db, meditationType[idx]);
+    String type = ["mindfulness", "work", "kindness"][meditationType - 1];
+    var meditationPlan =
+        await algo.arrangeMeditation(db, type);
     await MeditationPlanDB.update({date: meditationPlan});
   }
 }
@@ -533,12 +536,7 @@ class MeditationAlgorithm {
     Random rand = Random();
     // Get the type's meditationIDs
     List meditations = [];
-    if (type == "mindfulness") {
-      meditations = db.meditationIDs[type]!;
-    } else {
-      // randomly pick a subtype from the given main type
-      meditations = db.meditationIDs[type][rand.nextInt(4)]!;
-    }
+    meditations = db.meditationIDs[type][rand.nextInt(7)]!;
     // randomly generate a meditationID
     return meditations[rand.nextInt(meditations.length)];
   }

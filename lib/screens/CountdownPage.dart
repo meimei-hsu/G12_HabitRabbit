@@ -33,7 +33,8 @@ class CountdownPageState extends State<CountdownPage> {
           });
         } else {
           Navigator.popAndPushNamed(context, '/meditation', arguments: {
-            'meditationPlan': widget.arguments['meditationPlan'].split(", ")[0]
+            'meditationPlan': widget.arguments['meditationPlan'],
+            'meditationTime': widget.arguments['meditationTime'],
           });
         }
         //timer = null;

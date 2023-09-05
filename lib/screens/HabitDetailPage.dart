@@ -138,11 +138,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.edit_calendar_outlined,
                                 color: Color(0xff4b4370)),
                             SizedBox(
@@ -156,11 +156,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.cached, color: Color(0xff4b4370)),
                             SizedBox(
                               width: 10,
@@ -173,11 +173,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.delete_outline,
                                 color: Colors.deepOrangeAccent),
                             SizedBox(
@@ -423,6 +423,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
   bool isToday = true;
 
   String? meditationPlan;
+  int? meditationTime;
   int? meditationProgress;
 
   bool isFetchingData = false;
@@ -437,6 +438,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
     isToday = widget.arguments["isToday"];
 
     meditationPlan = widget.arguments["meditationPlan"];
+    meditationTime = widget.arguments["meditationTime"];
     meditationProgress = widget.arguments["percentage"];
   }
 
@@ -479,11 +481,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.edit_calendar_outlined,
                                 color: Color(0xff4b4370)),
                             SizedBox(
@@ -497,11 +499,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.cached, color: Color(0xff4b4370)),
                             SizedBox(
                               width: 10,
@@ -514,11 +516,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.delete_outline,
                                 color: Colors.deepOrangeAccent),
                             SizedBox(
@@ -714,8 +716,8 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                                     Navigator.pushNamed(context, '/countdown',
                                         arguments: {
                                           'type': 'meditation',
-                                          'meditationPlan':
-                                              meditationPlan!.split(", ")[0]
+                                          'meditationPlan': meditationPlan,
+                                          'meditationTime': meditationTime,
                                         });
                                   }
                                 : null,
