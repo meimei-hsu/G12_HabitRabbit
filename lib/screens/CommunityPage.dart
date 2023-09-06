@@ -347,9 +347,9 @@ class _FriendListPageState extends State<FriendListPage> {
                     color: const Color(0xFFFFFFFF),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Icon(Icons.emoji_events),
@@ -1187,7 +1187,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
       width: 300,
       height: 180,
       decoration: BoxDecoration(
-        color: Color(0xfffdeed9),
+        color: const Color(0xfffdeed9),
         borderRadius: BorderRadius.circular(20.0),
       ),
       child: Column(
@@ -1208,6 +1208,67 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
               fontSize: 14,
             ),
           ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox.fromSize(
+                size: const Size(56,56),
+                child: ClipOval(
+                  child: Material(
+                    color: const Color(0xfffdfdf5),
+                    child: InkWell(
+                      splashColor: const Color(0xff4b3d70),
+                      onTap: () {},
+                      child:  const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.fitness_center_outlined,
+                            color: Color(0xff4b3d70),
+                          ),
+                          Text('運動',
+                            style: TextStyle(
+                              color: Color(0xff4b3d70),
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 15),
+              SizedBox.fromSize(
+                size: const Size(56,56),
+                child: ClipOval(
+                  child: Material(
+                    color: const Color(0xfffdfdf5),
+                    child: InkWell(
+                      splashColor: const Color(0xff4b3d70),
+                      onTap: () {},
+                      child:  const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.self_improvement_outlined,
+                            color: Color(0xff4b3d70),),
+                          Text('冥想',
+                            style: TextStyle(
+                              color: Color(0xff4b3d70),
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -1215,66 +1276,100 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 40.0, right: 40.0, top: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Text(
-            '選擇您要加入的模式',
-            style: TextStyle(
-              color: Color(0xff4b3d70),
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 40.0, right: 40.0, top: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text(
+              '選擇您要加入的模式',
+              style: TextStyle(
+                color: Color(0xff4b3d70),
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            '團隊競爭賽',
-            style: TextStyle(
-              color: Color(0xff4b3d70),
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+            const SizedBox(height: 20),
+            const Text(
+              '團隊競爭賽',
+              style: TextStyle(
+                color: Color(0xff4b3d70),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 5),
-          SizedBox(
-            height: 220,
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: pageBuilders.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: pageBuilders[index](index),
-                );
-              },
+            const SizedBox(height: 5),
+            SizedBox(
+              height: 200,
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: pageBuilders.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: pageBuilders[index](index),
+                  );
+                },
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            '團隊挑戰賽',
-            style: TextStyle(
-              color: Color(0xff4b3d70),
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+            const SizedBox(height: 20),
+            const Text(
+              '團隊合作賽',
+              style: TextStyle(
+                color: Color(0xff4b3d70),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 220,
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: pageBuilders.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: pageBuilders[index](index),
-                );
-              },
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 200,
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: pageBuilders.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: pageBuilders[index](index),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            const Text(
+              '特別節日挑戰賽',
+              style: TextStyle(
+                color: Color(0xff4b3d70),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              child: Container(
+                width: 280,
+                height: 200,
+                decoration: BoxDecoration(
+                  color: const Color(0xfffdeed9),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Coming soon...',
+                      style: TextStyle(
+                        color: Color(0xff4b3d70),
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
