@@ -55,7 +55,7 @@ class PlanAlgo {
   static regenerate(DateTime dateTime) async {
     Algorithm algo = Algorithm();
     var db = await algo.initializeThisWeek();
-    var date = Calendar.toKey(dateTime);
+    var date = Calendar.dateToString(dateTime);
 
     var workoutType = await PlanDB.getType(dateTime);
     var timeSpan = await PlanDB.getPlanLong(dateTime);
@@ -68,7 +68,7 @@ class PlanAlgo {
   static generate(DateTime dateTime, int timeSpan) async {
     Algorithm algo = Algorithm();
     var db = await algo.initializeThisWeek();
-    var date = Calendar.toKey(dateTime);
+    var date = Calendar.dateToString(dateTime);
 
     List workoutType = ["strength", "cardio", "yoga"];
     int idx = Random().nextInt(3);
@@ -88,7 +88,7 @@ class PlanAlgo {
       var db = await algo.initializeThisWeek();
 
       List dates = data.keys.toList();
-      int today = dates.indexOf(Calendar.toKey(DateTime.now()));
+      int today = dates.indexOf(Calendar.dateToString(DateTime.now()));
 
       int lessThanHalf = 0; // count the consecutive days when completion < 50%
       int zero = 0; // count the consecutive days when completion = 0%
@@ -448,7 +448,7 @@ class MeditationPlanAlgo {
   static regenerate(DateTime dateTime) async {
     MeditationAlgorithm algo = MeditationAlgorithm();
     var db = await algo.initializeThisWeek();
-    var date = Calendar.toKey(dateTime);
+    var date = Calendar.dateToString(dateTime);
 
     var meditationType = await MeditationPlanDB.getType(dateTime);
     if (meditationType != null) {
@@ -460,7 +460,7 @@ class MeditationPlanAlgo {
   static generate(DateTime dateTime, int meditationType) async {
     MeditationAlgorithm algo = MeditationAlgorithm();
     var db = await algo.initializeThisWeek();
-    var date = Calendar.toKey(dateTime);
+    var date = Calendar.dateToString(dateTime);
 
     String type = ["mindfulness", "work", "kindness"][meditationType - 1];
     var meditationPlan =

@@ -708,7 +708,7 @@ class _PartOnePageState extends State<PartOnePage> {
                         ),
                         onDateTimeChanged: (date) {
                           setState(() {
-                            userInfo['birthday'] = Calendar.toKey(date);
+                            userInfo['birthday'] = Calendar.dateToString(date);
                             isComplete = checkCompletion();
                           });
                         },

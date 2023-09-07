@@ -229,8 +229,8 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             var plan = await PlanDB.getThisWeekByName();
                             var progress = await DurationDB.getWeekProgress();
                             setState(() {
-                              workoutPlan = plan?[Calendar.toKey(day!)];
-                              workoutProgress = progress?[Calendar.toKey(day!)];
+                              workoutPlan = plan?[Calendar.dateToString(day!)];
+                              workoutProgress = progress?[Calendar.dateToString(day!)];
                               isFetchingData = false;
                             });
                             InformDialog()
@@ -249,7 +249,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             .show();
                       } else {
                         btnOkOnPress() async {
-                          await PlanDB.delete(Calendar.toKey(day!));
+                          await PlanDB.delete(Calendar.dateToString(day!));
                           Navigator.pushNamed(context, "/");
                         }
 
@@ -574,9 +574,9 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             var progress =
                                 await MeditationDurationDB.getWeekProgress();
                             setState(() {
-                              meditationPlan = plan?[Calendar.toKey(day!)];
+                              meditationPlan = plan?[Calendar.dateToString(day!)];
                               meditationProgress =
-                                  progress?[Calendar.toKey(day!)];
+                                  progress?[Calendar.dateToString(day!)];
                               isFetchingData = false;
                             });
                             InformDialog()
@@ -595,7 +595,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             .show();
                       } else {
                         btnOkOnPress() async {
-                          await MeditationPlanDB.delete(Calendar.toKey(day!));
+                          await MeditationPlanDB.delete(Calendar.dateToString(day!));
                           Navigator.pushNamed(context, "/");
                         }
 
@@ -662,7 +662,8 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                               topRight: Radius.circular(20))),
                       child: MeditationPlanDetailItem(
                         percentage: meditationProgress!,
-                        meditationPlan: meditationPlan!.split(", "),
+                        meditationPlan: meditationPlan!,
+                        meditationTime: meditationTime!,
                       ),
                     ),
                     /*const SizedBox(
@@ -843,10 +844,12 @@ class MeditationPlanDetailItem extends StatelessWidget {
     super.key,
     required this.percentage,
     required this.meditationPlan,
+    required this.meditationTime,
   });
 
   final int percentage;
-  final List meditationPlan;
+  final String meditationPlan;
+  final int meditationTime;
 
   @override
   Widget build(BuildContext context) {
@@ -897,7 +900,7 @@ class MeditationPlanDetailItem extends StatelessWidget {
                             color: Color(0xff4b4370),
                           ),
                           title: Text(
-                            "${meditationPlan.length * 30} 分冥想", // TODO: 冥想時間？
+                            "$meditationTime 分冥想",
                             style: const TextStyle(
                                 color: Color(0xff4b4370),
                                 fontWeight: FontWeight.bold,
@@ -912,7 +915,7 @@ class MeditationPlanDetailItem extends StatelessWidget {
                             color: Color(0xff4b4370),
                           ),
                           title: Text(
-                            "${meditationPlan[0]}", // TODO: 名稱對應中文
+                            meditationPlan, // TODO: 名稱對應中文
                             style: const TextStyle(
                                 color: Color(0xff4b4370),
                                 fontWeight: FontWeight.bold,

@@ -142,7 +142,16 @@ class Calendar {
       (date.weekday == 7) ? date : date.subtract(Duration(days: date.weekday));
 
   // Convert DateTime to String (i.e. plan's key)
-  static String toKey(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
+  static String dateToString(DateTime date) =>
+      DateFormat('yyyy-MM-dd').format(date);
+
+  // Convert String to TimeOfDay
+  static TimeOfDay stringToTime(String time) => TimeOfDay(
+      hour: int.parse(time.substring(0, 2)),
+      minute: int.parse(time.substring(3, 5)));
+
+  static String timeToString(TimeOfDay time) =>
+      "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
 
   // Get a number {duration} of dates from the given date {firstDay}
   static List<String> getWeekFrom(DateTime firstDay, int duration) {
@@ -154,7 +163,7 @@ class Calendar {
 
   // Check if the given date is within this week
   static bool isThisWeek(DateTime date) =>
-      (thisWeek().contains(toKey(date))) ? true : false;
+      (thisWeek().contains(dateToString(date))) ? true : false;
 
   // Get next sunday
   static DateTime nextSunday(DateTime today) =>
@@ -368,7 +377,7 @@ class UserDB {
 
   // Check if the given date should workout
   static Future<bool?> isWorkoutDay(DateTime date) async {
-    int idx = Calendar.bothWeeks().indexOf(Calendar.toKey(date));
+    int idx = Calendar.bothWeeks().indexOf(Calendar.dateToString(date));
     idx = (idx >= 7) ? idx - 7 : idx;
     List? workoutDays = (await getPlanVariables())?[0]["workoutDays"];
     bool isWorkoutDay = (workoutDays?[idx] == 1) ? true : false;
@@ -376,7 +385,7 @@ class UserDB {
   }
 
   static Future<bool?> isMeditationDay(DateTime date) async {
-    int idx = Calendar.bothWeeks().indexOf(Calendar.toKey(date));
+    int idx = Calendar.bothWeeks().indexOf(Calendar.dateToString(date));
     idx = (idx >= 7) ? idx - 7 : idx;
     List? meditationDays =
         (await getMeditationPlanVariables())?[0]["meditationDays"];
@@ -645,15 +654,9 @@ class MeditationDB {
   }
 
   // Convert workoutIDs to workoutNames
-  static Future<List?> toNames(List<String> ids) async {
+  static Future<String?> toName(String id) async {
     var meditations = await getAll();
-
-    List retVal = [];
-    for (var id in ids) {
-      retVal.add(meditations![id]);
-    }
-
-    return retVal;
+    return (meditations != null) ? meditations[id] : null;
   }
 
   // Select meditationIDs
@@ -812,9 +815,9 @@ class PlanDB {
     // The map is constituted by the modified date and the original plan
     String? plan = await getFromDate(original);
     if (plan != null) {
-      Map<String, String> map = {Calendar.toKey(modified): plan};
+      Map<String, String> map = {Calendar.dateToString(modified): plan};
       // Delete the original record, and update with the modified date
-      return await delete(Calendar.toKey(original)) && await update(map);
+      return await delete(Calendar.dateToString(original)) && await update(map);
     }
     return false;
   }
@@ -865,8 +868,7 @@ class MeditationPlanDB {
   static Future<String?> getByName(DateTime date) async {
     var plan = await getFromDate(date);
     if (plan != null) {
-      var ids = plan.split(", ");
-      return (await MeditationDB.toNames(ids))?.join(", ");
+      return await MeditationDB.toName(plan);
     }
     return null;
   }
@@ -917,9 +919,9 @@ class MeditationPlanDB {
     // The map is constituted by the modified date and the original plan
     String? plan = await getFromDate(original);
     if (plan != null) {
-      Map<String, String> map = {Calendar.toKey(modified): plan};
+      Map<String, String> map = {Calendar.dateToString(modified): plan};
       // Delete the original record, and update with the modified date
-      return await delete(Calendar.toKey(original)) && await update(map);
+      return await delete(Calendar.dateToString(original)) && await update(map);
     }
     return false;
   }
@@ -1026,8 +1028,8 @@ class Calculator {
         } else {
           // store the result to `retVal` when the difference to `sunday` is more than 7 days (1 week)
           retVal.add([
-            Calendar.toKey(sunday),
-            Calendar.toKey(sunday.add(const Duration(days: 6))),
+            Calendar.dateToString(sunday),
+            Calendar.dateToString(sunday.add(const Duration(days: 6))),
             sum
           ]);
           // reset variables for next iteration
@@ -1062,8 +1064,8 @@ class Calculator {
 
           // store the result to `retVal` when the difference to `dayOne` is more than 1 month
           retVal.add([
-            Calendar.toKey(dayOne),
-            Calendar.toKey(nextDayOne.subtract(const Duration(days: 1))),
+            Calendar.dateToString(dayOne),
+            Calendar.dateToString(nextDayOne.subtract(const Duration(days: 1))),
             sum
           ]);
 
@@ -1107,8 +1109,8 @@ class Calculator {
 
           // store the result to `retVal` when the difference to `dayOne`` is more than 1 month
           retVal.add([
-            Calendar.toKey(dayOne),
-            Calendar.toKey(nextDayOne.subtract(const Duration(days: 1))),
+            Calendar.dateToString(dayOne),
+            Calendar.dateToString(nextDayOne.subtract(const Duration(days: 1))),
             count
           ]);
 
@@ -1152,8 +1154,8 @@ class Calculator {
 
           // store the result to `retVal` when the difference to `dayOne` is more than 1 year
           retVal.add([
-            Calendar.toKey(dayOne),
-            Calendar.toKey(nextDayOne.subtract(const Duration(days: 1))),
+            Calendar.dateToString(dayOne),
+            Calendar.dateToString(nextDayOne.subtract(const Duration(days: 1))),
             count
           ]);
 
@@ -1165,8 +1167,8 @@ class Calculator {
 
       if (retVal.isEmpty) {
         retVal.add([
-          Calendar.toKey(dayOne),
-          Calendar.toKey(DateTime(dayOne.year + 1, 1, 1)),
+          Calendar.dateToString(dayOne),
+          Calendar.dateToString(DateTime(dayOne.year + 1, 1, 1)),
           count
         ]);
       }
@@ -1344,13 +1346,6 @@ class ClockDB {
   static Future<SplayTreeMap?> getTable() async =>
       await JournalDB.getTable(uid, table);
 
-  // Select the user's start time from the dates of given week
-  static Future<Map?> getThisWeek() async =>
-      await JournalDB.getThisWeek(uid, table);
-
-  static Future<Map?> getNextWeek() async =>
-      await JournalDB.getNextWeek(uid, table);
-
   // Select user's start time from given dates
   static Future<Map?> getFromDates(List<String> dates) async =>
       await JournalDB.getFromDates(uid, dates, table);
@@ -1361,14 +1356,27 @@ class ClockDB {
   }
 
   // Get the start time prediction
-  static Future<String?> getPrediction(int weekday) async =>
-      await DB.select("journal/$uid/$table", "forecast_$weekday") as String;
+  static Future<String?> getPrediction(int weekday) async {
+    String? time =
+        await DB.select("journal/$uid/$table", "forecast_$weekday") as String?;
+    return (time != null) ? time : null;
+  }
+
+  static Future<Map?> getPredictions() async {
+    var table = await getTable();
+    if (table != null) {
+      return {
+        for (int weekday = 0; weekday <= 6; weekday++)
+          "forecast_$weekday": table["forecast_$weekday"]
+      };
+    }
+    return null;
+  }
 
   // Update start time data {date: "09:00"} from table {table/userID/clock/date}
   // Update when user first start the video/audio in that day
   static Future<bool> update(Map<String, String> data) async =>
-      await JournalDB.update(uid, data, table) &
-      await updateForecast(DateTime.now());
+      await JournalDB.update(uid, data, table);
 
   // Update the forecast data {"forecast": "09:00"} from table {table/userID/clock/forecast}
   static Future<bool> updateForecast(DateTime today) async {
@@ -1376,7 +1384,7 @@ class ClockDB {
     String? predictedTime = await getPrediction(today.weekday);
     if (actualTime != null && predictedTime != null) {
       String forecast = Calculator.forecastStartTime(actualTime, predictedTime);
-      return update({"forecast_${today.weekday}": forecast});
+      return update({"forecast_${today.weekday % 7}": forecast});
     }
     return false;
   }
@@ -1393,13 +1401,6 @@ class MeditationClockDB {
   static Future<SplayTreeMap?> getTable() async =>
       await JournalDB.getTable(uid, table);
 
-  // Select the user's start time from the dates of given week
-  static Future<Map?> getThisWeek() async =>
-      await JournalDB.getThisWeek(uid, table);
-
-  static Future<Map?> getNextWeek() async =>
-      await JournalDB.getNextWeek(uid, table);
-
   // Select user's start time from given dates
   static Future<Map?> getFromDates(List<String> dates) async =>
       await JournalDB.getFromDates(uid, dates, table);
@@ -1410,8 +1411,22 @@ class MeditationClockDB {
   }
 
   // Get the start time prediction
-  static Future<String?> getPrediction(int weekday) async =>
-      await DB.select("journal/$uid/$table", "forecast_$weekday") as String;
+  static Future<String?> getPrediction(int weekday) async {
+    String? time =
+        await DB.select("journal/$uid/$table", "forecast_$weekday") as String?;
+    return (time != null) ? time : null;
+  }
+
+  static Future<Map?> getPredictions() async {
+    var table = await getTable();
+    if (table != null) {
+      return {
+        for (int weekday = 0; weekday <= 6; weekday++)
+          "forecast_$weekday": table["forecast_$weekday"]
+      };
+    }
+    return null;
+  }
 
   // Update start time data {date: "09:00"} from table {table/userID/meditationClock/date}
   // Update when user first start the video/audio in that day

@@ -180,8 +180,8 @@ class HomepageState extends State<Homepage> {
     });
 
     setState(() {
-      workoutPlan = workoutPlanList[Calendar.toKey(_selectedDay!)];
-      workoutProgress = progressList[Calendar.toKey(_selectedDay!)];
+      workoutPlan = workoutPlanList[Calendar.dateToString(_selectedDay!)];
+      workoutProgress = progressList[Calendar.dateToString(_selectedDay!)];
     });
   }
 
@@ -202,9 +202,9 @@ class HomepageState extends State<Homepage> {
     });
 
     setState(() {
-      meditationPlan = meditationPlanList[Calendar.toKey(_selectedDay!)];
+      meditationPlan = meditationPlanList[Calendar.dateToString(_selectedDay!)];
       meditationProgress =
-          meditationProgressList[Calendar.toKey(_selectedDay!)];
+          meditationProgressList[Calendar.dateToString(_selectedDay!)];
     });
   }
 
@@ -235,11 +235,11 @@ class HomepageState extends State<Homepage> {
 
   void refreshLists() {
     setState(() {
-      workoutPlan = workoutPlanList[Calendar.toKey(_selectedDay!)];
-      workoutProgress = progressList[Calendar.toKey(_selectedDay!)];
-      meditationPlan = meditationPlanList[Calendar.toKey(_selectedDay!)];
+      workoutPlan = workoutPlanList[Calendar.dateToString(_selectedDay!)];
+      workoutProgress = progressList[Calendar.dateToString(_selectedDay!)];
+      meditationPlan = meditationPlanList[Calendar.dateToString(_selectedDay!)];
       meditationProgress =
-          meditationProgressList[Calendar.toKey(_selectedDay!)];
+          meditationProgressList[Calendar.dateToString(_selectedDay!)];
 
       isBefore =
           DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day)

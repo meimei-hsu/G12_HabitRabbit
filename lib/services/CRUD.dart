@@ -94,7 +94,7 @@ class JournalDB {
 
   static Future<String?> getFromDate(
       String userID, DateTime date, String table) async {
-    var records = await DB.select("$db/$userID/$table", Calendar.toKey(date));
+    var records = await DB.select("$db/$userID/$table", Calendar.dateToString(date));
     return (records != null) ? records as String : null;
   }
 

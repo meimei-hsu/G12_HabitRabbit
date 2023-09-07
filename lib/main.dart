@@ -62,7 +62,7 @@ class BottomNavigationControllerState
     const MilestonePage(arguments: {}),
     const Homepage(),
     const CommunityPage(arguments: {}),
-    const SettingsPage(arguments: {}),
+    const SettingsPage(),
   ];
 
   @override

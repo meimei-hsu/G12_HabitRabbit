@@ -43,8 +43,11 @@ A milestone habit App.
         |---ExercisePage.dart
             |---CountdownPage.dart
     |---StatisticPage.dart
-    |---ContractPage.dart
-        |---LinePayPage.dart
+    |---MilestonePage.dart
+        |---ContractPage.dart
+            |---LinePayPage.dart
+    |---CommunityPage.dart
+        |---FriendStatusPage.dart
     |---SettingsPage.dart
 ---Routes.dart
 ---PageMaterial.dart

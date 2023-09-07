@@ -13,7 +13,7 @@ User? user = FirebaseAuth.instance.currentUser;
 Map contractData = {
   "type": "",
   "plan": "",
-  "startDay": Calendar.toKey(DateTime.now()),
+  "startDay": Calendar.dateToString(DateTime.now()),
   "endDay": "",
   "money": 0,
   "bankAccount": 85167880032579,
@@ -250,7 +250,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                               setState(() {
                                 tapCount++;
                                 contractData["plan"] = "基礎 (1月內達成3週目標)";
-                                contractData["endDay"] = Calendar.toKey(
+                                contractData["endDay"] = Calendar.dateToString(
                                     DateTime(startDay.year, startDay.month + 1,
                                         startDay.day));
                                 contractData["flag"] = "0, 3";
@@ -279,7 +279,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                               setState(() {
                                 tapCount++;
                                 contractData["plan"] = "進階 (2月內達成7週目標)";
-                                contractData["endDay"] = Calendar.toKey(
+                                contractData["endDay"] = Calendar.dateToString(
                                     DateTime(startDay.year, startDay.month + 2,
                                         startDay.day));
                                 contractData["flag"] = "0, 7";
@@ -308,7 +308,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                               setState(() {
                                 tapCount++;
                                 contractData["plan"] = "困難 (4月內達成15週目標)";
-                                contractData["endDay"] = Calendar.toKey(
+                                contractData["endDay"] = Calendar.dateToString(
                                     DateTime(startDay.year, startDay.month + 4,
                                         startDay.day));
                                 contractData["flag"] = "0, 15";
@@ -1098,19 +1098,19 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
       switch (p) {
         case "基礎":
           contractData["plan"] = "基礎 (1月內達成3週目標)";
-          contractData["endDay"] = Calendar.toKey(
+          contractData["endDay"] = Calendar.dateToString(
               DateTime(startDay.year, startDay.month + 1, startDay.day));
           contractData["flag"] = "0, 3";
           break;
         case "進階":
           contractData["plan"] = "進階 (2月內達成7週目標)";
-          contractData["endDay"] = Calendar.toKey(
+          contractData["endDay"] = Calendar.dateToString(
               DateTime(startDay.year, startDay.month + 2, startDay.day));
           contractData["flag"] = "0, 7";
           break;
         case "困難":
           contractData["plan"] = "困難 (4月內達成15週目標)";
-          contractData["endDay"] = Calendar.toKey(
+          contractData["endDay"] = Calendar.dateToString(
               DateTime(startDay.year, startDay.month + 4, startDay.day));
           contractData["flag"] = "0, 15";
           break;

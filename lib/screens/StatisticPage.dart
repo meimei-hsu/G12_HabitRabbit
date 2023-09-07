@@ -1584,7 +1584,7 @@ class StatisticPageState extends State<StatisticPage> {
                   double weight = double.tryParse(weightController.text) ?? 0;
                   if (weight > 0) {
                     Map<String, double> addedData = {
-                      Calendar.toKey(selectedDate): weight
+                      Calendar.dateToString(selectedDate): weight
                     };
                     await WeightDB.update(addedData);
                     getUserData();

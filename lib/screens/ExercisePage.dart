@@ -124,7 +124,7 @@ class DoExercisePageState extends State<DoExercisePage> {
      */
 
     btnNoOnPress() {
-      DurationDB.update({Calendar.toKey(DateTime.now()): currentIndex});
+      DurationDB.update({Calendar.dateToString(DateTime.now()): currentIndex});
       canExit = true;
       showModalBottomSheet(
           isDismissible: false,
@@ -147,7 +147,7 @@ class DoExercisePageState extends State<DoExercisePage> {
     }
 
     btnYesOnPress() {
-      DurationDB.update({Calendar.toKey(DateTime.now()): currentIndex});
+      DurationDB.update({Calendar.dateToString(DateTime.now()): currentIndex});
       canExit = true;
       // TODO: 30分鐘後通知使用者回來繼續完成計畫
       Navigator.pushNamedAndRemoveUntil(
@@ -179,7 +179,7 @@ class DoExercisePageState extends State<DoExercisePage> {
 
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
-        DurationDB.update({Calendar.toKey(DateTime.now()): countdownTime});
+        DurationDB.update({Calendar.dateToString(DateTime.now()): countdownTime});
         //_showFeedbackDialog();
         showModalBottomSheet(
             isDismissible: false,
@@ -443,7 +443,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
 
     btnNoOnPress() {
       MeditationDurationDB.update({
-        Calendar.toKey(DateTime.now()):
+        Calendar.dateToString(DateTime.now()):
             (widget.arguments['meditationTime'] * _progress).round()
       });
       canExit = true;
@@ -500,7 +500,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
         MeditationDurationDB.update({
-          Calendar.toKey(DateTime.now()):
+          Calendar.dateToString(DateTime.now()):
               (widget.arguments['meditationTime'] * _progress).round()
         });
         //_showFeedbackDialog();
