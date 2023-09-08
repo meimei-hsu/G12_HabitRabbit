@@ -9,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:g12/services/CRUD.dart';
 import 'package:g12/services/PlanAlgo.dart';
 
+import 'package:g12/Services/Notification.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // ensure initialisation
@@ -63,9 +65,11 @@ class Home extends StatelessWidget {
                 // print(Calendar.daysPassed());
                 // print(Calendar.daysComing());
                 // print(await DurationDB.getConsecutiveDays());
-                print(await DurationDB.getMonthTotalTime());
+                //print(await DurationDB.getMonthTotalTime());
+                NotificationService()
+                    .showNotification(title: 'Sample title', body: 'It works!');
               },
-              child: const Text("test")),
+              child: const Text("testN")),
           TextButton(
             onPressed: () async {
               SplayTreeMap? actual = await ClockDB.getTable()
