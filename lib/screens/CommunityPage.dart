@@ -347,9 +347,9 @@ class _FriendListPageState extends State<FriendListPage> {
                     color: const Color(0xFFFFFFFF),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: const [
                       Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Icon(Icons.emoji_events),
@@ -1221,9 +1221,9 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                     child: InkWell(
                       splashColor: const Color(0xff4b3d70),
                       onTap: () {},
-                      child:  const Column(
+                      child:  Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
+                        children: const <Widget>[
                           Icon(
                             Icons.fitness_center_outlined,
                             color: Color(0xff4b3d70),
@@ -1249,9 +1249,9 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                     child: InkWell(
                       splashColor: const Color(0xff4b3d70),
                       onTap: () {},
-                      child:  const Column(
+                      child:  Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
+                        children: const <Widget>[
                           Icon(
                             Icons.self_improvement_outlined,
                             color: Color(0xff4b3d70),),
@@ -1354,9 +1354,9 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                   color: const Color(0xfffdeed9),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Text(
                       'Coming soon...',
                       style: TextStyle(

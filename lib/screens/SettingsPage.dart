@@ -597,7 +597,8 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
 
     for (int index in selectedDays) {
       String weekday = "星期${weekdayNameList[index]}";
-      String selectedTime = forecast["forecast_$index"];
+      String selectedTime =
+          forecast["forecast_$index"] ?? Calendar.timeToString(TimeOfDay.now());
       btnList.add(
         OutlinedButton(
           onPressed: () async {
@@ -667,7 +668,7 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
         children: [
           // TODO: Combine start time with habit days
           SizedBox(
-            height: MediaQuery.of(context).size.width * 0.5,
+            height: MediaQuery.of(context).size.height * 0.1,
             width: double.maxFinite,
             child: ListView(
                 scrollDirection: Axis.vertical, children: _getTimeBtnList()),
@@ -695,7 +696,8 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
               if (mem.habitType == "workout") {
                 await ClockDB.update(Map<String, String>.from(forecast));
               } else if (mem.habitType == "meditation") {
-                await MeditationClockDB.update(Map<String, String>.from(forecast));
+                await MeditationClockDB.update(
+                    Map<String, String>.from(forecast));
               }
 
               if (!mounted) return;
@@ -916,7 +918,7 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
   @override
   initState() {
     super.initState();
-    goal = mem.userData[key].split(", ");
+    goal = mem.userData[key];
     if (mem.habitType == "workout") {
       selectableItems = [
         "減脂減重",

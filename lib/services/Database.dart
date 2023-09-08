@@ -1381,7 +1381,7 @@ class ClockDB {
   // Update the forecast data {"forecast": "09:00"} from table {table/userID/clock/forecast}
   static Future<bool> updateForecast(DateTime today) async {
     String? actualTime = await getFromDate(today);
-    String? predictedTime = await getPrediction(today.weekday);
+    String? predictedTime = await getPrediction(today.weekday % 7);
     if (actualTime != null && predictedTime != null) {
       String forecast = Calculator.forecastStartTime(actualTime, predictedTime);
       return update({"forecast_${today.weekday % 7}": forecast});
