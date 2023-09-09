@@ -24,7 +24,7 @@ class NotificationService {
 
   notificationDetails() {
     return const NotificationDetails(
-        android: AndroidNotificationDetails('channelId', 'channelName',
+        android: AndroidNotificationDetails('channelId', 'channelName',icon:"flutter_logo",
             importance: Importance.max),
         iOS: DarwinNotificationDetails());
   }
