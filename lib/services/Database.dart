@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
+import 'package:timezone/data/latest.dart' as tz;
 
+//import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+//import 'package:flutter_datetime_picker/src/datetime_picker_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +13,7 @@ import 'package:g12/services/CRUD.dart';
 import 'package:g12/services/PlanAlgo.dart';
 
 import 'package:g12/Services/Notification.dart';
-
+DateTime scheduleTime = DateTime.now();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // ensure initialisation
@@ -40,19 +43,30 @@ class Home extends StatelessWidget {
                 // UserDB.update(mary, {"weight": 47});
                 // UserDB.updateByFeedback("cardio", [1, 1]);
                 // UserDB.getAll();
-                WorkoutDB.toNames(plan);
+                //WorkoutDB.toNames(plan);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
-                ClockDB.updateForecast(DateTime.parse("2023-08-31"));
+                //ClockDB.updateForecast(DateTime.parse("2023-08-31"));
+               /* DatePicker.showDateTimePicker(
+                  context,
+                  showTitleActions: true,
+                  onChanged: (date) => scheduleTime = date,
+                  onConfirm: (date) {},
+                );*/
               },
-              child: const Text("test DB")),
+              child: const Text("timecselect")),
           TextButton(
               onPressed: () {
                 // PlanAlgo.execute();
                 // PlanAlgo.regenerate(DateTime.now());
-                MeditationPlanAlgo.execute();
-                MeditationPlanAlgo.regenerate(DateTime.now());
+                //MeditationPlanAlgo.execute();
+                //MeditationPlanAlgo.regenerate(DateTime.now());
+                debugPrint('Notification Scheduled for $scheduleTime');
+                NotificationService().scheduleNotification(
+                    title: 'Scheduled Notification',
+                    body: '$scheduleTime',
+                    scheduledNotificationDateTime: scheduleTime);
               },
-              child: const Text("test AG")),
+              child: const Text("test SN")),
           TextButton(
               onPressed: () async {
                 // print(Calendar.isThisWeek(DateTime(2023, 5, 21)));
@@ -66,8 +80,7 @@ class Home extends StatelessWidget {
                 // print(Calendar.daysComing());
                 // print(await DurationDB.getConsecutiveDays());
                 //print(await DurationDB.getMonthTotalTime());
-                NotificationService()
-                    .showNotification(title: 'Sample title', body: 'It works!');
+                NotificationService().showNotification(title: 'Sample title', body: 'It works!');
               },
               child: const Text("testN")),
           TextButton(
