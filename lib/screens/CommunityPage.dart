@@ -1193,9 +1193,8 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
           child: Column(
             children: <Widget>[
               const Padding(
-                padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 30.0, bottom: 8.0),
+                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0, bottom: 8.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text("團隊挑戰賽",
                         style: TextStyle(
@@ -1207,7 +1206,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20.0, top: 10.0),
+                padding: const EdgeInsets.only(left: 30.0, top: 10.0),
                 child: Row(
                   children: <Widget>[
                     Container(
@@ -1226,7 +1225,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                     const SizedBox(
                       width: 15.0,
                     ),
-                    const Text("競爭模式5+\n競爭模式5+",
+                    const Text("競爭模式5+  合作模式5+",
                         style: TextStyle(color: Color(0xff4b4370)))
                   ],
                 ),
@@ -1304,7 +1303,6 @@ class CardScrollWidget extends StatelessWidget {
                       child: Stack(
                         fit: StackFit.expand,
                         children: <Widget>[
-                          //Image.asset('assets/image/competition.png'),
                           Padding(
                             padding: const EdgeInsets.only(left: 10, top: 20),
                             child: Column(
@@ -1326,7 +1324,7 @@ class CardScrollWidget extends StatelessWidget {
                                         fontSize: 18.0,)),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 32.0, top: 8.0, right: 32.0),
+                                  padding: const EdgeInsets.only(left: 32.0, top: 16.0, right: 32.0),
                                   child: Text(content[i],
                                       style: const TextStyle(
                                         color: Color(0xff4b4370),
@@ -1343,12 +1341,9 @@ class CardScrollWidget extends StatelessWidget {
                                             color: const Color(0xfffdfdf5),
                                             child: InkWell(
                                               splashColor: const Color(0xff4b3d70),
-                                              onTap: () {
-
-                                              },
+                                              onTap: () {},
                                               child: const Column(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
                                                   Icon(
                                                     Icons.fitness_center,
@@ -1400,7 +1395,6 @@ class CardScrollWidget extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-
                                 /*const SizedBox(height: 10.0,),
                             Padding(
                               padding: const EdgeInsets.only(left: 12.0, bottom: 12.0),

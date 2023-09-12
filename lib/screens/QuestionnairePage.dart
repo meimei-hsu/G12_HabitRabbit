@@ -1026,7 +1026,7 @@ class _PartTwoPageState extends State<PartTwoPage> {
           // Set the day to 1 if is selected, else 0
           days[option.data] = 1;
         }
-        userInfo[keys[i]] = days.join(', ');
+        userInfo[keys[i]] = days.join('');
       } else if (i == 1 || i == 8) {
         // Get workoutTime || meditationTime
         userInfo[keys[i]] = answer.first.data;
@@ -1332,8 +1332,6 @@ class _ResultPage extends State<ResultPage> {
                 ),
                 const SizedBox(height: 20),
                 imageWidget,
-                const SizedBox(height: 20),
-                Text(userInfo.toString()),
                 const SizedBox(height: 20),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(

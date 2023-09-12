@@ -13,7 +13,7 @@ import 'package:g12/services/CRUD.dart';
 import 'package:g12/services/PlanAlgo.dart';
 
 import 'package:g12/Services/Notification.dart';
-DateTime scheduleTime = DateTime.now();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // ensure initialisation
@@ -46,7 +46,7 @@ class Home extends StatelessWidget {
                 //WorkoutDB.toNames(plan);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
                 //ClockDB.updateForecast(DateTime.parse("2023-08-31"));
-               /* DatePicker.showDateTimePicker(
+                /* DatePicker.showDateTimePicker(
                   context,
                   showTitleActions: true,
                   onChanged: (date) => scheduleTime = date,
@@ -60,6 +60,7 @@ class Home extends StatelessWidget {
                 // PlanAlgo.regenerate(DateTime.now());
                 //MeditationPlanAlgo.execute();
                 //MeditationPlanAlgo.regenerate(DateTime.now());
+                DateTime scheduleTime = DateTime.now();
                 debugPrint('Notification Scheduled for $scheduleTime');
                 NotificationService().scheduleNotification(
                     title: 'Scheduled Notification',
@@ -80,7 +81,8 @@ class Home extends StatelessWidget {
                 // print(Calendar.daysComing());
                 // print(await DurationDB.getConsecutiveDays());
                 //print(await DurationDB.getMonthTotalTime());
-                NotificationService().showNotification(title: 'Sample title', body: 'It works!');
+                NotificationService()
+                    .showNotification(title: 'Sample title', body: 'It works!');
               },
               child: const Text("testN")),
           TextButton(
@@ -147,8 +149,6 @@ class Home extends StatelessWidget {
 // Set userID
 // Mary: "j6QYBrgbLIQH7h8iRyslntFFKV63"
 // John: "1UFfKQ4ONxf5rGQIro8vpcyUM9z1"
-String uid =
-    FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
 
 class Calendar {
   static DateTime today() => DateTime.now();
@@ -207,6 +207,8 @@ General Database: database records that occurs occasionally
 */
 
 class UserDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const db = "users";
 
   // Define the columns of the user table
@@ -490,6 +492,8 @@ class UserDB {
 }
 
 class ContractDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const db = "contract";
 
   // Define the columns of the user table
@@ -533,6 +537,8 @@ class ContractDB {
 }
 
 class MilestoneDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const db = "milestone";
 
   // Define the columns of the milestone table
@@ -601,6 +607,8 @@ class MilestoneDB {
 }
 
 class WorkoutDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const db = "workouts";
 
   // Select all workouts
@@ -662,6 +670,8 @@ class WorkoutDB {
 }
 
 class MeditationDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const db = "meditations";
 
   // Select all workouts
@@ -718,6 +728,8 @@ Journal Database: database records that occurs daily
 */
 
 class PlanDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const table = "plan";
 
   // Format the String of plan into List of workouts, grouped by workout sets
@@ -845,6 +857,8 @@ class PlanDB {
 }
 
 class MeditationPlanDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const table = "meditationPlan";
 
   // Select all user's plans
@@ -1197,6 +1211,8 @@ class Calculator {
 }
 
 class DurationDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const table = "duration";
 
   // Select all durations
@@ -1277,6 +1293,8 @@ class DurationDB {
 }
 
 class MeditationDurationDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const table = "meditationDuration";
 
   // Select all durations
@@ -1357,6 +1375,8 @@ class MeditationDurationDB {
 }
 
 class ClockDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const table = "clock";
 
   // Select all start time records
@@ -1412,6 +1432,8 @@ class ClockDB {
 }
 
 class MeditationClockDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const table = "meditationClock";
 
   // Select all start time records
@@ -1468,6 +1490,8 @@ class MeditationClockDB {
 }
 
 class WeightDB {
+  static get uid =>
+      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const table = "weight";
 
   // Select all weight

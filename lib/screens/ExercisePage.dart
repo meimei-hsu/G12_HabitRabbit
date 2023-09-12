@@ -8,9 +8,9 @@ import 'package:square_progress_bar/square_progress_bar.dart';
 //import 'package:video_player/video_player.dart';
 
 import 'package:g12/screens/PageMaterial.dart';
-
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
+import 'package:g12/Services/Notification.dart';
 
 class DoExercisePage extends StatefulWidget {
   final Map arguments;
@@ -149,7 +149,11 @@ class DoExercisePageState extends State<DoExercisePage> {
     btnYesOnPress() {
       DurationDB.update({Calendar.dateToString(DateTime.now()): currentIndex});
       canExit = true;
-      // TODO: 30分鐘後通知使用者回來繼續完成計畫
+      NotificationService().scheduleNotification(
+          title: '該開始運動了!',
+          body: '加油',
+          scheduledNotificationDateTime:
+              DateTime.now().add(const Duration(seconds: 30)));
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
     }
@@ -179,7 +183,8 @@ class DoExercisePageState extends State<DoExercisePage> {
 
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
-        DurationDB.update({Calendar.dateToString(DateTime.now()): countdownTime});
+        DurationDB.update(
+            {Calendar.dateToString(DateTime.now()): countdownTime});
         //_showFeedbackDialog();
         showModalBottomSheet(
             isDismissible: false,
@@ -469,7 +474,11 @@ class DoMeditationPageState extends State<DoMeditationPage> {
 
     btnYesOnPress() {
       canExit = true;
-      // TODO: 30分鐘後通知使用者回來繼續完成計畫
+      NotificationService().scheduleNotification(
+          title: '該開始運動了!',
+          body: '加油',
+          scheduledNotificationDateTime:
+          DateTime.now().add(const Duration(seconds: 30)));
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
     }

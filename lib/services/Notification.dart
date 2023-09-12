@@ -58,7 +58,7 @@ class NotificationService {
         title,
         body,
         tz.TZDateTime.from(
-          scheduledNotificationDateTime,
+          scheduledNotificationDateTime.add(const Duration(seconds: 5)),
           location,
         ),
         await notificationDetails(),
