@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:g12/screens/FriendStatusPage.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -347,9 +349,9 @@ class _FriendListPageState extends State<FriendListPage> {
                     color: const Color(0xFFFFFFFF),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Icon(Icons.emoji_events),
@@ -1159,6 +1161,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   }
 }
 
+
 //團隊挑戰賽
 class TeamChallengePage extends StatefulWidget {
   const TeamChallengePage({super.key});
@@ -1167,212 +1170,319 @@ class TeamChallengePage extends StatefulWidget {
   _TeamChallengePageState createState() => _TeamChallengePageState();
 }
 
+var cardAspectRatio = 12.0 / 16.0;
+var widgetAspectRatio = cardAspectRatio * 1.2;
+
 class _TeamChallengePageState extends State<TeamChallengePage> {
-  final PageController _pageController = PageController(
-    initialPage: 0,
-    viewportFraction: 0.9,
-  );
-
-  //未來待改
-
-  // Define the page content based on index
-  final List<Widget Function(int)> pageBuilders = [
-    (int index) => _buildPageContent("初級", "Lv.1 以上可選"),
-    (int index) => _buildPageContent("入門", "Lv.5 以上可選"),
-    (int index) => _buildPageContent("中級", "Lv.10 以上可選"),
-    (int index) => _buildPageContent("進階", "Lv.15 以上可選"),
-    (int index) => _buildPageContent("高級", "Lv.20 以上可選"),
-  ];
-
-  static Widget _buildPageContent(String title, String subtitle) {
-    return Container(
-      width: 300,
-      height: 180,
-      decoration: BoxDecoration(
-        color: const Color(0xfffdeed9),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: Color(0xff4b3d70),
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            subtitle,
-            style: const TextStyle(
-              color: Color(0xff4b3d70),
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox.fromSize(
-                size: const Size(56,56),
-                child: ClipOval(
-                  child: Material(
-                    color: const Color(0xfffdfdf5),
-                    child: InkWell(
-                      splashColor: const Color(0xff4b3d70),
-                      onTap: () {},
-                      child:  Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const <Widget>[
-                          Icon(
-                            Icons.fitness_center_outlined,
-                            color: Color(0xff4b3d70),
-                          ),
-                          Text('運動',
-                            style: TextStyle(
-                              color: Color(0xff4b3d70),
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 15),
-              SizedBox.fromSize(
-                size: const Size(56,56),
-                child: ClipOval(
-                  child: Material(
-                    color: const Color(0xfffdfdf5),
-                    child: InkWell(
-                      splashColor: const Color(0xff4b3d70),
-                      onTap: () {},
-                      child:  Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const <Widget>[
-                          Icon(
-                            Icons.self_improvement_outlined,
-                            color: Color(0xff4b3d70),),
-                          Text('冥想',
-                            style: TextStyle(
-                              color: Color(0xff4b3d70),
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  var currentPage = title.length - 1.0;
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 40.0, right: 40.0, top: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(
-              '選擇您要加入的模式',
-              style: TextStyle(
-                color: Color(0xff4b3d70),
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              '團隊競爭賽',
-              style: TextStyle(
-                color: Color(0xff4b3d70),
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 5),
-            SizedBox(
-              height: 200,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: pageBuilders.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: pageBuilders[index](index),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              '團隊合作賽',
-              style: TextStyle(
-                color: Color(0xff4b3d70),
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              height: 200,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: pageBuilders.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: pageBuilders[index](index),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              '特別節日挑戰賽',
-              style: TextStyle(
-                color: Color(0xff4b3d70),
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            SizedBox(
-              child: Container(
-                width: 280,
-                height: 200,
-                decoration: BoxDecoration(
-                  color: const Color(0xfffdeed9),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      'Coming soon...',
-                      style: TextStyle(
-                        color: Color(0xff4b3d70),
-                        fontSize: 16,
-                      ),
-                    ),
+    PageController controller = PageController(initialPage: title.length - 1);
+    controller.addListener(() {
+      setState(() {
+        currentPage = controller.page!;
+      });
+    });
+
+    return Container(
+      color: const Color(0xfffdfdf5),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 30.0, bottom: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("團隊挑戰賽",
+                        style: TextStyle(
+                          color: Color(0xff4b4370),
+                          fontSize: 30.0,
+                          letterSpacing: 1.0,
+                        )),
                   ],
                 ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, top: 10.0),
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xff4b4370),
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 22.0, vertical: 6.0),
+                          child: Text("模式選擇",
+                              style: TextStyle(color: Color(0xfffdfdf5))),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 15.0,
+                    ),
+                    const Text("競爭模式5+\n競爭模式5+",
+                        style: TextStyle(color: Color(0xff4b4370)))
+                  ],
+                ),
+              ),
+              Stack(
+                children: <Widget>[
+                  CardScrollWidget(currentPage),
+                  Positioned.fill(
+                    child: PageView.builder(
+                      itemCount: title.length,
+                      controller: controller,
+                      reverse: true,
+                      itemBuilder: (context, index) {
+                        return Container();
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+class CardScrollWidget extends StatelessWidget {
+  var currentPage;
+  var padding = 25.0;
+  var verticalInset = 25.0;
+
+  CardScrollWidget(this.currentPage, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: widgetAspectRatio,
+      child: LayoutBuilder(builder: (context, contraints) {
+        var width = contraints.maxWidth;
+        var height = contraints.maxHeight;
+
+        var safeWidth = width - 2 * padding;
+        var safeHeight = height - 2 * padding;
+
+        var heightOfPrimaryCard = safeHeight;
+        var widthOfPrimaryCard = heightOfPrimaryCard * cardAspectRatio;
+
+        var primaryCardLeft = safeWidth - widthOfPrimaryCard;
+        var horizontalInset = primaryCardLeft / 2;
+
+        List<Widget> cardList = <Widget>[];
+
+        for (var i = 0; i < title.length; i++) {
+          var delta = i - currentPage;
+          bool isOnRight = delta > 0;
+
+          var start = padding +
+              max(primaryCardLeft - horizontalInset * -delta * (isOnRight ? 15 : 1), 0.0);
+
+          var cardItem = Positioned.directional(
+              top: padding + verticalInset * max(-delta, 0.0),
+              bottom: padding + verticalInset * max(-delta, 0.0),
+              start: start,
+              textDirection: TextDirection.rtl,
+              child: Visibility(
+                visible: delta.abs() <= 1,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                        color: Color(0xfffdeed9)),
+                    child: AspectRatio(
+                      aspectRatio: cardAspectRatio,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: <Widget>[
+                          //Image.asset('assets/image/competition.png'),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10, top: 20),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+                                  child: Text(title[i],
+                                      style: const TextStyle(
+                                          color: Color(0xff4b4370),
+                                          fontSize: 25.0)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  child: Text(subtitle[i],
+                                      style: const TextStyle(
+                                        color: Color(0xff4b4370),
+                                        fontSize: 18.0,)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 32.0, top: 8.0, right: 32.0),
+                                  child: Text(content[i],
+                                      style: const TextStyle(
+                                        color: Color(0xff4b4370),
+                                        fontSize: 18.0,)),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 80.0, top: 16.0),
+                                  child: Row(
+                                    children: [
+                                      SizedBox.fromSize(
+                                        size: const Size(56, 56),
+                                        child: ClipOval(
+                                          child: Material(
+                                            color: const Color(0xfffdfdf5),
+                                            child: InkWell(
+                                              splashColor: const Color(0xff4b3d70),
+                                              onTap: () {
+
+                                              },
+                                              child: const Column(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.fitness_center,
+                                                    color: Color(0xff4b3d70),
+                                                  ),
+                                                  Text('運動',
+                                                    style: TextStyle(
+                                                      color: Color(0xff4b3d70),
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      SizedBox.fromSize(
+                                        size: const Size(56, 56),
+                                        child: ClipOval(
+                                          child: Material(
+                                            color: const Color(0xfffdfdf5),
+                                            child: InkWell(
+                                              splashColor: const Color(0xff4b3d70),
+                                              onTap: () {
+
+                                              },
+                                              child: const Column(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.self_improvement,
+                                                    color: Color(0xff4b3d70),
+                                                  ),
+                                                  Text('冥想',
+                                                    style: TextStyle(
+                                                      color: Color(0xff4b3d70),
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                /*const SizedBox(height: 10.0,),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12.0, bottom: 12.0),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 6.0),
+                                decoration: BoxDecoration(
+                                    color: Color(0xfffdfdf5),
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                child: const Text("查看更多",
+                                    style: TextStyle(color: Color(0xff4b4370))),
+                              ),
+                            )*/
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              )
+          );
+          cardList.add(cardItem);
+        }
+        return Stack(
+          children: cardList,
+        );
+      }),
+    );
+  }
+}
+
+List<String> title = [
+  "團隊合作賽 - 高級",
+  "團隊合作賽 - 進階",
+  "團隊合作賽 - 中級",
+  "團隊合作賽 - 入門",
+  "團隊合作賽 - 初級",
+  "團隊競爭賽 - 高級",
+  "團隊競爭賽 - 進階",
+  "團隊競爭賽 - 中級",
+  "團隊競爭賽 - 入門",
+  "團隊競爭賽 - 初級",
+];
+
+List<String> subtitle = [
+  "(Lv30 以上可選擇)",
+  "(Lv20 以上可選擇)",
+  "(Lv10 以上可選擇)",
+  "(Lv5 以上可選擇)",
+  "(Lv1 以上可選擇)",
+  "(Lv30 以上可選擇)",
+  "(Lv20 以上可選擇)",
+  "(Lv10 以上可選擇)",
+  "(Lv5 以上可選擇)",
+  "(Lv1 以上可選擇)",
+];
+
+List<String> content = [
+  '32天內所有成員進行運動與冥想習慣並達到完成度90%，'
+      '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+  '28天內所有成員進行運動與冥想習慣並達到完成度90%，'
+      '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+  '14天內所有成員進行運動與冥想習慣並達到完成度90%，'
+      '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+  '14天內所有成員進行運動與冥想習慣並達到完成度80%，'
+      '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+  '7天內所有成員進行運動與冥想習慣並達到完成度80%，'
+      '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+  '32天內所有成員進行運動與冥想習慣。'
+      '兩隊中完成度最高的隊伍取得勝利！'
+      '勝利隊伍將獲得經驗值與等級提升的獎勵。',
+  '28天內所有成員進行運動與冥想習慣。'
+      '兩隊中完成度最高的隊伍取得勝利！'
+      '勝利隊伍將獲得經驗值與等級提升的獎勵。',
+  '21天內所有成員進行運動與冥想習慣。'
+      '兩隊中完成度最高的隊伍取得勝利！'
+      '勝利隊伍將獲得經驗值與等級提升的獎勵。',
+  '14天內所有成員進行運動與冥想習慣。'
+      '兩隊中完成度最高的隊伍取得勝利！'
+      '勝利隊伍將獲得經驗值與等級提升的獎勵。',
+  '7天內所有成員進行運動與冥想習慣。'
+      '兩隊中完成度最高的隊伍取得勝利！'
+      '勝利隊伍將獲得經驗值與等級提升的獎勵。',
+];
