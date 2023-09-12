@@ -1,7 +1,8 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'package:timezone/data/latest.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
@@ -44,17 +45,43 @@ class NotificationService {
         String? body,
         String? payLoad,
         required DateTime scheduledNotificationDateTime}) async {
+    final timeZone = TimeZone();
+
+    // The device's timezone.
+    String timeZoneName = await timeZone.getTimeZoneName();
+
+    // Find the 'current location'
+    final location = await timeZone.getLocation(timeZoneName);
+
     return notificationsPlugin.zonedSchedule(
         id,
         title,
         body,
         tz.TZDateTime.from(
           scheduledNotificationDateTime,
-          tz.local,
+          location,
         ),
         await notificationDetails(),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.absoluteTime);
+  }
+}
+
+class TimeZone {
+  factory TimeZone() => _this ?? TimeZone._();
+
+  TimeZone._() {
+    initializeTimeZones();
+  }
+  static TimeZone? _this;
+
+  Future<String> getTimeZoneName() async => FlutterNativeTimezone.getLocalTimezone();
+
+  Future<tz.Location> getLocation([String? timeZoneName]) async {
+    if(timeZoneName == null || timeZoneName.isEmpty){
+      timeZoneName = await getTimeZoneName();
+    }
+    return tz.getLocation(timeZoneName);
   }
 }
