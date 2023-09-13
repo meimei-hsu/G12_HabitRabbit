@@ -66,8 +66,8 @@ class HomepageState extends State<Homepage> {
   String time = "今天";
 
   Widget getBannerCarousel() {
-    const String banner1 = "assets/images/Exercise.jpg";
-    const String banner2 = "assets/images/Meditation.jpg";
+    const String banner1 = "assets/images/Exercise_1.jpg";
+    const String banner2 = "assets/images/Meditation_1.jpg";
 
     List<BannerModel> listBanners;
 
@@ -508,7 +508,7 @@ class HomepageState extends State<Homepage> {
                             }
                           }, // Image tapped
                           child: Image.asset(
-                            "assets/images/rabbit.png",
+                            "assets/images/Rabbit_2.jpg",
                             width: 125,
                             height: 160,
                           ),
