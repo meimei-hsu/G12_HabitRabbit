@@ -21,6 +21,14 @@ Map contractData = {
   "result": false,
 };
 
+class CustomColors {
+  static const Color textColor = Color(0xFF2F4F4F);
+  static const Color iconColor = Color(0xFF2F4F4F);
+  static const Color backgroundColor = Color(0xFFFDFDFD);
+  static const Color borderColor = Color(0xFF2F4F4F);
+  static const Color containerColor = Color(0xFFFDEED9);
+}
+
 class FirstContractPage extends StatefulWidget {
   const FirstContractPage({super.key, required arguments});
 
@@ -54,22 +62,22 @@ class FirstContractPageState extends State<FirstContractPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFDF5),
+      backgroundColor: CustomColors.backgroundColor,
       appBar: AppBar(
         title: const Text(
           '承諾合約',
           style: TextStyle(
-              color: Color(0xff4b3d70),
+              color: CustomColors.textColor,
               fontSize: 28,
               letterSpacing: 2,
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        backgroundColor: const Color(0xFFFDFDF5),
+        backgroundColor:CustomColors.backgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded,
-              color: Color(0xff4b4370)),
+            color: CustomColors.iconColor,),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -84,7 +92,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                 padding: const EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFFFFFFF), Color(0xfffdeed9)],
+                    colors: [CustomColors.backgroundColor, CustomColors.containerColor],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
@@ -97,7 +105,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                       dialogs[tapCount],
                       style: TextStyle(
                           fontSize: 22.0,
-                          color: const Color(0xff4b3d70),
+                          color: CustomColors.textColor,
                           fontWeight: (tapCount != 1) ? FontWeight.bold : null),
                     ),
                     const SizedBox(
@@ -112,7 +120,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                         '➤ 點擊前往下一步',
                         style: TextStyle(
                           fontSize: 18.0,
-                          color: Color(0xff4b3d70),
+                          color: CustomColors.textColor,
                         ),
                       ),
                     ],
@@ -123,9 +131,8 @@ class FirstContractPageState extends State<FirstContractPage> {
                           Expanded(
                               child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              padding:
-                                  const EdgeInsets.only(right: 10, left: 10),
-                              backgroundColor: const Color(0xfffdfdf5),
+                              padding: const EdgeInsets.only(right: 10, left: 10),
+                              backgroundColor: CustomColors.backgroundColor,
                               shadowColor: Colors.transparent,
                               elevation: 0,
                               minimumSize: const Size.fromHeight(40),
@@ -139,7 +146,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                             child: const Text(
                               '再考慮一下',
                               style: TextStyle(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.textColor,
                                 fontSize: 17,
                               ),
                             ),
@@ -150,7 +157,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                             style: ElevatedButton.styleFrom(
                               padding:
                                   const EdgeInsets.only(right: 10, left: 10),
-                              backgroundColor: const Color(0xfff6cdb7),
+                              backgroundColor: CustomColors.containerColor,
                               shadowColor: Colors.transparent,
                               elevation: 0,
                               minimumSize: const Size.fromHeight(40),
@@ -166,7 +173,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                             child: const Text(
                               '確定挑戰！',
                               style: TextStyle(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.textColor,
                                 fontSize: 17,
                               ),
                             ),
@@ -185,9 +192,9 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               side: const BorderSide(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.borderColor,
                               ),
-                              backgroundColor: const Color(0xfffdfdf5),
+                              backgroundColor: CustomColors.backgroundColor,
                             ),
                             onPressed: () {
                               setState(() {
@@ -198,7 +205,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                             child: const Text(
                               '運動',
                               style: TextStyle(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.textColor,
                                 fontSize: 17,
                               ),
                             ),
@@ -211,9 +218,9 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               side: const BorderSide(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.borderColor,
                               ),
-                              backgroundColor: const Color(0xfffdfdf5),
+                              backgroundColor: CustomColors.backgroundColor,
                             ),
                             onPressed: () {
                               setState(() {
@@ -224,7 +231,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                             child: const Text(
                               '冥想',
                               style: TextStyle(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.textColor,
                                 fontSize: 17,
                               ),
                             ),
@@ -242,9 +249,9 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               side: const BorderSide(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.borderColor,
                               ),
-                              backgroundColor: const Color(0xfffdfdf5),
+                              backgroundColor: CustomColors.backgroundColor,
                             ),
                             onPressed: () {
                               setState(() {
@@ -259,7 +266,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                             child: const Text(
                               '基礎：一個月內至少達成 3 週目標',
                               style: TextStyle(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.textColor,
                                 fontSize: 16,
                               ),
                             ),
@@ -271,9 +278,9 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               side: const BorderSide(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.borderColor,
                               ),
-                              backgroundColor: const Color(0xfffdfdf5),
+                              backgroundColor: CustomColors.backgroundColor,
                             ),
                             onPressed: () {
                               setState(() {
@@ -288,7 +295,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                             child: const Text(
                               '進階：兩個月內至少達成 7 週目標',
                               style: TextStyle(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.textColor,
                                 fontSize: 16,
                               ),
                             ),
@@ -300,9 +307,9 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               side: const BorderSide(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.borderColor,
                               ),
-                              backgroundColor: const Color(0xfffdfdf5),
+                              backgroundColor: CustomColors.backgroundColor,
                             ),
                             onPressed: () {
                               setState(() {
@@ -317,7 +324,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                             child: const Text(
                               '困難：四個月內至少達成 15 週目標',
                               style: TextStyle(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.textColor,
                                 fontSize: 16,
                               ),
                             ),
@@ -344,7 +351,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                             isDense: true,
                             prefixIcon: const Icon(
                               Icons.monetization_on_rounded,
-                              color: Color(0xff4b4370),
+                              color: CustomColors.iconColor,
                             ),
                             labelText: '輸入金額',
                             hintText: '單位為「新台幣」',
@@ -353,20 +360,20 @@ class FirstContractPageState extends State<FirstContractPage> {
                             focusedBorder: focusedAndErrorBorder,
                             focusedErrorBorder: focusedAndErrorBorder,
                             labelStyle:
-                                const TextStyle(color: Color(0xff4b4370)),
+                                const TextStyle(color: CustomColors.textColor),
                             hintStyle: const TextStyle(color: Colors.grey),
                             errorStyle: const TextStyle(
                                 height: 1,
-                                color: Color(0xfff6cdb7),
+                                color: CustomColors.containerColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16),
                             errorMaxLines: 1,
                             filled: true,
-                            fillColor: const Color(0xfffdfdf5),
+                            fillColor: CustomColors.backgroundColor,
                           ),
-                          cursorColor: const Color(0xfff6cdb7),
+                          cursorColor: CustomColors.containerColor,
                           style: const TextStyle(
-                            color: Color(0xff4b4370),
+                            color: CustomColors.textColor,
                             fontSize: 17,
                           ),
                           keyboardType: TextInputType.number,
@@ -383,7 +390,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.only(right: 10, left: 10),
-                            backgroundColor: const Color(0xfff6cdb7),
+                            backgroundColor: CustomColors.containerColor,
                             shadowColor: Colors.transparent,
                             elevation: 0,
                             minimumSize: const Size.fromHeight(40),
@@ -405,7 +412,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                           child: const Text(
                             '確定',
                             style: TextStyle(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.textColor,
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -442,22 +449,22 @@ class SecondContractPageState extends State<SecondContractPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFDF5),
+      backgroundColor: CustomColors.backgroundColor,
       appBar: AppBar(
         title: const Text(
           '承諾合約',
           style: TextStyle(
-              color: Color(0xff4b3d70),
+              color: CustomColors.textColor,
               fontSize: 28,
               letterSpacing: 2,
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        backgroundColor: const Color(0xFFFDFDF5),
+        backgroundColor: CustomColors.backgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded,
-              color: Color(0xff4b4370)),
+              color: CustomColors.iconColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -470,7 +477,7 @@ class SecondContractPageState extends State<SecondContractPage> {
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFFFFFFFF), Color(0xfffdeed9)],
+                  colors: [CustomColors.backgroundColor, CustomColors.containerColor],
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                 ),
@@ -483,7 +490,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                     '已簽約合約內容',
                     style: TextStyle(
                         fontSize: 22.0,
-                        color: Color(0xff4b3d70),
+                        color: CustomColors.textColor,
                         fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
@@ -497,7 +504,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                     '若達成設定目標則由系統將全數金額退還。',
                     style: const TextStyle(
                       fontSize: 16.0,
-                      color: Color(0xff4b3d70),
+                      color: CustomColors.textColor,
                     ),
                   ),
                   const SizedBox(height: 10.0),
@@ -510,7 +517,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                             style: ElevatedButton.styleFrom(
                               padding:
                                   const EdgeInsets.only(right: 10, left: 10),
-                              backgroundColor: const Color(0xfffdfdf5),
+                              backgroundColor: CustomColors.backgroundColor,
                               shadowColor: Colors.transparent,
                               elevation: 0,
                               minimumSize: const Size.fromHeight(40),
@@ -524,7 +531,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                             child: const Text(
                               '取消 / 重新輸入',
                               style: TextStyle(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.textColor,
                                 fontSize: 17,
                               ),
                             ),
@@ -536,7 +543,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                             style: ElevatedButton.styleFrom(
                               padding:
                                   const EdgeInsets.only(right: 10, left: 10),
-                              backgroundColor: const Color(0xfff6cdb7),
+                              backgroundColor: CustomColors.containerColor,
                               shadowColor: Colors.transparent,
                               elevation: 0,
                               minimumSize: const Size.fromHeight(40),
@@ -565,7 +572,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                             child: const Text(
                               '確定',
                               style: TextStyle(
-                                color: Color(0xff4b4370),
+                                color: CustomColors.textColor,
                                 fontSize: 17,
                               ),
                             ),
@@ -612,22 +619,22 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
     String type2 = "meditation";
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFDF5),
+      backgroundColor: CustomColors.backgroundColor,
       appBar: AppBar(
         title: const Text(
           '承諾合約',
           style: TextStyle(
-              color: Color(0xff4b3d70),
+              color: CustomColors.textColor,
               fontSize: 28,
               letterSpacing: 2,
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        backgroundColor: const Color(0xFFFDFDF5),
+        backgroundColor: CustomColors.backgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded,
-              color: Color(0xff4b4370)),
+              color: CustomColors.iconColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -643,7 +650,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFFFFFFF), Color(0xfffdeed9)],
+                      colors: [CustomColors.backgroundColor, CustomColors.containerColor],
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
                     ),
@@ -674,7 +681,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 letterSpacing: 1.2,
-                                color: Color(0xff4b3d70),
+                                color: CustomColors.textColor,
                               ),
                             );
                           } else {
@@ -694,7 +701,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFFFFFFF), Color(0xfffdeed9)],
+                      colors: [CustomColors.backgroundColor, CustomColors.containerColor],
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
                     ),
@@ -725,7 +732,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 letterSpacing: 1.2,
-                                color: Color(0xff4b3d70),
+                                color: CustomColors.textColor,
                               ),
                             );
                           } else {
@@ -771,7 +778,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                       '新增合約',
                       style: TextStyle(
                           fontSize: 18.0,
-                          color: Color(0xff4b3d70),
+                          color: CustomColors.textColor,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -799,7 +806,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
         borderRadius: BorderRadius.only(
             topRight: Radius.circular(20), topLeft: Radius.circular(20)),
       ),
-      backgroundColor: const Color(0xfffdeed9),
+      backgroundColor: CustomColors.containerColor,
       // Darkened background color
       isScrollControlled: true,
       builder: (BuildContext context) {
@@ -850,14 +857,14 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
             title: const Text(
               "建立新的承諾合約",
               style: TextStyle(
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                   fontSize: 24,
                   fontWeight: FontWeight.bold),
             ),
             trailing: Container(
               padding: const EdgeInsets.only(right: 10, left: 10),
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xff4b4370), width: 2),
+                border: Border.all(color: CustomColors.textColor, width: 2),
                 color: Colors.transparent,
                 shape: BoxShape.circle,
               ),
@@ -866,7 +873,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                 constraints: const BoxConstraints(),
                 icon: const Icon(
                   Icons.close_rounded,
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                 ),
                 onPressed: () {
                   Navigator.pop(context);
@@ -878,7 +885,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
           const Text(
             "你要新增什麼類型的合約呢？",
             style: TextStyle(
-                color: Color(0xff4b4370),
+                color: CustomColors.textColor,
                 fontSize: 18,
                 fontWeight: FontWeight.bold),
           ),
@@ -889,11 +896,11 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 side: const BorderSide(
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                 ),
                 backgroundColor: (_type == "運動")
-                    ? const Color(0xfff6cdb7)
-                    : const Color(0xfffdfdf5),
+                    ? CustomColors.containerColor
+                    : CustomColors.backgroundColor,
               ),
               onPressed: () async {
                 //檢查是否有運動合約
@@ -907,7 +914,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
               child: const Text(
                 "運動",
                 style: TextStyle(
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                   fontSize: 16,
                 ),
               ),
@@ -921,11 +928,11 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 side: const BorderSide(
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                 ),
                 backgroundColor: (_type == "冥想")
-                    ? const Color(0xfff6cdb7)
-                    : const Color(0xfffdfdf5),
+                    ? CustomColors.containerColor
+                    : CustomColors.backgroundColor,
               ),
               onPressed: () async {
                 //檢查是否有冥想合約
@@ -940,7 +947,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
               child: const Text(
                 "冥想",
                 style: TextStyle(
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                   fontSize: 16,
                 ),
               ),
@@ -950,7 +957,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
           const Text(
             "你想選擇哪種方案？",
             style: TextStyle(
-                color: Color(0xff4b4370),
+                color: CustomColors.textColor,
                 fontSize: 18,
                 fontWeight: FontWeight.bold),
           ),
@@ -962,7 +969,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
           const Text(
             "你想投入多少金額呢？",
             style: TextStyle(
-                color: Color(0xff4b4370),
+                color: CustomColors.textColor,
                 fontSize: 18,
                 fontWeight: FontWeight.bold),
           ),
@@ -983,7 +990,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.only(right: 10, left: 10),
-                      backgroundColor: const Color(0xfff6cdb7),
+                      backgroundColor: CustomColors.containerColor,
                       shadowColor: Colors.transparent,
                       elevation: 0,
                       minimumSize: const Size.fromHeight(50),
@@ -997,7 +1004,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                     child: const Text(
                       "確定",
                       style: TextStyle(
-                        color: Color(0xff4b4370),
+                        color: CustomColors.textColor,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -1024,11 +1031,11 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
             borderRadius: BorderRadius.circular(15),
           ),
           side: const BorderSide(
-            color: Color(0xff4b4370),
+            color: CustomColors.textColor,
           ),
           backgroundColor: (_plan == choice)
-              ? const Color(0xfff6cdb7)
-              : const Color(0xfffdfdf5),
+              ? CustomColors.containerColor
+              : CustomColors.backgroundColor,
         ),
         onPressed: () {
           _selectPlan(choice);
@@ -1036,7 +1043,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
         child: Text(
           choice,
           style: const TextStyle(
-            color: Color(0xff4b4370),
+            color: CustomColors.textColor,
             fontSize: 16,
           ),
         ),
@@ -1060,11 +1067,11 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
             borderRadius: BorderRadius.circular(15),
           ),
           side: const BorderSide(
-            color: Color(0xff4b4370),
+            color: CustomColors.textColor,
           ),
           backgroundColor: (_money == choice)
-              ? const Color(0xfff6cdb7)
-              : const Color(0xfffdfdf5),
+              ? CustomColors.containerColor
+              : CustomColors.backgroundColor,
         ),
         onPressed: () {
           _selectAmount(choice);
@@ -1072,7 +1079,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
         child: Text(
           "$choice",
           style: const TextStyle(
-            color: Color(0xff4b4370),
+            color: CustomColors.textColor,
             fontSize: 16,
           ),
         ),

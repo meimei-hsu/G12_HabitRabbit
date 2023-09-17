@@ -12,6 +12,14 @@ import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
 import 'package:g12/Services/Notification.dart';
 
+class CustomColors {
+  static const Color textColor = Color(0xFF2F4F4F);
+  static const Color iconColor = Color(0xFF2F4F4F);
+  static const Color backgroundColor = Color(0xFFFDFDFD);
+  static const Color borderColor = Color(0xFF2F4F4F);
+  static const Color containerColor = Color(0xFFFDEED9);
+}
+
 class DoExercisePage extends StatefulWidget {
   final Map arguments;
 
@@ -134,10 +142,10 @@ class DoExercisePageState extends State<DoExercisePage> {
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(20), topLeft: Radius.circular(20)),
           ),
-          backgroundColor: const Color(0xfffdeed9),
+          backgroundColor: CustomColors.containerColor,
           context: context,
           builder: (context) {
-            return Wrap(children: const [
+            return const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -194,10 +202,10 @@ class DoExercisePageState extends State<DoExercisePage> {
               borderRadius: BorderRadius.only(
                   topRight: Radius.circular(20), topLeft: Radius.circular(20)),
             ),
-            backgroundColor: const Color(0xfffdeed9),
+            backgroundColor: CustomColors.containerColor,
             context: context,
             builder: (context) {
-              return Wrap(children: const [
+              return const Wrap(children: [
                 FeedbackBottomSheet(
                   arguments: {"type": 0},
                 )
@@ -320,7 +328,7 @@ class DoExercisePageState extends State<DoExercisePage> {
         onWillPop: checkExit,
         child: SafeArea(
             child: Scaffold(
-          backgroundColor: const Color(0xfffdfdf5),
+          backgroundColor: CustomColors.backgroundColor,
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -356,7 +364,7 @@ class DoExercisePageState extends State<DoExercisePage> {
                   sport,
                   textAlign: TextAlign.left,
                   style: const TextStyle(
-                      color: Color(0xff4b4370),
+                      color: CustomColors.textColor,
                       fontSize: 32,
                       letterSpacing: 0,
                       fontWeight: FontWeight.bold,
@@ -403,10 +411,10 @@ class DoExercisePageState extends State<DoExercisePage> {
                         ifStart
                             ? Icons.pause_rounded
                             : Icons.play_arrow_rounded,
-                        color: const Color(0xff4b4370),
+                        color: CustomColors.iconColor,
                       ),
                       iconSize: 60,
-                      color: const Color(0xff4b4370),
+                      color: CustomColors.iconColor,
                       onPressed: () => startTimer(),
                     ),
                   ),
@@ -460,10 +468,10 @@ class DoMeditationPageState extends State<DoMeditationPage> {
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(20), topLeft: Radius.circular(20)),
           ),
-          backgroundColor: const Color(0xfffdeed9),
+          backgroundColor: CustomColors.containerColor,
           context: context,
           builder: (context) {
-            return Wrap(children: const [
+            return const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
@@ -521,10 +529,10 @@ class DoMeditationPageState extends State<DoMeditationPage> {
               borderRadius: BorderRadius.only(
                   topRight: Radius.circular(20), topLeft: Radius.circular(20)),
             ),
-            backgroundColor: const Color(0xfffdeed9),
+            backgroundColor: CustomColors.containerColor,
             context: context,
             builder: (context) {
-              return Wrap(children: const [
+              return const Wrap(children: [
                 FeedbackBottomSheet(
                   arguments: {"type": 1},
                 )
@@ -561,7 +569,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         onWillPop: checkExit,
         child: SafeArea(
             child: Scaffold(
-          backgroundColor: const Color(0xfffdfdf5),
+          backgroundColor: CustomColors.backgroundColor,
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -678,7 +686,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
       title: const Text('每日運動回饋',
           style: TextStyle(
             backgroundColor: Colors.yellow,
-            color: Color(0xff4b4370),
+            color: CustomColors.textColor,
           )),
       content: Column(mainAxisSize: MainAxisSize.min, children: [
         Container(
@@ -688,7 +696,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
             textAlign: TextAlign.left,
             style: TextStyle(
                 //backgroundColor: Colors.yellow,
-                color: Color(0xff4b4370),
+                color:CustomColors.textColor,
                 fontSize: 25,
                 letterSpacing: 0,
                 fontWeight: FontWeight.bold,
@@ -712,7 +720,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
           textAlign: TextAlign.left,
           style: TextStyle(
               //backgroundColor: Colors.yellow,
-              color: Color(0xff4b4370),
+              color: CustomColors.textColor,
               fontSize: 20,
               letterSpacing: 0,
               fontWeight: FontWeight.bold,
@@ -725,7 +733,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
             textAlign: TextAlign.left,
             style: TextStyle(
                 //backgroundColor: Colors.yellow,
-                color: Color(0xff4b4370),
+                color: CustomColors.textColor,
                 fontSize: 25,
                 letterSpacing: 0,
                 fontWeight: FontWeight.bold,
@@ -749,7 +757,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
           textAlign: TextAlign.left,
           style: TextStyle(
               //backgroundColor: Colors.yellow,
-              color: Color(0xff4b4370),
+              color: CustomColors.textColor,
               fontSize: 20,
               letterSpacing:
                   0 /*percentages not used in flutter. defaulting to zero*/,
@@ -834,7 +842,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
             title: Text(
               "${(type == 0) ? "運動" : "冥想"}回饋",
               style: const TextStyle(
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                   fontSize: 24,
                   fontWeight: FontWeight.bold),
             ),
@@ -861,7 +869,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
           Text(
             "是否滿意今天的${(type == 0) ? "運動" : "冥想"}計劃呢？",
             style: const TextStyle(
-                color: Color(0xff4b4370),
+                color: CustomColors.textColor,
                 fontSize: 20,
                 fontWeight: FontWeight.bold),
           ),
@@ -887,7 +895,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                   "今天的運動計劃\n做起來是否會很疲憊呢？",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color: Color(0xff4b4370),
+                      color:CustomColors.textColor,
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 )
@@ -918,7 +926,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
               : const Text(
                   "最近狀況調查",
                   style: TextStyle(
-                      color: Color(0xff4b4370),
+                      color: CustomColors.textColor,
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
@@ -939,11 +947,11 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           const Text(
                             "最近是否有憂慮、失眠、\n或是壓力大的情況？",
                             style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 18),
+                                color: CustomColors.textColor, fontSize: 18),
                           ),
                           RoundCheckBox(
                             isChecked: isAnxious,
-                            borderColor: const Color(0xff4b4370),
+                            borderColor: CustomColors.borderColor,
                             uncheckedColor: const Color(0xfffdfdf5),
                             checkedColor: const Color(0xfff6cdb7),
                             size: 30,
@@ -964,11 +972,11 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           const Text(
                             "最近是否有一個短期目標需要衝刺？",
                             style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 18),
+                                color: CustomColors.textColor, fontSize: 18),
                           ),
                           RoundCheckBox(
                             isChecked: haveToSprint,
-                            borderColor: const Color(0xff4b4370),
+                            borderColor: CustomColors.borderColor,
                             uncheckedColor: const Color(0xfffdfdf5),
                             checkedColor: const Color(0xfff6cdb7),
                             size: 30,
@@ -989,11 +997,11 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           const Text(
                             "最近是否感到情感上的滿足？",
                             style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 18),
+                                color: CustomColors.textColor, fontSize: 18),
                           ),
                           RoundCheckBox(
                             isChecked: isSatisfied,
-                            borderColor: const Color(0xff4b4370),
+                            borderColor: CustomColors.borderColor,
                             uncheckedColor: const Color(0xfffdfdf5),
                             checkedColor: const Color(0xfff6cdb7),
                             size: 30,
@@ -1059,7 +1067,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
               child: const Text(
                 "確定",
                 style: TextStyle(
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),

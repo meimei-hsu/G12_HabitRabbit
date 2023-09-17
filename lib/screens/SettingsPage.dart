@@ -67,7 +67,7 @@ class _SettingsPage extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFFFDFDFD),
       appBar: AppBar(
         title: const Text(
           "個人設定",
@@ -79,7 +79,7 @@ class _SettingsPage extends State<SettingsPage> {
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFFFDFDFD),
         elevation: 0,
       ),
       body: Padding(

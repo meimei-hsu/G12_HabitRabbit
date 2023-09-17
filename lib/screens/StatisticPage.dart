@@ -13,6 +13,14 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 import '../services/Database.dart';
 
+class CustomColors {
+  static const Color textColor = Color(0xFF2F4F4F);
+  static const Color iconColor = Color(0xFF2F4F4F);
+  static const Color backgroundColor = Color(0xFFFDFDFD);
+  static const Color borderColor = Color(0xFF2F4F4F);
+  static const Color containerColor = Color(0xFFFDEED9);
+}
+
 class StatisticPage extends StatefulWidget {
   final Map arguments;
 
@@ -306,20 +314,20 @@ class StatisticPageState extends State<StatisticPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: const Color(0xfffdfdf5),
+      backgroundColor: CustomColors.backgroundColor,
       appBar: AppBar(
         elevation: 0,
         title: Text(
           '${user?.displayName!} 的統計資料',
           textAlign: TextAlign.left,
           style: const TextStyle(
-              color: Color(0xff4b3d70),
+              color: CustomColors.textColor,
               fontSize: 28,
               letterSpacing: 2,
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        backgroundColor: const Color(0xfffdfdf5),
+        backgroundColor: CustomColors.backgroundColor,
         automaticallyImplyLeading: false,
       ),
       body: (isInit)
@@ -337,13 +345,13 @@ class StatisticPageState extends State<StatisticPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       LoadingAnimationWidget.horizontalRotatingDots(
-                        color: const Color(0xff4b3d70),
+                        color: CustomColors.textColor,
                         size: 100,
                       ),
                       const Text(
                         "載入數據中...",
                         style: TextStyle(
-                          color: Color(0xff4b3d70),
+                          color: CustomColors.textColor,
                         ),
                       )
                     ],
@@ -378,7 +386,7 @@ class StatisticPageState extends State<StatisticPage> {
                                 title: const Text(
                                   "體重紀錄",
                                   style: TextStyle(
-                                      color: Color(0xff4b4370),
+                                      color: CustomColors.textColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 22.0),
                                 ),
@@ -386,7 +394,7 @@ class StatisticPageState extends State<StatisticPage> {
                                   padding: const EdgeInsets.only(top:5, left: 20),
                                   icon: const Icon(Icons.add_box_rounded),
                                   iconSize: 28,
-                                  color: const Color(0xff4b4370),
+                                  color: CustomColors.iconColor,
                                   tooltip: "新增體重",
                                   onPressed: () async {
                                     showModalBottomSheet(
@@ -453,7 +461,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                   return LineTooltipItem(
                                                     '${weightDataMap.keys.toList()[flSpot.x.toInt()]}\n',
                                                     const TextStyle(
-                                                      color: Color(0xff4b3d70),
+                                                      color: CustomColors.textColor,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                     ),
@@ -462,8 +470,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                         text:
                                                             '${flSpot.y.toString()} 公斤',
                                                         style: const TextStyle(
-                                                          color:
-                                                              Color(0xff4b3d70),
+                                                          color: CustomColors.textColor,
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.w900,
@@ -482,22 +489,14 @@ class StatisticPageState extends State<StatisticPage> {
                                                 y: avgWeight,
                                                 label: HorizontalLineLabel(
                                                     show: true,
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 10),
-                                                    labelResolver: (line) =>
-                                                        '平均：${avgWeight.round()}',
-                                                    alignment:
-                                                        Alignment.topRight,
+                                                    padding: const EdgeInsets.only(left: 10),
+                                                    labelResolver: (line) => '平均：${avgWeight.round()}',
+                                                    alignment: Alignment.topRight,
                                                     style: TextStyle(
-                                                        color: const Color(
-                                                                0xff4b3d70)
-                                                            .withOpacity(0.7),
+                                                        color: CustomColors.textColor.withOpacity(0.7),
                                                         fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                color: const Color(0xff4b3d70)
-                                                    .withOpacity(0.7),
+                                                        fontWeight: FontWeight.bold)),
+                                                color: CustomColors.textColor.withOpacity(0.7),
                                                 dashArray: [5, 5],
                                               ),
                                             ],
@@ -510,7 +509,7 @@ class StatisticPageState extends State<StatisticPage> {
                                             drawHorizontalLine: true,
                                             getDrawingHorizontalLine: (value) {
                                               return FlLine(
-                                                color: const Color(0xff4b3d70),
+                                                color: CustomColors.textColor,
                                                 strokeWidth: 0.6,
                                               );
                                             },
@@ -526,7 +525,7 @@ class StatisticPageState extends State<StatisticPage> {
                                               reservedSize: 28,
                                               getTextStyles: (value) =>
                                                   const TextStyle(
-                                                      color: Color(0xff4b3d70),
+                                                      color: CustomColors.textColor,
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -540,7 +539,7 @@ class StatisticPageState extends State<StatisticPage> {
                                               showTitles: true,
                                               getTextStyles: (value) =>
                                                   const TextStyle(
-                                                      color: Color(0xff4b3d70),
+                                                      color: CustomColors.textColor,
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -565,7 +564,7 @@ class StatisticPageState extends State<StatisticPage> {
                                               show: true,
                                               border: const Border(
                                                   bottom: BorderSide(
-                                                color: Color(0xff4e4965),
+                                                color: CustomColors.textColor,
                                                 width: 0.6,
                                               ))),
                                           // lineBarsData: 數線資料
@@ -581,8 +580,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                 getDotPainter: (spot, percent,
                                                         barData, index) =>
                                                     FlDotCirclePainter(
-                                                  color:
-                                                      const Color(0xff4b3d70),
+                                                  color: CustomColors.textColor,
                                                   radius: 3,
                                                 ),
                                               ),
@@ -918,7 +916,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                 const DataLabelSettings(
                                               isVisible: true,
                                                   textStyle: TextStyle(
-                                                      color: Color(0xff4b4370),
+                                                      color: CustomColors.textColor,
                                                       fontSize: 14,
                                                       fontWeight: FontWeight.bold),
                                             ),
@@ -928,7 +926,7 @@ class StatisticPageState extends State<StatisticPage> {
                                       legend: Legend(
                                           isVisible: true,
                                           textStyle: const TextStyle(
-                                              color: Color(0xff4b4370),
+                                              color: CustomColors.textColor,
                                               fontSize: 15,
                                               fontWeight: FontWeight.bold)
                                       ),
@@ -955,7 +953,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                 const DataLabelSettings(
                                               isVisible: true,
                                                   textStyle: TextStyle(
-                                                      color: Color(0xff4b4370),
+                                                      color: CustomColors.textColor,
                                                       fontSize: 14,
                                                       fontWeight: FontWeight.bold),
                                             ),
@@ -981,7 +979,7 @@ class StatisticPageState extends State<StatisticPage> {
                                 '每月成功天數',
                                 //(monthDays == 0) ? '每月成功運動天數' : '每月成功冥想天數',
                                 style: TextStyle(
-                                    color: Color(0xff4b4370),
+                                    color: CustomColors.textColor,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 22.0),
                               ),
@@ -1035,11 +1033,11 @@ class StatisticPageState extends State<StatisticPage> {
                                         plotAreaBorderWidth: 0,
                                         primaryXAxis: CategoryAxis(
                                           axisLine: const AxisLine(
-                                            color: Color(0xff4b4370),
+                                            color: CustomColors.textColor,
                                             width: 0.6,
                                           ),
                                           labelStyle: const TextStyle(
-                                              color: Color(0xff4b4370),
+                                              color: CustomColors.textColor,
                                               fontSize: 15,
                                               fontWeight: FontWeight.bold),
                                           // set 0 or transparent color to hide grid lines and tick lines
@@ -1063,7 +1061,7 @@ class StatisticPageState extends State<StatisticPage> {
                                           majorTickLines:
                                               const MajorTickLines(size: 0),
                                           majorGridLines: const MajorGridLines(
-                                            color: Color(0xff4b4370),
+                                            color: CustomColors.textColor,
                                           ),
                                         ),
                                         //tooltipBehavior: _tooltipBehavior,
@@ -1080,8 +1078,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                 const DataLabelSettings(
                                                     isVisible: true,
                                                     textStyle: TextStyle(
-                                                        color:
-                                                            Color(0xff4b4370),
+                                                        color: CustomColors.textColor,
                                                         fontSize: 15,
                                                         fontWeight:
                                                             FontWeight.bold)),
@@ -1102,11 +1099,11 @@ class StatisticPageState extends State<StatisticPage> {
                                             plotAreaBorderWidth: 0,
                                             primaryXAxis: CategoryAxis(
                                               axisLine: const AxisLine(
-                                                color: Color(0xff4b4370),
+                                                color: CustomColors.textColor,
                                                 width: 0.6,
                                               ),
                                               labelStyle: const TextStyle(
-                                                  color: Color(0xff4b4370),
+                                                  color: CustomColors.textColor,
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold),
                                               // set 0 or transparent color to hide grid lines and tick lines
@@ -1133,7 +1130,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                   const MajorTickLines(size: 0),
                                               majorGridLines:
                                                   const MajorGridLines(
-                                                color: Color(0xff4b4370),
+                                                color: CustomColors.textColor,
                                               ),
                                             ),
                                             //tooltipBehavior: _tooltipBehavior,
@@ -1151,9 +1148,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                 dataLabelSettings:
                                                     const DataLabelSettings(
                                                         isVisible: true,
-                                                        textStyle: TextStyle(
-                                                            color: Color(
-                                                                0xff4b4370),
+                                                        textStyle: TextStyle(color: CustomColors.textColor,
                                                             fontSize: 15,
                                                             fontWeight:
                                                                 FontWeight
@@ -1326,7 +1321,7 @@ class StatisticPageState extends State<StatisticPage> {
   OutlineInputBorder enabledBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(20),
     borderSide: const BorderSide(
-      color: Color(0xff4b4370),
+      color: CustomColors.textColor,
       width: 3,
     ),
   );
@@ -1357,14 +1352,14 @@ class StatisticPageState extends State<StatisticPage> {
             title: const Text(
               "新增體重",
               style: TextStyle(
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                   fontSize: 24,
                   fontWeight: FontWeight.bold),
             ),
             trailing: Container(
               padding: const EdgeInsets.only(right: 20, left: 20),
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xff4b4370), width: 2),
+                border: Border.all(color: CustomColors.textColor, width: 2),
                 color: Colors.transparent,
                 shape: BoxShape.circle,
               ),
@@ -1373,7 +1368,7 @@ class StatisticPageState extends State<StatisticPage> {
                 constraints: const BoxConstraints(),
                 icon: const Icon(
                   Icons.close_rounded,
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                 ),
                 onPressed: () {
                   weightController.clear();
@@ -1428,7 +1423,7 @@ class StatisticPageState extends State<StatisticPage> {
                     isDense: true,
                     prefixIcon: const Icon(
                       Icons.monitor_weight_outlined,
-                      color: Color(0xff4b4370),
+                      color: CustomColors.iconColor,
                     ),
                     labelText: '體重',
                     hintText: '單位為「公斤」',
@@ -1436,7 +1431,7 @@ class StatisticPageState extends State<StatisticPage> {
                     errorBorder: focusedAndErrorBorder,
                     focusedBorder: focusedAndErrorBorder,
                     focusedErrorBorder: focusedAndErrorBorder,
-                    labelStyle: const TextStyle(color: Color(0xff4b4370)),
+                    labelStyle: const TextStyle(color: CustomColors.textColor),
                     hintStyle: const TextStyle(color: Colors.grey),
                     errorStyle: const TextStyle(
                         height: 1,
@@ -1445,11 +1440,11 @@ class StatisticPageState extends State<StatisticPage> {
                         fontSize: 16),
                     errorMaxLines: 1,
                     filled: true,
-                    fillColor: const Color(0xfffdfdf5),
+                    fillColor: CustomColors.backgroundColor,
                   ),
                   cursorColor: const Color(0xfff6cdb7),
                   style: const TextStyle(
-                      color: Color(0xff4b4370),
+                      color: CustomColors.textColor,
                       fontSize: 18,
                       fontWeight: FontWeight.bold),
                   keyboardType:
@@ -1465,7 +1460,7 @@ class StatisticPageState extends State<StatisticPage> {
                 isDense: true,
                 prefixIcon: const Icon(
                   Icons.accessibility_outlined,
-                  color: Color(0xff4b4370),
+                  color: CustomColors.iconColor,
                 ),
                 labelText: "日期：$showingDate",
                 disabledBorder: const NonUniformOutlineInputBorder(
@@ -1474,16 +1469,16 @@ class StatisticPageState extends State<StatisticPage> {
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20)),
                   borderSide: BorderSide(
-                    color: Color(0xff4b4370),
+                    color: CustomColors.textColor,
                     width: 3,
                   ),
                 ),
-                labelStyle: const TextStyle(color: Color(0xff4b4370)),
+                labelStyle: const TextStyle(color: CustomColors.textColor),
                 filled: true,
-                fillColor: const Color(0xfffdfdf5),
+                fillColor: CustomColors.backgroundColor,
               ),
               style: const TextStyle(
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
@@ -1494,11 +1489,10 @@ class StatisticPageState extends State<StatisticPage> {
                 height: 200,
                 padding: const EdgeInsets.only(bottom: 20, right: 20, left: 20),
                 decoration: const ShapeDecoration(
-                    color: Color(0xfffdfdf5),
+                    color:CustomColors.backgroundColor,
                     shape: NonUniformOutlineInputBorder(
                         hideTopSide: true,
-                        borderSide:
-                            BorderSide(color: Color(0xff4b4370), width: 3),
+                        borderSide: BorderSide(color:  CustomColors.borderColor, width: 3),
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(20),
                             bottomRight: Radius.circular(20)))),
@@ -1510,37 +1504,37 @@ class StatisticPageState extends State<StatisticPage> {
                         selectedDate: selectedDate,
                         maximumDate: DateTime.now(),
                         options: const DatePickerOptions(
-                            backgroundColor: Color(0xfffdfdf5)),
+                            backgroundColor: CustomColors.backgroundColor),
                         scrollViewOptions: const DatePickerScrollViewOptions(
                             year: ScrollViewDetailOptions(
                               textStyle: TextStyle(
-                                  color: Color(0xff4b4370),
+                                  color: CustomColors.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               selectedTextStyle: TextStyle(
-                                  color: Color(0xff4b4370),
+                                  color: CustomColors.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               margin: EdgeInsets.only(right: 20, left: 20),
                             ),
                             month: ScrollViewDetailOptions(
                               textStyle: TextStyle(
-                                  color: Color(0xff4b4370),
+                                  color: CustomColors.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               selectedTextStyle: TextStyle(
-                                  color: Color(0xff4b4370),
+                                  color: CustomColors.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               margin: EdgeInsets.only(right: 20, left: 20),
                             ),
                             day: ScrollViewDetailOptions(
                               textStyle: TextStyle(
-                                  color: Color(0xff4b4370),
+                                  color: CustomColors.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               selectedTextStyle: TextStyle(
-                                  color: Color(0xff4b4370),
+                                  color: CustomColors.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               margin: EdgeInsets.only(right: 20, left: 20),
@@ -1598,7 +1592,7 @@ class StatisticPageState extends State<StatisticPage> {
               child: const Text(
                 "確定",
                 style: TextStyle(
-                  color: Color(0xff4b4370),
+                  color: CustomColors.textColor,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),

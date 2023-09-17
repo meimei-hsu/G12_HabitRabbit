@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+class CustomColors {
+  static const Color textColor = Color(0xFF2F4F4F);
+  static const Color iconColor = Color(0xFF2F4F4F);
+  static const Color backgroundColor = Color(0xFFFDFDFD);
+  static const Color chartColor = Color(0xFFD4D6FC);
+  static const Color containerColor = Color(0xFFFDEED9);
+}
+
 class FriendStatusPage extends StatefulWidget {
   const FriendStatusPage({super.key});
-
-  //const CommunityPage({super.key, required arguments});
 
   @override
   _FriendStatusPageState createState() => _FriendStatusPageState();
@@ -15,13 +21,13 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xfffdfdf5),
+        backgroundColor: CustomColors.backgroundColor,
         appBar: AppBar(
-          backgroundColor: const Color(0xfffdfdf5),
+          backgroundColor: CustomColors.backgroundColor,
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_rounded,
-                color: Color(0xff4b4370)),
+                color: CustomColors.iconColor),
             onPressed: () => Navigator.of(context).pop(),
           ),
           //automaticallyImplyLeading: false,
@@ -44,7 +50,7 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
                           '\n社交碼：AUG23LR6U1',
                       // TODO:讀取使用者的真實情況
                       style: TextStyle(
-                        color: Color(0xff4b3d70),
+                        color: CustomColors.textColor,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         height: 1.2,
@@ -64,17 +70,16 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
                           Container(
                             padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                             margin: const EdgeInsets.only(right: 20, left: 20),
-                            decoration: BoxDecoration(
-                              color: const Color(0xfffdeed9),
-                              border: Border.all(color: const Color(0xffffeed9)),
-                              borderRadius: const BorderRadius.all(Radius.circular(20)),
+                            decoration: const BoxDecoration(
+                              color: CustomColors.containerColor,
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
                             ),
                             child: Column(children: [
                               const ListTile(
                                 title: Text(
                                   "等級資訊",
                                   style: TextStyle(
-                                      color: Color(0xff4b4370),
+                                      color: CustomColors.textColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 22.0),
                                 ),
@@ -85,7 +90,7 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
                                   legend: Legend(
                                       isVisible: true,
                                       textStyle: const TextStyle(
-                                          color: Color(0xff4b4370),
+                                          color: CustomColors.textColor,
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold)
                                   ),
@@ -127,17 +132,16 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
                           Container(
                             padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                             margin: const EdgeInsets.only(right: 20, left: 20),
-                            decoration: BoxDecoration(
-                              color: const Color(0xfffdeed9),
-                              border: Border.all(color: const Color(0xffffeed9)),
-                              borderRadius: const BorderRadius.all(Radius.circular(20)),
+                            decoration: const BoxDecoration(
+                              color: Color(0xfffdeed9),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
                             ),
                             child: Column(children: [
                               const ListTile(
                                 title: Text(
                                   "累計總時長",
                                   style: TextStyle(
-                                      color: Color(0xff4b4370),
+                                      color: CustomColors.textColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 22.0),
                                 ),
@@ -149,10 +153,10 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
                                   plotAreaBorderWidth: 0,
                                   primaryXAxis: CategoryAxis(
                                     axisLine: const AxisLine(
-                                      color: Color(0xff4b4370),
+                                      color: CustomColors.textColor,
                                     ),
                                     labelStyle: const TextStyle(
-                                        color: Color(0xff4b4370),
+                                        color: CustomColors.textColor,
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
                                     majorTickLines:
@@ -176,7 +180,7 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
                                       xValueMapper: (ChartData data, _) => data.x,
                                       yValueMapper: (ChartData data, _) => data.y,
                                       width: 0.3,
-                                      color: const Color(0xffd4d6fc),
+                                      color: CustomColors.chartColor,
                                       borderRadius:
                                       const BorderRadius.only(
                                           topRight: Radius.circular(10),
@@ -195,19 +199,16 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
                             padding:
                             const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                             margin: const EdgeInsets.only(right: 20, left: 20),
-                            decoration: BoxDecoration(
-                              color: const Color(0xfffdeed9),
-                              border:
-                              Border.all(color: const Color(0xffffeed9)),
-                              borderRadius:
-                              const BorderRadius.all(Radius.circular(20)),
+                            decoration: const BoxDecoration(
+                              color: CustomColors.containerColor,
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
                             ),
                             child: Column(children: [
                               const ListTile(
                                 title: Text(
                                   "最高連續天數",
                                   style: TextStyle(
-                                      color: Color(0xff4b4370),
+                                      color: CustomColors.textColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 22.0),
                                 ),
@@ -219,10 +220,10 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
                                   plotAreaBorderWidth: 0,
                                   primaryXAxis: CategoryAxis(
                                     axisLine: const AxisLine(
-                                      color: Color(0xff4b4370),
+                                      color: CustomColors.textColor,
                                     ),
                                     labelStyle: const TextStyle(
-                                        color: Color(0xff4b4370),
+                                        color: CustomColors.textColor,
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
                                     majorTickLines:
@@ -246,7 +247,7 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
                                       xValueMapper: (ChartData data, _) => data.x,
                                       yValueMapper: (ChartData data, _) => data.y,
                                       width: 0.3,
-                                      color: const Color(0xffd4d6fc),
+                                      color: CustomColors.chartColor,
                                       borderRadius:
                                       const BorderRadius.only(
                                           topRight: Radius.circular(10),

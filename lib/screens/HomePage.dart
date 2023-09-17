@@ -86,13 +86,14 @@ class HomepageState extends State<Homepage> {
 
     return (listBanners != [])
         ? BannerCarousel(
-            height: 350,
-            margin: const EdgeInsets.only(left: 5, right: 5),
-            viewportFraction: 0.95,
+            height: 300,
+            margin: const EdgeInsets.only(left: 0, right: 0),
+            viewportFraction: 0.9,
             spaceBetween: 5,
             borderRadius: 10,
             activeColor: const Color(0xff4b3d70),
             disableColor: const Color(0xfff6cdb7),
+            showIndicator: false,
             banners: listBanners,
             onTap: (id) async {
               // Exercise
@@ -134,31 +135,31 @@ class HomepageState extends State<Homepage> {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
       dialogText =
-          (isBefore) ? "$time沒有運動計畫\n沒有冥想計畫" : "$time沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
+          (isBefore) ? "沒有運動計畫\n沒有冥想計畫" : "沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
     } else if (workoutPlan != null && meditationPlan == null) {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
       dialogText = (isBefore)
-          ? "$time的運動計畫完成了 $workoutProgress %\n沒有冥想計畫"
+          ? "運動計畫完成了 $workoutProgress %\n沒有冥想計畫"
           : (isToday)
-              ? "$time的運動計畫已完成 $workoutProgress %\n${(workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
-              : "$time有運動計畫\n記得要來完成噢~\n點我新增冥想計畫！";
+              ? "運動計畫已完成 $workoutProgress %\n${(workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
+              : "有運動計畫\n記得要來完成噢~\n點我新增冥想計畫！";
     } else if (workoutPlan == null && meditationPlan != null) {
       // 運動沒有、冥想有 --> 冥想完成度、新增運動
       // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
       dialogText = (isBefore)
-          ? "$time的冥想計畫完成了 $meditationProgress %\n沒有運動計畫"
+          ? "冥想計畫完成了 $meditationProgress %\n沒有運動計畫"
           : (isToday)
-              ? "$time的冥想計畫已完成 $meditationProgress %\n${(meditationProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有運動計畫，點我新增！"
-              : "$time有冥想計畫\n記得要來完成噢~\n點我新增運動計畫！";
+              ? "冥想計畫已完成 $meditationProgress %\n${(meditationProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有運動計畫，點我新增！"
+              : "有冥想計畫\n記得要來完成噢~\n點我新增運動計畫！";
     } else {
       // 運動有、冥想有 --> 運動完成度、冥想完成度
       // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
       dialogText = (isBefore)
-          ? "$time的運動計畫完成了 $workoutProgress %\n冥想計畫完成了 $meditationProgress %"
+          ? "運動計畫完成了 $workoutProgress %\n冥想計畫完成了 $meditationProgress %"
           : (isToday)
-              ? "$time的運動計畫已完成 $workoutProgress %\n冥想計畫已完成 $meditationProgress %${(workoutProgress == 100 && meditationProgress == 100) ? "\n很棒噢~~" : "\n繼續加油加油~~"}"
-              : "$time有運動和冥想計畫\n記得要來完成噢~";
+              ? "運動計畫已完成 $workoutProgress %\n冥想計畫已完成 $meditationProgress %${(workoutProgress == 100 && meditationProgress == 100) ? "\n很棒噢~~" : "\n繼續加油加油~~"}"
+              : "有運動和冥想計畫\n記得要來完成噢~";
     }
     return dialogText;
   }
@@ -261,7 +262,7 @@ class HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: const Color(0xfffdfdf5),
+      backgroundColor: const Color(0xFFFDFDFD),
       body: (isInit || isFetchingData)
           ? Center(
               child: Container(
@@ -300,7 +301,7 @@ class HomepageState extends State<Homepage> {
                 ),
                 Container(
                   //color: const Color(0x193598f5),
-                  color: const Color(0xfffdfdf5), //日曆背景
+                  color: const Color(0xFFFDFDFD), //日曆背景
                   child: TableCalendar(
                     firstDay: firstDay,
                     lastDay: lastDay,
@@ -414,7 +415,7 @@ class HomepageState extends State<Homepage> {
                     },
                   ),
                 ),
-                //const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 Container(
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   child: Row(
@@ -508,22 +509,23 @@ class HomepageState extends State<Homepage> {
                             }
                           }, // Image tapped
                           child: Image.asset(
-                            "assets/images/Rabbit_2.jpg",
+                            "assets/images/Rabbit_2.png",
                             width: 125,
-                            height: 160,
+                            height: 150,
                           ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 50),
                 (workoutPlan != null || meditationPlan != null)
                     ? Expanded(child: getBannerCarousel())
                     : Container(),
                 const SizedBox(height: 5),
                 // TODO: delete after QuestionnairePage & ContractPage testing
-                Row(
+
+                /*Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
@@ -593,7 +595,7 @@ class HomepageState extends State<Homepage> {
                         icon: const Icon(Icons.self_improvement_outlined,
                             size: 40))
                   ],
-                ),
+                ),*/
               ],
             ),
     ));

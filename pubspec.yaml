@@ -73,6 +73,7 @@ dependencies:
   flutter_datetime_picker: ^1.5.1
   timezone: ^0.9.2
   flutter_native_timezone: ^2.0.0
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -135,6 +136,9 @@ flutter:
     - assets/images/image.png
     - assets/images/Friend_A.png
     - assets/images/Friend_B.png
+    - assets/images/Rabbit_2.png
+    - assets/images/Dog_1.png
+    - assets/images/Fox_1.png
     - assets/images/Rabbit_2.jpg
     # To add assets to your application, add an assets section, like this:
     # assets:

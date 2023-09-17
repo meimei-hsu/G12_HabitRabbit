@@ -1,8 +1,16 @@
-import 'dart:math';
+import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:g12/screens/FriendStatusPage.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+
+class CustomColors {
+  static const Color textColor = Color(0xFF2F4F4F);
+  static const Color iconColor = Color(0xFF2F4F4F);
+  static const Color backgroundColor = Color(0xFFFDFDFD);
+  static const Color borderColor = Color(0xFF2F4F4F);
+  static const Color containerColor = Color(0xFFFDEED9);
+}
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key, required arguments});
@@ -11,8 +19,7 @@ class CommunityPage extends StatefulWidget {
   _CommunityPageState createState() => _CommunityPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage>
-    with TickerProviderStateMixin {
+class _CommunityPageState extends State<CommunityPage> with TickerProviderStateMixin {
   late TabController _controller;
   int _currentIndex = 0;
 
@@ -38,19 +45,19 @@ class _CommunityPageState extends State<CommunityPage>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xfffdfdf5),
+        backgroundColor: CustomColors.backgroundColor,
         appBar: AppBar(
           elevation: 0,
           title: const Text(
             'Mary 的朋友圈',
             style: TextStyle(
-                color: Color(0xff4b3d70),
+                color: CustomColors.textColor,
                 fontSize: 28,
                 letterSpacing: 2,
                 fontWeight: FontWeight.bold,
                 height: 1),
           ),
-          backgroundColor: const Color(0xfffdfdf5),
+          backgroundColor: CustomColors.backgroundColor,
           automaticallyImplyLeading: false,
         ),
         body: SafeArea(
@@ -64,34 +71,62 @@ class _CommunityPageState extends State<CommunityPage>
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: SizedBox(
-                      //width: MediaQuery.of(context).size.width / 2,
                       child: TabBar(
                         controller: _controller,
                         tabs: const [
                           Tab(
-                            icon: Tooltip(
-                              message: '朋友列表',
-                              child: Icon(Icons.group),
+                            icon: Column(
+                              children: [
+                                Icon(
+                                  Icons.group,
+                                  color: CustomColors.iconColor,
+                                ),
+                                Text(
+                                  '朋友列表',
+                                  style: TextStyle(
+                                    color: CustomColors.iconColor,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Tab(
-                            icon: Tooltip(
-                              message: '排行榜',
-                              child: Icon(Icons.emoji_events),
+                            icon: Column(
+                              children: [
+                                Icon(
+                                  Icons.emoji_events,
+                                  color: CustomColors.iconColor, // 设置图标颜色
+                                ),
+                                Text(
+                                  '排行榜',
+                                  style: TextStyle(
+                                    color: CustomColors.iconColor,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           Tab(
-                            icon: Tooltip(
-                              message: '團隊挑戰賽',
-                              child: Icon(Icons.sports_kabaddi),
+                            icon: Column(
+                              children: [
+                                Icon(
+                                  Icons.sports_kabaddi,
+                                  color: CustomColors.iconColor,
+                                ),
+                                Text(
+                                  '團隊挑戰賽',
+                                  style: TextStyle(
+                                    color: CustomColors.iconColor,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
-                        unselectedLabelColor: const Color(0xff4b3d70),
-                        /*indicator: BoxDecoration(
-                          borderRadius: BorderRadius.circular(80.0),
-                          color: const Color(0xffffffff).withOpacity(0.2),
-                        ),*/
+                        unselectedLabelColor: CustomColors.textColor,
                         onTap: (index) {
                           setState(() {
                             _currentIndex = index;
@@ -146,15 +181,15 @@ class _FriendListPageState extends State<FriendListPage> {
             SizedBox(
               width: 80,
               height: 80,
-              child: Image.asset('assets/images/image.png'),
+              child: Image.asset('assets/images/Rabbit_2.png'),
             ),
             const SizedBox(width: 15),
             const Text(
-              '社交碼：UGO317RQDS'
+              '\n社交碼：UGO317RQDS'
               '\n等級：12',
               // TODO:讀取使用者的真實情況
               style: TextStyle(
-                color: Color(0xff4b3d70),
+                color: CustomColors.textColor,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 height: 1.5,
@@ -163,7 +198,7 @@ class _FriendListPageState extends State<FriendListPage> {
           ]),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 30.0, right: 15.0),
+          padding: const EdgeInsets.only(left: 30.0, top:10, right: 15.0),
           child: Row(
             children: [
               Expanded(
@@ -177,7 +212,7 @@ class _FriendListPageState extends State<FriendListPage> {
                     ),
                   ),
                   style: const TextStyle(
-                    color: Color(0xff4b3d70),
+                    color: CustomColors.textColor,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                     height: 1,
@@ -207,7 +242,7 @@ class _FriendListPageState extends State<FriendListPage> {
           child: Text(
             '朋友列表',
             style: TextStyle(
-              color: Color(0xff4b3d70),
+              color: CustomColors.textColor,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -219,7 +254,7 @@ class _FriendListPageState extends State<FriendListPage> {
                   '\n您尚未加入任何好友，'
                   '\n趕快輸入朋友的社交碼開啟社交功能吧!',
                   style: TextStyle(
-                    color: Color(0xff4b3d70),
+                    color: CustomColors.textColor,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -232,8 +267,12 @@ class _FriendListPageState extends State<FriendListPage> {
                     return Container(
                       height: 70,
                       decoration: BoxDecoration(
-                        color: const Color(0xffffffff),
+                        color: CustomColors.containerColor,
                         borderRadius: BorderRadius.circular(50),
+                        /*border: Border.all(
+                          color: CustomColors.borderColor,
+                          width: 1.0,
+                        ),*/
                       ),
                       child: Row(
                         children: [
@@ -241,6 +280,7 @@ class _FriendListPageState extends State<FriendListPage> {
                             padding: EdgeInsets.only(left: 16.0),
                             child: CircleAvatar(
                               radius: 25,
+                              backgroundColor: CustomColors.backgroundColor,
                               backgroundImage:
                                   AssetImage('assets/images/Friend_B.png'),
                             ),
@@ -249,7 +289,7 @@ class _FriendListPageState extends State<FriendListPage> {
                           Text(
                             entries[index],
                             style: const TextStyle(
-                              color: Color(0xff4b3d70),
+                              color: CustomColors.textColor,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
@@ -268,7 +308,7 @@ class _FriendListPageState extends State<FriendListPage> {
                               padding: EdgeInsets.only(right: 16.0),
                               child: Icon(
                                 Icons.arrow_forward_ios,
-                                color: Color(0xff4b3d70),
+                                color: CustomColors.iconColor,
                               ),
                             ),
                           ),
@@ -292,7 +332,7 @@ class _FriendListPageState extends State<FriendListPage> {
         return Dialog(
           child: Container(
             decoration: BoxDecoration(
-              color: const Color(0xFFFDFDF5),
+              color: CustomColors.backgroundColor,
               borderRadius: BorderRadius.circular(10),
             ),
             padding: const EdgeInsets.all(20.0),
@@ -300,6 +340,7 @@ class _FriendListPageState extends State<FriendListPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const CircleAvatar(
+                  backgroundColor: CustomColors.backgroundColor,
                   radius: 45,
                   backgroundImage: AssetImage('assets/images/Friend_A.png'),
                 ),
@@ -307,7 +348,7 @@ class _FriendListPageState extends State<FriendListPage> {
                 const Text(
                   "Frank",
                   style: TextStyle(
-                    color: Color(0xff4b3d70),
+                    color: CustomColors.textColor,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -317,8 +358,12 @@ class _FriendListPageState extends State<FriendListPage> {
                   height: 60,
                   width: 220,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
+                    color: CustomColors.backgroundColor,
                     borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: CustomColors.borderColor,
+                      width: 1.0,
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -332,7 +377,7 @@ class _FriendListPageState extends State<FriendListPage> {
                           "社交碼 \n$searchText",
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            color: Color(0xff4b3d70),
+                            color: CustomColors.textColor,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -346,8 +391,12 @@ class _FriendListPageState extends State<FriendListPage> {
                   height: 60,
                   width: 220,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFFFFF),
+                    color: CustomColors.backgroundColor,
                     borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: CustomColors.borderColor,
+                      width: 1.0,
+                    ),
                   ),
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -361,7 +410,7 @@ class _FriendListPageState extends State<FriendListPage> {
                           "等級 \n10",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: Color(0xff4b3d70),
+                            color: CustomColors.textColor,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -377,12 +426,12 @@ class _FriendListPageState extends State<FriendListPage> {
                     //TODO: 把朋友加進資料庫並顯示在 listView
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFFFFF),
+                    backgroundColor: CustomColors.backgroundColor,
                   ),
                   child: const Text(
                     '加朋友',
                     style: TextStyle(
-                      color: Color(0xff4b3d70),
+                      color: CustomColors.textColor,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -513,7 +562,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         title: const Text(
                           "個人等級排行榜",
                           style: TextStyle(
-                            color: Color(0xff4b4370),
+                            color: CustomColors.textColor,
                             fontWeight: FontWeight.bold,
                             fontSize: 22.0,
                           ),
@@ -528,9 +577,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             [Color(0xfff6cdb7)],
                             [Color(0xffd4d6fc)],
                           ],
-                          activeFgColor: const Color(0xff4b4370),
+                          activeFgColor: CustomColors.textColor,
                           inactiveBgColor: const Color(0xfffdfdf5),
-                          inactiveFgColor: const Color(0xff4b4370),
+                          inactiveFgColor: CustomColors.textColor,
                           totalSwitches: 2,
                           onToggle: (index) {
                             personalRank = index!;
@@ -562,7 +611,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -579,7 +628,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getPersonalRankList()[index],
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -617,7 +666,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -634,7 +683,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getPersonalRankList()[index],
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -699,8 +748,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
-                    color: const Color(0xfffdeed9),
-                    border: Border.all(color: const Color(0xffffeed9)),
+                    color: CustomColors.containerColor,
+                    border: Border.all(color: CustomColors.containerColor),
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Column(
@@ -709,7 +758,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         title: const Text(
                           "角色等級排行榜",
                           style: TextStyle(
-                            color: Color(0xff4b4370),
+                            color: CustomColors.textColor,
                             fontWeight: FontWeight.bold,
                             fontSize: 22.0,
                           ),
@@ -724,9 +773,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             [Color(0xfff6cdb7)],
                             [Color(0xffd4d6fc)],
                           ],
-                          activeFgColor: const Color(0xff4b4370),
+                          activeFgColor: CustomColors.textColor,
                           inactiveBgColor: const Color(0xfffdfdf5),
-                          inactiveFgColor: const Color(0xff4b4370),
+                          inactiveFgColor: CustomColors.textColor,
                           totalSwitches: 2,
                           onToggle: (index) {
                             roleRank = index!;
@@ -758,7 +807,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -775,7 +824,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getRoleRankList()[index],
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -813,7 +862,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -830,7 +879,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getRoleRankList()[index],
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -854,8 +903,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
-                    color: const Color(0xfffdeed9),
-                    border: Border.all(color: const Color(0xffffeed9)),
+                    color: CustomColors.containerColor,
+                    border: Border.all(color: CustomColors.containerColor),
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Column(
@@ -864,7 +913,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         title: const Text(
                           "運動寶物排行榜",
                           style: TextStyle(
-                            color: Color(0xff4b4370),
+                            color: CustomColors.textColor,
                             fontWeight: FontWeight.bold,
                             fontSize: 22.0,
                           ),
@@ -879,9 +928,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             [Color(0xfff6cdb7)],
                             [Color(0xffd4d6fc)],
                           ],
-                          activeFgColor: const Color(0xff4b4370),
+                          activeFgColor: CustomColors.textColor,
                           inactiveBgColor: const Color(0xfffdfdf5),
-                          inactiveFgColor: const Color(0xff4b4370),
+                          inactiveFgColor: CustomColors.textColor,
                           totalSwitches: 2,
                           onToggle: (index) {
                             exerciseRank = index!;
@@ -913,7 +962,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -930,7 +979,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getExerciseRankList()[index],
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -968,7 +1017,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -985,7 +1034,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getExerciseRankList()[index],
                                           style: const TextStyle(
-                                            color: Color(0xff4b3d70),
+                                            color: CustomColors.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -1009,8 +1058,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
-                    color: const Color(0xfffdeed9),
-                    border: Border.all(color: const Color(0xffffeed9)),
+                    color: CustomColors.containerColor,
+                    border: Border.all(color: CustomColors.containerColor),
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Column(children: [
@@ -1018,7 +1067,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                       title: const Text(
                         "冥想寶物排行榜",
                         style: TextStyle(
-                          color: Color(0xff4b4370),
+                          color: CustomColors.textColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 22.0,
                         ),
@@ -1033,9 +1082,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           [Color(0xfff6cdb7)],
                           [Color(0xffd4d6fc)],
                         ],
-                        activeFgColor: const Color(0xff4b4370),
+                        activeFgColor: CustomColors.textColor,
                         inactiveBgColor: const Color(0xfffdfdf5),
-                        inactiveFgColor: const Color(0xff4b4370),
+                        inactiveFgColor: CustomColors.textColor,
                         totalSwitches: 2,
                         onToggle: (index) {
                           meditationRank = index!;
@@ -1066,7 +1115,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                       Text(
                                         '$rank',
                                         style: const TextStyle(
-                                          color: Color(0xff4b3d70),
+                                          color: CustomColors.textColor,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -1083,7 +1132,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                       Text(
                                         getMeditationRankList()[index],
                                         style: const TextStyle(
-                                          color: Color(0xff4b3d70),
+                                          color: CustomColors.textColor,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -1120,7 +1169,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                       Text(
                                         '$rank',
                                         style: const TextStyle(
-                                          color: Color(0xff4b3d70),
+                                          color: CustomColors.textColor,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -1137,7 +1186,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                       Text(
                                         getMeditationRankList()[index],
                                         style: const TextStyle(
-                                          color: Color(0xff4b3d70),
+                                          color: CustomColors.textColor,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -1161,8 +1210,224 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   }
 }
 
-
 //團隊挑戰賽
+final List<Widget> competitionList = [
+  Container(
+    decoration: BoxDecoration(
+      color: CustomColors.containerColor,
+      borderRadius: BorderRadius.circular(16.0),
+    ),
+    child: const Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text('初級(Lv1 可選擇)',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+        ),
+        SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Text('七日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+        ),
+      ],
+    ),
+  ),
+  Container(
+    decoration: BoxDecoration(
+      color: CustomColors.containerColor,
+      borderRadius: BorderRadius.circular(16.0),
+    ),
+    child: const Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text('入門(Lv5 可選擇)',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+        ),
+        SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Text('十四日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+        ),
+      ],
+    ),
+  ),
+  Container(
+    decoration: BoxDecoration(
+      color: CustomColors.containerColor,
+      borderRadius: BorderRadius.circular(16.0),
+    ),
+    child: const Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text('中級(Lv15 可選擇)',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+        ),
+        SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Text('二十八日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+        ),
+      ],
+    ),
+  ),
+  Container(
+    decoration: BoxDecoration(
+      color: CustomColors.containerColor,
+      borderRadius: BorderRadius.circular(16.0),
+    ),
+    child: const Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text('進階(Lv20 可選擇)',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+        ),
+        SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Text('三十二日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+        ),
+      ],
+    ),
+  ),
+  Container(
+    decoration: BoxDecoration(
+      color: CustomColors.containerColor,
+      borderRadius: BorderRadius.circular(16.0),
+    ),
+    child: const Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text('高級(Lv30 可選擇)',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+        ),
+        SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Text('六十四日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+        ),
+      ],
+    ),
+  ),
+];
+
+final List<Widget> teamworkList = [
+  Container(
+    decoration: BoxDecoration(
+      color: CustomColors.containerColor,
+      borderRadius: BorderRadius.circular(16.0),
+    ),
+    child: const Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text('初級(Lv1 可選擇)',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+        ),
+        SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Text('七日內所有成員進行運動或冥想習慣並達到完成度80%，隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+        ),
+      ],
+    ),
+  ),
+  Container(
+    decoration: BoxDecoration(
+      color: CustomColors.containerColor,
+      borderRadius: BorderRadius.circular(16.0),
+    ),
+    child: const Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text('入門(Lv5 可選擇)',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+        ),
+        SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Text('十四日內所有成員進行運動或冥想習慣並達到完成度80%，隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+        ),
+      ],
+    ),
+  ),
+  Container(
+    decoration: BoxDecoration(
+      color: CustomColors.containerColor,
+      borderRadius: BorderRadius.circular(16.0),
+    ),
+    child: const Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text('中級(Lv15 可選擇)',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+        ),
+        SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Text('十四日內所有成員進行運動或冥想習慣並達到完成度90%，隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+        ),
+      ],
+    ),
+  ),
+  Container(
+    decoration: BoxDecoration(
+      color: CustomColors.containerColor,
+      borderRadius: BorderRadius.circular(16.0),
+    ),
+    child: const Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text('進階(Lv20 可選擇)',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+        ),
+        SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Text('二十八日內所有成員進行運動或冥想習慣並達到完成度90%，隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+        ),
+      ],
+    ),
+  ),
+  Container(
+    decoration: BoxDecoration(
+      color: CustomColors.containerColor,
+      borderRadius: BorderRadius.circular(16.0),
+    ),
+    child: const Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text('高級(Lv30 可選擇)',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+        ),
+        SizedBox(height: 10),
+        Padding(
+          padding: EdgeInsets.only(left: 20, right: 20),
+          child: Text('二十八日內所有成員進行運動或冥想習慣並達到完成度95%，隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+        ),
+      ],
+    ),
+  ),
+];
+
+
 class TeamChallengePage extends StatefulWidget {
   const TeamChallengePage({super.key});
 
@@ -1170,80 +1435,186 @@ class TeamChallengePage extends StatefulWidget {
   _TeamChallengePageState createState() => _TeamChallengePageState();
 }
 
-var cardAspectRatio = 12.0 / 16.0;
-var widgetAspectRatio = cardAspectRatio * 1.2;
-
 class _TeamChallengePageState extends State<TeamChallengePage> {
-  var currentPage = title.length - 1.0;
+
+  final CarouselController _competitionController = CarouselController();
+  final CarouselController _teamworkController = CarouselController();
 
   @override
   Widget build(BuildContext context) {
-    PageController controller = PageController(initialPage: title.length - 1);
-    controller.addListener(() {
-      setState(() {
-        currentPage = controller.page!;
-      });
-    });
+    return SingleChildScrollView(
+        child: Column(children: [
+          const SizedBox(height: 10),
+          const Text('團隊競爭賽',
+              style: TextStyle(
+                color: CustomColors.textColor,
+                fontSize: 22.0,
+                fontWeight: FontWeight.bold,
+              )),
+          const SizedBox(height: 10),
+          CarouselSlider(
+            items: competitionList,
+            carouselController: _competitionController,
+            options: CarouselOptions(
+              enlargeCenterPage: true,
+              aspectRatio: 2.0,
+              onPageChanged: (index, reason) {
+                setState(() {
+                });
+              },
+            ),
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              // 在这里添加你的按钮点击事件
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: CustomColors.backgroundColor,
+            ),
+            child: const Text('確定加入',
+                style: TextStyle(
+                  color: CustomColors.textColor,
+                  fontSize: 14.0,
+                )
+            ),
+          ),
+          const SizedBox(height: 20),
+          const Text('團隊合作賽',
+              style: TextStyle(
+                color: CustomColors.textColor,
+                fontSize: 22.0,
+                fontWeight: FontWeight.bold,
+              )),
+          const SizedBox(height: 10),
+          CarouselSlider(
+            items: teamworkList,
+            carouselController: _teamworkController,
+            options: CarouselOptions(
+              enlargeCenterPage: true,
+              aspectRatio: 2.0,
+              onPageChanged: (index, reason) {
+                setState(() {
+                });
+              },
+            ),
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('團隊合作賽',
+                        style: TextStyle(
+                          color: CustomColors.textColor,
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold,
+                        )
+                    ),
+                    content: Text('請選擇加入已存在房間或建立新房間',
+                        style: TextStyle(
+                          color: CustomColors.textColor,
+                          fontSize: 16.0,
+                        )
+                    ),
+                    actions: <Widget>[
+                      Column(
+                        children: [
+                          ElevatedButton(
+                            child: Text('輸入房間號',
+                                style: TextStyle(
+                                  color: CustomColors.textColor,
+                                  fontSize: 14.0,
+                                )
+                            ),
+                            onPressed: () {
+                              setState(() {
 
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: CustomColors.backgroundColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      ElevatedButton(
+                        child: Text('建立新房間',
+                            style: TextStyle(
+                              color: CustomColors.textColor,
+                              fontSize: 14.0,
+                            )
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => TeamWorkPage()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: CustomColors.backgroundColor,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: const Text('確定加入',
+                style: TextStyle(
+                  color: CustomColors.textColor,
+                  fontSize: 14.0,
+                )
+            ),
+          ),
+        ]),
+      );
+  }
+}
+
+//合作賽樣貌
+class TeamWorkPage extends StatefulWidget {
+  const TeamWorkPage({super.key});
+
+  @override
+  _TeamWorkPageState createState() => _TeamWorkPageState();
+}
+
+
+class _TeamWorkPageState extends State<TeamWorkPage> {
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xfffdfdf5),
-      child: Scaffold(
+      color: const Color(0xfffdfdfd),
+      child: const Scaffold(
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0, bottom: 8.0),
+              Padding(
+                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
-                  children: <Widget>[
-                    Text("團隊挑戰賽",
+                  children: [
+                    Text("團隊合作賽",
                         style: TextStyle(
-                          color: Color(0xff4b4370),
+                          color: CustomColors.textColor,
                           fontSize: 30.0,
                           letterSpacing: 1.0,
-                        )),
+                        )
+                    ),
                   ],
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 30.0, top: 10.0),
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xff4b4370),
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 22.0, vertical: 6.0),
-                          child: Text("模式選擇",
-                              style: TextStyle(color: Color(0xfffdfdf5))),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 15.0,
-                    ),
-                    const Text("競爭模式5+  合作模式5+",
-                        style: TextStyle(color: Color(0xff4b4370)))
-                  ],
+                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                child: Text('7天內所有成員進行運動與冥想習慣並達到完成度80%，'
+                    '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+                    style: TextStyle(
+                      color: CustomColors.textColor,
+                      fontSize: 22.0,
+                    )
                 ),
-              ),
-              Stack(
-                children: <Widget>[
-                  CardScrollWidget(currentPage),
-                  Positioned.fill(
-                    child: PageView.builder(
-                      itemCount: title.length,
-                      controller: controller,
-                      reverse: true,
-                      itemBuilder: (context, index) {
-                        return Container();
-                      },
-                    ),
-                  )
-                ],
               ),
             ],
           ),
@@ -1252,231 +1623,3 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
     );
   }
 }
-
-class CardScrollWidget extends StatelessWidget {
-  var currentPage;
-  var padding = 25.0;
-  var verticalInset = 25.0;
-
-  CardScrollWidget(this.currentPage, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: widgetAspectRatio,
-      child: LayoutBuilder(builder: (context, contraints) {
-        var width = contraints.maxWidth;
-        var height = contraints.maxHeight;
-
-        var safeWidth = width - 2 * padding;
-        var safeHeight = height - 2 * padding;
-
-        var heightOfPrimaryCard = safeHeight;
-        var widthOfPrimaryCard = heightOfPrimaryCard * cardAspectRatio;
-
-        var primaryCardLeft = safeWidth - widthOfPrimaryCard;
-        var horizontalInset = primaryCardLeft / 2;
-
-        List<Widget> cardList = <Widget>[];
-
-        for (var i = 0; i < title.length; i++) {
-          var delta = i - currentPage;
-          bool isOnRight = delta > 0;
-
-          var start = padding +
-              max(primaryCardLeft - horizontalInset * -delta * (isOnRight ? 15 : 1), 0.0);
-
-          var cardItem = Positioned.directional(
-              top: padding + verticalInset * max(-delta, 0.0),
-              bottom: padding + verticalInset * max(-delta, 0.0),
-              start: start,
-              textDirection: TextDirection.rtl,
-              child: Visibility(
-                visible: delta.abs() <= 1,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.0),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        color: Color(0xfffdeed9)),
-                    child: AspectRatio(
-                      aspectRatio: cardAspectRatio,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10, top: 20),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 16.0, top: 16.0),
-                                  child: Text(title[i],
-                                      style: const TextStyle(
-                                          color: Color(0xff4b4370),
-                                          fontSize: 25.0)),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  child: Text(subtitle[i],
-                                      style: const TextStyle(
-                                        color: Color(0xff4b4370),
-                                        fontSize: 18.0,)),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 32.0, top: 16.0, right: 32.0),
-                                  child: Text(content[i],
-                                      style: const TextStyle(
-                                        color: Color(0xff4b4370),
-                                        fontSize: 18.0,)),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 80.0, top: 16.0),
-                                  child: Row(
-                                    children: [
-                                      SizedBox.fromSize(
-                                        size: const Size(56, 56),
-                                        child: ClipOval(
-                                          child: Material(
-                                            color: const Color(0xfffdfdf5),
-                                            child: InkWell(
-                                              splashColor: const Color(0xff4b3d70),
-                                              onTap: () {},
-                                              child: const Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.fitness_center,
-                                                    color: Color(0xff4b3d70),
-                                                  ),
-                                                  Text('運動',
-                                                    style: TextStyle(
-                                                      color: Color(0xff4b3d70),
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      SizedBox.fromSize(
-                                        size: const Size(56, 56),
-                                        child: ClipOval(
-                                          child: Material(
-                                            color: const Color(0xfffdfdf5),
-                                            child: InkWell(
-                                              splashColor: const Color(0xff4b3d70),
-                                              onTap: () {
-
-                                              },
-                                              child: const Column(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.self_improvement,
-                                                    color: Color(0xff4b3d70),
-                                                  ),
-                                                  Text('冥想',
-                                                    style: TextStyle(
-                                                      color: Color(0xff4b3d70),
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                /*const SizedBox(height: 10.0,),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 12.0, bottom: 12.0),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 6.0),
-                                decoration: BoxDecoration(
-                                    color: Color(0xfffdfdf5),
-                                    borderRadius: BorderRadius.circular(20.0)),
-                                child: const Text("查看更多",
-                                    style: TextStyle(color: Color(0xff4b4370))),
-                              ),
-                            )*/
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              )
-          );
-          cardList.add(cardItem);
-        }
-        return Stack(
-          children: cardList,
-        );
-      }),
-    );
-  }
-}
-
-List<String> title = [
-  "團隊合作賽 - 高級",
-  "團隊合作賽 - 進階",
-  "團隊合作賽 - 中級",
-  "團隊合作賽 - 入門",
-  "團隊合作賽 - 初級",
-  "團隊競爭賽 - 高級",
-  "團隊競爭賽 - 進階",
-  "團隊競爭賽 - 中級",
-  "團隊競爭賽 - 入門",
-  "團隊競爭賽 - 初級",
-];
-
-List<String> subtitle = [
-  "(Lv30 以上可選擇)",
-  "(Lv20 以上可選擇)",
-  "(Lv10 以上可選擇)",
-  "(Lv5 以上可選擇)",
-  "(Lv1 以上可選擇)",
-  "(Lv30 以上可選擇)",
-  "(Lv20 以上可選擇)",
-  "(Lv10 以上可選擇)",
-  "(Lv5 以上可選擇)",
-  "(Lv1 以上可選擇)",
-];
-
-List<String> content = [
-  '32天內所有成員進行運動與冥想習慣並達到完成度90%，'
-      '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
-  '28天內所有成員進行運動與冥想習慣並達到完成度90%，'
-      '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
-  '14天內所有成員進行運動與冥想習慣並達到完成度90%，'
-      '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
-  '14天內所有成員進行運動與冥想習慣並達到完成度80%，'
-      '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
-  '7天內所有成員進行運動與冥想習慣並達到完成度80%，'
-      '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
-  '32天內所有成員進行運動與冥想習慣。'
-      '兩隊中完成度最高的隊伍取得勝利！'
-      '勝利隊伍將獲得經驗值與等級提升的獎勵。',
-  '28天內所有成員進行運動與冥想習慣。'
-      '兩隊中完成度最高的隊伍取得勝利！'
-      '勝利隊伍將獲得經驗值與等級提升的獎勵。',
-  '21天內所有成員進行運動與冥想習慣。'
-      '兩隊中完成度最高的隊伍取得勝利！'
-      '勝利隊伍將獲得經驗值與等級提升的獎勵。',
-  '14天內所有成員進行運動與冥想習慣。'
-      '兩隊中完成度最高的隊伍取得勝利！'
-      '勝利隊伍將獲得經驗值與等級提升的獎勵。',
-  '7天內所有成員進行運動與冥想習慣。'
-      '兩隊中完成度最高的隊伍取得勝利！'
-      '勝利隊伍將獲得經驗值與等級提升的獎勵。',
-];
