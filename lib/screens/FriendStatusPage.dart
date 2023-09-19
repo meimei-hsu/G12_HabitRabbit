@@ -42,7 +42,7 @@ class _FriendStatusPageState extends State<FriendStatusPage> {
                     SizedBox(
                       width: 100,
                       height: 100,
-                      child: Image.asset('assets/images/Friend_B.png'),
+                      child: Image.asset('assets/images/Dog_1.png'),
                     ),
                     const SizedBox(width: 15),
                     const Text(

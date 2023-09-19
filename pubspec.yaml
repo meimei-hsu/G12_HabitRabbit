@@ -133,13 +133,23 @@ flutter:
     - assets/images/Exercise_1.jpg
     - assets/images/Meditation.jpg
     - assets/images/Meditation_1.jpg
-    - assets/images/image.png
-    - assets/images/Friend_A.png
-    - assets/images/Friend_B.png
+
+   # 八種人格角色
+    - assets/images/Rabbit_1.png
     - assets/images/Rabbit_2.png
     - assets/images/Dog_1.png
+    - assets/images/Dog_2.png
     - assets/images/Fox_1.png
-    - assets/images/Rabbit_2.jpg
+    - assets/images/Fox_1.png
+    - assets/images/Lion_1.png
+    - assets/images/Lion_2.png
+    - assets/images/Sheep_1.png
+    - assets/images/Sheep_2.png
+    - assets/images/Sloth_1.png
+    - assets/images/Sloth_1.png
+    - assets/images/Mouse_1.png
+    - assets/images/Mouse_2.png
+
     # To add assets to your application, add an assets section, like this:
     # assets:
     #   - images/a_dot_burr.jpeg

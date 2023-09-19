@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:g12/screens/FriendStatusPage.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class CustomColors {
@@ -19,7 +20,8 @@ class CommunityPage extends StatefulWidget {
   _CommunityPageState createState() => _CommunityPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage> with TickerProviderStateMixin {
+class _CommunityPageState extends State<CommunityPage>
+    with TickerProviderStateMixin {
   late TabController _controller;
   int _currentIndex = 0;
 
@@ -198,7 +200,7 @@ class _FriendListPageState extends State<FriendListPage> {
           ]),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 30.0, top:10, right: 15.0),
+          padding: const EdgeInsets.only(left: 30.0, top: 10, right: 15.0),
           child: Row(
             children: [
               Expanded(
@@ -269,10 +271,6 @@ class _FriendListPageState extends State<FriendListPage> {
                       decoration: BoxDecoration(
                         color: CustomColors.containerColor,
                         borderRadius: BorderRadius.circular(50),
-                        /*border: Border.all(
-                          color: CustomColors.borderColor,
-                          width: 1.0,
-                        ),*/
                       ),
                       child: Row(
                         children: [
@@ -282,7 +280,7 @@ class _FriendListPageState extends State<FriendListPage> {
                               radius: 25,
                               backgroundColor: CustomColors.backgroundColor,
                               backgroundImage:
-                                  AssetImage('assets/images/Friend_B.png'),
+                                  AssetImage('assets/images/Dog_1.png'),
                             ),
                           ),
                           const SizedBox(width: 15),
@@ -342,7 +340,7 @@ class _FriendListPageState extends State<FriendListPage> {
                 const CircleAvatar(
                   backgroundColor: CustomColors.backgroundColor,
                   radius: 45,
-                  backgroundImage: AssetImage('assets/images/Friend_A.png'),
+                  backgroundImage: AssetImage('assets/images/Fox_1.png'),
                 ),
                 const SizedBox(height: 15),
                 const Text(
@@ -620,8 +618,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
+                                            backgroundColor: CustomColors.backgroundColor,
                                             backgroundImage: AssetImage(
-                                                'assets/images/Friend_B.png'),
+                                                'assets/images/Dog_1.png'),
                                           ),
                                         ),
                                         const SizedBox(width: 15),
@@ -675,8 +674,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
+                                            backgroundColor: CustomColors.backgroundColor,
                                             backgroundImage: AssetImage(
-                                                'assets/images/Friend_B.png'),
+                                                'assets/images/Dog_1.png'),
                                           ),
                                         ),
                                         const SizedBox(width: 15),
@@ -700,47 +700,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                 ),
                               )
                       ]),
-                      /*//若使用者的排名不在前十才須被列出
-                          const SizedBox(height: 20),
-                          Container(
-                            height: 30,
-                            width: 285,
-                            decoration: BoxDecoration(
-                              color: Color(0xffffffff),
-                              border: Border.all(
-                                color: Color(0xff4b3d70),
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                            ),
-                            child: const Row(
-                                children: [
-                                  SizedBox(width: 15),
-                                  Text('23', // TODO: 使用者的真實排名
-                                    style: TextStyle(
-                                      color: Color(0xff4b3d70),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 16.0),
-                                    child: CircleAvatar(
-                                      radius: 15,
-                                      backgroundImage:
-                                      AssetImage('assets/images/image.png'),
-                                    ),
-                                  ),
-                                  SizedBox(width: 15),
-                                  Text('Mary', // TODO: 使用者暱稱
-                                    style: TextStyle(
-                                      color: Color(0xff4b3d70),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ]),
-                          ),*/
                     ],
                   )),
               const SizedBox(height: 15),
@@ -789,11 +748,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getRoleRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
+                                  itemBuilder: (BuildContext context, int index) {
                                     final int rank = index + 1;
 
                                     return Container(
@@ -816,8 +773,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
+                                            backgroundColor: CustomColors.backgroundColor,
                                             backgroundImage: AssetImage(
-                                                'assets/images/Friend_B.png'),
+                                                'assets/images/Dog_1.png'),
                                           ),
                                         ),
                                         const SizedBox(width: 15),
@@ -871,8 +829,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
+                                            backgroundColor: CustomColors.backgroundColor,
                                             backgroundImage: AssetImage(
-                                                'assets/images/Friend_B.png'),
+                                                'assets/images/Dog_1.png'),
                                           ),
                                         ),
                                         const SizedBox(width: 15),
@@ -944,8 +903,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getExerciseRankList().length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
@@ -971,8 +929,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
+                                            backgroundColor: CustomColors.backgroundColor,
                                             backgroundImage: AssetImage(
-                                                'assets/images/Friend_B.png'),
+                                                'assets/images/Dog_1.png'),
                                           ),
                                         ),
                                         const SizedBox(width: 15),
@@ -987,11 +946,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                       ]),
                                     );
                                   },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const SizedBox(
-                                      height: 5,
-                                    );
+                                  separatorBuilder: (BuildContext context, int index) {
+                                    return const SizedBox(height: 5);
                                   },
                                 ),
                               )
@@ -999,11 +955,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getExerciseRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
+                                  itemBuilder: (BuildContext context, int index) {
                                     final int rank = index + 1;
 
                                     return Container(
@@ -1026,8 +980,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
+                                            backgroundColor: CustomColors.backgroundColor,
                                             backgroundImage: AssetImage(
-                                                'assets/images/Friend_B.png'),
+                                                'assets/images/Dog_1.png'),
                                           ),
                                         ),
                                         const SizedBox(width: 15),
@@ -1098,8 +1053,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                               child: ListView.separated(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(
-                                    left: 40.0, top: 10.0, right: 40.0),
+                                padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
                                 itemCount: getMeditationRankList().length,
                                 itemBuilder: (BuildContext context, int index) {
                                   final int rank = index + 1;
@@ -1124,8 +1078,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         padding: EdgeInsets.only(left: 16.0),
                                         child: CircleAvatar(
                                           radius: 15,
+                                          backgroundColor: CustomColors.backgroundColor,
                                           backgroundImage: AssetImage(
-                                              'assets/images/Friend_B.png'),
+                                              'assets/images/Dog_1.png'),
                                         ),
                                       ),
                                       const SizedBox(width: 15),
@@ -1178,8 +1133,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         padding: EdgeInsets.only(left: 16.0),
                                         child: CircleAvatar(
                                           radius: 15,
-                                          backgroundImage: AssetImage(
-                                              'assets/images/Friend_B.png'),
+                                          backgroundColor: CustomColors.backgroundColor,
+                                          backgroundImage: AssetImage('assets/images/Dog_1.png'),
                                         ),
                                       ),
                                       const SizedBox(width: 15),
@@ -1427,7 +1382,6 @@ final List<Widget> teamworkList = [
   ),
 ];
 
-
 class TeamChallengePage extends StatefulWidget {
   const TeamChallengePage({super.key});
 
@@ -1436,142 +1390,389 @@ class TeamChallengePage extends StatefulWidget {
 }
 
 class _TeamChallengePageState extends State<TeamChallengePage> {
-
   final CarouselController _competitionController = CarouselController();
   final CarouselController _teamworkController = CarouselController();
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        child: Column(children: [
-          const SizedBox(height: 10),
-          const Text('團隊競爭賽',
-              style: TextStyle(
-                color: CustomColors.textColor,
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
-              )),
-          const SizedBox(height: 10),
-          CarouselSlider(
-            items: competitionList,
-            carouselController: _competitionController,
-            options: CarouselOptions(
-              enlargeCenterPage: true,
-              aspectRatio: 2.0,
-              onPageChanged: (index, reason) {
-                setState(() {
-                });
-              },
-            ),
-          ),
-          const SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              // 在这里添加你的按钮点击事件
+      child: Column(children: [
+        const SizedBox(height: 10),
+        const Text('團隊競爭賽',
+            style: TextStyle(
+              color: CustomColors.textColor,
+              fontSize: 22.0,
+              fontWeight: FontWeight.bold,
+            )),
+        const SizedBox(height: 10),
+        CarouselSlider(
+          items: competitionList,
+          carouselController: _competitionController,
+          options: CarouselOptions(
+            enlargeCenterPage: true,
+            aspectRatio: 2.0,
+            onPageChanged: (index, reason) {
+              setState(() {});
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: CustomColors.backgroundColor,
-            ),
-            child: const Text('確定加入',
-                style: TextStyle(
-                  color: CustomColors.textColor,
-                  fontSize: 14.0,
-                )
-            ),
           ),
-          const SizedBox(height: 20),
-          const Text('團隊合作賽',
-              style: TextStyle(
-                color: CustomColors.textColor,
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
-              )),
-          const SizedBox(height: 10),
-          CarouselSlider(
-            items: teamworkList,
-            carouselController: _teamworkController,
-            options: CarouselOptions(
-              enlargeCenterPage: true,
-              aspectRatio: 2.0,
-              onPageChanged: (index, reason) {
-                setState(() {
-                });
-              },
-            ),
-          ),
-          const SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('團隊合作賽',
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                    backgroundColor: CustomColors.backgroundColor,
+                    title: const Text('團隊競爭賽',
                         style: TextStyle(
                           color: CustomColors.textColor,
                           fontSize: 22.0,
                           fontWeight: FontWeight.bold,
-                        )
-                    ),
-                    content: Text('請選擇加入已存在房間或建立新房間',
+                        )),
+                    content: const Text('PLEASE CHOOSE!',
                         style: TextStyle(
                           color: CustomColors.textColor,
-                          fontSize: 16.0,
-                        )
-                    ),
-                    actions: <Widget>[
-                      Column(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    actions: <Widget>[Column(children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => const TeamCompetitionPage()),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: CustomColors.backgroundColor,
+                          ),
+                          child: const Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  'Team A',
+                                  style: TextStyle(
+                                    color: CustomColors.textColor,
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  '目前人數：',
+                                  style: TextStyle(
+                                    color: CustomColors.textColor,
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => const TeamCompetitionPage()),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: CustomColors.backgroundColor,
+                          ),
+                          child: const Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  'Team B',
+                                  style: TextStyle(
+                                    color: CustomColors.textColor,
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  '目前人數：',
+                                  style: TextStyle(
+                                    color: CustomColors.textColor,
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ])
+                    ]);
+              },
+            );
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: CustomColors.backgroundColor,
+          ),
+          child: const Text('確定加入',
+              style: TextStyle(
+                color: CustomColors.textColor,
+                fontSize: 14.0,
+              )),
+        ),
+        const SizedBox(height: 20),
+        const Text('團隊合作賽',
+            style: TextStyle(
+              color: CustomColors.textColor,
+              fontSize: 22.0,
+              fontWeight: FontWeight.bold,
+            )),
+        const SizedBox(height: 10),
+        CarouselSlider(
+          items: teamworkList,
+          carouselController: _teamworkController,
+          options: CarouselOptions(
+            enlargeCenterPage: true,
+            aspectRatio: 2.0,
+            onPageChanged: (index, reason) {
+              setState(() {});
+            },
+          ),
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: () {
+            bool showTextField = false;
+
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    return AlertDialog(
+                      backgroundColor: CustomColors.backgroundColor,
+                      title: const Text(
+                        '團隊合作賽',
+                        style: TextStyle(
+                          color: CustomColors.textColor,
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          ElevatedButton(
-                            child: Text('輸入房間號',
-                                style: TextStyle(
-                                  color: CustomColors.textColor,
-                                  fontSize: 14.0,
-                                )
+                          const Text(
+                            '選擇加入存在房間或建立新房間',
+                            style: TextStyle(
+                              color: CustomColors.textColor,
+                              fontSize: 18.0,
                             ),
+                          ),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
                             onPressed: () {
                               setState(() {
-
+                                showTextField = !showTextField; // 點擊後切換TextField的顯示狀態
                               });
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: CustomColors.backgroundColor,
                             ),
+                            child: Text(
+                              showTextField ? '輸入房間號' : '輸入房間號',
+                              style: const TextStyle(
+                                color: CustomColors.textColor,
+                                fontSize: 14.0,
+                              ),
+                            ),
+                          ),
+                          if (showTextField)
+                            Row(
+                              children: [
+                                const Expanded(
+                                  child: SizedBox(
+                                    height: 40,
+                                    width: 150,
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        hintText: '輸入房號！',
+                                        contentPadding: EdgeInsets.all(5),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) => const TeamWorkPage(),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.check),
+                                ),
+                              ],
+                            ),
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => const TeamWorkPage(),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: CustomColors.backgroundColor,
+                            ),
+                            child: const Text(
+                              '建立新房間',
+                              style: TextStyle(
+                                color: CustomColors.textColor,
+                                fontSize: 14.0,
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                      ElevatedButton(
-                        child: Text('建立新房間',
-                            style: TextStyle(
-                              color: CustomColors.textColor,
-                              fontSize: 14.0,
-                            )
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) => TeamWorkPage()),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: CustomColors.backgroundColor,
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            child: const Text('確定加入',
-                style: TextStyle(
-                  color: CustomColors.textColor,
-                  fontSize: 14.0,
-                )
+                    );
+                  },
+                );
+              },
+            );
+          },
+          child: const Text(
+            '確定加入',
+            style: TextStyle(
+              color: CustomColors.textColor,
+              fontSize: 14.0,
             ),
           ),
-        ]),
-      );
+        ),
+      ]),
+    );
   }
 }
+
+//競爭賽樣貌
+class TeamCompetitionPage extends StatefulWidget {
+  const TeamCompetitionPage({super.key});
+
+  @override
+  _TeamCompetitionPageState createState() => _TeamCompetitionPageState();
+}
+
+class _TeamCompetitionPageState extends State<TeamCompetitionPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xfffdfdfd),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                child: Row(
+                  children: [
+                    Text("團隊競爭賽",
+                        style: TextStyle(
+                          color: CustomColors.textColor,
+                          fontSize: 30.0,
+                          letterSpacing: 1.0,
+                        )),
+                  ],
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                child: Text(
+                    '七日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！'
+                        '勝利隊伍將獲得經驗值與等級的提升。',
+                    style: TextStyle(
+                      color: CustomColors.textColor,
+                      fontSize: 22.0,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                child: Column(
+                  children: [
+                    ClipPath(
+                      clipper: TeamAClipper(),
+                      child: Container(
+                        height: 300,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          color: CustomColors.containerColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    ClipPath(
+                      clipper: TeamBClipper(),
+                      child: Container(
+                        height: 300,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          color: CustomColors.containerColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TeamAClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path clippedPath = Path();
+
+    clippedPath.moveTo(0, 0); // 開始於左上角
+    clippedPath.lineTo(size.width, 0); // 直線到右上角
+    clippedPath.lineTo(size.width, size.height); // 直線到底部中心
+    clippedPath.close(); // 連接左下角，完成三角形
+
+    return clippedPath;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
+  }
+}
+
+class TeamBClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path clippedPath = Path();
+
+    clippedPath.moveTo(0, 0);
+    clippedPath.lineTo(0, size.height);
+    clippedPath.lineTo(size.width, size.height);
+    clippedPath.close();
+
+    return clippedPath;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
+  }
+}
+
 
 //合作賽樣貌
 class TeamWorkPage extends StatefulWidget {
@@ -1581,18 +1782,17 @@ class TeamWorkPage extends StatefulWidget {
   _TeamWorkPageState createState() => _TeamWorkPageState();
 }
 
-
 class _TeamWorkPageState extends State<TeamWorkPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xfffdfdfd),
-      child: const Scaffold(
+      child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
                   children: [
@@ -1601,19 +1801,91 @@ class _TeamWorkPageState extends State<TeamWorkPage> {
                           color: CustomColors.textColor,
                           fontSize: 30.0,
                           letterSpacing: 1.0,
-                        )
+                        )),
+                  ],
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                child: Text(
+                    '7天內所有成員進行運動與冥想習慣並達到完成度80%，'
+                    '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
+                    style: TextStyle(
+                      color: CustomColors.textColor,
+                      fontSize: 22.0,
+                    )),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 250.0, right: 30.0, top: 30.0),
+                child: Container(
+                  width: 120,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: CustomColors.containerColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Text(
+                        '房間號：'
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: Image.asset('assets/images/Rabbit_2.png'),
+                    ),
+                    LinearPercentIndicator(
+                      width: 250,
+                      animation: true,
+                      lineHeight: 20.0,
+                      //TODO: 根據完成度改變 percent
+                      percent: 0.7,
+                      center: const Text("70%",
+                        style: TextStyle(
+                          color: CustomColors.textColor,
+                          fontSize: 10,
+                        ),
+                      ),
+                      barRadius: const Radius.circular(16),
+                      backgroundColor: Colors.black12,
+                      progressColor: CustomColors.containerColor,
                     ),
                   ],
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
-                child: Text('7天內所有成員進行運動與冥想習慣並達到完成度80%，'
-                    '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
-                    style: TextStyle(
-                      color: CustomColors.textColor,
-                      fontSize: 22.0,
-                    )
+                padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: Image.asset('assets/images/Mouse_1.png'),
+                    ),
+                    LinearPercentIndicator(
+                      width: 250,
+                      animation: true,
+                      lineHeight: 20.0,
+                      //TODO: 根據完成度改變 percent
+                      percent: 0.7,
+                      center: const Text("70%",
+                        style: TextStyle(
+                          color: CustomColors.textColor,
+                          fontSize: 10,
+                        ),
+                      ),
+                      barRadius: const Radius.circular(16),
+                      backgroundColor: Colors.black12,
+                      progressColor: CustomColors.containerColor,
+                    ),
+                  ],
                 ),
               ),
             ],
