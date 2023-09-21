@@ -5,6 +5,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 
+import 'package:g12/screens/PageMaterial.dart';
+
 import 'package:g12/services/Authentication.dart';
 import 'package:g12/services/PlanAlgo.dart';
 
@@ -31,14 +33,6 @@ OutlineInputBorder errorBorder = OutlineInputBorder(
     width: 3,
   ),
 );
-
-class CustomColors {
-  static const Color textColor = Color(0xFF2F4F4F);
-  static const Color iconColor = Color(0xFF2F4F4F);
-  static const Color backgroundColor = Color(0xFFFDFDFD);
-  static const Color borderColor = Color(0xFF2F4F4F);
-  static const Color containerColor = Color(0xFFFDEED9);
-}
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -112,8 +106,8 @@ class LoginFormState extends State<LoginForm> {
                       padding: const EdgeInsets.only(
                           right: 20, left: 20, top: 80, bottom: 110),
                       decoration: BoxDecoration(
-                          color: CustomColors.containerColor,
-                          border: Border.all(color: CustomColors.containerColor),
+                          color: ColorSet.backgroundColor,
+                          border: Border.all(color: ColorSet.backgroundColor),
                           borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(30),
                               topRight: Radius.circular(30))),
@@ -122,14 +116,14 @@ class LoginFormState extends State<LoginForm> {
                           // TODO: 標題內容 or 藝術字
                           const Text("一起",
                               style: TextStyle(
-                                  color: CustomColors.textColor,
+                                  color: ColorSet.textColor,
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
                                   height: 1)),
                           const SizedBox(height: 5),
                           const Text("養成習慣吧！",
                               style: TextStyle(
-                                  color: CustomColors.textColor,
+                                  color: ColorSet.textColor,
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
                                   height: 1)),
@@ -143,7 +137,7 @@ class LoginFormState extends State<LoginForm> {
                               isDense: true,
                               prefixIcon: const Icon(
                                 Icons.account_circle,
-                                color: CustomColors.iconColor,
+                                color: ColorSet.iconColor,
                               ),
                               //errorText: '',
                               labelText: '帳號',
@@ -152,7 +146,7 @@ class LoginFormState extends State<LoginForm> {
                               errorBorder: focusedAndErrorBorder,
                               focusedBorder: focusedAndErrorBorder,
                               focusedErrorBorder: focusedAndErrorBorder,
-                              labelStyle: const TextStyle(color: CustomColors.textColor),
+                              labelStyle: const TextStyle(color: ColorSet.textColor),
                               hintStyle: const TextStyle(color: Colors.grey),
                               errorStyle: const TextStyle(
                                   height: 1,
@@ -161,12 +155,12 @@ class LoginFormState extends State<LoginForm> {
                                   fontSize: 16),
                               errorMaxLines: 1,
                               filled: true,
-                              fillColor: CustomColors.backgroundColor,
+                              fillColor: ColorSet.backgroundColor,
                             ),
                             cursorColor: const Color(0xfff6cdb7),
                             style: const TextStyle(
                               fontSize: 18,
-                              color: CustomColors.textColor,
+                              color: ColorSet.textColor,
                             ),
                             keyboardType: TextInputType.text,
                           ),
@@ -180,7 +174,7 @@ class LoginFormState extends State<LoginForm> {
                               isDense: true,
                               prefixIcon: const Icon(
                                 Icons.lock_rounded,
-                                color: CustomColors.iconColor,
+                                color: ColorSet.iconColor,
                               ),
                               suffixIcon: IconButton(
                                 icon: Icon(
@@ -188,7 +182,7 @@ class LoginFormState extends State<LoginForm> {
                                   isPasswordVisible
                                       ? Icons.visibility_rounded
                                       : Icons.visibility_off_rounded,
-                                  color: CustomColors.iconColor,
+                                  color: ColorSet.iconColor,
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -203,7 +197,7 @@ class LoginFormState extends State<LoginForm> {
                               errorBorder: focusedAndErrorBorder,
                               focusedBorder: focusedAndErrorBorder,
                               focusedErrorBorder: focusedAndErrorBorder,
-                              labelStyle: const TextStyle(color: CustomColors.textColor),
+                              labelStyle: const TextStyle(color: ColorSet.textColor),
                               hintStyle: const TextStyle(color: Colors.grey),
                               errorStyle: const TextStyle(
                                   height: 1,
@@ -212,11 +206,11 @@ class LoginFormState extends State<LoginForm> {
                                   fontSize: 16),
                               errorMaxLines: 1,
                               filled: true,
-                              fillColor: CustomColors.backgroundColor,
+                              fillColor: ColorSet.backgroundColor,
                             ),
                             cursorColor: const Color(0xfff6cdb7),
                             style: const TextStyle(
-                                fontSize: 18, color: CustomColors.textColor),
+                                fontSize: 18, color: ColorSet.textColor),
                             keyboardType: TextInputType.text,
                             obscureText: !isPasswordVisible,
                           ),
@@ -225,7 +219,7 @@ class LoginFormState extends State<LoginForm> {
                               ? Center(
                                   child: LoadingAnimationWidget
                                       .horizontalRotatingDots(
-                                  color: CustomColors.backgroundColor,
+                                  color: ColorSet.backgroundColor,
                                   size: 100,
                                 ))
                               : ElevatedButton(
@@ -302,7 +296,7 @@ class LoginFormState extends State<LoginForm> {
                                         description: Text(
                                           errMsg,
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             letterSpacing: 0,
                                             fontWeight: FontWeight.bold,
@@ -323,7 +317,7 @@ class LoginFormState extends State<LoginForm> {
                                   child: const Text(
                                     "登入",
                                     style: TextStyle(
-                                      color: CustomColors.textColor,
+                                      color: ColorSet.textColor,
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -336,7 +330,7 @@ class LoginFormState extends State<LoginForm> {
                               const Text(
                                 "還沒有帳號？ ",
                                 style: TextStyle(
-                                  color: CustomColors.textColor,
+                                  color: ColorSet.textColor,
                                   fontSize: 18,
                                 ),
                               ),
@@ -411,8 +405,8 @@ class SignupFormState extends State<SignupForm> {
                               padding: const EdgeInsets.only(
                                   right: 20, left: 20, top: 50, bottom: 70),
                               decoration: BoxDecoration(
-                                  color: CustomColors.containerColor,
-                                  border: Border.all(color: CustomColors.containerColor),
+                                  color: ColorSet.backgroundColor,
+                                  border: Border.all(color: ColorSet.backgroundColor),
                                   borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(30),
                                       topRight: Radius.circular(30))),
@@ -421,14 +415,14 @@ class SignupFormState extends State<SignupForm> {
                                   // TODO: 標題內容 or 藝術字
                                   const Text("一起",
                                       style: TextStyle(
-                                          color: CustomColors.textColor,
+                                          color: ColorSet.textColor,
                                           fontSize: 25,
                                           fontWeight: FontWeight.bold,
                                           height: 1)),
                                   const SizedBox(height: 5),
                                   const Text("養成習慣吧！",
                                       style: TextStyle(
-                                          color: CustomColors.textColor,
+                                          color: ColorSet.textColor,
                                           fontSize: 25,
                                           fontWeight: FontWeight.bold,
                                           height: 1)),
@@ -442,7 +436,7 @@ class SignupFormState extends State<SignupForm> {
                                       isDense: true,
                                       prefixIcon: const Icon(
                                         Icons.abc_rounded,
-                                        color: CustomColors.iconColor,
+                                        color: ColorSet.iconColor,
                                       ),
                                       labelText: '暱稱',
                                       hintText: '請輸入暱稱',
@@ -452,7 +446,7 @@ class SignupFormState extends State<SignupForm> {
                                       focusedBorder: focusedAndErrorBorder,
                                       focusedErrorBorder: focusedAndErrorBorder,
                                       labelStyle: const TextStyle(
-                                          color: CustomColors.textColor),
+                                          color: ColorSet.textColor),
                                       hintStyle:
                                           const TextStyle(color: Colors.grey),
                                       errorStyle: const TextStyle(
@@ -462,11 +456,11 @@ class SignupFormState extends State<SignupForm> {
                                           fontSize: 16),
                                       errorMaxLines: 1,
                                       filled: true,
-                                      fillColor: CustomColors.backgroundColor,
+                                      fillColor: ColorSet.backgroundColor,
                                     ),
                                     cursorColor: const Color(0xfff6cdb7),
                                     style: const TextStyle(
-                                        fontSize: 18, color: CustomColors.textColor),
+                                        fontSize: 18, color: ColorSet.textColor),
                                     keyboardType: TextInputType.text,
                                     obscureText: false,
                                   ),
@@ -480,7 +474,7 @@ class SignupFormState extends State<SignupForm> {
                                       isDense: true,
                                       prefixIcon: const Icon(
                                         Icons.account_circle,
-                                        color: CustomColors.iconColor,
+                                        color: ColorSet.iconColor,
                                       ),
                                       labelText: '帳號',
                                       hintText: '請輸入電子郵件地址',
@@ -490,7 +484,7 @@ class SignupFormState extends State<SignupForm> {
                                       focusedBorder: focusedAndErrorBorder,
                                       focusedErrorBorder: focusedAndErrorBorder,
                                       labelStyle: const TextStyle(
-                                          color: CustomColors.textColor),
+                                          color: ColorSet.textColor),
                                       hintStyle:
                                           const TextStyle(color: Colors.grey),
                                       errorStyle: const TextStyle(
@@ -500,11 +494,11 @@ class SignupFormState extends State<SignupForm> {
                                           fontSize: 16),
                                       errorMaxLines: 1,
                                       filled: true,
-                                      fillColor: CustomColors.backgroundColor,
+                                      fillColor: ColorSet.backgroundColor,
                                     ),
                                     cursorColor: const Color(0xfff6cdb7),
                                     style: const TextStyle(
-                                        fontSize: 18, color: CustomColors.textColor),
+                                        fontSize: 18, color: ColorSet.textColor),
                                     keyboardType: TextInputType.text,
                                     obscureText: false,
                                   ),
@@ -518,7 +512,7 @@ class SignupFormState extends State<SignupForm> {
                                       isDense: true,
                                       prefixIcon: const Icon(
                                         Icons.lock,
-                                        color: CustomColors.iconColor,
+                                        color: ColorSet.iconColor,
                                       ),
                                       suffixIcon: IconButton(
                                         icon: Icon(
@@ -526,7 +520,7 @@ class SignupFormState extends State<SignupForm> {
                                           isPasswordVisible
                                               ? Icons.visibility_rounded
                                               : Icons.visibility_off_rounded,
-                                          color: CustomColors.iconColor,
+                                          color: ColorSet.iconColor,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -543,7 +537,7 @@ class SignupFormState extends State<SignupForm> {
                                       focusedBorder: focusedAndErrorBorder,
                                       focusedErrorBorder: focusedAndErrorBorder,
                                       labelStyle: const TextStyle(
-                                          color: CustomColors.textColor),
+                                          color: ColorSet.textColor),
                                       hintStyle:
                                           const TextStyle(color: Colors.grey),
                                       errorStyle: const TextStyle(
@@ -553,11 +547,11 @@ class SignupFormState extends State<SignupForm> {
                                           fontSize: 16),
                                       errorMaxLines: 1,
                                       filled: true,
-                                      fillColor: CustomColors.backgroundColor,
+                                      fillColor: ColorSet.backgroundColor,
                                     ),
                                     cursorColor: const Color(0xfff6cdb7),
                                     style: const TextStyle(
-                                        fontSize: 18, color: CustomColors.textColor),
+                                        fontSize: 18, color: ColorSet.textColor),
                                     keyboardType: TextInputType.text,
                                     obscureText: !isPasswordVisible,
                                   ),
@@ -566,7 +560,7 @@ class SignupFormState extends State<SignupForm> {
                                       ? Center(
                                           child: LoadingAnimationWidget
                                               .horizontalRotatingDots(
-                                          color: CustomColors.backgroundColor,
+                                          color: ColorSet.backgroundColor,
                                           size: 100,
                                         ))
                                       : ElevatedButton(
@@ -678,7 +672,7 @@ class SignupFormState extends State<SignupForm> {
                                                 description: Text(
                                                   errMsg,
                                                   style: const TextStyle(
-                                                    color: CustomColors.textColor,
+                                                    color: ColorSet.textColor,
                                                     fontSize: 16,
                                                     letterSpacing: 0,
                                                     fontWeight: FontWeight.bold,
@@ -701,7 +695,7 @@ class SignupFormState extends State<SignupForm> {
                                           child: const Text(
                                             "註冊",
                                             style: TextStyle(
-                                              color: CustomColors.textColor,
+                                              color: ColorSet.textColor,
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -714,7 +708,7 @@ class SignupFormState extends State<SignupForm> {
                                       const Text(
                                         "已經有帳號嗎？ ",
                                         style: TextStyle(
-                                          color: CustomColors.textColor,
+                                          color: ColorSet.textColor,
                                           fontSize: 18,
                                         ),
                                       ),

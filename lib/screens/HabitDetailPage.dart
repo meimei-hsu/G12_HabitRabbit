@@ -9,14 +9,6 @@ import 'package:g12/screens/PageMaterial.dart';
 import 'package:g12/services/Database.dart';
 import 'package:g12/services/PlanAlgo.dart';
 
-class CustomColors {
-  static const Color textColor = Color(0xFF2F4F4F);
-  static const Color iconColor = Color(0xFF2F4F4F);
-  static const Color backgroundColor = Color(0xFFFDFDFD);
-  static const Color borderColor = Color(0xFF2F4F4F);
-  static const Color containerColor = Color(0xFFFDEED9);
-}
-
 class ExerciseDetailPage extends StatefulWidget {
   final Map arguments;
 
@@ -53,7 +45,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
             contentPadding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
             title: Text(
               '${content[i][j]}',
-              style: const TextStyle(color: CustomColors.textColor, fontSize: 20),
+              style: const TextStyle(color: ColorSet.textColor, fontSize: 20),
             ),
             leading: ClipRRect(
                 borderRadius: BorderRadius.circular(7.5),
@@ -83,7 +75,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
         title: Text(
           '${title[i]}',
           style: const TextStyle(
-              color: CustomColors.textColor,
+              color: ColorSet.textColor,
               fontSize: 22,
               fontWeight: FontWeight.bold,
               height: 1),
@@ -110,12 +102,12 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: CustomColors.backgroundColor,
+        backgroundColor: ColorSet.backgroundColor,
         appBar: AppBar(
-          backgroundColor: CustomColors.backgroundColor,
+          backgroundColor: ColorSet.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_rounded,
-                color: CustomColors.iconColor),
+                color: ColorSet.iconColor),
             onPressed: () => Navigator.of(context).pop(),
           ),
           elevation: 0,
@@ -123,7 +115,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
             '運動計畫',
             textAlign: TextAlign.left,
             style: TextStyle(
-                color: CustomColors.textColor,
+                color: ColorSet.textColor,
                 fontSize: 28,
                 letterSpacing: 2,
                 fontWeight: FontWeight.bold,
@@ -137,8 +129,8 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     ),
                     offset: const Offset(0, 50),
                     icon: const Icon(Icons.more_vert_outlined,
-                        color: CustomColors.iconColor),
-                    color: CustomColors.backgroundColor,
+                        color: ColorSet.iconColor),
+                    color: ColorSet.backgroundColor,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(10.0),
@@ -152,14 +144,14 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.edit_calendar_outlined,
-                                color: CustomColors.iconColor),
+                                color: ColorSet.iconColor),
                             SizedBox(
                               width: 10,
                             ),
                             Text(
                               "修改日期",
                               style: TextStyle(
-                                  color: CustomColors.textColor, fontSize: 16),
+                                  color: ColorSet.textColor, fontSize: 16),
                             )
                           ],
                         ),
@@ -169,14 +161,14 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.cached, color: CustomColors.iconColor),
+                            Icon(Icons.cached, color: ColorSet.iconColor),
                             SizedBox(
                               width: 10,
                             ),
                             Text(
                               "重新計畫",
                               style: TextStyle(
-                                  color: CustomColors.textColor, fontSize: 16),
+                                  color: ColorSet.textColor, fontSize: 16),
                             )
                           ],
                         ),
@@ -217,7 +209,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                     topRight: Radius.circular(20),
                                     topLeft: Radius.circular(20)),
                               ),
-                              backgroundColor: CustomColors.containerColor,
+                              backgroundColor: ColorSet.backgroundColor,
                               context: context,
                               builder: (context) {
                                 return ChangeDayBottomSheet(arguments: {
@@ -280,8 +272,8 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     padding:
                         const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                     decoration: BoxDecoration(
-                        color: CustomColors.containerColor,
-                        border: Border.all(color: CustomColors.containerColor),
+                        color: ColorSet.backgroundColor,
+                        border: Border.all(color: ColorSet.backgroundColor),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(20))),
                     child: Column(
@@ -289,13 +281,13 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         LoadingAnimationWidget.horizontalRotatingDots(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           size: 100,
                         ),
                         const Text(
                           "重新載入計畫中...",
                           style: TextStyle(
-                            color: CustomColors.textColor,
+                            color: ColorSet.textColor,
                           ),
                         )
                       ],
@@ -317,8 +309,8 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     Container(
                       margin: const EdgeInsets.only(right: 20, left: 20),
                       decoration: BoxDecoration(
-                          color: CustomColors.containerColor,
-                          border: Border.all(color: CustomColors.containerColor),
+                          color: ColorSet.backgroundColor,
+                          border: Border.all(color: ColorSet.backgroundColor),
                           borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20))),
@@ -353,7 +345,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           Expanded(
                               child: ElevatedButton.icon(
                             icon: const Icon(Icons.play_arrow_rounded,
-                                color: CustomColors.iconColor),
+                                color: ColorSet.iconColor),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: (isToday)
                                   ? const Color(0xfff6cdb7)
@@ -398,7 +390,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             label: const Text(
                               "開始運動",
                               style: TextStyle(
-                                  color: CustomColors.textColor,
+                                  color: ColorSet.textColor,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -453,12 +445,12 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: CustomColors.backgroundColor,
+        backgroundColor: ColorSet.backgroundColor,
         appBar: AppBar(
-          backgroundColor: CustomColors.backgroundColor,
+          backgroundColor: ColorSet.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_rounded,
-                color: CustomColors.iconColor),
+                color: ColorSet.iconColor),
             onPressed: () => Navigator.of(context).pop(),
           ),
           elevation: 0,
@@ -466,7 +458,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
             '冥想計畫',
             textAlign: TextAlign.left,
             style: TextStyle(
-                color: CustomColors.textColor,
+                color: ColorSet.textColor,
                 fontSize: 28,
                 letterSpacing: 2,
                 fontWeight: FontWeight.bold,
@@ -480,8 +472,8 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                     ),
                     offset: const Offset(0, 50),
                     icon: const Icon(Icons.more_vert_outlined,
-                        color: CustomColors.iconColor),
-                    color: CustomColors.backgroundColor,
+                        color: ColorSet.iconColor),
+                    color: ColorSet.backgroundColor,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(
                         Radius.circular(10.0),
@@ -495,14 +487,14 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.edit_calendar_outlined,
-                                color: CustomColors.iconColor),
+                                color: ColorSet.iconColor),
                             SizedBox(
                               width: 10,
                             ),
                             Text(
                               "修改日期",
                               style: TextStyle(
-                                  color: CustomColors.textColor, fontSize: 16),
+                                  color: ColorSet.textColor, fontSize: 16),
                             )
                           ],
                         ),
@@ -512,14 +504,14 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.cached, color: CustomColors.iconColor),
+                            Icon(Icons.cached, color: ColorSet.iconColor),
                             SizedBox(
                               width: 10,
                             ),
                             Text(
                               "重新計畫",
                               style: TextStyle(
-                                  color: CustomColors.textColor, fontSize: 16),
+                                  color: ColorSet.textColor, fontSize: 16),
                             )
                           ],
                         ),
@@ -626,8 +618,8 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                     padding:
                         const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                     decoration: BoxDecoration(
-                        color: CustomColors.containerColor,
-                        border: Border.all(color: CustomColors.containerColor),
+                        color: ColorSet.backgroundColor,
+                        border: Border.all(color: ColorSet.backgroundColor),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(20))),
                     child: Column(
@@ -635,13 +627,13 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         LoadingAnimationWidget.horizontalRotatingDots(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           size: 100,
                         ),
                         const Text(
                           "重新載入計畫中...",
                           style: TextStyle(
-                            color: CustomColors.textColor,
+                            color: ColorSet.textColor,
                           ),
                         )
                       ],
@@ -663,8 +655,8 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                     Container(
                       margin: const EdgeInsets.only(right: 20, left: 20),
                       decoration: BoxDecoration(
-                          color: CustomColors.containerColor,
-                          border: Border.all(color: CustomColors.containerColor),
+                          color: ColorSet.backgroundColor,
+                          border: Border.all(color: ColorSet.backgroundColor),
                           borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20))),
@@ -709,7 +701,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           Expanded(
                               child: ElevatedButton.icon(
                             icon: const Icon(Icons.play_arrow_rounded,
-                                color: CustomColors.iconColor),
+                                color: ColorSet.iconColor),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: (isToday)
                                   ? const Color(0xfff6cdb7)
@@ -733,7 +725,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             label: const Text(
                               "開始冥想",
                               style: TextStyle(
-                                  color: CustomColors.textColor,
+                                  color: ColorSet.textColor,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -771,7 +763,7 @@ class ExercisePlanDetailItem extends StatelessWidget {
               title: Text(
                 "運動細節",
                 style: TextStyle(
-                    color: CustomColors.textColor,
+                    color: ColorSet.textColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 24),
               ),
@@ -789,12 +781,12 @@ class ExercisePlanDetailItem extends StatelessWidget {
                     center: Text(
                       "$percentage %",
                       style: const TextStyle(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 22.0),
                     ),
                     circularStrokeCap: CircularStrokeCap.round,
-                    progressColor: CustomColors.textColor,
+                    progressColor: ColorSet.textColor,
                   ),
                 ),
                 Expanded(
@@ -807,12 +799,12 @@ class ExercisePlanDetailItem extends StatelessWidget {
                         ListTile(
                           leading: const Icon(
                             Icons.timer_outlined,
-                            color: CustomColors.iconColor,
+                            color: ColorSet.iconColor,
                           ),
                           title: Text(
                             "${workoutPlan.length * 6} 秒運動",
                             style: const TextStyle(
-                                color: CustomColors.textColor,
+                                color: ColorSet.textColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22.0),
                           ),
@@ -822,12 +814,12 @@ class ExercisePlanDetailItem extends StatelessWidget {
                         ListTile(
                           leading: const Icon(
                             Icons.accessibility_new_outlined,
-                            color: CustomColors.iconColor,
+                            color: ColorSet.iconColor,
                           ),
                           title: Text(
                             "${workoutPlan.length} 個項目",
                             style: const TextStyle(
-                                color: CustomColors.textColor,
+                                color: ColorSet.textColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22.0),
                           ),
@@ -869,7 +861,7 @@ class MeditationPlanDetailItem extends StatelessWidget {
               title: Text(
                 "冥想細節",
                 style: TextStyle(
-                    color: CustomColors.textColor,
+                    color: ColorSet.textColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 24),
               ),
@@ -887,12 +879,12 @@ class MeditationPlanDetailItem extends StatelessWidget {
                     center: Text(
                       "$percentage %",
                       style: const TextStyle(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 22.0),
                     ),
                     circularStrokeCap: CircularStrokeCap.round,
-                    progressColor: CustomColors.textColor,
+                    progressColor: ColorSet.textColor,
                   ),
                 ),
                 Expanded(
@@ -905,12 +897,12 @@ class MeditationPlanDetailItem extends StatelessWidget {
                         ListTile(
                           leading: const Icon(
                             Icons.timer_outlined,
-                            color: CustomColors.iconColor,
+                            color: ColorSet.iconColor,
                           ),
                           title: Text(
                             "$meditationTime 分冥想",
                             style: const TextStyle(
-                                color: CustomColors.textColor,
+                                color: ColorSet.textColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22.0),
                           ),
@@ -920,12 +912,12 @@ class MeditationPlanDetailItem extends StatelessWidget {
                         ListTile(
                           leading: const Icon(
                             Icons.accessibility_new_outlined,
-                            color: CustomColors.iconColor,
+                            color: ColorSet.iconColor,
                           ),
                           title: Text(
                             meditationPlan, // TODO: 名稱對應中文
                             style: const TextStyle(
-                                color: CustomColors.textColor,
+                                color: ColorSet.textColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22.0),
                           ),
@@ -990,11 +982,11 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
             borderRadius: BorderRadius.circular(15),
           ),
           side: const BorderSide(
-            color: CustomColors.borderColor,
+            color: ColorSet.borderColor,
           ),
           backgroundColor: (changedDayWeekday == weekdayNameList[i])
               ? const Color(0xfff6cdb7)
-              : CustomColors.backgroundColor,
+              : ColorSet.backgroundColor,
         ),
         onPressed: () {
           setState(() {
@@ -1006,7 +998,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
         child: Text(
           weekdayNameList[i],
           style: const TextStyle(
-            color: CustomColors.textColor,
+            color: ColorSet.textColor,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -1063,14 +1055,14 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
             title: Text(
               "修改${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫到別天",
               style: const TextStyle(
-                  color: CustomColors.textColor,
+                  color: ColorSet.textColor,
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
             trailing: Container(
               padding: const EdgeInsets.only(right: 20, left: 20),
               decoration: BoxDecoration(
-                border: Border.all(color: CustomColors.borderColor, width: 2),
+                border: Border.all(color: ColorSet.borderColor, width: 2),
                 color: Colors.transparent,
                 shape: BoxShape.circle,
               ),
@@ -1079,7 +1071,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
                 constraints: const BoxConstraints(),
                 icon: const Icon(
                   Icons.close_rounded,
-                  color: CustomColors.iconColor,
+                  color: ColorSet.iconColor,
                 ),
                 onPressed: () {
                   Navigator.pop(context);
@@ -1089,7 +1081,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
           ),
           Text(
               "你要將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫換到哪天呢？",
-              style: const TextStyle(color: CustomColors.textColor, fontSize: 16)),
+              style: const TextStyle(color: ColorSet.textColor, fontSize: 16)),
           const SizedBox(height: 10),
           SizedBox(
             height: MediaQuery.of(context).size.width * 0.1,
@@ -1138,7 +1130,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
               child: const Text(
                 "確定",
                 style: TextStyle(
-                  color: CustomColors.textColor,
+                  color: ColorSet.textColor,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),

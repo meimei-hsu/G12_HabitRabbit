@@ -5,13 +5,7 @@ import 'package:g12/screens/FriendStatusPage.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-class CustomColors {
-  static const Color textColor = Color(0xFF2F4F4F);
-  static const Color iconColor = Color(0xFF2F4F4F);
-  static const Color backgroundColor = Color(0xFFFDFDFD);
-  static const Color borderColor = Color(0xFF2F4F4F);
-  static const Color containerColor = Color(0xFFFDEED9);
-}
+import 'package:g12/screens/PageMaterial.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key, required arguments});
@@ -47,19 +41,19 @@ class _CommunityPageState extends State<CommunityPage>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: CustomColors.backgroundColor,
+        backgroundColor: ColorSet.backgroundColor,
         appBar: AppBar(
           elevation: 0,
           title: const Text(
             'Mary 的朋友圈',
             style: TextStyle(
-                color: CustomColors.textColor,
+                color: ColorSet.textColor,
                 fontSize: 28,
                 letterSpacing: 2,
                 fontWeight: FontWeight.bold,
                 height: 1),
           ),
-          backgroundColor: CustomColors.backgroundColor,
+          backgroundColor: ColorSet.backgroundColor,
           automaticallyImplyLeading: false,
         ),
         body: SafeArea(
@@ -81,12 +75,12 @@ class _CommunityPageState extends State<CommunityPage>
                               children: [
                                 Icon(
                                   Icons.group,
-                                  color: CustomColors.iconColor,
+                                  color: ColorSet.iconColor,
                                 ),
                                 Text(
                                   '朋友列表',
                                   style: TextStyle(
-                                    color: CustomColors.iconColor,
+                                    color: ColorSet.iconColor,
                                     fontSize: 12,
                                   ),
                                 ),
@@ -98,12 +92,12 @@ class _CommunityPageState extends State<CommunityPage>
                               children: [
                                 Icon(
                                   Icons.emoji_events,
-                                  color: CustomColors.iconColor, // 设置图标颜色
+                                  color: ColorSet.iconColor, // 设置图标颜色
                                 ),
                                 Text(
                                   '排行榜',
                                   style: TextStyle(
-                                    color: CustomColors.iconColor,
+                                    color: ColorSet.iconColor,
                                     fontSize: 12,
                                   ),
                                 ),
@@ -115,12 +109,12 @@ class _CommunityPageState extends State<CommunityPage>
                               children: [
                                 Icon(
                                   Icons.sports_kabaddi,
-                                  color: CustomColors.iconColor,
+                                  color: ColorSet.iconColor,
                                 ),
                                 Text(
                                   '團隊挑戰賽',
                                   style: TextStyle(
-                                    color: CustomColors.iconColor,
+                                    color: ColorSet.iconColor,
                                     fontSize: 12,
                                   ),
                                 ),
@@ -128,7 +122,7 @@ class _CommunityPageState extends State<CommunityPage>
                             ),
                           ),
                         ],
-                        unselectedLabelColor: CustomColors.textColor,
+                        unselectedLabelColor: ColorSet.textColor,
                         onTap: (index) {
                           setState(() {
                             _currentIndex = index;
@@ -191,7 +185,7 @@ class _FriendListPageState extends State<FriendListPage> {
               '\n等級：12',
               // TODO:讀取使用者的真實情況
               style: TextStyle(
-                color: CustomColors.textColor,
+                color: ColorSet.textColor,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 height: 1.5,
@@ -214,7 +208,7 @@ class _FriendListPageState extends State<FriendListPage> {
                     ),
                   ),
                   style: const TextStyle(
-                    color: CustomColors.textColor,
+                    color: ColorSet.textColor,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                     height: 1,
@@ -244,7 +238,7 @@ class _FriendListPageState extends State<FriendListPage> {
           child: Text(
             '朋友列表',
             style: TextStyle(
-              color: CustomColors.textColor,
+              color: ColorSet.textColor,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -256,7 +250,7 @@ class _FriendListPageState extends State<FriendListPage> {
                   '\n您尚未加入任何好友，'
                   '\n趕快輸入朋友的社交碼開啟社交功能吧!',
                   style: TextStyle(
-                    color: CustomColors.textColor,
+                    color: ColorSet.textColor,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -269,8 +263,11 @@ class _FriendListPageState extends State<FriendListPage> {
                     return Container(
                       height: 70,
                       decoration: BoxDecoration(
-                        color: CustomColors.containerColor,
-                        borderRadius: BorderRadius.circular(50),
+                        color: ColorSet.backgroundColor,
+                        border: Border.all(
+                            color: ColorSet.borderColor, width: 2),
+                        borderRadius:
+                        const BorderRadius.all(Radius.circular(50)),
                       ),
                       child: Row(
                         children: [
@@ -278,7 +275,7 @@ class _FriendListPageState extends State<FriendListPage> {
                             padding: EdgeInsets.only(left: 16.0),
                             child: CircleAvatar(
                               radius: 25,
-                              backgroundColor: CustomColors.backgroundColor,
+                              backgroundColor: ColorSet.backgroundColor,
                               backgroundImage:
                                   AssetImage('assets/images/Dog_1.png'),
                             ),
@@ -287,7 +284,7 @@ class _FriendListPageState extends State<FriendListPage> {
                           Text(
                             entries[index],
                             style: const TextStyle(
-                              color: CustomColors.textColor,
+                              color: ColorSet.textColor,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
@@ -306,7 +303,7 @@ class _FriendListPageState extends State<FriendListPage> {
                               padding: EdgeInsets.only(right: 16.0),
                               child: Icon(
                                 Icons.arrow_forward_ios,
-                                color: CustomColors.iconColor,
+                                color: ColorSet.iconColor,
                               ),
                             ),
                           ),
@@ -330,7 +327,7 @@ class _FriendListPageState extends State<FriendListPage> {
         return Dialog(
           child: Container(
             decoration: BoxDecoration(
-              color: CustomColors.backgroundColor,
+              color: ColorSet.backgroundColor,
               borderRadius: BorderRadius.circular(10),
             ),
             padding: const EdgeInsets.all(20.0),
@@ -338,7 +335,7 @@ class _FriendListPageState extends State<FriendListPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const CircleAvatar(
-                  backgroundColor: CustomColors.backgroundColor,
+                  backgroundColor: ColorSet.backgroundColor,
                   radius: 45,
                   backgroundImage: AssetImage('assets/images/Fox_1.png'),
                 ),
@@ -346,7 +343,7 @@ class _FriendListPageState extends State<FriendListPage> {
                 const Text(
                   "Frank",
                   style: TextStyle(
-                    color: CustomColors.textColor,
+                    color: ColorSet.textColor,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -356,10 +353,10 @@ class _FriendListPageState extends State<FriendListPage> {
                   height: 60,
                   width: 220,
                   decoration: BoxDecoration(
-                    color: CustomColors.backgroundColor,
+                    color: ColorSet.backgroundColor,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: CustomColors.borderColor,
+                      color: ColorSet.borderColor,
                       width: 1.0,
                     ),
                   ),
@@ -375,7 +372,7 @@ class _FriendListPageState extends State<FriendListPage> {
                           "社交碼 \n$searchText",
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            color: CustomColors.textColor,
+                            color: ColorSet.textColor,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -389,10 +386,10 @@ class _FriendListPageState extends State<FriendListPage> {
                   height: 60,
                   width: 220,
                   decoration: BoxDecoration(
-                    color: CustomColors.backgroundColor,
+                    color: ColorSet.backgroundColor,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: CustomColors.borderColor,
+                      color: ColorSet.borderColor,
                       width: 1.0,
                     ),
                   ),
@@ -408,7 +405,7 @@ class _FriendListPageState extends State<FriendListPage> {
                           "等級 \n10",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: CustomColors.textColor,
+                            color: ColorSet.textColor,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -424,12 +421,12 @@ class _FriendListPageState extends State<FriendListPage> {
                     //TODO: 把朋友加進資料庫並顯示在 listView
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: CustomColors.backgroundColor,
+                    backgroundColor: ColorSet.backgroundColor,
                   ),
                   child: const Text(
                     '加朋友',
                     style: TextStyle(
-                      color: CustomColors.textColor,
+                      color: ColorSet.textColor,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -550,19 +547,21 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
-                    color: const Color(0xfffdeed9),
-                    border: Border.all(color: const Color(0xffffeed9)),
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    color: ColorSet.backgroundColor,
+                    border: Border.all(
+                        color: ColorSet.borderColor, width: 4),
+                    borderRadius:
+                    const BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Column(
                     children: [
                       ListTile(
                         title: const Text(
-                          "個人等級排行榜",
+                          "個人等級\n排行榜",
                           style: TextStyle(
-                            color: CustomColors.textColor,
+                            color: ColorSet.textColor,
                             fontWeight: FontWeight.bold,
-                            fontSize: 22.0,
+                            fontSize: 20.0,
                           ),
                         ),
                         trailing: ToggleSwitch(
@@ -575,9 +574,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             [Color(0xfff6cdb7)],
                             [Color(0xffd4d6fc)],
                           ],
-                          activeFgColor: CustomColors.textColor,
+                          activeFgColor: ColorSet.textColor,
                           inactiveBgColor: const Color(0xfffdfdf5),
-                          inactiveFgColor: CustomColors.textColor,
+                          inactiveFgColor: ColorSet.textColor,
                           totalSwitches: 2,
                           onToggle: (index) {
                             personalRank = index!;
@@ -601,15 +600,18 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                     return Container(
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xffffffff),
-                                        borderRadius: BorderRadius.circular(50),
+                                        color: ColorSet.backgroundColor,
+                                        border: Border.all(
+                                            color: ColorSet.borderColor, width: 2),
+                                        borderRadius:
+                                        const BorderRadius.all(Radius.circular(20)),
                                       ),
                                       child: Row(children: [
                                         const SizedBox(width: 15),
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -618,7 +620,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: CustomColors.backgroundColor,
+                                            backgroundColor: ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -627,7 +629,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getPersonalRankList()[index],
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -657,15 +659,18 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                     return Container(
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xffffffff),
-                                        borderRadius: BorderRadius.circular(50),
+                                        color: ColorSet.backgroundColor,
+                                        border: Border.all(
+                                            color: ColorSet.borderColor, width: 2),
+                                        borderRadius:
+                                        const BorderRadius.all(Radius.circular(20)),
                                       ),
                                       child: Row(children: [
                                         const SizedBox(width: 15),
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -674,7 +679,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: CustomColors.backgroundColor,
+                                            backgroundColor: ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -683,7 +688,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getPersonalRankList()[index],
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -707,19 +712,21 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
-                    color: CustomColors.containerColor,
-                    border: Border.all(color: CustomColors.containerColor),
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    color: ColorSet.backgroundColor,
+                    border: Border.all(
+                        color: ColorSet.borderColor, width: 4),
+                    borderRadius:
+                    const BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Column(
                     children: [
                       ListTile(
                         title: const Text(
-                          "角色等級排行榜",
+                          "角色等級\n排行榜",
                           style: TextStyle(
-                            color: CustomColors.textColor,
+                            color: ColorSet.textColor,
                             fontWeight: FontWeight.bold,
-                            fontSize: 22.0,
+                            fontSize: 20.0,
                           ),
                         ),
                         trailing: ToggleSwitch(
@@ -732,9 +739,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             [Color(0xfff6cdb7)],
                             [Color(0xffd4d6fc)],
                           ],
-                          activeFgColor: CustomColors.textColor,
+                          activeFgColor: ColorSet.textColor,
                           inactiveBgColor: const Color(0xfffdfdf5),
-                          inactiveFgColor: CustomColors.textColor,
+                          inactiveFgColor: ColorSet.textColor,
                           totalSwitches: 2,
                           onToggle: (index) {
                             roleRank = index!;
@@ -756,15 +763,18 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                     return Container(
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xffffffff),
-                                        borderRadius: BorderRadius.circular(50),
+                                        color: ColorSet.backgroundColor,
+                                        border: Border.all(
+                                            color: ColorSet.borderColor, width: 2),
+                                        borderRadius:
+                                        const BorderRadius.all(Radius.circular(20)),
                                       ),
                                       child: Row(children: [
                                         const SizedBox(width: 15),
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -773,7 +783,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: CustomColors.backgroundColor,
+                                            backgroundColor: ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -782,7 +792,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getRoleRankList()[index],
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -820,7 +830,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -829,7 +839,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: CustomColors.backgroundColor,
+                                            backgroundColor: ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -838,7 +848,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getRoleRankList()[index],
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -862,19 +872,21 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
-                    color: CustomColors.containerColor,
-                    border: Border.all(color: CustomColors.containerColor),
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    color: ColorSet.backgroundColor,
+                    border: Border.all(
+                        color: ColorSet.borderColor, width: 4),
+                    borderRadius:
+                    const BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Column(
                     children: [
                       ListTile(
                         title: const Text(
-                          "運動寶物排行榜",
+                          "運動寶物\n排行榜",
                           style: TextStyle(
-                            color: CustomColors.textColor,
+                            color: ColorSet.textColor,
                             fontWeight: FontWeight.bold,
-                            fontSize: 22.0,
+                            fontSize: 20.0,
                           ),
                         ),
                         trailing: ToggleSwitch(
@@ -887,9 +899,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             [Color(0xfff6cdb7)],
                             [Color(0xffd4d6fc)],
                           ],
-                          activeFgColor: CustomColors.textColor,
+                          activeFgColor: ColorSet.textColor,
                           inactiveBgColor: const Color(0xfffdfdf5),
-                          inactiveFgColor: CustomColors.textColor,
+                          inactiveFgColor: ColorSet.textColor,
                           totalSwitches: 2,
                           onToggle: (index) {
                             exerciseRank = index!;
@@ -912,15 +924,18 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                     return Container(
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xffffffff),
-                                        borderRadius: BorderRadius.circular(50),
+                                        color: ColorSet.backgroundColor,
+                                        border: Border.all(
+                                            color: ColorSet.borderColor, width: 2),
+                                        borderRadius:
+                                        const BorderRadius.all(Radius.circular(20)),
                                       ),
                                       child: Row(children: [
                                         const SizedBox(width: 15),
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -929,7 +944,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: CustomColors.backgroundColor,
+                                            backgroundColor: ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -938,7 +953,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getExerciseRankList()[index],
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -971,7 +986,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           '$rank',
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -980,7 +995,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: CustomColors.backgroundColor,
+                                            backgroundColor: ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -989,7 +1004,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         Text(
                                           getExerciseRankList()[index],
                                           style: const TextStyle(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -1013,18 +1028,20 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
-                    color: CustomColors.containerColor,
-                    border: Border.all(color: CustomColors.containerColor),
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    color: ColorSet.backgroundColor,
+                    border: Border.all(
+                        color: ColorSet.borderColor, width: 4),
+                    borderRadius:
+                    const BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Column(children: [
                     ListTile(
                       title: const Text(
-                        "冥想寶物排行榜",
+                        "冥想寶物\n排行榜",
                         style: TextStyle(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           fontWeight: FontWeight.bold,
-                          fontSize: 22.0,
+                          fontSize: 20.0,
                         ),
                       ),
                       trailing: ToggleSwitch(
@@ -1037,9 +1054,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           [Color(0xfff6cdb7)],
                           [Color(0xffd4d6fc)],
                         ],
-                        activeFgColor: CustomColors.textColor,
+                        activeFgColor: ColorSet.textColor,
                         inactiveBgColor: const Color(0xfffdfdf5),
-                        inactiveFgColor: CustomColors.textColor,
+                        inactiveFgColor: ColorSet.textColor,
                         totalSwitches: 2,
                         onToggle: (index) {
                           meditationRank = index!;
@@ -1061,15 +1078,18 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                   return Container(
                                     height: 30,
                                     decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
-                                      borderRadius: BorderRadius.circular(50),
+                                      color: ColorSet.backgroundColor,
+                                      border: Border.all(
+                                          color: ColorSet.borderColor, width: 2),
+                                      borderRadius:
+                                      const BorderRadius.all(Radius.circular(20)),
                                     ),
                                     child: Row(children: [
                                       const SizedBox(width: 15),
                                       Text(
                                         '$rank',
                                         style: const TextStyle(
-                                          color: CustomColors.textColor,
+                                          color: ColorSet.textColor,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -1078,7 +1098,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         padding: EdgeInsets.only(left: 16.0),
                                         child: CircleAvatar(
                                           radius: 15,
-                                          backgroundColor: CustomColors.backgroundColor,
+                                          backgroundColor: ColorSet.backgroundColor,
                                           backgroundImage: AssetImage(
                                               'assets/images/Dog_1.png'),
                                         ),
@@ -1087,7 +1107,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                       Text(
                                         getMeditationRankList()[index],
                                         style: const TextStyle(
-                                          color: CustomColors.textColor,
+                                          color: ColorSet.textColor,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -1124,7 +1144,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                       Text(
                                         '$rank',
                                         style: const TextStyle(
-                                          color: CustomColors.textColor,
+                                          color: ColorSet.textColor,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -1133,7 +1153,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                         padding: EdgeInsets.only(left: 16.0),
                                         child: CircleAvatar(
                                           radius: 15,
-                                          backgroundColor: CustomColors.backgroundColor,
+                                          backgroundColor: ColorSet.backgroundColor,
                                           backgroundImage: AssetImage('assets/images/Dog_1.png'),
                                         ),
                                       ),
@@ -1141,7 +1161,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                       Text(
                                         getMeditationRankList()[index],
                                         style: const TextStyle(
-                                          color: CustomColors.textColor,
+                                          color: ColorSet.textColor,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -1169,7 +1189,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
 final List<Widget> competitionList = [
   Container(
     decoration: BoxDecoration(
-      color: CustomColors.containerColor,
+      color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
     child: const Column(
@@ -1177,20 +1197,20 @@ final List<Widget> competitionList = [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 22.0)),
         ),
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Text('七日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
     ),
   ),
   Container(
     decoration: BoxDecoration(
-      color: CustomColors.containerColor,
+      color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
     child: const Column(
@@ -1198,20 +1218,20 @@ final List<Widget> competitionList = [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 22.0)),
         ),
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Text('十四日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
     ),
   ),
   Container(
     decoration: BoxDecoration(
-      color: CustomColors.containerColor,
+      color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
     child: const Column(
@@ -1219,20 +1239,20 @@ final List<Widget> competitionList = [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 22.0)),
         ),
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Text('二十八日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
     ),
   ),
   Container(
     decoration: BoxDecoration(
-      color: CustomColors.containerColor,
+      color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
     child: const Column(
@@ -1240,20 +1260,20 @@ final List<Widget> competitionList = [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 22.0)),
         ),
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Text('三十二日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
     ),
   ),
   Container(
     decoration: BoxDecoration(
-      color: CustomColors.containerColor,
+      color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
     child: const Column(
@@ -1261,13 +1281,13 @@ final List<Widget> competitionList = [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 22.0)),
         ),
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Text('六十四日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
     ),
@@ -1277,7 +1297,7 @@ final List<Widget> competitionList = [
 final List<Widget> teamworkList = [
   Container(
     decoration: BoxDecoration(
-      color: CustomColors.containerColor,
+      color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
     child: const Column(
@@ -1285,20 +1305,20 @@ final List<Widget> teamworkList = [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 22.0)),
         ),
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Text('七日內所有成員進行運動或冥想習慣並達到完成度80%，隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
     ),
   ),
   Container(
     decoration: BoxDecoration(
-      color: CustomColors.containerColor,
+      color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
     child: const Column(
@@ -1306,20 +1326,20 @@ final List<Widget> teamworkList = [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 22.0)),
         ),
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Text('十四日內所有成員進行運動或冥想習慣並達到完成度80%，隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
     ),
   ),
   Container(
     decoration: BoxDecoration(
-      color: CustomColors.containerColor,
+      color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
     child: const Column(
@@ -1327,20 +1347,20 @@ final List<Widget> teamworkList = [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 22.0)),
         ),
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Text('十四日內所有成員進行運動或冥想習慣並達到完成度90%，隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
     ),
   ),
   Container(
     decoration: BoxDecoration(
-      color: CustomColors.containerColor,
+      color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
     child: const Column(
@@ -1348,20 +1368,20 @@ final List<Widget> teamworkList = [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 22.0)),
         ),
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Text('二十八日內所有成員進行運動或冥想習慣並達到完成度90%，隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
     ),
   ),
   Container(
     decoration: BoxDecoration(
-      color: CustomColors.containerColor,
+      color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
     child: const Column(
@@ -1369,13 +1389,13 @@ final List<Widget> teamworkList = [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 22.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 22.0)),
         ),
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
           child: Text('二十八日內所有成員進行運動或冥想習慣並達到完成度95%，隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
-              style: TextStyle(color: CustomColors.textColor, fontSize: 18.0)),
+              style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
     ),
@@ -1400,7 +1420,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
         const SizedBox(height: 10),
         const Text('團隊競爭賽',
             style: TextStyle(
-              color: CustomColors.textColor,
+              color: ColorSet.textColor,
               fontSize: 22.0,
               fontWeight: FontWeight.bold,
             )),
@@ -1423,16 +1443,16 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                    backgroundColor: CustomColors.backgroundColor,
+                    backgroundColor: ColorSet.backgroundColor,
                     title: const Text('團隊競爭賽',
                         style: TextStyle(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           fontSize: 22.0,
                           fontWeight: FontWeight.bold,
                         )),
                     content: const Text('PLEASE CHOOSE!',
                         style: TextStyle(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                         )),
@@ -1445,7 +1465,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: CustomColors.backgroundColor,
+                            backgroundColor: ColorSet.backgroundColor,
                           ),
                           child: const Row(
                             children: [
@@ -1454,7 +1474,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                                 child: Text(
                                   'Team A',
                                   style: TextStyle(
-                                    color: CustomColors.textColor,
+                                    color: ColorSet.textColor,
                                     fontSize: 15.0,
                                   ),
                                 ),
@@ -1464,7 +1484,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                                 child: Text(
                                   '目前人數：',
                                   style: TextStyle(
-                                    color: CustomColors.textColor,
+                                    color: ColorSet.textColor,
                                     fontSize: 15.0,
                                   ),
                                 ),
@@ -1481,7 +1501,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: CustomColors.backgroundColor,
+                            backgroundColor: ColorSet.backgroundColor,
                           ),
                           child: const Row(
                             children: [
@@ -1490,7 +1510,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                                 child: Text(
                                   'Team B',
                                   style: TextStyle(
-                                    color: CustomColors.textColor,
+                                    color: ColorSet.textColor,
                                     fontSize: 15.0,
                                   ),
                                 ),
@@ -1500,7 +1520,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                                 child: Text(
                                   '目前人數：',
                                   style: TextStyle(
-                                    color: CustomColors.textColor,
+                                    color: ColorSet.textColor,
                                     fontSize: 15.0,
                                   ),
                                 ),
@@ -1514,18 +1534,18 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
             );
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: CustomColors.backgroundColor,
+            backgroundColor: ColorSet.backgroundColor,
           ),
           child: const Text('確定加入',
               style: TextStyle(
-                color: CustomColors.textColor,
+                color: ColorSet.textColor,
                 fontSize: 14.0,
               )),
         ),
         const SizedBox(height: 20),
         const Text('團隊合作賽',
             style: TextStyle(
-              color: CustomColors.textColor,
+              color: ColorSet.textColor,
               fontSize: 22.0,
               fontWeight: FontWeight.bold,
             )),
@@ -1552,11 +1572,11 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                 return StatefulBuilder(
                   builder: (context, setState) {
                     return AlertDialog(
-                      backgroundColor: CustomColors.backgroundColor,
+                      backgroundColor: ColorSet.backgroundColor,
                       title: const Text(
                         '團隊合作賽',
                         style: TextStyle(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           fontSize: 22.0,
                           fontWeight: FontWeight.bold,
                         ),
@@ -1567,7 +1587,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                           const Text(
                             '選擇加入存在房間或建立新房間',
                             style: TextStyle(
-                              color: CustomColors.textColor,
+                              color: ColorSet.textColor,
                               fontSize: 18.0,
                             ),
                           ),
@@ -1579,12 +1599,12 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                               });
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: CustomColors.backgroundColor,
+                              backgroundColor: ColorSet.backgroundColor,
                             ),
                             child: Text(
                               showTextField ? '輸入房間號' : '輸入房間號',
                               style: const TextStyle(
-                                color: CustomColors.textColor,
+                                color: ColorSet.textColor,
                                 fontSize: 14.0,
                               ),
                             ),
@@ -1626,12 +1646,12 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: CustomColors.backgroundColor,
+                              backgroundColor: ColorSet.backgroundColor,
                             ),
                             child: const Text(
                               '建立新房間',
                               style: TextStyle(
-                                color: CustomColors.textColor,
+                                color: ColorSet.textColor,
                                 fontSize: 14.0,
                               ),
                             ),
@@ -1647,7 +1667,7 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
           child: const Text(
             '確定加入',
             style: TextStyle(
-              color: CustomColors.textColor,
+              color: ColorSet.textColor,
               fontSize: 14.0,
             ),
           ),
@@ -1681,7 +1701,7 @@ class _TeamCompetitionPageState extends State<TeamCompetitionPage> {
                   children: [
                     Text("團隊競爭賽",
                         style: TextStyle(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           fontSize: 30.0,
                           letterSpacing: 1.0,
                         )),
@@ -1694,7 +1714,7 @@ class _TeamCompetitionPageState extends State<TeamCompetitionPage> {
                     '七日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！'
                         '勝利隊伍將獲得經驗值與等級的提升。',
                     style: TextStyle(
-                      color: CustomColors.textColor,
+                      color: ColorSet.textColor,
                       fontSize: 22.0,
                     )),
               ),
@@ -1708,7 +1728,7 @@ class _TeamCompetitionPageState extends State<TeamCompetitionPage> {
                         height: 300,
                         width: 300,
                         decoration: BoxDecoration(
-                          color: CustomColors.containerColor,
+                          color: ColorSet.backgroundColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
@@ -1719,7 +1739,7 @@ class _TeamCompetitionPageState extends State<TeamCompetitionPage> {
                         height: 300,
                         width: 300,
                         decoration: BoxDecoration(
-                          color: CustomColors.containerColor,
+                          color: ColorSet.backgroundColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
@@ -1798,7 +1818,7 @@ class _TeamWorkPageState extends State<TeamWorkPage> {
                   children: [
                     Text("團隊合作賽",
                         style: TextStyle(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           fontSize: 30.0,
                           letterSpacing: 1.0,
                         )),
@@ -1811,7 +1831,7 @@ class _TeamWorkPageState extends State<TeamWorkPage> {
                     '7天內所有成員進行運動與冥想習慣並達到完成度80%，'
                     '隊伍獲得勝利並取得經驗值與等級提升的獎勵！',
                     style: TextStyle(
-                      color: CustomColors.textColor,
+                      color: ColorSet.textColor,
                       fontSize: 22.0,
                     )),
               ),
@@ -1821,7 +1841,7 @@ class _TeamWorkPageState extends State<TeamWorkPage> {
                   width: 120,
                   height: 30,
                   decoration: BoxDecoration(
-                    color: CustomColors.containerColor,
+                    color: ColorSet.backgroundColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Padding(
@@ -1849,13 +1869,13 @@ class _TeamWorkPageState extends State<TeamWorkPage> {
                       percent: 0.7,
                       center: const Text("70%",
                         style: TextStyle(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           fontSize: 10,
                         ),
                       ),
                       barRadius: const Radius.circular(16),
                       backgroundColor: Colors.black12,
-                      progressColor: CustomColors.containerColor,
+                      progressColor: ColorSet.backgroundColor,
                     ),
                   ],
                 ),
@@ -1877,13 +1897,13 @@ class _TeamWorkPageState extends State<TeamWorkPage> {
                       percent: 0.7,
                       center: const Text("70%",
                         style: TextStyle(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           fontSize: 10,
                         ),
                       ),
                       barRadius: const Radius.circular(16),
                       backgroundColor: Colors.black12,
-                      progressColor: CustomColors.containerColor,
+                      progressColor: ColorSet.backgroundColor,
                     ),
                   ],
                 ),

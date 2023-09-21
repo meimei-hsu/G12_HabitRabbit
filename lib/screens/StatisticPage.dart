@@ -11,15 +11,9 @@ import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-import '../services/Database.dart';
+import 'package:g12/screens/PageMaterial.dart';
 
-class CustomColors {
-  static const Color textColor = Color(0xFF2F4F4F);
-  static const Color iconColor = Color(0xFF2F4F4F);
-  static const Color backgroundColor = Color(0xFFFDFDFD);
-  static const Color borderColor = Color(0xFF2F4F4F);
-  static const Color containerColor = Color(0xFFFDEED9);
-}
+import 'package:g12/services/Database.dart';
 
 class StatisticPage extends StatefulWidget {
   final Map arguments;
@@ -75,12 +69,12 @@ class StatisticPageState extends State<StatisticPage> {
   Map<String, double> meditationTypePercentageMap = {};
   List percentageMeditationList = [];
 
-
   // 每月成功天數
   List exerciseMonthDaysList = [];
   List meditationMonthDaysList = [];
   late double maxExerciseDays = 0;
   late double maxMeditationDays = 0;
+
   //late TooltipBehavior _tooltipBehavior;
 
   // toggle switch control (0 = 運動, 1 = 冥想)
@@ -90,8 +84,8 @@ class StatisticPageState extends State<StatisticPage> {
   int monthDays = 0;
 
   final Map<int, Color> colorSet = {
-    1: const Color(0xfff6cdb7),
-    2: const Color(0xffd4d6fc),
+    1: ColorSet.failColor,
+    2: ColorSet.successColor,
   };
 
   final ScrollController _scrollController = ScrollController();
@@ -149,7 +143,8 @@ class StatisticPageState extends State<StatisticPage> {
       DateTime? endDate;
       for (MapEntry entry in exerciseDuration.entries) {
         var exercise = DateTime.parse(entry.key);
-        int completionStatus = (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+        int completionStatus =
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
         if (completionStatus == 2) {
           if (continuousExerciseDays == 0) {
@@ -159,14 +154,16 @@ class StatisticPageState extends State<StatisticPage> {
           endDate = exercise;
         } else {
           if (continuousExerciseDays >= 2) {
-            consecutiveExerciseDaysList.add([startDate, endDate, continuousExerciseDays]);
+            consecutiveExerciseDaysList
+                .add([startDate, endDate, continuousExerciseDays]);
           }
           continuousExerciseDays = 0;
         }
         exerciseCompletionRateMap[exercise] = completionStatus;
       }
       if (continuousExerciseDays >= 2) {
-        consecutiveExerciseDaysList.add([startDate, endDate, continuousExerciseDays]);
+        consecutiveExerciseDaysList
+            .add([startDate, endDate, continuousExerciseDays]);
       }
     }
 
@@ -175,7 +172,8 @@ class StatisticPageState extends State<StatisticPage> {
       DateTime? endDate;
       for (MapEntry entry in meditationDuration.entries) {
         var meditation = DateTime.parse(entry.key);
-        int completionStatus = (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+        int completionStatus =
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
         if (completionStatus == 2) {
           if (continuousMeditationDays == 0) {
@@ -185,14 +183,16 @@ class StatisticPageState extends State<StatisticPage> {
           endDate = meditation;
         } else {
           if (continuousMeditationDays >= 2) {
-            consecutiveMeditationDaysList.add([startDate, endDate, continuousMeditationDays]);
+            consecutiveMeditationDaysList
+                .add([startDate, endDate, continuousMeditationDays]);
           }
           continuousMeditationDays = 0;
         }
         meditationCompletionRateMap[meditation] = completionStatus;
       }
       if (continuousMeditationDays >= 2) {
-        consecutiveMeditationDaysList.add([startDate, endDate, continuousMeditationDays]);
+        consecutiveMeditationDaysList
+            .add([startDate, endDate, continuousMeditationDays]);
       }
     }
 
@@ -200,14 +200,16 @@ class StatisticPageState extends State<StatisticPage> {
     if (exerciseDuration != null) {
       for (MapEntry entry in exerciseDuration.entries) {
         var exerciseDate = DateTime.parse(entry.key);
-        int completionStatus = (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+        int completionStatus =
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
         if (completionStatus == 2) {
           var type = await PlanDB.getType(exerciseDate) ?? "unknown";
           if (exerciseTypeCountMap.containsKey(type)) {
             exerciseTypeCountMap[type] = exerciseTypeCountMap[type]! + 1;
 
-            int totalExerciseTypeCount = exerciseTypeCountMap.values.reduce((sum, count) => sum + count);
+            int totalExerciseTypeCount =
+                exerciseTypeCountMap.values.reduce((sum, count) => sum + count);
 
             exerciseTypeCountMap.forEach((type, count) {
               double percentage = (count / totalExerciseTypeCount) * 100;
@@ -222,14 +224,17 @@ class StatisticPageState extends State<StatisticPage> {
     if (meditationDuration != null) {
       for (MapEntry entry in meditationDuration.entries) {
         var meditationDate = DateTime.parse(entry.key);
-        int completionStatus = (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+        int completionStatus =
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
         if (completionStatus == 2) {
-          var type = await MeditationPlanDB.getType(meditationDate) ?? "unknown";
+          var type =
+              await MeditationPlanDB.getType(meditationDate) ?? "unknown";
           if (meditationTypeCountMap.containsKey(type)) {
             meditationTypeCountMap[type] = meditationTypeCountMap[type]! + 1;
 
-            int totalMeditationTypeCount = meditationTypeCountMap.values.reduce((sum, count) => sum + count);
+            int totalMeditationTypeCount = meditationTypeCountMap.values
+                .reduce((sum, count) => sum + count);
 
             meditationTypeCountMap.forEach((type, count) {
               double percentage = (count / totalMeditationTypeCount) * 100;
@@ -314,20 +319,20 @@ class StatisticPageState extends State<StatisticPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: ColorSet.backgroundColor,
       appBar: AppBar(
         elevation: 0,
         title: Text(
           '${user?.displayName!} 的統計資料',
           textAlign: TextAlign.left,
           style: const TextStyle(
-              color: CustomColors.textColor,
+              color: ColorSet.textColor,
               fontSize: 28,
               letterSpacing: 2,
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        backgroundColor: CustomColors.backgroundColor,
+        backgroundColor: ColorSet.backgroundColor,
         automaticallyImplyLeading: false,
       ),
       body: (isInit)
@@ -336,8 +341,8 @@ class StatisticPageState extends State<StatisticPage> {
                   padding:
                       const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                   decoration: BoxDecoration(
-                      color: const Color(0xffd4d6fc),
-                      border: Border.all(color: const Color(0xffd4d6fc)),
+                      color: ColorSet.bottomBarColor,
+                      border: Border.all(color: ColorSet.bottomBarColor),
                       borderRadius:
                           const BorderRadius.all(Radius.circular(20))),
                   child: Column(
@@ -345,13 +350,13 @@ class StatisticPageState extends State<StatisticPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       LoadingAnimationWidget.horizontalRotatingDots(
-                        color: CustomColors.textColor,
+                        color: ColorSet.textColor,
                         size: 100,
                       ),
                       const Text(
                         "載入數據中...",
                         style: TextStyle(
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                         ),
                       )
                     ],
@@ -370,8 +375,9 @@ class StatisticPageState extends State<StatisticPage> {
                               const EdgeInsets.fromLTRB(5.0, 10.0, 0.0, 10.0),
                           margin: const EdgeInsets.only(right: 10, left: 10),
                           decoration: BoxDecoration(
-                            color: const Color(0xfffdeed9),
-                            border: Border.all(color: const Color(0xffffeed9)),
+                            color: ColorSet.backgroundColor,
+                            border: Border.all(
+                                color: ColorSet.borderColor, width: 4),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
                           ),
@@ -386,15 +392,16 @@ class StatisticPageState extends State<StatisticPage> {
                                 title: const Text(
                                   "體重紀錄",
                                   style: TextStyle(
-                                      color: CustomColors.textColor,
+                                      color: ColorSet.textColor,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 22.0),
+                                      fontSize: 20.0),
                                 ),
                                 trailing: IconButton(
-                                  padding: const EdgeInsets.only(top:5, left: 20),
+                                  padding:
+                                      const EdgeInsets.only(top: 5, left: 20),
                                   icon: const Icon(Icons.add_box_rounded),
                                   iconSize: 28,
-                                  color: CustomColors.iconColor,
+                                  color: ColorSet.iconColor,
                                   tooltip: "新增體重",
                                   onPressed: () async {
                                     showModalBottomSheet(
@@ -436,7 +443,7 @@ class StatisticPageState extends State<StatisticPage> {
                                     ? Center(
                                         child: LoadingAnimationWidget
                                             .horizontalRotatingDots(
-                                        color: const Color(0xfffdfdf5),
+                                        color: ColorSet.bottomBarColor,
                                         size: 100,
                                       ))
                                     : LineChart(
@@ -448,9 +455,9 @@ class StatisticPageState extends State<StatisticPage> {
                                                 LineTouchTooltipData(
                                               fitInsideHorizontally: true,
                                               fitInsideVertically: true,
-                                              tooltipBgColor:
-                                                  const Color(0xfffdfdf5)
-                                                      .withOpacity(0.6),
+                                              tooltipBgColor: ColorSet
+                                                  .bottomBarColor
+                                                  .withOpacity(0.8),
                                               getTooltipItems:
                                                   (List<LineBarSpot>
                                                       touchedBarSpots) {
@@ -461,7 +468,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                   return LineTooltipItem(
                                                     '${weightDataMap.keys.toList()[flSpot.x.toInt()]}\n',
                                                     const TextStyle(
-                                                      color: CustomColors.textColor,
+                                                      color: ColorSet.textColor,
                                                       fontWeight:
                                                           FontWeight.bold,
                                                     ),
@@ -470,7 +477,8 @@ class StatisticPageState extends State<StatisticPage> {
                                                         text:
                                                             '${flSpot.y.toString()} 公斤',
                                                         style: const TextStyle(
-                                                          color: CustomColors.textColor,
+                                                          color: ColorSet
+                                                              .textColor,
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.w900,
@@ -489,14 +497,22 @@ class StatisticPageState extends State<StatisticPage> {
                                                 y: avgWeight,
                                                 label: HorizontalLineLabel(
                                                     show: true,
-                                                    padding: const EdgeInsets.only(left: 10),
-                                                    labelResolver: (line) => '平均：${avgWeight.round()}',
-                                                    alignment: Alignment.topRight,
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 10),
+                                                    labelResolver: (line) =>
+                                                        '平均：${avgWeight.round()}',
+                                                    alignment:
+                                                        Alignment.topRight,
                                                     style: TextStyle(
-                                                        color: CustomColors.textColor.withOpacity(0.7),
+                                                        color: ColorSet
+                                                            .textColor
+                                                            .withOpacity(0.7),
                                                         fontSize: 15,
-                                                        fontWeight: FontWeight.bold)),
-                                                color: CustomColors.textColor.withOpacity(0.7),
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                color: ColorSet.textColor
+                                                    .withOpacity(0.7),
                                                 dashArray: [5, 5],
                                               ),
                                             ],
@@ -509,7 +525,7 @@ class StatisticPageState extends State<StatisticPage> {
                                             drawHorizontalLine: true,
                                             getDrawingHorizontalLine: (value) {
                                               return FlLine(
-                                                color: CustomColors.textColor,
+                                                color: ColorSet.textColor,
                                                 strokeWidth: 0.6,
                                               );
                                             },
@@ -525,7 +541,7 @@ class StatisticPageState extends State<StatisticPage> {
                                               reservedSize: 28,
                                               getTextStyles: (value) =>
                                                   const TextStyle(
-                                                      color: CustomColors.textColor,
+                                                      color: ColorSet.textColor,
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -539,7 +555,7 @@ class StatisticPageState extends State<StatisticPage> {
                                               showTitles: true,
                                               getTextStyles: (value) =>
                                                   const TextStyle(
-                                                      color: CustomColors.textColor,
+                                                      color: ColorSet.textColor,
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold),
@@ -564,7 +580,7 @@ class StatisticPageState extends State<StatisticPage> {
                                               show: true,
                                               border: const Border(
                                                   bottom: BorderSide(
-                                                color: CustomColors.textColor,
+                                                color: ColorSet.textColor,
                                                 width: 0.6,
                                               ))),
                                           // lineBarsData: 數線資料
@@ -572,7 +588,7 @@ class StatisticPageState extends State<StatisticPage> {
                                             LineChartBarData(
                                               spots: _getWeightData(),
                                               isCurved: false,
-                                              colors: [const Color(0xffd4d6fc)],
+                                              colors: [ColorSet.chartLineColor],
                                               barWidth: 3,
                                               isStrokeCapRound: true,
                                               dotData: FlDotData(
@@ -580,7 +596,7 @@ class StatisticPageState extends State<StatisticPage> {
                                                 getDotPainter: (spot, percent,
                                                         barData, index) =>
                                                     FlDotCirclePainter(
-                                                  color: CustomColors.textColor,
+                                                  color: ColorSet.textColor,
                                                   radius: 3,
                                                 ),
                                               ),
@@ -603,8 +619,9 @@ class StatisticPageState extends State<StatisticPage> {
                               const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
                           margin: const EdgeInsets.only(right: 10, left: 10),
                           decoration: BoxDecoration(
-                            color: const Color(0xfffdeed9),
-                            border: Border.all(color: const Color(0xffffeed9)),
+                            color: ColorSet.backgroundColor,
+                            border: Border.all(
+                                color: ColorSet.borderColor, width: 4),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
                           ),
@@ -614,9 +631,9 @@ class StatisticPageState extends State<StatisticPage> {
                                 '計畫進度表',
                                 //(planProgress == 0) ? '運動計畫進度表' : '冥想計畫進度表',
                                 style: TextStyle(
-                                    color: Color(0xff4b4370),
+                                    color: ColorSet.textColor,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 22.0),
+                                    fontSize: 20.0),
                               ),
                               trailing: ToggleSwitch(
                                 minHeight: 35,
@@ -630,12 +647,12 @@ class StatisticPageState extends State<StatisticPage> {
                                 ],
                                 iconSize: 16,
                                 activeBgColors: const [
-                                  [Color(0xfff6cdb7)],
-                                  [Color(0xffd4d6fc)]
+                                  [ColorSet.exerciseColor],
+                                  [ColorSet.meditationColor]
                                 ],
-                                activeFgColor: const Color(0xff4b4370),
-                                inactiveBgColor: const Color(0xfffdfdf5),
-                                inactiveFgColor: const Color(0xff4b4370),
+                                activeFgColor: ColorSet.textColor,
+                                inactiveBgColor: ColorSet.bottomBarColor,
+                                inactiveFgColor: ColorSet.textColor,
                                 totalSwitches: 2,
                                 //animate: true,
                                 //animationDuration: 300,
@@ -649,10 +666,9 @@ class StatisticPageState extends State<StatisticPage> {
                             Container(
                               padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
                               child: HeatMapCalendar(
-                                defaultColor: const Color(0xfffdfdf5),
-                                textColor: const Color(0xff4b4370),
-                                weekTextColor:
-                                    const Color(0xff4b4370).withOpacity(0.7),
+                                defaultColor: ColorSet.bottomBarColor,
+                                textColor: ColorSet.textColor,
+                                weekTextColor: ColorSet.textColor,
                                 colorMode: ColorMode.color,
                                 fontSize: 18,
                                 weekFontSize: 14,
@@ -669,13 +685,13 @@ class StatisticPageState extends State<StatisticPage> {
                                   Text(
                                     "失敗 ",
                                     style: TextStyle(
-                                        color: Color(0xff4b4370),
+                                        color: ColorSet.textColor,
                                         fontWeight: FontWeight.w500),
                                   ),
                                   Text(
                                     " 成功",
                                     style: TextStyle(
-                                        color: Color(0xff4b4370),
+                                        color: ColorSet.textColor,
                                         fontWeight: FontWeight.w500),
                                   )
                                 ],
@@ -696,9 +712,9 @@ class StatisticPageState extends State<StatisticPage> {
                                 const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
                             margin: const EdgeInsets.only(right: 10, left: 10),
                             decoration: BoxDecoration(
-                              color: const Color(0xfffdeed9),
-                              border:
-                                  Border.all(color: const Color(0xffffeed9)),
+                              color: ColorSet.backgroundColor,
+                              border: Border.all(
+                                  color: ColorSet.textColor, width: 4),
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(20)),
                             ),
@@ -708,9 +724,9 @@ class StatisticPageState extends State<StatisticPage> {
                                   '連續完成天數',
                                   //(consecutiveDays == 0) ? '連續完成運動天數' : '連續完成冥想天數',
                                   style: TextStyle(
-                                      color: Color(0xff4b4370),
+                                      color: ColorSet.textColor,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 22.0),
+                                      fontSize: 20.0),
                                 ),
                                 trailing: ToggleSwitch(
                                   minHeight: 35,
@@ -724,12 +740,12 @@ class StatisticPageState extends State<StatisticPage> {
                                   ],
                                   iconSize: 16,
                                   activeBgColors: const [
-                                    [Color(0xfff6cdb7)],
-                                    [Color(0xffd4d6fc)]
+                                    [ColorSet.exerciseColor],
+                                    [ColorSet.meditationColor]
                                   ],
-                                  activeFgColor: const Color(0xff4b4370),
-                                  inactiveBgColor: const Color(0xfffdfdf5),
-                                  inactiveFgColor: const Color(0xff4b4370),
+                                  activeFgColor: ColorSet.textColor,
+                                  inactiveBgColor: ColorSet.bottomBarColor,
+                                  inactiveFgColor: ColorSet.textColor,
                                   totalSwitches: 2,
                                   onToggle: (index) {
                                     consecutiveDays = index!;
@@ -741,97 +757,109 @@ class StatisticPageState extends State<StatisticPage> {
                               ),
                               (consecutiveDays == 0)
                                   ? SfCartesianChart(
-                                plotAreaBorderWidth: 0,
-                                primaryXAxis: CategoryAxis(
-                                  axisLine: const AxisLine(
-                                    color: Color(0xff4b4370),
-                                    width: 0.6,
-                                  ),
-                                  labelStyle: const TextStyle(
-                                      color: Color(0xff4b4370),
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                  majorTickLines:
-                                  const MajorTickLines(size: 0),
-                                  majorGridLines: const MajorGridLines(
-                                    color: Colors.transparent,
-                                  ),
-                                ),
-                                primaryYAxis: NumericAxis(
-                                  axisLine: const AxisLine(width: 0),
-                                  interval: 3,
-                                  labelStyle: const TextStyle(fontSize: 0),
-                                  numberFormat: NumberFormat('#,##0 天'),
-                                  majorTickLines:
-                                  const MajorTickLines(size: 0),
-                                ),
-                                series: <BarSeries<ChartData, String>>[
-                                  BarSeries<ChartData, String>(
-                                    dataSource: getExerciseConsecutiveDaysChartData(),
-                                    xValueMapper: (ChartData data, _) => data.x,
-                                    yValueMapper: (ChartData data, _) => data.y,
-                                    dataLabelSettings:
-                                    const DataLabelSettings(
-                                        isVisible: true,
-                                        textStyle: TextStyle(
-                                            color: Color(0xff4b4370),
+                                      plotAreaBorderWidth: 0,
+                                      primaryXAxis: CategoryAxis(
+                                        axisLine: const AxisLine(
+                                          color: ColorSet.borderColor,
+                                          width: 0.6,
+                                        ),
+                                        labelStyle: const TextStyle(
+                                            color: ColorSet.borderColor,
                                             fontSize: 15,
-                                            fontWeight: FontWeight.bold)),
-                                    color: const Color(0xffd4d6fc),
-                                    borderRadius:
-                                    const BorderRadius.only(
-                                        topRight: Radius.circular(10),
-                                        bottomRight: Radius.circular(10)
-                                    ),
-                                  ),
-                                ],
-                              )
-                                  : SfCartesianChart(
-                                  plotAreaBorderWidth: 0,
-                                  primaryXAxis: CategoryAxis(
-                                    axisLine: const AxisLine(
-                                      color: Color(0xff4b4370),
-                                      width: 0.6,
-                                    ),
-                                    labelStyle: const TextStyle(
-                                        color: Color(0xff4b4370),
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold),
-                                    majorTickLines:
-                                    const MajorTickLines(size: 0),
-                                    majorGridLines: const MajorGridLines(
-                                      color: Colors.transparent,
-                                    ),
-                                  ),
-                                  primaryYAxis: NumericAxis(
-                                    axisLine: const AxisLine(width: 0),
-                                    interval: 3,
-                                    labelStyle: const TextStyle(fontSize: 0),
-                                    numberFormat: NumberFormat('#,##0 天'),
-                                    majorTickLines:
-                                    const MajorTickLines(size: 0),
-                                  ),
-                                  series: <BarSeries<ChartData, String>>[
-                                    BarSeries<ChartData, String>(
-                                      dataSource: getMeditationConsecutiveDaysChartData(),
-                                      xValueMapper: (ChartData data, _) => data.x,
-                                      yValueMapper: (ChartData data, _) => data.y,
-                                      dataLabelSettings:
-                                      const DataLabelSettings(
-                                          isVisible: true,
-                                          textStyle: TextStyle(
-                                              color: Color(0xff4b4370),
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      color: const Color(0xffd4d6fc),
-                                      borderRadius:
-                                      const BorderRadius.only(
-                                          topRight: Radius.circular(10),
-                                          bottomRight: Radius.circular(10)
+                                            fontWeight: FontWeight.bold),
+                                        majorTickLines:
+                                            const MajorTickLines(size: 0),
+                                        majorGridLines: const MajorGridLines(
+                                          color: Colors.transparent,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                              )
+                                      primaryYAxis: NumericAxis(
+                                        axisLine: const AxisLine(width: 0),
+                                        interval: 3,
+                                        labelStyle:
+                                            const TextStyle(fontSize: 0),
+                                        numberFormat: NumberFormat('#,##0 天'),
+                                        majorTickLines:
+                                            const MajorTickLines(size: 0),
+                                        majorGridLines: const MajorGridLines(
+                                          color: ColorSet.borderColor,
+                                        ),
+                                      ),
+                                      series: <BarSeries<ChartData, String>>[
+                                        BarSeries<ChartData, String>(
+                                          dataSource:
+                                              getExerciseConsecutiveDaysChartData(),
+                                          xValueMapper: (ChartData data, _) =>
+                                              data.x,
+                                          yValueMapper: (ChartData data, _) =>
+                                              data.y,
+                                          dataLabelSettings:
+                                              const DataLabelSettings(
+                                                  isVisible: true,
+                                                  textStyle: TextStyle(
+                                                      color: ColorSet.textColor,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                          color: ColorSet.exerciseColor,
+                                          borderRadius: const BorderRadius.only(
+                                              topRight: Radius.circular(10),
+                                              bottomRight: Radius.circular(10)),
+                                        ),
+                                      ],
+                                    )
+                                  : SfCartesianChart(
+                                      plotAreaBorderWidth: 0,
+                                      primaryXAxis: CategoryAxis(
+                                        axisLine: const AxisLine(
+                                          color: ColorSet.borderColor,
+                                          width: 0.6,
+                                        ),
+                                        labelStyle: const TextStyle(
+                                            color: ColorSet.textColor,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold),
+                                        majorTickLines:
+                                            const MajorTickLines(size: 0),
+                                        majorGridLines: const MajorGridLines(
+                                          color: Colors.transparent,
+                                        ),
+                                      ),
+                                      primaryYAxis: NumericAxis(
+                                        axisLine: const AxisLine(width: 0),
+                                        interval: 3,
+                                        labelStyle:
+                                            const TextStyle(fontSize: 0),
+                                        numberFormat: NumberFormat('#,##0 天'),
+                                        majorTickLines:
+                                            const MajorTickLines(size: 0),
+                                        majorGridLines: const MajorGridLines(
+                                          color: ColorSet.borderColor,
+                                        ),
+                                      ),
+                                      series: <BarSeries<ChartData, String>>[
+                                        BarSeries<ChartData, String>(
+                                          dataSource:
+                                              getMeditationConsecutiveDaysChartData(),
+                                          xValueMapper: (ChartData data, _) =>
+                                              data.x,
+                                          yValueMapper: (ChartData data, _) =>
+                                              data.y,
+                                          dataLabelSettings:
+                                              const DataLabelSettings(
+                                                  isVisible: true,
+                                                  textStyle: TextStyle(
+                                                      color: ColorSet.textColor,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                          color: const Color(0xffE9EAFD),
+                                          borderRadius: const BorderRadius.only(
+                                              topRight: Radius.circular(10),
+                                              bottomRight: Radius.circular(10)),
+                                        ),
+                                      ],
+                                    )
                             ])),
                         const SizedBox(
                           height: 15,
@@ -841,9 +869,9 @@ class StatisticPageState extends State<StatisticPage> {
                                 const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
                             margin: const EdgeInsets.only(right: 10, left: 10),
                             decoration: BoxDecoration(
-                              color: const Color(0xfffdeed9),
-                              border:
-                                  Border.all(color: const Color(0xffffeed9)),
+                              color: ColorSet.backgroundColor,
+                              border: Border.all(
+                                  color: ColorSet.borderColor, width: 4),
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(20)),
                             ),
@@ -853,9 +881,9 @@ class StatisticPageState extends State<StatisticPage> {
                                   '累積比例',
                                   //(accumulatedTime == 0) ? '累積運動時長' : '累積冥想時長',
                                   style: TextStyle(
-                                      color: Color(0xff4b4370),
+                                      color: ColorSet.textColor,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 22.0),
+                                      fontSize: 20.0),
                                 ),
                                 trailing: ToggleSwitch(
                                   minHeight: 35,
@@ -869,12 +897,12 @@ class StatisticPageState extends State<StatisticPage> {
                                   ],
                                   iconSize: 16,
                                   activeBgColors: const [
-                                    [Color(0xfff6cdb7)],
-                                    [Color(0xffd4d6fc)]
+                                    [ColorSet.exerciseColor],
+                                    [ColorSet.meditationColor]
                                   ],
-                                  activeFgColor: const Color(0xff4b4370),
-                                  inactiveBgColor: const Color(0xfffdfdf5),
-                                  inactiveFgColor: const Color(0xff4b4370),
+                                  activeFgColor: ColorSet.textColor,
+                                  inactiveBgColor: ColorSet.bottomBarColor,
+                                  inactiveFgColor: ColorSet.textColor,
                                   totalSwitches: 2,
                                   onToggle: (index) {
                                     accumulatedTime = index!;
@@ -889,18 +917,21 @@ class StatisticPageState extends State<StatisticPage> {
                                       legend: Legend(
                                           isVisible: true,
                                           textStyle: const TextStyle(
-                                              color: Color(0xff4b4370),
+                                              color: ColorSet.textColor,
                                               fontSize: 15,
-                                              fontWeight: FontWeight.bold)
-                                      ),
+                                              fontWeight: FontWeight.bold)),
                                       series: <
                                           CircularSeries<ChartData, String>>[
                                           DoughnutSeries<ChartData, String>(
-                                            dataSource: getExerciseTypePercentageChartData(),
+                                            dataSource:
+                                                getExerciseTypePercentageChartData(),
                                             innerRadius: '40%',
-                                            xValueMapper: (ChartData data, _) => data.x,
-                                            yValueMapper: (ChartData data, _) => data.y,
-                                            pointColorMapper: (ChartData data, _) {
+                                            xValueMapper: (ChartData data, _) =>
+                                                data.x,
+                                            yValueMapper: (ChartData data, _) =>
+                                                data.y,
+                                            pointColorMapper:
+                                                (ChartData data, _) {
                                               if (data.x == "有氧") {
                                                 return const Color(0xffEDEEFC);
                                               } else if (data.x == "重訓") {
@@ -915,10 +946,10 @@ class StatisticPageState extends State<StatisticPage> {
                                             dataLabelSettings:
                                                 const DataLabelSettings(
                                               isVisible: true,
-                                                  textStyle: TextStyle(
-                                                      color: CustomColors.textColor,
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.bold),
+                                              textStyle: TextStyle(
+                                                  color: ColorSet.textColor,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                         ])
@@ -926,17 +957,21 @@ class StatisticPageState extends State<StatisticPage> {
                                       legend: Legend(
                                           isVisible: true,
                                           textStyle: const TextStyle(
-                                              color: CustomColors.textColor,
+                                              color: ColorSet.textColor,
                                               fontSize: 15,
-                                              fontWeight: FontWeight.bold)
-                                      ),
-                                      series: <CircularSeries<ChartData, String>>[
+                                              fontWeight: FontWeight.bold)),
+                                      series: <
+                                          CircularSeries<ChartData, String>>[
                                           DoughnutSeries<ChartData, String>(
-                                            dataSource:getMeditationTypePercentageChartData(),
+                                            dataSource:
+                                                getMeditationTypePercentageChartData(),
                                             innerRadius: '40%',
-                                            xValueMapper: (ChartData data, _) => data.x,
-                                            yValueMapper: (ChartData data, _) => data.y,
-                                            pointColorMapper: (ChartData data, _) {
+                                            xValueMapper: (ChartData data, _) =>
+                                                data.x,
+                                            yValueMapper: (ChartData data, _) =>
+                                                data.y,
+                                            pointColorMapper:
+                                                (ChartData data, _) {
                                               if (data.x == "正念冥想") {
                                                 return const Color(0xffEDEEFC);
                                               } else if (data.x == "放鬆冥想") {
@@ -952,10 +987,10 @@ class StatisticPageState extends State<StatisticPage> {
                                             dataLabelSettings:
                                                 const DataLabelSettings(
                                               isVisible: true,
-                                                  textStyle: TextStyle(
-                                                      color: CustomColors.textColor,
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.bold),
+                                              textStyle: TextStyle(
+                                                  color: ColorSet.textColor,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                         ]),
@@ -968,8 +1003,9 @@ class StatisticPageState extends State<StatisticPage> {
                               const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
                           margin: const EdgeInsets.only(right: 10, left: 10),
                           decoration: BoxDecoration(
-                            color: const Color(0xfffdeed9),
-                            border: Border.all(color: const Color(0xffffeed9)),
+                            color: ColorSet.backgroundColor,
+                            border: Border.all(
+                                color: ColorSet.borderColor, width: 4),
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
                           ),
@@ -979,9 +1015,9 @@ class StatisticPageState extends State<StatisticPage> {
                                 '每月成功天數',
                                 //(monthDays == 0) ? '每月成功運動天數' : '每月成功冥想天數',
                                 style: TextStyle(
-                                    color: CustomColors.textColor,
+                                    color: ColorSet.textColor,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 22.0),
+                                    fontSize: 20.0),
                               ),
                               trailing: ToggleSwitch(
                                 minHeight: 35,
@@ -995,12 +1031,12 @@ class StatisticPageState extends State<StatisticPage> {
                                 ],
                                 iconSize: 16,
                                 activeBgColors: const [
-                                  [Color(0xfff6cdb7)],
-                                  [Color(0xffd4d6fc)]
+                                  [ColorSet.exerciseColor],
+                                  [ColorSet.meditationColor]
                                 ],
-                                activeFgColor: const Color(0xff4b4370),
-                                inactiveBgColor: const Color(0xfffdfdf5),
-                                inactiveFgColor: const Color(0xff4b4370),
+                                activeFgColor: ColorSet.textColor,
+                                inactiveBgColor: ColorSet.bottomBarColor,
+                                inactiveFgColor: ColorSet.textColor,
                                 totalSwitches: 2,
                                 //animate: true,
                                 //animationDuration: 300,
@@ -1033,11 +1069,11 @@ class StatisticPageState extends State<StatisticPage> {
                                         plotAreaBorderWidth: 0,
                                         primaryXAxis: CategoryAxis(
                                           axisLine: const AxisLine(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.textColor,
                                             width: 0.6,
                                           ),
                                           labelStyle: const TextStyle(
-                                              color: CustomColors.textColor,
+                                              color: ColorSet.textColor,
                                               fontSize: 15,
                                               fontWeight: FontWeight.bold),
                                           // set 0 or transparent color to hide grid lines and tick lines
@@ -1061,7 +1097,7 @@ class StatisticPageState extends State<StatisticPage> {
                                           majorTickLines:
                                               const MajorTickLines(size: 0),
                                           majorGridLines: const MajorGridLines(
-                                            color: CustomColors.textColor,
+                                            color: ColorSet.borderColor,
                                           ),
                                         ),
                                         //tooltipBehavior: _tooltipBehavior,
@@ -1078,11 +1114,12 @@ class StatisticPageState extends State<StatisticPage> {
                                                 const DataLabelSettings(
                                                     isVisible: true,
                                                     textStyle: TextStyle(
-                                                        color: CustomColors.textColor,
+                                                        color:
+                                                            ColorSet.textColor,
                                                         fontSize: 15,
                                                         fontWeight:
                                                             FontWeight.bold)),
-                                            color: const Color(0xffd4d6fc),
+                                            color: ColorSet.exerciseColor,
                                             borderRadius:
                                                 const BorderRadius.only(
                                                     topRight:
@@ -1092,77 +1129,72 @@ class StatisticPageState extends State<StatisticPage> {
                                           )
                                         ]))
                                 : Container(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            10, 0, 10, 0),
-                                        child: SfCartesianChart(
-                                            // hide the border
-                                            plotAreaBorderWidth: 0,
-                                            primaryXAxis: CategoryAxis(
-                                              axisLine: const AxisLine(
-                                                color: CustomColors.textColor,
-                                                width: 0.6,
-                                              ),
-                                              labelStyle: const TextStyle(
-                                                  color: CustomColors.textColor,
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold),
-                                              // set 0 or transparent color to hide grid lines and tick lines
-                                              majorTickLines:
-                                                  const MajorTickLines(size: 0),
-                                              majorGridLines:
-                                                  const MajorGridLines(
-                                                color: Colors.transparent,
-                                              ),
-                                            ),
-                                            primaryYAxis: NumericAxis(
-                                              // must set for data label (above the column)
-                                              labelFormat: '{value} 天',
-                                              minimum: 0,
-                                              maximum: maxMeditationDays,
-                                              interval: 7,
-                                              // set 0 to hide grid lines and tick lines
-                                              axisLine:
-                                                  const AxisLine(width: 0),
-                                              labelStyle: const TextStyle(
-                                                fontSize: 0,
-                                              ),
-                                              majorTickLines:
-                                                  const MajorTickLines(size: 0),
-                                              majorGridLines:
-                                                  const MajorGridLines(
-                                                color: CustomColors.textColor,
-                                              ),
-                                            ),
-                                            //tooltipBehavior: _tooltipBehavior,
-                                            series: <
-                                                ChartSeries<ChartData, String>>[
-                                              ColumnSeries<ChartData, String>(
-                                                dataSource:
-                                                    getMeditationMonthDaysData(),
-                                                xValueMapper:
-                                                    (ChartData data, _) =>
-                                                        data.x,
-                                                yValueMapper:
-                                                    (ChartData data, _) =>
-                                                        data.y,
-                                                dataLabelSettings:
-                                                    const DataLabelSettings(
-                                                        isVisible: true,
-                                                        textStyle: TextStyle(color: CustomColors.textColor,
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                color: const Color(0xffd4d6fc),
-                                                borderRadius:
-                                                    const BorderRadius.only(
-                                                        topRight:
-                                                            Radius.circular(10),
-                                                        topLeft:
-                                                            Radius.circular(
-                                                                10)),
-                                              )
-                                            ])),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                    child: SfCartesianChart(
+                                        // hide the border
+                                        plotAreaBorderWidth: 0,
+                                        primaryXAxis: CategoryAxis(
+                                          axisLine: const AxisLine(
+                                            color: ColorSet.textColor,
+                                            width: 0.6,
+                                          ),
+                                          labelStyle: const TextStyle(
+                                              color: ColorSet.textColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                          // set 0 or transparent color to hide grid lines and tick lines
+                                          majorTickLines:
+                                              const MajorTickLines(size: 0),
+                                          majorGridLines: const MajorGridLines(
+                                            color: Colors.transparent,
+                                          ),
+                                        ),
+                                        primaryYAxis: NumericAxis(
+                                          // must set for data label (above the column)
+                                          labelFormat: '{value} 天',
+                                          minimum: 0,
+                                          maximum: maxMeditationDays,
+                                          interval: 7,
+                                          // set 0 to hide grid lines and tick lines
+                                          axisLine: const AxisLine(width: 0),
+                                          labelStyle: const TextStyle(
+                                            fontSize: 0,
+                                          ),
+                                          majorTickLines:
+                                              const MajorTickLines(size: 0),
+                                          majorGridLines: const MajorGridLines(
+                                            color: ColorSet.borderColor,
+                                          ),
+                                        ),
+                                        //tooltipBehavior: _tooltipBehavior,
+                                        series: <
+                                            ChartSeries<ChartData, String>>[
+                                          ColumnSeries<ChartData, String>(
+                                            dataSource:
+                                                getMeditationMonthDaysData(),
+                                            xValueMapper: (ChartData data, _) =>
+                                                data.x,
+                                            yValueMapper: (ChartData data, _) =>
+                                                data.y,
+                                            dataLabelSettings:
+                                                const DataLabelSettings(
+                                                    isVisible: true,
+                                                    textStyle: TextStyle(
+                                                        color:
+                                                            ColorSet.textColor,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                            color: ColorSet.meditationColor,
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(10),
+                                                    topLeft:
+                                                        Radius.circular(10)),
+                                          )
+                                        ])),
                           ]),
                         ),
                       ]),
@@ -1312,7 +1344,6 @@ class StatisticPageState extends State<StatisticPage> {
     return chartData;
   }
 
-
 ////////////////////// Parameter of AddWeightBottomSheet //////////////////////
   TextEditingController weightController = TextEditingController();
 
@@ -1321,7 +1352,7 @@ class StatisticPageState extends State<StatisticPage> {
   OutlineInputBorder enabledBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(20),
     borderSide: const BorderSide(
-      color: CustomColors.textColor,
+      color: ColorSet.textColor,
       width: 3,
     ),
   );
@@ -1352,14 +1383,14 @@ class StatisticPageState extends State<StatisticPage> {
             title: const Text(
               "新增體重",
               style: TextStyle(
-                  color: CustomColors.textColor,
+                  color: ColorSet.textColor,
                   fontSize: 24,
                   fontWeight: FontWeight.bold),
             ),
             trailing: Container(
               padding: const EdgeInsets.only(right: 20, left: 20),
               decoration: BoxDecoration(
-                border: Border.all(color: CustomColors.textColor, width: 2),
+                border: Border.all(color: ColorSet.textColor, width: 2),
                 color: Colors.transparent,
                 shape: BoxShape.circle,
               ),
@@ -1368,7 +1399,7 @@ class StatisticPageState extends State<StatisticPage> {
                 constraints: const BoxConstraints(),
                 icon: const Icon(
                   Icons.close_rounded,
-                  color: CustomColors.textColor,
+                  color: ColorSet.textColor,
                 ),
                 onPressed: () {
                   weightController.clear();
@@ -1423,7 +1454,7 @@ class StatisticPageState extends State<StatisticPage> {
                     isDense: true,
                     prefixIcon: const Icon(
                       Icons.monitor_weight_outlined,
-                      color: CustomColors.iconColor,
+                      color: ColorSet.iconColor,
                     ),
                     labelText: '體重',
                     hintText: '單位為「公斤」',
@@ -1431,7 +1462,7 @@ class StatisticPageState extends State<StatisticPage> {
                     errorBorder: focusedAndErrorBorder,
                     focusedBorder: focusedAndErrorBorder,
                     focusedErrorBorder: focusedAndErrorBorder,
-                    labelStyle: const TextStyle(color: CustomColors.textColor),
+                    labelStyle: const TextStyle(color: ColorSet.textColor),
                     hintStyle: const TextStyle(color: Colors.grey),
                     errorStyle: const TextStyle(
                         height: 1,
@@ -1440,11 +1471,11 @@ class StatisticPageState extends State<StatisticPage> {
                         fontSize: 16),
                     errorMaxLines: 1,
                     filled: true,
-                    fillColor: CustomColors.backgroundColor,
+                    fillColor: ColorSet.backgroundColor,
                   ),
                   cursorColor: const Color(0xfff6cdb7),
                   style: const TextStyle(
-                      color: CustomColors.textColor,
+                      color: ColorSet.textColor,
                       fontSize: 18,
                       fontWeight: FontWeight.bold),
                   keyboardType:
@@ -1460,7 +1491,7 @@ class StatisticPageState extends State<StatisticPage> {
                 isDense: true,
                 prefixIcon: const Icon(
                   Icons.accessibility_outlined,
-                  color: CustomColors.iconColor,
+                  color: ColorSet.iconColor,
                 ),
                 labelText: "日期：$showingDate",
                 disabledBorder: const NonUniformOutlineInputBorder(
@@ -1469,16 +1500,16 @@ class StatisticPageState extends State<StatisticPage> {
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20)),
                   borderSide: BorderSide(
-                    color: CustomColors.textColor,
+                    color: ColorSet.textColor,
                     width: 3,
                   ),
                 ),
-                labelStyle: const TextStyle(color: CustomColors.textColor),
+                labelStyle: const TextStyle(color: ColorSet.textColor),
                 filled: true,
-                fillColor: CustomColors.backgroundColor,
+                fillColor: ColorSet.backgroundColor,
               ),
               style: const TextStyle(
-                  color: CustomColors.textColor,
+                  color: ColorSet.textColor,
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
             ),
@@ -1489,10 +1520,11 @@ class StatisticPageState extends State<StatisticPage> {
                 height: 200,
                 padding: const EdgeInsets.only(bottom: 20, right: 20, left: 20),
                 decoration: const ShapeDecoration(
-                    color:CustomColors.backgroundColor,
+                    color: ColorSet.backgroundColor,
                     shape: NonUniformOutlineInputBorder(
                         hideTopSide: true,
-                        borderSide: BorderSide(color:  CustomColors.borderColor, width: 3),
+                        borderSide:
+                            BorderSide(color: ColorSet.borderColor, width: 3),
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(20),
                             bottomRight: Radius.circular(20)))),
@@ -1504,37 +1536,37 @@ class StatisticPageState extends State<StatisticPage> {
                         selectedDate: selectedDate,
                         maximumDate: DateTime.now(),
                         options: const DatePickerOptions(
-                            backgroundColor: CustomColors.backgroundColor),
+                            backgroundColor: ColorSet.backgroundColor),
                         scrollViewOptions: const DatePickerScrollViewOptions(
                             year: ScrollViewDetailOptions(
                               textStyle: TextStyle(
-                                  color: CustomColors.textColor,
+                                  color: ColorSet.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               selectedTextStyle: TextStyle(
-                                  color: CustomColors.textColor,
+                                  color: ColorSet.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               margin: EdgeInsets.only(right: 20, left: 20),
                             ),
                             month: ScrollViewDetailOptions(
                               textStyle: TextStyle(
-                                  color: CustomColors.textColor,
+                                  color: ColorSet.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               selectedTextStyle: TextStyle(
-                                  color: CustomColors.textColor,
+                                  color: ColorSet.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               margin: EdgeInsets.only(right: 20, left: 20),
                             ),
                             day: ScrollViewDetailOptions(
                               textStyle: TextStyle(
-                                  color: CustomColors.textColor,
+                                  color: ColorSet.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               selectedTextStyle: TextStyle(
-                                  color: CustomColors.textColor,
+                                  color: ColorSet.textColor,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold),
                               margin: EdgeInsets.only(right: 20, left: 20),
@@ -1592,7 +1624,7 @@ class StatisticPageState extends State<StatisticPage> {
               child: const Text(
                 "確定",
                 style: TextStyle(
-                  color: CustomColors.textColor,
+                  color: ColorSet.textColor,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),

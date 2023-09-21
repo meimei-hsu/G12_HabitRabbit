@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:level_map/level_map.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+
+import 'package:g12/screens/PageMaterial.dart';
+
 import 'package:g12/services/Database.dart';
-import 'dart:async';
 
 int workoutGem = 0;
 int meditationGem = 0;
@@ -11,13 +14,6 @@ String workoutFragment = "";
 String meditationFragment = "";
 bool isFetchingData = true;
 
-class CustomColors {
-  static const Color textColor = Color(0xFF2F4F4F);
-  static const Color iconColor = Color(0xFF2F4F4F);
-  static const Color backgroundColor = Color(0xFFFDFDFD);
-  static const Color borderColor = Color(0xFF2F4F4F);
-  static const Color containerColor = Color(0xFFFDEED9);
-}
 
 class MilestonePage extends StatefulWidget {
   final Map arguments;
@@ -53,7 +49,7 @@ class MilestonePageState extends State<MilestonePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: CustomColors.backgroundColor,
+        backgroundColor: ColorSet.backgroundColor,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
@@ -68,7 +64,7 @@ class MilestonePageState extends State<MilestonePage> {
                         '${user?.displayName!} 的角色',
                         style: const TextStyle(
                           fontFamily: 'WorkSans',
-                          color: CustomColors.textColor,
+                          color: ColorSet.textColor,
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1.1,
@@ -78,7 +74,7 @@ class MilestonePageState extends State<MilestonePage> {
                       //TODO: 根據等級改變Icon
                       const Icon(
                         Icons.looks_two,
-                        color: CustomColors.iconColor,
+                        color: ColorSet.iconColor,
                         size: 40,
                       ),
                     ],
@@ -90,7 +86,7 @@ class MilestonePageState extends State<MilestonePage> {
                     '請養成規律的運動與冥想習慣蒐集寶物讓我長大吧！',
                     style: TextStyle(
                       fontFamily: 'WorkSans',
-                      color: CustomColors.textColor,
+                      color: ColorSet.textColor,
                       fontSize: 25,
                       fontWeight: FontWeight.normal,
                       letterSpacing: 1.1,
@@ -136,7 +132,7 @@ class CharacterWidget extends StatelessWidget {
               width: 0.9 * screenWidth,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [CustomColors.backgroundColor, CustomColors.containerColor],
+                  colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                 ),
@@ -161,8 +157,8 @@ class CharacterWidget extends StatelessWidget {
               onPressed: () {
                 _showQuizDialog(context);
               },
-              backgroundColor: CustomColors.backgroundColor,
-              child: const Icon(Icons.quiz, color: CustomColors.iconColor),
+              backgroundColor: ColorSet.backgroundColor,
+              child: const Icon(Icons.quiz, color: ColorSet.iconColor),
             ),
           ),
         ),
@@ -175,8 +171,8 @@ class CharacterWidget extends StatelessWidget {
               onPressed: () {
                 _showGrowDialog(context);
               },
-              backgroundColor: CustomColors.backgroundColor,
-              child: const Icon(Icons.more_horiz_outlined, color: CustomColors.iconColor),
+              backgroundColor: ColorSet.backgroundColor,
+              child: const Icon(Icons.more_horiz_outlined, color: ColorSet.iconColor),
             ),
           ),
         ),
@@ -192,8 +188,8 @@ class CharacterWidget extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const Level()),
                 );
               },
-              backgroundColor:CustomColors.backgroundColor,
-              child: const Icon(Icons.map, color: CustomColors.iconColor),
+              backgroundColor:ColorSet.backgroundColor,
+              child: const Icon(Icons.map, color: ColorSet.iconColor),
             ),
           ),
         ),
@@ -212,8 +208,8 @@ class CharacterWidget extends StatelessWidget {
                   Navigator.pushNamed(context, '/contract/initial');
                 }
               },
-              backgroundColor: CustomColors.backgroundColor,
-              child: const Icon(Icons.request_quote_outlined, color: CustomColors.iconColor),
+              backgroundColor: ColorSet.backgroundColor,
+              child: const Icon(Icons.request_quote_outlined, color: ColorSet.iconColor),
             ),
           ),
         ),
@@ -223,7 +219,7 @@ class CharacterWidget extends StatelessWidget {
             '本周運動習慣已達成：',
             style: TextStyle(
               fontFamily: 'WorkSans',
-              color: CustomColors.textColor,
+              color: ColorSet.textColor,
               fontSize: 15,
             ),
           ),
@@ -241,13 +237,13 @@ class CharacterWidget extends StatelessWidget {
               center: Text(
                 "${workoutPercent.round()}%",
                 style: const TextStyle(
-                  color: CustomColors.backgroundColor,
+                  color: ColorSet.backgroundColor,
                   fontSize: 10,
                 ),
               ),
               barRadius: const Radius.circular(16),
-              backgroundColor: CustomColors.backgroundColor,
-              progressColor: CustomColors.textColor,
+              backgroundColor: ColorSet.backgroundColor,
+              progressColor: ColorSet.textColor,
             ),
           ),
         ),
@@ -257,7 +253,7 @@ class CharacterWidget extends StatelessWidget {
             '本周冥想習慣已達成：',
             style: TextStyle(
               fontFamily: 'WorkSans',
-              color: CustomColors.textColor,
+              color: ColorSet.textColor,
               fontSize: 15,
             ),
           ),
@@ -275,13 +271,13 @@ class CharacterWidget extends StatelessWidget {
               center: Text(
                 "${meditationPercent.round()}%",
                 style: const TextStyle(
-                  color: CustomColors.backgroundColor,
+                  color: ColorSet.backgroundColor,
                   fontSize: 10,
                 ),
               ),
               barRadius: const Radius.circular(16),
-              backgroundColor: CustomColors.backgroundColor,
-              progressColor: CustomColors.textColor,
+              backgroundColor: ColorSet.backgroundColor,
+              progressColor: ColorSet.textColor,
             ),
           ),
         ),
@@ -291,7 +287,7 @@ class CharacterWidget extends StatelessWidget {
             '距離達成所有習慣養成：',
             style: TextStyle(
               fontFamily: 'WorkSans',
-              color: CustomColors.textColor,
+              color: ColorSet.textColor,
               fontSize: 15,
             ),
           ),
@@ -309,13 +305,13 @@ class CharacterWidget extends StatelessWidget {
               center: Text(
                 "${totalPercent.round()}%",
                 style: const TextStyle(
-                  color: CustomColors.backgroundColor,
+                  color: ColorSet.backgroundColor,
                   fontSize: 10,
                 ),
               ),
               barRadius: const Radius.circular(16),
-              backgroundColor: CustomColors.backgroundColor,
-              progressColor: CustomColors.textColor,
+              backgroundColor: ColorSet.backgroundColor,
+              progressColor: ColorSet.textColor,
             ),
           ),
         ),
@@ -328,7 +324,7 @@ class CharacterWidget extends StatelessWidget {
   void _showGrowDialog(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: ColorSet.backgroundColor,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -348,7 +344,7 @@ class CharacterWidget extends StatelessWidget {
 void _showQuizDialog(BuildContext context) {
   showModalBottomSheet(
     context: context,
-    backgroundColor: CustomColors.backgroundColor,
+    backgroundColor: ColorSet.backgroundColor,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
@@ -405,7 +401,7 @@ class QuizDialogState extends State<QuizDialog> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Material(
-      //color: CustomColors.backgroundColor,
+      //color: ColorSet.backgroundColor,
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -414,14 +410,14 @@ class QuizDialogState extends State<QuizDialog> {
               title: const Text(
                 "寶物蒐集概況",
                 style: TextStyle(
-                    color: CustomColors.textColor,
+                    color: ColorSet.textColor,
                     fontSize: 24,
                     fontWeight: FontWeight.bold),
               ),
               trailing: Container(
                 padding: const EdgeInsets.only(right: 10, left: 10),
                 decoration: BoxDecoration(
-                  border: Border.all(color: CustomColors.borderColor, width: 2),
+                  border: Border.all(color: ColorSet.borderColor, width: 2),
                   color: Colors.transparent,
                   shape: BoxShape.circle,
                 ),
@@ -430,7 +426,7 @@ class QuizDialogState extends State<QuizDialog> {
                   constraints: const BoxConstraints(),
                   icon: const Icon(
                     Icons.close_rounded,
-                    color: CustomColors.iconColor,
+                    color: ColorSet.iconColor,
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -443,7 +439,7 @@ class QuizDialogState extends State<QuizDialog> {
               '運動寶物',
               style: TextStyle(
                 fontSize: 20,
-                color: CustomColors.textColor,
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold
               ),
             ),
@@ -457,7 +453,7 @@ class QuizDialogState extends State<QuizDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
-                    colors: [CustomColors.backgroundColor, CustomColors.containerColor],
+                    colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
@@ -482,7 +478,7 @@ class QuizDialogState extends State<QuizDialog> {
               '冥想寶物',
               style: TextStyle(
                 fontSize: 20,
-                color: CustomColors.textColor,
+                color: ColorSet.textColor,
                   fontWeight: FontWeight.bold
               ),
             ),
@@ -496,7 +492,7 @@ class QuizDialogState extends State<QuizDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
-                    colors: [CustomColors.backgroundColor, CustomColors.containerColor],
+                    colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
@@ -538,7 +534,7 @@ class GrowDialogState extends State<GrowDialog> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     return Material(
-      //color: CustomColors.backgroundColor,
+      //color: ColorSet.backgroundColor,
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -547,14 +543,14 @@ class GrowDialogState extends State<GrowDialog> {
               title: const Text(
                 "角色進化圖",
                 style: TextStyle(
-                    color: CustomColors.textColor,
+                    color: ColorSet.textColor,
                     fontSize: 24,
                     fontWeight: FontWeight.bold),
               ),
               trailing: Container(
                 padding: const EdgeInsets.only(right: 10, left: 10),
                 decoration: BoxDecoration(
-                  border: Border.all(color: CustomColors.textColor, width: 2),
+                  border: Border.all(color: ColorSet.textColor, width: 2),
                   color: Colors.transparent,
                   shape: BoxShape.circle,
                 ),
@@ -563,7 +559,7 @@ class GrowDialogState extends State<GrowDialog> {
                   constraints: const BoxConstraints(),
                   icon: const Icon(
                     Icons.close_rounded,
-                    color: CustomColors.iconColor,
+                    color: ColorSet.iconColor,
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -580,7 +576,7 @@ class GrowDialogState extends State<GrowDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
-                    colors: [CustomColors.backgroundColor, CustomColors.containerColor],
+                    colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
@@ -601,7 +597,7 @@ class GrowDialogState extends State<GrowDialog> {
                       '第一階段',
                       style: TextStyle(
                         fontSize: 20,
-                        color: CustomColors.textColor,
+                        color: ColorSet.textColor,
                       ),
                     ),
                   ],
@@ -617,7 +613,7 @@ class GrowDialogState extends State<GrowDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
-                    colors: [CustomColors.backgroundColor, CustomColors.containerColor],
+                    colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
@@ -636,7 +632,7 @@ class GrowDialogState extends State<GrowDialog> {
                       '第二階段',
                       style: TextStyle(
                         fontSize: 20,
-                        color: CustomColors.textColor,
+                        color: ColorSet.textColor,
                       ),
                     ),
                   ],
@@ -652,7 +648,7 @@ class GrowDialogState extends State<GrowDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
-                    colors: [CustomColors.backgroundColor, CustomColors.containerColor],
+                    colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
@@ -671,7 +667,7 @@ class GrowDialogState extends State<GrowDialog> {
                       '???',
                       style: TextStyle(
                         fontSize: 20,
-                        color: CustomColors.textColor,
+                        color: ColorSet.textColor,
                       ),
                     ),
                   ],
@@ -703,7 +699,7 @@ class LevelState extends State<Level> {
         body: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [CustomColors.backgroundColor, CustomColors.containerColor],
+              colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
             ),

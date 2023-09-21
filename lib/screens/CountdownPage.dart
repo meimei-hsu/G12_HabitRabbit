@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-class CustomColors {
-  static const Color textColor = Color(0xFF2F4F4F);
-  static const Color backgroundColor = Color(0xFFFDFDFD);
-}
+import 'package:g12/screens/PageMaterial.dart';
 
 class CountdownPage extends StatefulWidget {
   final Map arguments;
@@ -53,11 +50,11 @@ class CountdownPageState extends State<CountdownPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: CustomColors.backgroundColor,
+        backgroundColor: ColorSet.backgroundColor,
         body: Center(
           child: Text('$time',
               style: const TextStyle(
-                color: CustomColors.textColor,
+                color: ColorSet.textColor,
                 fontSize: 100,
                 fontWeight: FontWeight.bold,
               )),

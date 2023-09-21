@@ -434,11 +434,18 @@ class HomepageState extends State<Homepage> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
+                            print("workoutPlan: $workoutPlan");
+                            print("meditationPlan: $meditationPlan");
+                            print("isBefore: $isBefore");
+                            print("_selectedDay: $_selectedDay");
+                            print("_focusedDay: $_focusedDay");
+                            print(DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day)
+                                );
                             if (workoutPlan == null && meditationPlan == null) {
                               // 運動沒有、冥想沒有 --> 新增運動 + 冥想
                               // 今天之後 --> 新增；之前 --> 沒有
                               (isBefore)
-                                  ? null
+                                  ? InformDialog().get(context, ":(","溯及既往 打咩！").show()
                                   : showModalBottomSheet(
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
@@ -461,7 +468,7 @@ class HomepageState extends State<Homepage> {
                               // 運動有、冥想沒有 --> 運動完成度、新增冥想
                               // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
                               (isBefore)
-                                  ? null
+                                  ? InformDialog().get(context, ":(","溯及既往 打咩！").show()
                                   : showModalBottomSheet(
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
@@ -484,7 +491,7 @@ class HomepageState extends State<Homepage> {
                               // 運動沒有、冥想有 --> 冥想完成度、新增運動
                               // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
                               (isBefore)
-                                  ? null
+                                  ? InformDialog().get(context, ":(","溯及既往 打咩！").show()
                                   : showModalBottomSheet(
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(

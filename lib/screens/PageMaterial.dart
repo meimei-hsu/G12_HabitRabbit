@@ -3,6 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+class ColorSet {
+  static const Color backgroundColor = Color(0xFFFDFDFD);
+  static const Color bottomBarColor = Color(0xFFF4F4F6);
+  static const Color chartLineColor = Color(0xFFCAD2D2);
+  static const Color successColor = Color(0xFFFEE8E8);
+  static const Color failColor = Color(0xFFDEF0DE);
+  static const Color exerciseColor = Color(0xFFFAE5DA);
+  static const Color meditationColor = Color(0xFFE9EAFD);
+  static const Color textColor = Color(0xFF2F4F4F);
+  static const Color iconColor = Color(0xFF2F4F4F);
+  static const Color borderColor = Color(0xFF2F4F4F);
+}
+
 class InformDialog {
   AwesomeDialog get(BuildContext context, String title, String desc,
       {Function? btnOkOnPress}) {

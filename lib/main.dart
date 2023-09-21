@@ -13,6 +13,8 @@ import 'package:g12/screens/Routes.dart';
 import 'package:g12/screens/StatisticPage.dart';
 import 'package:g12/screens/SettingsPage.dart';
 
+import 'package:g12/screens/PageMaterial.dart';
+
 class AppEntryPoint extends StatelessWidget {
   const AppEntryPoint({super.key});
 
@@ -79,8 +81,8 @@ class BottomNavigationControllerState
           )),
           padding: EdgeInsets.zero,
           height: 80,
-          backgroundColor: const Color(0xFFFCFCFC),
-          snakeViewColor: const Color(0xFFFDEED9),
+          backgroundColor: ColorSet.bottomBarColor,
+          snakeViewColor: const Color(0xFFFDFDFD),
           selectedItemColor: const Color(0xFF2F4F4F),
           unselectedItemColor: const Color(0xFF2F4F4F),
           showUnselectedLabels: false,
