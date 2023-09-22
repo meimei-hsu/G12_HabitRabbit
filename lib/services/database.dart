@@ -544,7 +544,7 @@ class ContractDB {
 class GamificationDB {
   static get uid =>
       FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
-  static const db = "milestone";
+  static const db = "gamification";
 
   // Define the columns of the milestone table
   static get columns => [

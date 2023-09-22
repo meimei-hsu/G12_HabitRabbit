@@ -111,7 +111,7 @@ class Validator {
     if (password.isEmpty) {
       return '\u26A0 密碼不得為空。';
     } else if (password.length < 6) {
-      return '\u26A0 這個密碼太短了。至少要有 6 個字元。';
+      return '\u26A0 這個密碼太短了 (至少 6 位元)。';
     }
 
     return null;

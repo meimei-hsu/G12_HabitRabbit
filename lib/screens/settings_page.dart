@@ -2,11 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
+import 'package:g12/screens/page_material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 
 import 'package:g12/services/database.dart';
+
+import '../services/authentication.dart';
 
 // SettingsPage's data
 class SettingsPageData {
@@ -15,6 +18,7 @@ class SettingsPageData {
   Map timeForecast = {};
   String habitType = ""; // e.g. workout, meditation
   String habitTypeZH = ""; // habitType in Chinese
+  String profileType = ""; // the type of profile data that user is modifying
 
   SettingsPageData() {
     getUserData();
@@ -42,6 +46,18 @@ class SettingsPageData {
   void isSettingMeditation() {
     habitType = "meditation";
     habitTypeZH = "冥想";
+  }
+
+  void isSettingDisplayName() {
+    profileType = "暱稱";
+  }
+
+  void isSettingPhotoURL() {
+    profileType = "照片";
+  }
+
+  void isSettingPassword() {
+    profileType = "密碼";
   }
 }
 
@@ -228,22 +244,37 @@ class SettingsPageState extends State<SettingsPage> {
               settingsGroupTitle: "個人",
               items: [
                 SettingsItem(
-                  onTap: () => {},
-                  icons: CupertinoIcons.textformat_alt,
-                  iconStyle: iconStyle,
-                  title: '更改暱稱',
-                ),
-                SettingsItem(
-                    onTap: () => {},
-                    icons: Icons.email_outlined,
+                    onTap: () {
+                      mem.isSettingPassword();
+                      showDialog<double>(
+                          context: context,
+                          builder: (context) => const ChangeProfileDialog());
+                    },
+                    icons: Icons.password_outlined,
                     iconStyle: IconStyle(
                       iconsColor: const Color(0xff0d3b66),
                       withBackground: true,
                       backgroundColor: const Color(0xfffaf0ca),
                     ),
-                    title: '更改信箱'),
+                    title: '更改密碼'),
                 SettingsItem(
-                  onTap: () => {},
+                  onTap: () {
+                    mem.isSettingDisplayName();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeProfileDialog());
+                  },
+                  icons: CupertinoIcons.textformat_alt,
+                  iconStyle: iconStyle,
+                  title: '更改暱稱',
+                ),
+                SettingsItem(
+                  onTap: () {
+                    mem.isSettingPhotoURL();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeProfileDialog());
+                  },
                   icons: CupertinoIcons.photo_on_rectangle,
                   iconStyle: iconStyle,
                   title: '更改照片',
@@ -1004,6 +1035,161 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
                 primaryColor: const Color(0xffffa493),
                 description: Text(
                   "${mem.habitTypeZH}時長已更新",
+                  style: const TextStyle(
+                    color: Color(0xff0d3b66),
+                    fontSize: 16,
+                    letterSpacing: 0,
+                    fontWeight: FontWeight.bold,
+                    height: 1,
+                  ),
+                ),
+                position: MotionToastPosition.bottom,
+                animationType: AnimationType.fromBottom,
+                animationCurve: Curves.bounceIn,
+                //displaySideBar: false,
+              ).show(context);
+            },
+            child: const Text(
+              "確定",
+              style: TextStyle(
+                color: Color(0xff0d3b66),
+                fontWeight: FontWeight.bold,
+              ),
+            )),
+      ],
+    );
+  }
+}
+
+class ChangeProfileDialog extends StatefulWidget {
+  const ChangeProfileDialog({super.key});
+
+  @override
+  ChangeProfileDialogState createState() => ChangeProfileDialogState();
+}
+
+class ChangeProfileDialogState extends State<ChangeProfileDialog> {
+  TextEditingController controller = TextEditingController();
+  bool isPasswordVisible = false;
+
+  Widget _getTextFormField() => TextFormField(
+        controller: controller,
+        validator:
+            (mem.profileType == "密碼") ? Validator.validatePassword : null,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        decoration: InputDecoration(
+          isDense: true,
+          prefixIcon: const Icon(
+            Icons.abc_rounded,
+            color: ColorSet.iconColor,
+          ),
+          suffixIcon: (mem.profileType == "密碼")
+              ? IconButton(
+                  icon: Icon(
+                    // Based on passwordVisible state choose the icon
+                    isPasswordVisible
+                        ? Icons.visibility_rounded
+                        : Icons.visibility_off_rounded,
+                    color: ColorSet.iconColor,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isPasswordVisible = !isPasswordVisible;
+                    });
+                  },
+                )
+              : null,
+          labelText: mem.profileType,
+          hintText: (mem.profileType == "密碼")
+              ? '至少 6 位元'
+              : (mem.profileType == "照片")
+                  ? '照片網址'
+                  : mem.user.displayName,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(
+              color: Color(0xff4b4370),
+              width: 3,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(
+              color: Color(0xfff6cdb7),
+              width: 3,
+            ),
+          ),
+          labelStyle: const TextStyle(color: ColorSet.textColor),
+          hintStyle: const TextStyle(color: Colors.grey),
+          errorStyle: const TextStyle(
+              height: 1,
+              color: Color(0xfff6cdb7),
+              fontWeight: FontWeight.bold,
+              fontSize: 16),
+          errorMaxLines: 1,
+          filled: true,
+          fillColor: ColorSet.backgroundColor,
+        ),
+        cursorColor: const Color(0xfff6cdb7),
+        style: const TextStyle(fontSize: 18, color: ColorSet.textColor),
+        keyboardType: TextInputType.text,
+        obscureText: !isPasswordVisible,
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        mem.profileType,
+        style: const TextStyle(
+          color: Color(0xff0d3b66),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: (mem.profileType == "密碼")
+                ? MediaQuery.of(context).size.width * 0.2
+                : MediaQuery.of(context).size.width * 0.1,
+            width: double.maxFinite,
+            child: _getTextFormField(),
+          ),
+        ],
+      ),
+      actions: [
+        OutlinedButton(
+            child: const Text(
+              "取消",
+              style: TextStyle(
+                color: Color(0xff0d3b66),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xfffbb87f),
+            ),
+            onPressed: () async {
+              if (mem.habitType == "密碼") {
+                mem.user.updatePassword(controller.text);
+              } else if (mem.habitType == "暱稱") {
+                mem.user.updateDisplayName(controller.text);
+              } else if (mem.habitType == "照片") {
+                mem.user.updatePhotoURL(controller.text);
+              }
+
+              if (!mounted) return;
+              Navigator.pop(context);
+              MotionToast(
+                icon: Icons.done_all_rounded,
+                primaryColor: const Color(0xffffa493),
+                description: Text(
+                  "${mem.profileType}已更新",
                   style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,
