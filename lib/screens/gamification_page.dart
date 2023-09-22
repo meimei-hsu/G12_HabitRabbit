@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:level_map/level_map.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import 'package:g12/screens/page_material.dart';
@@ -10,39 +9,39 @@ import 'package:g12/services/database.dart';
 
 int workoutGem = 0;
 int meditationGem = 0;
-String workoutFragment = "";
-String meditationFragment = "";
-bool isFetchingData = true;
+double workoutPercent = 0;
+double meditationPercent = 0;
+double totalPercent = 0;
 bool hasContract = false;
 
-class MilestonePage extends StatefulWidget {
+class GamificationPage extends StatefulWidget {
   final Map arguments;
-  const MilestonePage({super.key, required this.arguments});
+  const GamificationPage({super.key, required this.arguments});
 
   @override
-  MilestonePageState createState() => MilestonePageState();
+  GamificationPageState createState() => GamificationPageState();
 }
 
-class MilestonePageState extends State<MilestonePage> {
+class GamificationPageState extends State<GamificationPage> {
   User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
     super.initState();
-    _fetchExistingMilestoneData();
+    _fetchGamificationData();
   }
 
-  Future<void> _fetchExistingMilestoneData() async {
-    final milestoneData = await MilestoneDB.getMilestone();
-    final contractDetails = await ContractDB.getContract();
-    if (milestoneData != null) {
+  Future<void> _fetchGamificationData() async {
+    final game = await GamificationDB.getGamification();
+    final contract = await ContractDB.getContract();
+    if (game != null) {
       setState(() {
-        workoutGem = milestoneData["workoutGem"];
-        meditationGem = milestoneData["meditationGem"];
-        workoutFragment = milestoneData["workoutFragment"];
-        meditationFragment = milestoneData["meditationFragment"];
-        if (contractDetails != null) hasContract = true;
-        isFetchingData = false;
+        workoutPercent =
+            Calculator.calcProgress(game["workoutFragment"]).toDouble();
+        meditationPercent =
+            Calculator.calcProgress(game["meditationFragment"]).toDouble();
+        totalPercent = (workoutGem + meditationGem) / 48 * 100;
+        if (contract != null) hasContract = true;
       });
     }
   }
@@ -95,8 +94,8 @@ class MilestonePageState extends State<MilestonePage> {
                     ),
                   ),
                 ),
-                Expanded(
-                  child: isFetchingData ? Container() : const CharacterWidget(),
+                const Expanded(
+                  child: CharacterWidget(),
                 ),
               ],
             ),
@@ -112,11 +111,6 @@ class CharacterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double workoutPercent = Calculator.calcProgress(workoutFragment).toDouble();
-    double meditationPercent =
-        Calculator.calcProgress(meditationFragment).toDouble();
-    double totalPercent = (workoutGem + meditationGem) / 48 * 100;
-
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
     return Stack(
@@ -176,23 +170,6 @@ class CharacterWidget extends StatelessWidget {
           ),
         ),
         Align(
-          alignment: const Alignment(-0.25, 0.4),
-          child: SizedBox(
-            width: 40,
-            height: 40,
-            child: FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Level()),
-                );
-              },
-              backgroundColor: ColorSet.backgroundColor,
-              child: const Icon(Icons.map, color: ColorSet.iconColor),
-            ),
-          ),
-        ),
-        Align(
           alignment: const Alignment(0, 0.4),
           child: SizedBox(
             width: 40,
@@ -230,7 +207,6 @@ class CharacterWidget extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.85,
               animation: true,
               lineHeight: 15.0,
-              //TODO: 根據完成度改變 percent
               percent: workoutPercent / 100,
               center: Text(
                 "${workoutPercent.round()}%",
@@ -264,7 +240,6 @@ class CharacterWidget extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.85,
               animation: true,
               lineHeight: 15.0,
-              //TODO: 根據完成度改變 percent
               percent: meditationPercent / 100,
               center: Text(
                 "${meditationPercent.round()}%",
@@ -298,7 +273,6 @@ class CharacterWidget extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.85,
               animation: true,
               lineHeight: 15.0,
-              //TODO: 根據完成度改變 percent
               percent: totalPercent / 100,
               center: Text(
                 "${totalPercent.round()}%",
@@ -687,75 +661,6 @@ class GrowDialogState extends State<GrowDialog> {
               height: 15,
             )
           ],
-        ),
-      ),
-    );
-  }
-}
-
-//map
-class Level extends StatefulWidget {
-  const Level({super.key});
-
-  @override
-  LevelState createState() => LevelState();
-}
-
-class LevelState extends State<Level> {
-  double level = (workoutGem + meditationGem).toDouble();
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-            ),
-          ),
-          child: LevelMap(
-            backgroundColor: Colors
-                .transparent, // Set the background color of LevelMap to transparent
-            levelMapParams: LevelMapParams(
-              levelCount: 48,
-              //levelHeight: 50,
-              //currentLevel: user_currentLevel,
-              currentLevel: level,
-              pathColor: Colors.black,
-              currentLevelImage: ImageParams(
-                path: "assets/images/Rabbit_2.png",
-                size: const Size(120, 120),
-              ),
-              lockedLevelImage: ImageParams(
-                path: "assets/images/lock.png",
-                size: const Size(30, 30),
-              ),
-              completedLevelImage: ImageParams(
-                path: "assets/images/completed.png",
-                size: const Size(100, 100),
-              ),
-              startLevelImage: ImageParams(
-                path: "assets/images/start.png",
-                size: const Size(80, 80),
-              ),
-              pathEndImage: ImageParams(
-                path: "assets/images/finish.png",
-                size: const Size(80, 80),
-              ),
-            ),
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: const Color(0xff4b3d70),
-          child: const Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
         ),
       ),
     );

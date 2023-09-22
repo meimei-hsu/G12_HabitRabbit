@@ -185,6 +185,7 @@ class DoExercisePageState extends State<DoExercisePage> {
       if (totalTime < 1) {
         DurationDB.update(
             {Calendar.dateToString(DateTime.now()): countdownTime});
+        GamificationDB.updateFragment("workout");
         //_showFeedbackDialog();
         showModalBottomSheet(
             isDismissible: false,
@@ -512,6 +513,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           Calendar.dateToString(DateTime.now()):
               (widget.arguments['meditationTime'] * _progress).round()
         });
+        GamificationDB.updateFragment("meditation");
         //_showFeedbackDialog();
         showModalBottomSheet(
             isDismissible: false,

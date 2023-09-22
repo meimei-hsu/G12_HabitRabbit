@@ -5,7 +5,7 @@ import 'package:g12/screens/countdown_page.dart';
 import 'package:g12/screens/exercise_page.dart';
 import 'package:g12/screens/habit_detail_page.dart';
 import 'package:g12/screens/home_page.dart';
-import 'package:g12/screens/milestone_page.dart';
+import 'package:g12/screens/gamification_page.dart';
 import 'package:g12/screens/line_pay_page.dart';
 import 'package:g12/screens/survey_page.dart';
 import 'package:g12/screens/register_page.dart';
@@ -20,7 +20,7 @@ final routes = {
   '/statistic': (context, {arguments}) => StatisticPage(arguments: arguments),
   '/countdown': (context, {arguments}) => CountdownPage(arguments: arguments),
   '/settings': (context, {arguments}) => const SettingsPage(),
-  '/milestone': (context, {arguments}) => MilestonePage(arguments: arguments),
+  '/milestone': (context, {arguments}) => GamificationPage(arguments: arguments),
   '/community': (context, {arguments}) => CommunityPage(arguments: arguments),
   '/video': (context, {arguments}) => VideoPage(arguments: arguments),
   /* ExercisePage */

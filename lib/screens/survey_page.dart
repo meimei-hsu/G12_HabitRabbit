@@ -1376,6 +1376,7 @@ class ResultPageState extends State<ResultPage> {
                   ),
                   onPressed: () async {
                     await UserDB.insert(userInfo);
+                    await GamificationDB.insert(userInfo);
                     if (!mounted) return;
                     Navigator.pushNamedAndRemoveUntil(
                         context, '/', (Route<dynamic> route) => false);

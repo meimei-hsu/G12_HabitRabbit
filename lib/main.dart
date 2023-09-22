@@ -8,7 +8,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:g12/screens/community_page.dart';
 import 'package:g12/screens/home_page.dart';
-import 'package:g12/screens/milestone_page.dart';
+import 'package:g12/screens/gamification_page.dart';
 import 'package:g12/screens/routes.dart';
 import 'package:g12/screens/statistic_page.dart';
 import 'package:g12/screens/settings_page.dart';
@@ -61,7 +61,7 @@ class BottomNavigationControllerState
   // 先初始一個 list 才不會出現 RangeError (index): Invalid value: Valid value range is empty: 2
   List<Widget> pages = [
     const StatisticPage(arguments: {}),
-    const MilestonePage(arguments: {}),
+    const GamificationPage(arguments: {}),
     const Homepage(),
     const CommunityPage(arguments: {}),
     const SettingsPage(),

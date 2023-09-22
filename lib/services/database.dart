@@ -591,9 +591,11 @@ class GamificationDB {
     return (gamification != null) ? gamification["friends"] : null;
   }
 
-  static Future<bool> insert(Map data) async {
-    int workoutDays = data["workoutDays"].map(int.parse).fold(0, (p, c) => c + p);
-    int meditationDays = data["meditationDays"].map(int.parse).fold(0, (p, c) => c + p);
+  static Future<bool> insert(Map userInfo) async {
+    int workoutDays =
+        userInfo["workoutDays"].map(int.parse).fold(0, (p, c) => c + p);
+    int meditationDays =
+        userInfo["meditationDays"].map(int.parse).fold(0, (p, c) => c + p);
     List values = [0, 0, "0, $workoutDays", "0, $meditationDays", ""];
     return await DB.insert("$db/$uid/", Map.fromIterables(columns, values));
   }
@@ -616,8 +618,8 @@ class GamificationDB {
         return await update(table) && await ContractDB.updateGem(habit);
       } else {
         // 當 fragment 前後兩個數字不同，第一個數字加一
-        return await DB.update(
-            "$db/$uid/$habit", {"Fragment": "${fragment[0]++}, ${fragment[1]}"});
+        return await DB.update("$db/$uid/$habit",
+            {"Fragment": "${fragment[0]++}, ${fragment[1]}"});
       }
     }
     return false;
