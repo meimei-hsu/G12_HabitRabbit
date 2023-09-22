@@ -12,13 +12,13 @@ import 'package:g12/services/database.dart';
 User? user = FirebaseAuth.instance.currentUser;
 Map contractData = {
   "type": "",
-  "plan": "",
+  "content": "",
   "startDay": Calendar.dateToString(DateTime.now()),
   "endDay": "",
   "money": 0,
   "bankAccount": 85167880032579,
-  "flag": "",
-  "result": false,
+  "gem": "",
+  "succeed": false,
 };
 
 class FirstContractPage extends StatefulWidget {
@@ -251,11 +251,11 @@ class FirstContractPageState extends State<FirstContractPage> {
                             onPressed: () {
                               setState(() {
                                 tapCount++;
-                                contractData["plan"] = "基礎 (1月內達成3週目標)";
+                                contractData["content"] = "基礎 (1月內達成3週目標)";
                                 contractData["endDay"] = Calendar.dateToString(
                                     DateTime(startDay.year, startDay.month + 1,
                                         startDay.day));
-                                contractData["flag"] = "0, 3";
+                                contractData["gem"] = "0, 3";
                               });
                             },
                             child: const Text(
@@ -280,11 +280,11 @@ class FirstContractPageState extends State<FirstContractPage> {
                             onPressed: () {
                               setState(() {
                                 tapCount++;
-                                contractData["plan"] = "進階 (2月內達成7週目標)";
+                                contractData["content"] = "進階 (2月內達成7週目標)";
                                 contractData["endDay"] = Calendar.dateToString(
                                     DateTime(startDay.year, startDay.month + 2,
                                         startDay.day));
-                                contractData["flag"] = "0, 7";
+                                contractData["gem"] = "0, 7";
                               });
                             },
                             child: const Text(
@@ -309,11 +309,11 @@ class FirstContractPageState extends State<FirstContractPage> {
                             onPressed: () {
                               setState(() {
                                 tapCount++;
-                                contractData["plan"] = "困難 (4月內達成15週目標)";
+                                contractData["content"] = "困難 (4月內達成15週目標)";
                                 contractData["endDay"] = Calendar.dateToString(
                                     DateTime(startDay.year, startDay.month + 4,
                                         startDay.day));
-                                contractData["flag"] = "0, 15";
+                                contractData["gem"] = "0, 15";
                               });
                             },
                             child: const Text(
@@ -493,7 +493,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                   ),
                   Text(
                     '立契約人於約定期間積極養成  ${contractData["type"]}  習慣'
-                    '\n選擇方案為  ${contractData["plan"]}'
+                    '\n選擇方案為  ${contractData["content"]}'
                     '\n投入金額為  ${contractData["money"]}  元'
                     '\n\n若未達成設定目標，立契約人同意將投入金額全數捐出；'
                     '若達成設定目標則由系統將全數金額退還。',
@@ -671,11 +671,11 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                               '立契約人將依照選擇之方案來養成各項習慣，'
                               '若目標達成系統將投入金額全數退回，失敗則全數捐出。\n'
                               '\n您選擇養成的習慣：${data["type"]}'
-                              '\n您選擇的方案：${data["plan"]}'
+                              '\n您選擇的方案：${data["content"]}'
                               '\n您所投入的金額：${data["money"]}\n'
                               '\n合約開始日：${data["startDay"]}'
                               '\n合約結束日：${data["endDay"]}'
-                              '\n距離成功已完成：${Calculator.calcProgress(data["flag"])}%',
+                              '\n距離成功已完成：${Calculator.calcProgress(data["gem"])}%',
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 letterSpacing: 1.2,
@@ -725,11 +725,11 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                               '立契約人將依照選擇之方案來養成各項習慣，'
                               '若目標達成系統將投入金額全數退回，失敗則全數捐出。\n'
                               '\n您選擇養成的習慣：${data["type"]}'
-                              '\n您選擇的方案：${data["plan"]}'
+                              '\n您選擇的方案：${data["content"]}'
                               '\n您所投入的金額：${data["money"]}\n'
                               '\n合約開始日：${data["startDay"]}'
                               '\n合約結束日：${data["endDay"]}'
-                              '\n距離成功已完成：${Calculator.calcProgress(data["flag"])}%',
+                              '\n距離成功已完成：${Calculator.calcProgress(data["gem"])}%',
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 letterSpacing: 1.2,
@@ -826,7 +826,7 @@ class OptionsBottomSheet extends StatefulWidget {
 
 class OptionsBottomSheetState extends State<OptionsBottomSheet> {
   String? _type;
-  String? _plan;
+  String? _content;
   int? _money;
   late bool processing;
 
@@ -842,7 +842,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
     if (contractData != null) {
       setState(() {
         _type = contractData["type"];
-        _plan = contractData["plan"];
+        _content = contractData["content"];
         _money = contractData["money"];
       });
     }
@@ -1036,7 +1036,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
           side: const BorderSide(
             color: ColorSet.textColor,
           ),
-          backgroundColor: (_plan == choice)
+          backgroundColor: (_content == choice)
               ? ColorSet.backgroundColor
               : ColorSet.backgroundColor,
         ),
@@ -1103,26 +1103,26 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
 
   _selectPlan(String p) {
     setState(() {
-      _plan = p;
+      _content = p;
       DateTime startDay = DateTime.now();
       switch (p) {
         case "基礎":
-          contractData["plan"] = "基礎 (1月內達成3週目標)";
+          contractData["content"] = "基礎 (1月內達成3週目標)";
           contractData["endDay"] = Calendar.dateToString(
               DateTime(startDay.year, startDay.month + 1, startDay.day));
-          contractData["flag"] = "0, 3";
+          contractData["gem"] = "0, 3";
           break;
         case "進階":
-          contractData["plan"] = "進階 (2月內達成7週目標)";
+          contractData["content"] = "進階 (2月內達成7週目標)";
           contractData["endDay"] = Calendar.dateToString(
               DateTime(startDay.year, startDay.month + 2, startDay.day));
-          contractData["flag"] = "0, 7";
+          contractData["gem"] = "0, 7";
           break;
         case "困難":
-          contractData["plan"] = "困難 (4月內達成15週目標)";
+          contractData["content"] = "困難 (4月內達成15週目標)";
           contractData["endDay"] = Calendar.dateToString(
               DateTime(startDay.year, startDay.month + 4, startDay.day));
-          contractData["flag"] = "0, 15";
+          contractData["gem"] = "0, 15";
           break;
       }
     });

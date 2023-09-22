@@ -494,13 +494,13 @@ class ContractDB {
   // Define the columns of the user table
   static get columns => [
         "type",
-        "plan",
+        "content",
         "startDay",
         "endDay",
         "money",
         "bankAccount",
-        "flag",
-        "result",
+        "gem",
+        "succeed",
       ];
 
   // Select data from userID
@@ -521,6 +521,16 @@ class ContractDB {
   static Future<bool> update(Map data) async => await DB.update(
       "$db/$uid/${(data["type"] == "運動") ? "workout" : "meditation"}", data);
 
+  static Future<bool> updateGem(String habit) async {
+    Map? table = await getContract();
+    if (table != null) {
+      List gem = table["${habit}Gem"].split(", ").map(int.parse).toList();
+      return await DB
+          .update("$db/$uid/$habit", {"gem": "${gem[0]++}, ${gem[1]}"});
+    }
+    return false;
+  }
+
   // Delete data from userID
   static Future<bool> delete() async => await DB.delete(db, uid);
   // Delete workout contract from userID
@@ -531,68 +541,86 @@ class ContractDB {
       await DB.delete(db, "$uid/meditation");
 }
 
-class MilestoneDB {
+class GamificationDB {
   static get uid =>
       FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
   static const db = "milestone";
 
   // Define the columns of the milestone table
   static get columns => [
-        "workoutGem",
-        "meditationGem",
-        "workoutFragment",
-        "meditationFragment",
+        "workoutGem", // num
+        "meditationGem", // num
+        "workoutFragment", // String
+        "meditationFragment", // String
+        "friends" // String
       ];
 
   // Select milestone from userID
-  static Future<Map<String, dynamic>?> getMilestone() async {
+  static Future<Map?> getGamification() async {
     var snapshot = await DB.select(db, uid);
-    return (snapshot != null)
-        ? Map<String, dynamic>.from(snapshot as Map)
+    return (snapshot != null) ? Map.from(snapshot as Map) : null;
+  }
+
+  // get the habit's progress of the week
+  static Future<num?> getWorkoutWeekProgress() async {
+    final Map? gamification = await getGamification();
+    return (gamification != null)
+        ? Calculator.calcProgress(gamification["workoutFragment"])
         : null;
   }
-  /*static Future<Map?> getMilestone() async {
-    return Map<String, dynamic>.from(await DB.select(db, uid) as Map);
-  }*/
 
-  static Future<num?> getWorkoutGem() async {
-    final Map? user = await getMilestone();
-    return user!["workoutGem"];
+  static Future<num?> getMeditationWeekProgress() async {
+    final Map? gamification = await getGamification();
+    return (gamification != null)
+        ? Calculator.calcProgress(gamification["meditationFragment"])
+        : null;
   }
 
-  static Future<num?> getMeditationGem() async {
-    final Map? user = await getMilestone();
-    return user!["meditationGem"];
+  // Get both habits' progress of the half year
+  static Future<num?> getTotalProgress() async {
+    final Map? table = await getGamification();
+    if (table != null) {
+      double res = (table["workoutGem"] + table["meditationGem"]) / 48 * 100;
+      return res.round();
+    }
+    return null;
   }
 
-  static Future<String?> getWorkoutFragment() async {
-    final Map? user = await getMilestone();
-    return user!["workoutFragment"];
+  static Future<String?> getFriends() async {
+    final Map? gamification = await getGamification();
+    return (gamification != null) ? gamification["friends"] : null;
   }
 
-  static Future<String?> getMeditationFragment() async {
-    final Map? user = await getMilestone();
-    return user!["meditationFragment"];
+  static Future<bool> insert(Map data) async {
+    int workoutDays = data["workoutDays"].map(int.parse).fold(0, (p, c) => c + p);
+    int meditationDays = data["meditationDays"].map(int.parse).fold(0, (p, c) => c + p);
+    List values = [0, 0, "0, $workoutDays", "0, $meditationDays", ""];
+    return await DB.insert("$db/$uid/", Map.fromIterables(columns, values));
   }
 
   // Update data {columnName: value} from userID
-  static Future<bool> update(Map data) async {
-    return await DB.update("$db/$uid/", data);
-  }
+  static Future<bool> update(Map data) async =>
+      await DB.update("$db/$uid/", data);
 
-  static Future<Map?> gem() async {
-    // String? step = await MilestoneDB.getMeditationGem();
-    //if (step != null) {
-    //step加一
-    // var duration = value.split(', ').map(int.parse).toList();
-    // return MapEntry(key, (duration[0] / duration[1] * 100).round());
-    // }
-    // if(){
-    // 當step前後兩個數字相同，歸零，flag加一
-    //contract flag加一
-    //}
-
-    return null;
+  // Update fragment or gem whenever user completes a plan
+  static Future<bool> updateFragment(String habit) async {
+    Map? table = await getGamification();
+    if (table != null) {
+      List fragment =
+          table["${habit}Fragment"].split(", ").map(int.parse).toList();
+      if (fragment[0] == fragment[1]) {
+        // 當 fragment 前後兩個數字相同，歸零，gem 加一
+        // ContractDB 的 gem 加一
+        table["${habit}Gem"]++;
+        table["${habit}Fragment"] = "0, ${fragment[1]}";
+        return await update(table) && await ContractDB.updateGem(habit);
+      } else {
+        // 當 fragment 前後兩個數字不同，第一個數字加一
+        return await DB.update(
+            "$db/$uid/$habit", {"Fragment": "${fragment[0]++}, ${fragment[1]}"});
+      }
+    }
+    return false;
   }
 
   // Delete data from userName
