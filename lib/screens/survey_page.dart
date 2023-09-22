@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_cupertino/datepicker_cupertino.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -5,11 +6,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'dart:async';
 
-import 'package:g12/services/Database.dart';
+import 'package:g12/services/database.dart';
 
-void main() => runApp(MyApp());
+import 'page_material.dart';
+
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -326,7 +331,9 @@ class OptionsWidget extends StatelessWidget {
             ),
           )),
         ]),
-        const SizedBox(height: 15,)
+        const SizedBox(
+          height: 15,
+        )
       ]);
     } else {
       return Container();
@@ -472,10 +479,10 @@ class TitlePage extends StatefulWidget {
   const TitlePage({super.key, required this.arguments});
 
   @override
-  _TitlePageState createState() => _TitlePageState();
+  TitlePageState createState() => TitlePageState();
 }
 
-class _TitlePageState extends State<TitlePage> {
+class TitlePageState extends State<TitlePage> {
   List title = ['Part I\n基本資料', 'Part II\n習慣養成', 'Part III\n個人性格'];
 
   @override
@@ -541,10 +548,10 @@ class PartOnePage extends StatefulWidget {
   const PartOnePage({super.key});
 
   @override
-  _PartOnePageState createState() => _PartOnePageState();
+  PartOnePageState createState() => PartOnePageState();
 }
 
-class _PartOnePageState extends State<PartOnePage> {
+class PartOnePageState extends State<PartOnePage> {
   final List keys = ["gender", "birthday", "height", "weight"];
   bool isComplete = false;
   TextEditingController heightController = TextEditingController();
@@ -830,10 +837,10 @@ class PartTwoPage extends StatefulWidget {
   const PartTwoPage({super.key});
 
   @override
-  _PartTwoPageState createState() => _PartTwoPageState();
+  PartTwoPageState createState() => PartTwoPageState();
 }
 
-class _PartTwoPageState extends State<PartTwoPage> {
+class PartTwoPageState extends State<PartTwoPage> {
   late PageController pageController;
   late ScrollController scrollController;
 
@@ -876,21 +883,35 @@ class _PartTwoPageState extends State<PartTwoPage> {
                 ),
               ),
             ),
-            isComplete
-                ? Container(
-                    padding: const EdgeInsets.only(top: 15, bottom: 20),
-                    child: IconButton(
-                        onPressed: () {
-                          processInput(); // update the data into userInfo
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const TitlePage(arguments: {"part": 2})));
-                        },
-                        icon: const Icon(Icons.arrow_circle_right_outlined,
-                            size: 50)))
-                : Container(),
+            Container(
+              padding: const EdgeInsets.only(top: 15, bottom: 20),
+              child: IconButton(
+                onPressed: () async {
+                  if (isComplete) {
+                    processInput(); // update the data into userInfo
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const TitlePage(arguments: {"part": 2})),
+                    );
+                  } else {
+                    if (pageController.page == 9) {
+                      AwesomeDialog dlg = InformDialog().get(
+                          context,
+                          "尚未完成",
+                          "題目尚未填寫完畢喔~",
+                          );
+
+                      await dlg.show();
+                    } else {
+                      nextQuestion(index: null, jump: true);
+                    }
+                  }
+                },
+                icon: const Icon(Icons.arrow_circle_right_outlined, size: 50),
+              ),
+            ),
           ],
         ),
       ),
@@ -956,10 +977,23 @@ class _PartTwoPageState extends State<PartTwoPage> {
         if (question.selectedOptions.contains(option)) {
           question.selectedOptions.remove(option);
         } else {
+          if (pageController.page == 3 &&
+              question.selectedOptions.first.text == "我沒有任何偏好") {
+            // 若問題為運動偏好，且已選"我沒有任何偏好"，則清空選項清單並新增現在點選的選項
+            question.selectedOptions.clear();
+            question.selectedOptions.add(option);
+          }
+
           if (question.isMultiChoice == true) {
             question.selectedOptions.add(option);
           } else {
             question.selectedOptions[0] = option;
+          }
+
+          if (option.text == "我沒有任何偏好") {
+            // 若選擇"我沒有任何偏好"，則清空選項清單並新增現在點選的選項
+            question.selectedOptions.clear();
+            question.selectedOptions.add(option);
           }
         }
       }
@@ -1077,10 +1111,10 @@ class PartThreePage extends StatefulWidget {
   const PartThreePage({super.key});
 
   @override
-  _PartThreePageState createState() => _PartThreePageState();
+  PartThreePageState createState() => PartThreePageState();
 }
 
-class _PartThreePageState extends State<PartThreePage>
+class PartThreePageState extends State<PartThreePage>
     with SingleTickerProviderStateMixin {
   late final List<SwipeItem> _swipeItems = [];
   late MatchEngine _matchEngine;
@@ -1287,10 +1321,10 @@ class ResultPage extends StatefulWidget {
   const ResultPage({super.key});
 
   @override
-  _ResultPage createState() => _ResultPage();
+  ResultPageState createState() => ResultPageState();
 }
 
-class _ResultPage extends State<ResultPage> {
+class ResultPageState extends State<ResultPage> {
   String personalityType = ""; //回傳一個人格類型字串
   late Widget imageWidget;
 
