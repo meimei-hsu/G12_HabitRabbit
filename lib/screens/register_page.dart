@@ -145,7 +145,8 @@ class LoginFormState extends State<LoginForm> {
                               errorBorder: focusedAndErrorBorder,
                               focusedBorder: focusedAndErrorBorder,
                               focusedErrorBorder: focusedAndErrorBorder,
-                              labelStyle: const TextStyle(color: ColorSet.textColor),
+                              labelStyle:
+                                  const TextStyle(color: ColorSet.textColor),
                               hintStyle: const TextStyle(color: Colors.grey),
                               errorStyle: const TextStyle(
                                   height: 1,
@@ -196,7 +197,8 @@ class LoginFormState extends State<LoginForm> {
                               errorBorder: focusedAndErrorBorder,
                               focusedBorder: focusedAndErrorBorder,
                               focusedErrorBorder: focusedAndErrorBorder,
-                              labelStyle: const TextStyle(color: ColorSet.textColor),
+                              labelStyle:
+                                  const TextStyle(color: ColorSet.textColor),
                               hintStyle: const TextStyle(color: Colors.grey),
                               errorStyle: const TextStyle(
                                   height: 1,
@@ -404,7 +406,8 @@ class SignupFormState extends State<SignupForm> {
                                   right: 20, left: 20, top: 50, bottom: 70),
                               decoration: BoxDecoration(
                                   color: ColorSet.backgroundColor,
-                                  border: Border.all(color: ColorSet.backgroundColor),
+                                  border: Border.all(
+                                      color: ColorSet.backgroundColor),
                                   borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(30),
                                       topRight: Radius.circular(30))),
@@ -458,7 +461,8 @@ class SignupFormState extends State<SignupForm> {
                                     ),
                                     cursorColor: const Color(0xfff6cdb7),
                                     style: const TextStyle(
-                                        fontSize: 18, color: ColorSet.textColor),
+                                        fontSize: 18,
+                                        color: ColorSet.textColor),
                                     keyboardType: TextInputType.text,
                                     obscureText: false,
                                   ),
@@ -496,7 +500,8 @@ class SignupFormState extends State<SignupForm> {
                                     ),
                                     cursorColor: const Color(0xfff6cdb7),
                                     style: const TextStyle(
-                                        fontSize: 18, color: ColorSet.textColor),
+                                        fontSize: 18,
+                                        color: ColorSet.textColor),
                                     keyboardType: TextInputType.text,
                                     obscureText: false,
                                   ),
@@ -549,7 +554,8 @@ class SignupFormState extends State<SignupForm> {
                                     ),
                                     cursorColor: const Color(0xfff6cdb7),
                                     style: const TextStyle(
-                                        fontSize: 18, color: ColorSet.textColor),
+                                        fontSize: 18,
+                                        color: ColorSet.textColor),
                                     keyboardType: TextInputType.text,
                                     obscureText: !isPasswordVisible,
                                   ),

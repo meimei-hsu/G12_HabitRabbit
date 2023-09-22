@@ -30,7 +30,7 @@ class FriendStatusPageState extends State<FriendStatusPage> {
           child: Column(children: [
             Padding(
                 padding:
-                const EdgeInsets.only(left: 32.0, top: 16.0, right: 16.0),
+                    const EdgeInsets.only(left: 32.0, top: 16.0, right: 16.0),
                 child: Row(
                   children: [
                     SizedBox(
@@ -41,7 +41,7 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                     const SizedBox(width: 15),
                     const Text(
                       'Andy'
-                          '\n社交碼：AUG23LR6U1',
+                      '\n社交碼：AUG23LR6U1',
                       // TODO:讀取使用者的真實情況
                       style: TextStyle(
                         color: ColorSet.textColor,
@@ -62,14 +62,15 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+                            padding:
+                                const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                             margin: const EdgeInsets.only(right: 20, left: 20),
                             decoration: BoxDecoration(
                               color: ColorSet.backgroundColor,
                               border: Border.all(
                                   color: ColorSet.borderColor, width: 4),
                               borderRadius:
-                              const BorderRadius.all(Radius.circular(20)),
+                                  const BorderRadius.all(Radius.circular(20)),
                             ),
                             child: Column(children: [
                               const ListTile(
@@ -89,8 +90,7 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                       textStyle: const TextStyle(
                                           color: ColorSet.textColor,
                                           fontSize: 14,
-                                          fontWeight: FontWeight.bold)
-                                  ),
+                                          fontWeight: FontWeight.bold)),
                                   series: <CircularSeries<ChartData, String>>[
                                     RadialBarSeries<ChartData, String>(
                                       dataSource: [
@@ -99,8 +99,10 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                         ChartData('運動寶物', 14),
                                         ChartData('冥想寶物', 15),
                                       ],
-                                      xValueMapper: (ChartData data, _) => data.x,
-                                      yValueMapper: (ChartData data, _) => data.y,
+                                      xValueMapper: (ChartData data, _) =>
+                                          data.x,
+                                      yValueMapper: (ChartData data, _) =>
+                                          data.y,
                                       cornerStyle: CornerStyle.bothCurve,
                                       pointColorMapper: (ChartData data, _) {
                                         if (data.x == "個人等級") {
@@ -127,14 +129,15 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                             height: 15,
                           ),
                           Container(
-                            padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+                            padding:
+                                const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                             margin: const EdgeInsets.only(right: 20, left: 20),
                             decoration: BoxDecoration(
                               color: ColorSet.backgroundColor,
                               border: Border.all(
                                   color: ColorSet.borderColor, width: 4),
                               borderRadius:
-                              const BorderRadius.all(Radius.circular(20)),
+                                  const BorderRadius.all(Radius.circular(20)),
                             ),
                             child: Column(children: [
                               const ListTile(
@@ -148,7 +151,8 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                               ),
                               Container(
                                 height: 200.0,
-                                padding: const EdgeInsets.only(right: 30, left: 30),
+                                padding:
+                                    const EdgeInsets.only(right: 30, left: 30),
                                 child: SfCartesianChart(
                                   plotAreaBorderWidth: 0,
                                   primaryXAxis: CategoryAxis(
@@ -160,7 +164,7 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
                                     majorTickLines:
-                                    const MajorTickLines(size: 0),
+                                        const MajorTickLines(size: 0),
                                     majorGridLines: const MajorGridLines(
                                       color: Colors.transparent,
                                     ),
@@ -169,7 +173,7 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                     axisLine: const AxisLine(width: 0),
                                     labelStyle: const TextStyle(fontSize: 0),
                                     majorTickLines:
-                                    const MajorTickLines(size: 0),
+                                        const MajorTickLines(size: 0),
                                   ),
                                   series: <ColumnSeries<ChartData, String>>[
                                     ColumnSeries<ChartData, String>(
@@ -177,15 +181,15 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                         ChartData('運動', 20),
                                         ChartData('冥想', 40),
                                       ],
-                                      xValueMapper: (ChartData data, _) => data.x,
-                                      yValueMapper: (ChartData data, _) => data.y,
+                                      xValueMapper: (ChartData data, _) =>
+                                          data.x,
+                                      yValueMapper: (ChartData data, _) =>
+                                          data.y,
                                       width: 0.3,
                                       color: ColorSet.meditationColor,
-                                      borderRadius:
-                                      const BorderRadius.only(
+                                      borderRadius: const BorderRadius.only(
                                           topRight: Radius.circular(10),
-                                          topLeft: Radius.circular(10)
-                                      ),
+                                          topLeft: Radius.circular(10)),
                                     )
                                   ],
                                 ),
@@ -197,14 +201,14 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                           ),
                           Container(
                             padding:
-                            const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+                                const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                             margin: const EdgeInsets.only(right: 20, left: 20),
                             decoration: BoxDecoration(
                               color: ColorSet.backgroundColor,
                               border: Border.all(
                                   color: ColorSet.borderColor, width: 4),
                               borderRadius:
-                              const BorderRadius.all(Radius.circular(20)),
+                                  const BorderRadius.all(Radius.circular(20)),
                             ),
                             child: Column(children: [
                               const ListTile(
@@ -218,7 +222,8 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                               ),
                               Container(
                                 height: 200.0,
-                                padding: const EdgeInsets.only(right: 30, left: 30),
+                                padding:
+                                    const EdgeInsets.only(right: 30, left: 30),
                                 child: SfCartesianChart(
                                   plotAreaBorderWidth: 0,
                                   primaryXAxis: CategoryAxis(
@@ -230,7 +235,7 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold),
                                     majorTickLines:
-                                    const MajorTickLines(size: 0),
+                                        const MajorTickLines(size: 0),
                                     majorGridLines: const MajorGridLines(
                                       color: Colors.transparent,
                                     ),
@@ -239,7 +244,7 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                     axisLine: const AxisLine(width: 0),
                                     labelStyle: const TextStyle(fontSize: 0),
                                     majorTickLines:
-                                    const MajorTickLines(size: 0),
+                                        const MajorTickLines(size: 0),
                                   ),
                                   series: <ColumnSeries<ChartData, String>>[
                                     ColumnSeries<ChartData, String>(
@@ -247,15 +252,15 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                         ChartData('運動', 12),
                                         ChartData('冥想', 33),
                                       ],
-                                      xValueMapper: (ChartData data, _) => data.x,
-                                      yValueMapper: (ChartData data, _) => data.y,
+                                      xValueMapper: (ChartData data, _) =>
+                                          data.x,
+                                      yValueMapper: (ChartData data, _) =>
+                                          data.y,
                                       width: 0.3,
                                       color: ColorSet.meditationColor,
-                                      borderRadius:
-                                      const BorderRadius.only(
+                                      borderRadius: const BorderRadius.only(
                                           topRight: Radius.circular(10),
-                                          topLeft: Radius.circular(10)
-                                      ),
+                                          topLeft: Radius.circular(10)),
                                     )
                                   ],
                                 ),

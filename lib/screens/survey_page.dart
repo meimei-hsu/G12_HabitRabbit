@@ -898,10 +898,10 @@ class PartTwoPageState extends State<PartTwoPage> {
                   } else {
                     if (pageController.page == 9) {
                       AwesomeDialog dlg = InformDialog().get(
-                          context,
-                          "尚未完成",
-                          "題目尚未填寫完畢喔~",
-                          );
+                        context,
+                        "尚未完成",
+                        "題目尚未填寫完畢喔~",
+                      );
 
                       await dlg.show();
                     } else {

@@ -138,7 +138,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                       PopupMenuItem(
+                      PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -156,7 +156,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           ],
                         ),
                       ),
-                       PopupMenuItem(
+                      PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -173,7 +173,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           ],
                         ),
                       ),
-                       PopupMenuItem(
+                      PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -230,7 +230,8 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             var progress = await DurationDB.getWeekProgress();
                             setState(() {
                               workoutPlan = plan?[Calendar.dateToString(day!)];
-                              workoutProgress = progress?[Calendar.dateToString(day!)];
+                              workoutProgress =
+                                  progress?[Calendar.dateToString(day!)];
                               isFetchingData = false;
                             });
                             if (!mounted) return;
@@ -483,7 +484,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                       PopupMenuItem(
+                      PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -501,7 +502,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           ],
                         ),
                       ),
-                       PopupMenuItem(
+                      PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -518,7 +519,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           ],
                         ),
                       ),
-                       PopupMenuItem(
+                      PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -576,7 +577,8 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             var progress =
                                 await MeditationDurationDB.getWeekProgress();
                             setState(() {
-                              meditationPlan = plan?[Calendar.dateToString(day!)];
+                              meditationPlan =
+                                  plan?[Calendar.dateToString(day!)];
                               meditationProgress =
                                   progress?[Calendar.dateToString(day!)];
                               isFetchingData = false;
@@ -598,7 +600,8 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             .show();
                       } else {
                         btnOkOnPress() async {
-                          await MeditationPlanDB.delete(Calendar.dateToString(day!));
+                          await MeditationPlanDB.delete(
+                              Calendar.dateToString(day!));
                           if (!mounted) return;
                           Navigator.pushNamed(context, "/");
                         }

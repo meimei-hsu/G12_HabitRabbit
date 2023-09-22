@@ -137,7 +137,7 @@ class DoExercisePageState extends State<DoExercisePage> {
           backgroundColor: ColorSet.backgroundColor,
           context: context,
           builder: (context) {
-            return  Wrap(children: const [
+            return Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -197,7 +197,7 @@ class DoExercisePageState extends State<DoExercisePage> {
             backgroundColor: ColorSet.backgroundColor,
             context: context,
             builder: (context) {
-              return  Wrap(children: const [
+              return Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 0},
                 )
@@ -463,7 +463,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           backgroundColor: ColorSet.backgroundColor,
           context: context,
           builder: (context) {
-            return  Wrap(children: const [
+            return Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
@@ -478,7 +478,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           title: '該開始運動了!',
           body: '加油',
           scheduledNotificationDateTime:
-          DateTime.now().add(const Duration(seconds: 30)));
+              DateTime.now().add(const Duration(seconds: 30)));
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
     }
@@ -524,7 +524,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
             backgroundColor: ColorSet.backgroundColor,
             context: context,
             builder: (context) {
-              return  Wrap(children: const [
+              return Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 1},
                 )
@@ -688,7 +688,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
             textAlign: TextAlign.left,
             style: TextStyle(
                 //backgroundColor: Colors.yellow,
-                color:ColorSet.textColor,
+                color: ColorSet.textColor,
                 fontSize: 25,
                 letterSpacing: 0,
                 fontWeight: FontWeight.bold,
@@ -887,7 +887,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                   "今天的運動計劃\n做起來是否會很疲憊呢？",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      color:ColorSet.textColor,
+                      color: ColorSet.textColor,
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 )

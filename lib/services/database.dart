@@ -38,9 +38,9 @@ class Home extends StatelessWidget {
                 // UserDB.update(mary, {"weight": 47});
                 // UserDB.updateByFeedback("cardio", [1, 1]);
                 // UserDB.getAll();
-                //WorkoutDB.toNames(plan);
+                // WorkoutDB.toNames(plan);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
-                //ClockDB.updateForecast(DateTime.parse("2023-08-31"));
+                // ClockDB.updateForecast(DateTime.parse("2023-08-31"));
                 /* DatePicker.showDateTimePicker(
                   context,
                   showTitleActions: true,
@@ -53,8 +53,8 @@ class Home extends StatelessWidget {
               onPressed: () {
                 // PlanAlgo.execute();
                 // PlanAlgo.regenerate(DateTime.now());
-                //MeditationPlanAlgo.execute();
-                //MeditationPlanAlgo.regenerate(DateTime.now());
+                // MeditationPlanAlgo.execute();
+                // MeditationPlanAlgo.regenerate(DateTime.now());
                 DateTime scheduleTime = DateTime.now();
                 debugPrint('Notification Scheduled for $scheduleTime');
                 NotificationService().scheduleNotification(
@@ -75,7 +75,7 @@ class Home extends StatelessWidget {
                 // print(Calendar.daysPassed());
                 // print(Calendar.daysComing());
                 // print(await DurationDB.getConsecutiveDays());
-                //print(await DurationDB.getMonthTotalTime());
+                // print(await DurationDB.getMonthTotalTime());
                 NotificationService()
                     .showNotification(title: 'Sample title', body: 'It works!');
               },

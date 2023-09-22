@@ -69,7 +69,7 @@ class CommunityPageState extends State<CommunityPage>
                     child: SizedBox(
                       child: TabBar(
                         controller: _controller,
-                        tabs:  [
+                        tabs: [
                           Tab(
                             icon: Column(
                               children: const [
@@ -264,10 +264,10 @@ class FriendListPageState extends State<FriendListPage> {
                       height: 70,
                       decoration: BoxDecoration(
                         color: ColorSet.backgroundColor,
-                        border: Border.all(
-                            color: ColorSet.borderColor, width: 2),
+                        border:
+                            Border.all(color: ColorSet.borderColor, width: 2),
                         borderRadius:
-                        const BorderRadius.all(Radius.circular(50)),
+                            const BorderRadius.all(Radius.circular(50)),
                       ),
                       child: Row(
                         children: [
@@ -393,7 +393,7 @@ class FriendListPageState extends State<FriendListPage> {
                       width: 1.0,
                     ),
                   ),
-                  child:  Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: const [
                       Padding(
@@ -548,10 +548,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
                     color: ColorSet.backgroundColor,
-                    border: Border.all(
-                        color: ColorSet.borderColor, width: 4),
-                    borderRadius:
-                    const BorderRadius.all(Radius.circular(20)),
+                    border: Border.all(color: ColorSet.borderColor, width: 4),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Column(
                     children: [
@@ -602,9 +600,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                       decoration: BoxDecoration(
                                         color: ColorSet.backgroundColor,
                                         border: Border.all(
-                                            color: ColorSet.borderColor, width: 2),
-                                        borderRadius:
-                                        const BorderRadius.all(Radius.circular(20)),
+                                            color: ColorSet.borderColor,
+                                            width: 2),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(20)),
                                       ),
                                       child: Row(children: [
                                         const SizedBox(width: 15),
@@ -620,7 +619,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: ColorSet.backgroundColor,
+                                            backgroundColor:
+                                                ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -661,9 +661,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                       decoration: BoxDecoration(
                                         color: ColorSet.backgroundColor,
                                         border: Border.all(
-                                            color: ColorSet.borderColor, width: 2),
-                                        borderRadius:
-                                        const BorderRadius.all(Radius.circular(20)),
+                                            color: ColorSet.borderColor,
+                                            width: 2),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(20)),
                                       ),
                                       child: Row(children: [
                                         const SizedBox(width: 15),
@@ -679,7 +680,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: ColorSet.backgroundColor,
+                                            backgroundColor:
+                                                ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -713,10 +715,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
                     color: ColorSet.backgroundColor,
-                    border: Border.all(
-                        color: ColorSet.borderColor, width: 4),
-                    borderRadius:
-                    const BorderRadius.all(Radius.circular(20)),
+                    border: Border.all(color: ColorSet.borderColor, width: 4),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Column(
                     children: [
@@ -755,9 +755,11 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getRoleRankList().length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     final int rank = index + 1;
 
                                     return Container(
@@ -765,9 +767,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                       decoration: BoxDecoration(
                                         color: ColorSet.backgroundColor,
                                         border: Border.all(
-                                            color: ColorSet.borderColor, width: 2),
-                                        borderRadius:
-                                        const BorderRadius.all(Radius.circular(20)),
+                                            color: ColorSet.borderColor,
+                                            width: 2),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(20)),
                                       ),
                                       child: Row(children: [
                                         const SizedBox(width: 15),
@@ -783,7 +786,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: ColorSet.backgroundColor,
+                                            backgroundColor:
+                                                ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -839,7 +843,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: ColorSet.backgroundColor,
+                                            backgroundColor:
+                                                ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -873,10 +878,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
                     color: ColorSet.backgroundColor,
-                    border: Border.all(
-                        color: ColorSet.borderColor, width: 4),
-                    borderRadius:
-                    const BorderRadius.all(Radius.circular(20)),
+                    border: Border.all(color: ColorSet.borderColor, width: 4),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Column(
                     children: [
@@ -915,7 +918,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getExerciseRankList().length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
@@ -926,9 +930,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                       decoration: BoxDecoration(
                                         color: ColorSet.backgroundColor,
                                         border: Border.all(
-                                            color: ColorSet.borderColor, width: 2),
-                                        borderRadius:
-                                        const BorderRadius.all(Radius.circular(20)),
+                                            color: ColorSet.borderColor,
+                                            width: 2),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(20)),
                                       ),
                                       child: Row(children: [
                                         const SizedBox(width: 15),
@@ -944,7 +949,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: ColorSet.backgroundColor,
+                                            backgroundColor:
+                                                ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -961,7 +967,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                       ]),
                                     );
                                   },
-                                  separatorBuilder: (BuildContext context, int index) {
+                                  separatorBuilder:
+                                      (BuildContext context, int index) {
                                     return const SizedBox(height: 5);
                                   },
                                 ),
@@ -970,9 +977,11 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getExerciseRankList().length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     final int rank = index + 1;
 
                                     return Container(
@@ -995,7 +1004,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                           padding: EdgeInsets.only(left: 16.0),
                                           child: CircleAvatar(
                                             radius: 15,
-                                            backgroundColor: ColorSet.backgroundColor,
+                                            backgroundColor:
+                                                ColorSet.backgroundColor,
                                             backgroundImage: AssetImage(
                                                 'assets/images/Dog_1.png'),
                                           ),
@@ -1029,10 +1039,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                   margin: const EdgeInsets.only(right: 20, left: 20),
                   decoration: BoxDecoration(
                     color: ColorSet.backgroundColor,
-                    border: Border.all(
-                        color: ColorSet.borderColor, width: 4),
-                    borderRadius:
-                    const BorderRadius.all(Radius.circular(20)),
+                    border: Border.all(color: ColorSet.borderColor, width: 4),
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
                   child: Column(children: [
                     ListTile(
@@ -1070,7 +1078,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                               child: ListView.separated(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
+                                padding: const EdgeInsets.only(
+                                    left: 40.0, top: 10.0, right: 40.0),
                                 itemCount: getMeditationRankList().length,
                                 itemBuilder: (BuildContext context, int index) {
                                   final int rank = index + 1;
@@ -1080,9 +1089,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                     decoration: BoxDecoration(
                                       color: ColorSet.backgroundColor,
                                       border: Border.all(
-                                          color: ColorSet.borderColor, width: 2),
-                                      borderRadius:
-                                      const BorderRadius.all(Radius.circular(20)),
+                                          color: ColorSet.borderColor,
+                                          width: 2),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(20)),
                                     ),
                                     child: Row(children: [
                                       const SizedBox(width: 15),
@@ -1098,7 +1108,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                         padding: EdgeInsets.only(left: 16.0),
                                         child: CircleAvatar(
                                           radius: 15,
-                                          backgroundColor: ColorSet.backgroundColor,
+                                          backgroundColor:
+                                              ColorSet.backgroundColor,
                                           backgroundImage: AssetImage(
                                               'assets/images/Dog_1.png'),
                                         ),
@@ -1153,8 +1164,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                         padding: EdgeInsets.only(left: 16.0),
                                         child: CircleAvatar(
                                           radius: 15,
-                                          backgroundColor: ColorSet.backgroundColor,
-                                          backgroundImage: AssetImage('assets/images/Dog_1.png'),
+                                          backgroundColor:
+                                              ColorSet.backgroundColor,
+                                          backgroundImage: AssetImage(
+                                              'assets/images/Dog_1.png'),
                                         ),
                                       ),
                                       const SizedBox(width: 15),
@@ -1192,7 +1205,7 @@ final List<Widget> competitionList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
+    child: Column(
       children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
@@ -1213,7 +1226,7 @@ final List<Widget> competitionList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
+    child: Column(
       children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
@@ -1234,7 +1247,7 @@ final List<Widget> competitionList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
+    child: Column(
       children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
@@ -1255,7 +1268,7 @@ final List<Widget> competitionList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
+    child: Column(
       children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
@@ -1276,7 +1289,7 @@ final List<Widget> competitionList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
+    child: Column(
       children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
@@ -1342,7 +1355,7 @@ final List<Widget> teamworkList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
+    child: Column(
       children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
@@ -1363,7 +1376,7 @@ final List<Widget> teamworkList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
+    child: Column(
       children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
@@ -1384,7 +1397,7 @@ final List<Widget> teamworkList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
+    child: Column(
       children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
@@ -1456,18 +1469,20 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                         )),
-                    actions: <Widget>[Column(children: [
+                    actions: <Widget>[
+                      Column(children: [
                         ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                  builder: (context) => const TeamCompetitionPage()),
+                                  builder: (context) =>
+                                      const TeamCompetitionPage()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child:  Row(
+                          child: Row(
                             children: const [
                               Padding(
                                 padding: EdgeInsets.all(10),
@@ -1497,13 +1512,14 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           onPressed: () {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                  builder: (context) => const TeamCompetitionPage()),
+                                  builder: (context) =>
+                                      const TeamCompetitionPage()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child:  Row(
+                          child: Row(
                             children: const [
                               Padding(
                                 padding: EdgeInsets.all(10),
@@ -1595,7 +1611,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           ElevatedButton(
                             onPressed: () {
                               setState(() {
-                                showTextField = !showTextField; // 點擊後切換TextField的顯示狀態
+                                showTextField =
+                                    !showTextField; // 點擊後切換TextField的顯示狀態
                               });
                             },
                             style: ElevatedButton.styleFrom(
@@ -1628,7 +1645,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                                   onPressed: () {
                                     Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
-                                        builder: (context) => const TeamWorkPage(),
+                                        builder: (context) =>
+                                            const TeamWorkPage(),
                                       ),
                                     );
                                   },
@@ -1695,8 +1713,9 @@ class TeamCompetitionPageState extends State<TeamCompetitionPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-               Padding(
-                padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
                   children: const [
                     Text("團隊競爭賽",
@@ -1712,41 +1731,41 @@ class TeamCompetitionPageState extends State<TeamCompetitionPage> {
                 padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Text(
                     '七日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！'
-                        '勝利隊伍將獲得經驗值與等級的提升。',
+                    '勝利隊伍將獲得經驗值與等級的提升。',
                     style: TextStyle(
                       color: ColorSet.textColor,
                       fontSize: 22.0,
                     )),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
-                child: Column(
-                  children: [
-                    ClipPath(
-                      clipper: TeamAClipper(),
-                      child: Container(
-                        height: 300,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          color: ColorSet.backgroundColor,
-                          borderRadius: BorderRadius.circular(10),
+                  padding:
+                      const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                  child: Column(
+                    children: [
+                      ClipPath(
+                        clipper: TeamAClipper(),
+                        child: Container(
+                          height: 300,
+                          width: 300,
+                          decoration: BoxDecoration(
+                            color: ColorSet.backgroundColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                       ),
-                    ),
-                    ClipPath(
-                      clipper: TeamBClipper(),
-                      child: Container(
-                        height: 300,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          color: ColorSet.backgroundColor,
-                          borderRadius: BorderRadius.circular(10),
+                      ClipPath(
+                        clipper: TeamBClipper(),
+                        child: Container(
+                          height: 300,
+                          width: 300,
+                          decoration: BoxDecoration(
+                            color: ColorSet.backgroundColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                )
-              ),
+                    ],
+                  )),
             ],
           ),
         ),
@@ -1793,7 +1812,6 @@ class TeamBClipper extends CustomClipper<Path> {
   }
 }
 
-
 //合作賽樣貌
 class TeamWorkPage extends StatefulWidget {
   const TeamWorkPage({super.key});
@@ -1812,8 +1830,9 @@ class TeamWorkPageState extends State<TeamWorkPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-               Padding(
-                padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
                   children: const [
                     Text("團隊合作賽",
@@ -1836,7 +1855,8 @@ class TeamWorkPageState extends State<TeamWorkPage> {
                     )),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 250.0, right: 30.0, top: 30.0),
+                padding:
+                    const EdgeInsets.only(left: 250.0, right: 30.0, top: 30.0),
                 child: Container(
                   width: 120,
                   height: 30,
@@ -1846,14 +1866,13 @@ class TeamWorkPageState extends State<TeamWorkPage> {
                   ),
                   child: const Padding(
                     padding: EdgeInsets.all(5),
-                    child: Text(
-                        '房間號：'
-                    ),
+                    child: Text('房間號：'),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                padding:
+                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
                   children: [
                     SizedBox(
@@ -1867,7 +1886,8 @@ class TeamWorkPageState extends State<TeamWorkPage> {
                       lineHeight: 20.0,
                       //TODO: 根據完成度改變 percent
                       percent: 0.7,
-                      center: const Text("70%",
+                      center: const Text(
+                        "70%",
                         style: TextStyle(
                           color: ColorSet.textColor,
                           fontSize: 10,
@@ -1881,7 +1901,8 @@ class TeamWorkPageState extends State<TeamWorkPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                padding:
+                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
                   children: [
                     SizedBox(
@@ -1895,7 +1916,8 @@ class TeamWorkPageState extends State<TeamWorkPage> {
                       lineHeight: 20.0,
                       //TODO: 根據完成度改變 percent
                       percent: 0.7,
-                      center: const Text("70%",
+                      center: const Text(
+                        "70%",
                         style: TextStyle(
                           color: ColorSet.textColor,
                           fontSize: 10,

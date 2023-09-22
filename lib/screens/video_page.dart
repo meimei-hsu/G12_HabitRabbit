@@ -37,18 +37,18 @@ class VideoPageState extends State<VideoPage> {
               children: [
                 const SizedBox(height: 10),
                 ListTile(
-                    contentPadding: const EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 0.0),
+                    contentPadding:
+                        const EdgeInsets.fromLTRB(30.0, 20.0, 0.0, 0.0),
                     title: Padding(
-                      padding: const EdgeInsets.only(bottom: 15.0),
-                      child: Text(
-                        widget.arguments['item'],
-                        style: const TextStyle(
-                            color: Color(0xff4b4370),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                            letterSpacing: 10),
-                      )
-                    ),
+                        padding: const EdgeInsets.only(bottom: 15.0),
+                        child: Text(
+                          widget.arguments['item'],
+                          style: const TextStyle(
+                              color: Color(0xff4b4370),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                              letterSpacing: 10),
+                        )),
                     subtitle: Column(
                       children: [
                         Row(

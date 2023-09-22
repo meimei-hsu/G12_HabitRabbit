@@ -562,7 +562,9 @@ class ConfirmPageState extends State<ConfirmPage> {
                               minimumSize: const Size(0, 45)),
                           onPressed: () {
                             Navigator.pushNamedAndRemoveUntil(
-                                context, '/contract/already', (Route<dynamic> route) => false);
+                                context,
+                                '/contract/already',
+                                (Route<dynamic> route) => false);
                           },
                           child: const Text(
                             "付款",

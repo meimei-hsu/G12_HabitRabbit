@@ -65,11 +65,13 @@ class FirstContractPageState extends State<FirstContractPage> {
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        backgroundColor:ColorSet.backgroundColor,
+        backgroundColor: ColorSet.backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded,
-            color: ColorSet.iconColor,),
+          icon: const Icon(
+            Icons.arrow_back_ios_rounded,
+            color: ColorSet.iconColor,
+          ),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -123,7 +125,8 @@ class FirstContractPageState extends State<FirstContractPage> {
                           Expanded(
                               child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.only(right: 10, left: 10),
+                              padding:
+                                  const EdgeInsets.only(right: 10, left: 10),
                               backgroundColor: ColorSet.backgroundColor,
                               shadowColor: Colors.transparent,
                               elevation: 0,
@@ -642,7 +645,10 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [ColorSet.bottomBarColor, ColorSet.bottomBarColor],
+                      colors: [
+                        ColorSet.bottomBarColor,
+                        ColorSet.bottomBarColor
+                      ],
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
                     ),
@@ -693,7 +699,10 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [ColorSet.bottomBarColor, ColorSet.bottomBarColor],
+                      colors: [
+                        ColorSet.bottomBarColor,
+                        ColorSet.bottomBarColor
+                      ],
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
                     ),
