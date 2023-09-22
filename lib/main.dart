@@ -6,14 +6,14 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'package:g12/screens/CommunityPage.dart';
-import 'package:g12/screens/HomePage.dart';
-import 'package:g12/screens/MilestonePage.dart';
-import 'package:g12/screens/Routes.dart';
-import 'package:g12/screens/StatisticPage.dart';
-import 'package:g12/screens/SettingsPage.dart';
+import 'package:g12/screens/community_page.dart';
+import 'package:g12/screens/home_page.dart';
+import 'package:g12/screens/milestone_page.dart';
+import 'package:g12/screens/routes.dart';
+import 'package:g12/screens/statistic_page.dart';
+import 'package:g12/screens/settings_page.dart';
 
-import 'package:g12/screens/PageMaterial.dart';
+import 'package:g12/screens/page_material.dart';
 
 class AppEntryPoint extends StatelessWidget {
   const AppEntryPoint({super.key});

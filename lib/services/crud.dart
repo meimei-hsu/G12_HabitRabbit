@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:firebase_database/firebase_database.dart';
 
-import 'package:g12/services/Database.dart';
+import 'package:g12/services/database.dart';
 
 class DB {
   // Select all entries in the given table {table}

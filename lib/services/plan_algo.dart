@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:g12/services/Database.dart';
+import 'package:g12/services/database.dart';
 
 /*
 ################################################################################

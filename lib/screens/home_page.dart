@@ -9,10 +9,10 @@ import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-import 'package:g12/screens/PageMaterial.dart';
+import 'package:g12/screens/page_material.dart';
 
-import 'package:g12/services/Database.dart';
-import 'package:g12/services/PlanAlgo.dart';
+import 'package:g12/services/database.dart';
+import 'package:g12/services/plan_algo.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -134,8 +134,7 @@ class HomepageState extends State<Homepage> {
     if (workoutPlan == null && meditationPlan == null) {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
-      dialogText =
-          (isBefore) ? "沒有運動計畫\n沒有冥想計畫" : "沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
+      dialogText = (isBefore) ? "沒有運動計畫\n沒有冥想計畫" : "沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
     } else if (workoutPlan != null && meditationPlan == null) {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
@@ -434,18 +433,21 @@ class HomepageState extends State<Homepage> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
-                            print("workoutPlan: $workoutPlan");
-                            print("meditationPlan: $meditationPlan");
-                            print("isBefore: $isBefore");
-                            print("_selectedDay: $_selectedDay");
-                            print("_focusedDay: $_focusedDay");
-                            print(DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day)
-                                );
+                            debugPrint("workoutPlan: $workoutPlan");
+                            debugPrint("meditationPlan: $meditationPlan");
+                            debugPrint("isBefore: $isBefore");
+                            debugPrint("_selectedDay: $_selectedDay");
+                            debugPrint("_focusedDay: $_focusedDay");
+                            debugPrint(DateTime(_selectedDay!.year,
+                                    _selectedDay!.month, _selectedDay!.day)
+                                .toString());
                             if (workoutPlan == null && meditationPlan == null) {
                               // 運動沒有、冥想沒有 --> 新增運動 + 冥想
                               // 今天之後 --> 新增；之前 --> 沒有
                               (isBefore)
-                                  ? InformDialog().get(context, ":(","溯及既往 打咩！").show()
+                                  ? InformDialog()
+                                      .get(context, ":(", "溯及既往 打咩！")
+                                      .show()
                                   : showModalBottomSheet(
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
@@ -468,7 +470,9 @@ class HomepageState extends State<Homepage> {
                               // 運動有、冥想沒有 --> 運動完成度、新增冥想
                               // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
                               (isBefore)
-                                  ? InformDialog().get(context, ":(","溯及既往 打咩！").show()
+                                  ? InformDialog()
+                                      .get(context, ":(", "溯及既往 打咩！")
+                                      .show()
                                   : showModalBottomSheet(
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
@@ -491,7 +495,9 @@ class HomepageState extends State<Homepage> {
                               // 運動沒有、冥想有 --> 冥想完成度、新增運動
                               // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
                               (isBefore)
-                                  ? InformDialog().get(context, ":(","溯及既往 打咩！").show()
+                                  ? InformDialog()
+                                      .get(context, ":(", "溯及既往 打咩！")
+                                      .show()
                                   : showModalBottomSheet(
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
@@ -830,7 +836,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                     : await MeditationPlanAlgo.generate(
                         selectedDay, meditationType);
 
-                print((planToAdd == 0)
+                debugPrint((planToAdd == 0)
                     ? "$selectedDay add $exerciseTime minutes exercise plan."
                     : "$selectedDay add $meditationType meditation plan.");
                 if (!mounted) return;
@@ -868,7 +874,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
   double satisfiedScore = 1; // Q1
   double tiredScore = 1; // Q2
   bool isAnxious = false; // Q3-1
-  bool haveToSprint = false; // Q3-2
+  bool haveToSdebugPrint = false; // Q3-2
   bool isSatisfied = false; // Q3-3
   List<int> feedbackData = [];
 
@@ -1020,14 +1026,14 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                                 color: Color(0xff4b4370), fontSize: 18),
                           ),
                           RoundCheckBox(
-                            isChecked: haveToSprint,
+                            isChecked: haveToSdebugPrint,
                             borderColor: const Color(0xff4b4370),
                             uncheckedColor: const Color(0xfffdfdf5),
                             checkedColor: const Color(0xfff6cdb7),
                             size: 30,
                             onTap: (selected) {
                               setState(() {
-                                haveToSprint = selected!;
+                                haveToSdebugPrint = selected!;
                               });
                             },
                           ),
@@ -1080,7 +1086,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                 if (type == 0) {
                   feedbackData.add(satisfiedScore.toInt());
                   feedbackData.add(tiredScore.toInt());
-                  print("Exercise feedbackData: $feedbackData");
+                  debugPrint("Exercise feedbackData: $feedbackData");
                   /*Navigator.pushNamedAndRemoveUntil(
                     context, '/', (Route<dynamic> route) => false);
                   var type = await PlanDB.getWorkoutType(DateTime.now());
@@ -1093,10 +1099,10 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                   feedbackData.add(tiredScore.toInt());
                   // True = 1, false = 0
                   feedbackData.add((isAnxious) ? 1 : 0);
-                  feedbackData.add((haveToSprint) ? 1 : 0);
+                  feedbackData.add((haveToSdebugPrint) ? 1 : 0);
                   feedbackData.add((isSatisfied) ? 1 : 0);
 
-                  print("Meditation feedbackData: $feedbackData");
+                  debugPrint("Meditation feedbackData: $feedbackData");
                 }
                 Navigator.pop(context);
               },

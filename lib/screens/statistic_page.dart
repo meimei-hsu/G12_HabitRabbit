@@ -11,9 +11,9 @@ import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-import 'package:g12/screens/PageMaterial.dart';
+import 'package:g12/screens/page_material.dart';
 
-import 'package:g12/services/Database.dart';
+import 'package:g12/services/database.dart';
 
 class StatisticPage extends StatefulWidget {
   final Map arguments;
@@ -1238,7 +1238,7 @@ class StatisticPageState extends State<StatisticPage> {
       return [];
     }
 
-    print("exerciseMonthDaysList: $exerciseMonthDaysList");
+    debugPrint("exerciseMonthDaysList: $exerciseMonthDaysList");
     // [[2023-04-01, 2023-04-30, 1], [2023-05-01, 2023-05-31, 7], [2023-06-01, 2023-06-30, 3], [2023-07-01, 2023-07-31, 0]]
 
     for (int i = 0; i < exerciseMonthDaysList.length; i++) {
@@ -1256,7 +1256,7 @@ class StatisticPageState extends State<StatisticPage> {
       return [];
     }
 
-    print("meditationMonthDaysList: $meditationMonthDaysList");
+    debugPrint("meditationMonthDaysList: $meditationMonthDaysList");
 
     for (int i = 0; i < meditationMonthDaysList.length; i++) {
       String monthEng = month[meditationMonthDaysList[i][0].split("-")[1]];
@@ -1269,7 +1269,7 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getExerciseConsecutiveDaysChartData() {
     List<ChartData> chartData = [];
 
-    print("exerciseConsecutiveDaysList: $consecutiveExerciseDaysList");
+    debugPrint("exerciseConsecutiveDaysList: $consecutiveExerciseDaysList");
 
     for (int i = 0; i < consecutiveExerciseDaysList.length; i++) {
       DateTime startDate = consecutiveExerciseDaysList[i][0];
@@ -1289,7 +1289,7 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getMeditationConsecutiveDaysChartData() {
     List<ChartData> chartData = [];
 
-    print("meditationConsecutiveDaysList: $consecutiveMeditationDaysList");
+    debugPrint("meditationConsecutiveDaysList: $consecutiveMeditationDaysList");
 
     for (int i = 0; i < consecutiveMeditationDaysList.length; i++) {
       DateTime startDate = consecutiveMeditationDaysList[i][0];
@@ -1323,7 +1323,7 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getExerciseTypePercentageChartData() {
     List<ChartData> chartData = [];
 
-    print("exercisePercentageList: $exerciseTypePercentageMap");
+    debugPrint("exercisePercentageList: $exerciseTypePercentageMap");
 
     for (var entry in exerciseTypePercentageMap.entries) {
       String chineseType = translateTypeToChinese(entry.key);
@@ -1335,7 +1335,7 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getMeditationTypePercentageChartData() {
     List<ChartData> chartData = [];
 
-    print("meditationPercentageList: $meditationTypePercentageMap");
+    debugPrint("meditationPercentageList: $meditationTypePercentageMap");
 
     for (var entry in meditationTypePercentageMap.entries) {
       String chineseType = translateTypeToChinese(entry.key);

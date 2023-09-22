@@ -7,10 +7,10 @@ import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:square_progress_bar/square_progress_bar.dart';
 //import 'package:video_player/video_player.dart';
 
-import 'package:g12/screens/PageMaterial.dart';
-import 'package:g12/services/Database.dart';
-import 'package:g12/services/PlanAlgo.dart';
-import 'package:g12/Services/Notification.dart';
+import 'package:g12/screens/page_material.dart';
+import 'package:g12/services/database.dart';
+import 'package:g12/services/plan_algo.dart';
+import 'package:g12/Services/notification.dart';
 
 class DoExercisePage extends StatefulWidget {
   final Map arguments;
@@ -114,7 +114,7 @@ class DoExercisePageState extends State<DoExercisePage> {
   /*  GIF 輪播 */
 
   Future<bool> checkExit() async {
-    var canExit;
+    bool canExit = false;
 
     /*
     btnCancelOnPress() {
@@ -137,7 +137,7 @@ class DoExercisePageState extends State<DoExercisePage> {
           backgroundColor: ColorSet.backgroundColor,
           context: context,
           builder: (context) {
-            return const Wrap(children: [
+            return  Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -197,7 +197,7 @@ class DoExercisePageState extends State<DoExercisePage> {
             backgroundColor: ColorSet.backgroundColor,
             context: context,
             builder: (context) {
-              return const Wrap(children: [
+              return  Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 0},
                 )
@@ -260,7 +260,7 @@ class DoExercisePageState extends State<DoExercisePage> {
               sport = sport.replaceAll("運動", "休息");
             });
           }
-          print(
+          debugPrint(
               "currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
         }
       }
@@ -288,7 +288,7 @@ class DoExercisePageState extends State<DoExercisePage> {
     List nameList = _getExerciseItemNameList();
     sport = nameList[0];
     _pageController = PageController(initialPage: 0);
-    print(
+    debugPrint(
         "currentIndex_init: $currentIndex ... sport: $sport ... totalTime: $totalTime");
 
     if (currentIndex >= 2 && currentIndex < totalExerciseItemLength - 3) {
@@ -437,7 +437,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
   var period = const Duration(seconds: 1);
 
   Future<bool> checkExit() async {
-    var canExit;
+    bool canExit = false;
 
     /*
     btnCancelOnPress() {
@@ -463,7 +463,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           backgroundColor: ColorSet.backgroundColor,
           context: context,
           builder: (context) {
-            return const Wrap(children: [
+            return  Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
@@ -524,7 +524,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
             backgroundColor: ColorSet.backgroundColor,
             context: context,
             builder: (context) {
-              return const Wrap(children: [
+              return  Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 1},
                 )
@@ -763,7 +763,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
             onPressed: () async {
               feedbackData.add(_currentValue1.toInt());
               feedbackData.add(_currentValue2.toInt());
-              print("FeedbackData: $feedbackData");
+              debugPrint("FeedbackData: $feedbackData");
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false);
               var type = await PlanDB.getType(DateTime.now());
@@ -1028,7 +1028,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                   // 運動
                   feedbackData.add(satisfiedScore.toInt());
                   feedbackData.add(tiredScore.toInt());
-                  print("Exercise feedbackData: $feedbackData");
+                  debugPrint("Exercise feedbackData: $feedbackData");
 
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (Route<dynamic> route) => false);
@@ -1044,7 +1044,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                   feedbackData.add((isAnxious) ? 1 : 0);
                   feedbackData.add((haveToSprint) ? 1 : 0);
                   feedbackData.add((isSatisfied) ? 1 : 0);
-                  print("Meditation feedbackData: $feedbackData");
+                  debugPrint("Meditation feedbackData: $feedbackData");
 
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (Route<dynamic> route) => false);

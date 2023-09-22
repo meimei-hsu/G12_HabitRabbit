@@ -532,7 +532,7 @@ class ConfirmPageState extends State<ConfirmPage> {
                         fontSize: 32,
                         fontWeight: FontWeight.bold),
                   ),
-                  visualDensity: VisualDensity(vertical: -4),
+                  visualDensity: const VisualDensity(vertical: -4),
                 ),
                 const SizedBox(height: 15),
                 Container(

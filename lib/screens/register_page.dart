@@ -5,10 +5,9 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 
-import 'package:g12/screens/PageMaterial.dart';
+import 'package:g12/screens/page_material.dart';
 
-import 'package:g12/services/Authentication.dart';
-import 'package:g12/services/PlanAlgo.dart';
+import 'package:g12/services/authentication.dart';
 
 OutlineInputBorder enabledBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(20),
@@ -239,7 +238,7 @@ class LoginFormState extends State<LoginForm> {
 
                                     String email = _accountController.text;
                                     String password = _passwordController.text;
-                                    print("$email : $password");
+                                    debugPrint("$email : $password");
 
                                     String errMsg = "";
 
@@ -251,7 +250,6 @@ class LoginFormState extends State<LoginForm> {
                                         );
 
                                         if (user != null) {
-                                          await PlanAlgo.execute();
                                           if (!mounted) return;
                                           Navigator.pushNamedAndRemoveUntil(
                                               context,

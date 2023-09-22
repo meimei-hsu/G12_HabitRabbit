@@ -6,7 +6,7 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 
-import 'package:g12/services/Database.dart';
+import 'package:g12/services/database.dart';
 
 // SettingsPage's data
 class SettingsPageData {
@@ -59,15 +59,15 @@ class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
   @override
-  _SettingsPage createState() => _SettingsPage();
+  SettingsPageState createState() => SettingsPageState();
 }
 
-class _SettingsPage extends State<SettingsPage> {
+class SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-      backgroundColor: Color(0xFFFDFDFD),
+      backgroundColor: const Color(0xFFFDFDFD),
       appBar: AppBar(
         title: const Text(
           "個人設定",
@@ -79,7 +79,7 @@ class _SettingsPage extends State<SettingsPage> {
               fontWeight: FontWeight.bold,
               height: 1),
         ),
-        backgroundColor: Color(0xFFFDFDFD),
+        backgroundColor: const Color(0xFFFDFDFD),
         elevation: 0,
       ),
       body: Padding(

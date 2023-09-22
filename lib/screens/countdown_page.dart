@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'package:g12/screens/PageMaterial.dart';
+import 'package:g12/screens/page_material.dart';
 
 class CountdownPage extends StatefulWidget {
   final Map arguments;

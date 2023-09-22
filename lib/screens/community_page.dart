@@ -1,20 +1,20 @@
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:g12/screens/FriendStatusPage.dart';
+import 'package:g12/screens/friend_status_page.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
-import 'package:g12/screens/PageMaterial.dart';
+import 'package:g12/screens/page_material.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key, required arguments});
 
   @override
-  _CommunityPageState createState() => _CommunityPageState();
+  CommunityPageState createState() => CommunityPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage>
+class CommunityPageState extends State<CommunityPage>
     with TickerProviderStateMixin {
   late TabController _controller;
   int _currentIndex = 0;
@@ -69,10 +69,10 @@ class _CommunityPageState extends State<CommunityPage>
                     child: SizedBox(
                       child: TabBar(
                         controller: _controller,
-                        tabs: const [
+                        tabs:  [
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.group,
                                   color: ColorSet.iconColor,
@@ -89,7 +89,7 @@ class _CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.emoji_events,
                                   color: ColorSet.iconColor, // 设置图标颜色
@@ -106,7 +106,7 @@ class _CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.sports_kabaddi,
                                   color: ColorSet.iconColor,
@@ -152,10 +152,10 @@ class FriendListPage extends StatefulWidget {
   const FriendListPage({super.key});
 
   @override
-  _FriendListPageState createState() => _FriendListPageState();
+  FriendListPageState createState() => FriendListPageState();
 }
 
-class _FriendListPageState extends State<FriendListPage> {
+class FriendListPageState extends State<FriendListPage> {
   String searchText = "";
   bool isTextFieldEmpty = true;
 
@@ -393,9 +393,9 @@ class _FriendListPageState extends State<FriendListPage> {
                       width: 1.0,
                     ),
                   ),
-                  child: const Row(
+                  child:  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: const [
                       Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Icon(Icons.emoji_events),
@@ -446,24 +446,24 @@ class LeaderboardPage extends StatefulWidget {
   const LeaderboardPage({super.key});
 
   @override
-  _LeaderboardPageState createState() => _LeaderboardPageState();
+  LeaderboardPageState createState() => LeaderboardPageState();
 }
 
-class _LeaderboardPageState extends State<LeaderboardPage> {
+class LeaderboardPageState extends State<LeaderboardPage> {
   int personalRank = 0;
   int roleRank = 0;
   int exerciseRank = 0;
   int meditationRank = 0;
 
   //TODO: 抓前十名的資料
-  final List<String> FriendPersonalRank = <String>[
+  final List<String> friendPersonalRank = <String>[
     'Andy',
     'Bethany',
     'Daniel',
     'Chloe',
     'Mary'
   ];
-  final List<String> WholePersonalRank = <String>[
+  final List<String> wholePersonalRank = <String>[
     'Andy',
     'Frank',
     'Bethany',
@@ -474,14 +474,14 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     'Chloe',
     'Mary'
   ];
-  final List<String> FriendRoleRank = <String>[
+  final List<String> friendRoleRank = <String>[
     'Chloe',
     'Andy',
     'Mary',
     'Daniel',
     'Bethany'
   ];
-  final List<String> WholeRoleRank = <String>[
+  final List<String> wholeRoleRank = <String>[
     'Chloe',
     'Andy',
     'Frank',
@@ -492,44 +492,44 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     'Bethany',
     'John'
   ];
-  final List<String> FriendExerciseRank = <String>['Mary'];
-  final List<String> WholeExerciseRank = <String>['Mary', 'Kevin', 'Angel'];
-  final List<String> FriendMeditationRank = <String>['Mary'];
-  final List<String> WholeMeditationRank = <String>['Mary', 'Kevin', 'Angel'];
+  final List<String> friendExerciseRank = <String>['Mary'];
+  final List<String> wholeExerciseRank = <String>['Mary', 'Kevin', 'Angel'];
+  final List<String> friendMeditationRank = <String>['Mary'];
+  final List<String> wholeMeditationRank = <String>['Mary', 'Kevin', 'Angel'];
 
   //個人排名
   List<String> getPersonalRankList() {
     if (personalRank == 0) {
-      return FriendPersonalRank;
+      return friendPersonalRank;
     } else {
-      return WholePersonalRank;
+      return wholePersonalRank;
     }
   }
 
   //角色排名
   List<String> getRoleRankList() {
     if (roleRank == 0) {
-      return FriendRoleRank;
+      return friendRoleRank;
     } else {
-      return WholeRoleRank;
+      return wholeRoleRank;
     }
   }
 
   //運動寶物數量排名
   List<String> getExerciseRankList() {
     if (exerciseRank == 0) {
-      return FriendExerciseRank;
+      return friendExerciseRank;
     } else {
-      return WholeExerciseRank;
+      return wholeExerciseRank;
     }
   }
 
   //冥想寶物數量排名
   List<String> getMeditationRankList() {
     if (meditationRank == 0) {
-      return FriendMeditationRank;
+      return friendMeditationRank;
     } else {
-      return WholeMeditationRank;
+      return wholeMeditationRank;
     }
   }
 
@@ -1192,8 +1192,8 @@ final List<Widget> competitionList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child:  Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -1213,8 +1213,8 @@ final List<Widget> competitionList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child:  Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -1234,8 +1234,8 @@ final List<Widget> competitionList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child:  Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -1255,8 +1255,8 @@ final List<Widget> competitionList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child:  Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -1276,8 +1276,8 @@ final List<Widget> competitionList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child:  Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -1300,8 +1300,8 @@ final List<Widget> teamworkList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -1321,8 +1321,8 @@ final List<Widget> teamworkList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -1342,8 +1342,8 @@ final List<Widget> teamworkList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child:  Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -1363,8 +1363,8 @@ final List<Widget> teamworkList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child:  Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -1384,8 +1384,8 @@ final List<Widget> teamworkList = [
       color: ColorSet.backgroundColor,
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child:  Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -1406,10 +1406,10 @@ class TeamChallengePage extends StatefulWidget {
   const TeamChallengePage({super.key});
 
   @override
-  _TeamChallengePageState createState() => _TeamChallengePageState();
+  TeamChallengePageState createState() => TeamChallengePageState();
 }
 
-class _TeamChallengePageState extends State<TeamChallengePage> {
+class TeamChallengePageState extends State<TeamChallengePage> {
   final CarouselController _competitionController = CarouselController();
   final CarouselController _teamworkController = CarouselController();
 
@@ -1467,8 +1467,8 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: const Row(
-                            children: [
+                          child:  Row(
+                            children: const [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -1503,8 +1503,8 @@ class _TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: const Row(
-                            children: [
+                          child:  Row(
+                            children: const [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -1682,10 +1682,10 @@ class TeamCompetitionPage extends StatefulWidget {
   const TeamCompetitionPage({super.key});
 
   @override
-  _TeamCompetitionPageState createState() => _TeamCompetitionPageState();
+  TeamCompetitionPageState createState() => TeamCompetitionPageState();
 }
 
-class _TeamCompetitionPageState extends State<TeamCompetitionPage> {
+class TeamCompetitionPageState extends State<TeamCompetitionPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1695,10 +1695,10 @@ class _TeamCompetitionPageState extends State<TeamCompetitionPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+               Padding(
+                padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
-                  children: [
+                  children: const [
                     Text("團隊競爭賽",
                         style: TextStyle(
                           color: ColorSet.textColor,
@@ -1799,10 +1799,10 @@ class TeamWorkPage extends StatefulWidget {
   const TeamWorkPage({super.key});
 
   @override
-  _TeamWorkPageState createState() => _TeamWorkPageState();
+  TeamWorkPageState createState() => TeamWorkPageState();
 }
 
-class _TeamWorkPageState extends State<TeamWorkPage> {
+class TeamWorkPageState extends State<TeamWorkPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1812,10 +1812,10 @@ class _TeamWorkPageState extends State<TeamWorkPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+               Padding(
+                padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
-                  children: [
+                  children: const [
                     Text("團隊合作賽",
                         style: TextStyle(
                           color: ColorSet.textColor,

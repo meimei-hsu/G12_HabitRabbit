@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import 'package:g12/screens/PageMaterial.dart';
+import 'package:g12/screens/page_material.dart';
 
 class FriendStatusPage extends StatefulWidget {
   const FriendStatusPage({super.key});
 
   @override
-  _FriendStatusPageState createState() => _FriendStatusPageState();
+  FriendStatusPageState createState() => FriendStatusPageState();
 }
 
-class _FriendStatusPageState extends State<FriendStatusPage> {
+class FriendStatusPageState extends State<FriendStatusPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(

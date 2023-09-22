@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:g12/screens/PageMaterial.dart';
-import 'package:g12/screens/RegisterPage.dart';
+import 'package:g12/screens/page_material.dart';
+import 'package:g12/screens/register_page.dart';
 
-import 'package:g12/services/Database.dart';
+import 'package:g12/services/database.dart';
 
 // Define global variables for ContractPage
 User? user = FirebaseAuth.instance.currentUser;
@@ -898,6 +898,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                 //檢查是否有運動合約
                 bool hasWorkoutContract = await ContractDB.getWorkout() != null;
                 if (hasWorkoutContract) {
+                  if (!mounted) return;
                   InformDialog().get(context, "警告！", "已建立過運動合約，不允許二次投入").show();
                 } else {
                   _selectType("運動");
@@ -931,6 +932,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                 bool hasMeditationContract =
                     await ContractDB.getMeditation() != null;
                 if (hasMeditationContract) {
+                  if (!mounted) return;
                   InformDialog().get(context, "警告！", "已建立過冥想合約，不允許二次投入").show();
                 } else {
                   _selectType("冥想");

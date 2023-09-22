@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:level_map/level_map.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-import 'package:g12/screens/PageMaterial.dart';
+import 'package:g12/screens/page_material.dart';
 
-import 'package:g12/services/Database.dart';
+import 'package:g12/services/database.dart';
 
 int workoutGem = 0;
 int meditationGem = 0;
 String workoutFragment = "";
 String meditationFragment = "";
 bool isFetchingData = true;
-
+bool hasContract = false;
 
 class MilestonePage extends StatefulWidget {
   final Map arguments;
@@ -33,13 +33,15 @@ class MilestonePageState extends State<MilestonePage> {
   }
 
   Future<void> _fetchExistingMilestoneData() async {
-    Map<String?, dynamic>? milestoneData = await MilestoneDB.getMilestone();
+    final milestoneData = await MilestoneDB.getMilestone();
+    final contractDetails = await ContractDB.getContract();
     if (milestoneData != null) {
       setState(() {
         workoutGem = milestoneData["workoutGem"];
         meditationGem = milestoneData["meditationGem"];
         workoutFragment = milestoneData["workoutFragment"];
         meditationFragment = milestoneData["meditationFragment"];
+        if (contractDetails != null) hasContract = true;
         isFetchingData = false;
       });
     }
@@ -56,7 +58,7 @@ class MilestonePageState extends State<MilestonePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                 Padding(
+                Padding(
                   padding: const EdgeInsets.only(left: 20.0, top: 16.0),
                   child: Row(
                     children: [
@@ -108,15 +110,11 @@ class MilestonePageState extends State<MilestonePage> {
 class CharacterWidget extends StatelessWidget {
   const CharacterWidget({super.key});
 
-  Future<bool> hasContract() async {
-    final contractDetails = await ContractDB.getContract();
-    return contractDetails != null;
-  }
-
   @override
   Widget build(BuildContext context) {
     double workoutPercent = Calculator.calcProgress(workoutFragment).toDouble();
-    double meditationPercent = Calculator.calcProgress(meditationFragment).toDouble();
+    double meditationPercent =
+        Calculator.calcProgress(meditationFragment).toDouble();
     double totalPercent = (workoutGem + meditationGem) / 48 * 100;
 
     final screenHeight = MediaQuery.of(context).size.height;
@@ -172,7 +170,8 @@ class CharacterWidget extends StatelessWidget {
                 _showGrowDialog(context);
               },
               backgroundColor: ColorSet.backgroundColor,
-              child: const Icon(Icons.more_horiz_outlined, color: ColorSet.iconColor),
+              child: const Icon(Icons.more_horiz_outlined,
+                  color: ColorSet.iconColor),
             ),
           ),
         ),
@@ -188,7 +187,7 @@ class CharacterWidget extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const Level()),
                 );
               },
-              backgroundColor:ColorSet.backgroundColor,
+              backgroundColor: ColorSet.backgroundColor,
               child: const Icon(Icons.map, color: ColorSet.iconColor),
             ),
           ),
@@ -199,17 +198,16 @@ class CharacterWidget extends StatelessWidget {
             width: 40,
             height: 40,
             child: FloatingActionButton(
-              onPressed: () async {
-                final hasExistingContract = await hasContract();
-
-                if (hasExistingContract) {
+              onPressed: () {
+                if (hasContract) {
                   Navigator.pushNamed(context, '/contract/already');
                 } else {
                   Navigator.pushNamed(context, '/contract/initial');
                 }
               },
               backgroundColor: ColorSet.backgroundColor,
-              child: const Icon(Icons.request_quote_outlined, color: ColorSet.iconColor),
+              child: const Icon(Icons.request_quote_outlined,
+                  color: ColorSet.iconColor),
             ),
           ),
         ),
@@ -328,8 +326,7 @@ class CharacterWidget extends StatelessWidget {
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-            topRight: Radius.circular(20),
-            topLeft: Radius.circular(20)),
+            topRight: Radius.circular(20), topLeft: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
         return const Padding(
@@ -348,8 +345,7 @@ void _showQuizDialog(BuildContext context) {
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
-          topRight: Radius.circular(20),
-          topLeft: Radius.circular(20)),
+          topRight: Radius.circular(20), topLeft: Radius.circular(20)),
     ),
     builder: (BuildContext context) {
       return const Padding(
@@ -438,10 +434,9 @@ class QuizDialogState extends State<QuizDialog> {
             const Text(
               '運動寶物',
               style: TextStyle(
-                fontSize: 20,
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold
-              ),
+                  fontSize: 20,
+                  color: ColorSet.textColor,
+                  fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10.0),
             Align(
@@ -453,7 +448,10 @@ class QuizDialogState extends State<QuizDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
-                    colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
+                    colors: [
+                      ColorSet.backgroundColor,
+                      ColorSet.backgroundColor
+                    ],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
@@ -463,12 +461,12 @@ class QuizDialogState extends State<QuizDialog> {
                   spacing: 5,
                   runSpacing: 10,
                   children: [
-                      for (int i = 0; i < workoutGem; i++) //運寶數量
-                        Image.asset(
-                          height: 35,
-                          width: 35,
-                          'assets/images/treasure.png',
-                        ),
+                    for (int i = 0; i < workoutGem; i++) //運寶數量
+                      Image.asset(
+                        height: 35,
+                        width: 35,
+                        'assets/images/treasure.png',
+                      ),
                   ],
                 ),
               ),
@@ -477,10 +475,9 @@ class QuizDialogState extends State<QuizDialog> {
             const Text(
               '冥想寶物',
               style: TextStyle(
-                fontSize: 20,
-                color: ColorSet.textColor,
-                  fontWeight: FontWeight.bold
-              ),
+                  fontSize: 20,
+                  color: ColorSet.textColor,
+                  fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10.0),
             Align(
@@ -492,7 +489,10 @@ class QuizDialogState extends State<QuizDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
-                    colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
+                    colors: [
+                      ColorSet.backgroundColor,
+                      ColorSet.backgroundColor
+                    ],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
@@ -501,19 +501,19 @@ class QuizDialogState extends State<QuizDialog> {
                   spacing: 5,
                   runSpacing: 10,
                   children: [
-                      for (int i = 0;
-                          i < meditationGem;
-                          i++) //冥寶數量
-                        Image.asset(
-                          height: 35,
-                          width: 35,
-                          'assets/images/treasure.png',
-                        ),
+                    for (int i = 0; i < meditationGem; i++) //冥寶數量
+                      Image.asset(
+                        height: 35,
+                        width: 35,
+                        'assets/images/treasure.png',
+                      ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 15,)
+            const SizedBox(
+              height: 15,
+            )
           ],
         ),
       ),
@@ -576,7 +576,10 @@ class GrowDialogState extends State<GrowDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
-                    colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
+                    colors: [
+                      ColorSet.backgroundColor,
+                      ColorSet.backgroundColor
+                    ],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
@@ -613,7 +616,10 @@ class GrowDialogState extends State<GrowDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
-                    colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
+                    colors: [
+                      ColorSet.backgroundColor,
+                      ColorSet.backgroundColor
+                    ],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
@@ -648,7 +654,10 @@ class GrowDialogState extends State<GrowDialog> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   gradient: const LinearGradient(
-                    colors: [ColorSet.backgroundColor, ColorSet.backgroundColor],
+                    colors: [
+                      ColorSet.backgroundColor,
+                      ColorSet.backgroundColor
+                    ],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
@@ -674,7 +683,9 @@ class GrowDialogState extends State<GrowDialog> {
                 ),
               ),
             ),
-            const SizedBox(height: 15,)
+            const SizedBox(
+              height: 15,
+            )
           ],
         ),
       ),

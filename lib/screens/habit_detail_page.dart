@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-import 'package:g12/screens/PageMaterial.dart';
+import 'package:g12/screens/page_material.dart';
 
-import 'package:g12/services/Database.dart';
-import 'package:g12/services/PlanAlgo.dart';
+import 'package:g12/services/database.dart';
+import 'package:g12/services/plan_algo.dart';
 
 class ExerciseDetailPage extends StatefulWidget {
   final Map arguments;
@@ -138,11 +138,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                       PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.edit_calendar_outlined,
                                 color: ColorSet.iconColor),
                             SizedBox(
@@ -156,11 +156,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                       PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.cached, color: ColorSet.iconColor),
                             SizedBox(
                               width: 10,
@@ -173,11 +173,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                       PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.delete_outline,
                                 color: Colors.deepOrangeAccent),
                             SizedBox(
@@ -233,6 +233,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                               workoutProgress = progress?[Calendar.dateToString(day!)];
                               isFetchingData = false;
                             });
+                            if (!mounted) return;
                             InformDialog()
                                 .get(context, "完成重新生成:)",
                                     "${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的運動計畫\n已經重新生成囉！")
@@ -250,6 +251,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                       } else {
                         btnOkOnPress() async {
                           await PlanDB.delete(Calendar.dateToString(day!));
+                          if (!mounted) return;
                           Navigator.pushNamed(context, "/");
                         }
 
@@ -361,7 +363,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                 ? () {
                                     int currentIndex =
                                         widget.arguments['currentIndex'];
-                                    print("Current Index: $currentIndex");
+                                    debugPrint("Current Index: $currentIndex");
                                     List items = workoutPlan!.split(", ");
                                     for (int i = 0; i < items.length; i++) {
                                       if (i <= 2) {
@@ -481,11 +483,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                       PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.edit_calendar_outlined,
                                 color: ColorSet.iconColor),
                             SizedBox(
@@ -499,11 +501,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                       PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.cached, color: ColorSet.iconColor),
                             SizedBox(
                               width: 10,
@@ -516,11 +518,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                       PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.delete_outline,
                                 color: Colors.deepOrangeAccent),
                             SizedBox(
@@ -579,6 +581,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                                   progress?[Calendar.dateToString(day!)];
                               isFetchingData = false;
                             });
+                            if (!mounted) return;
                             InformDialog()
                                 .get(context, "完成重新生成:)",
                                     "${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的冥想計畫\n已經重新生成囉！")
@@ -596,6 +599,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                       } else {
                         btnOkOnPress() async {
                           await MeditationPlanDB.delete(Calendar.dateToString(day!));
+                          if (!mounted) return;
                           Navigator.pushNamed(context, "/");
                         }
 
@@ -1112,13 +1116,13 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
                     ? await PlanDB.updateDate(originalDate, changedDayDate)
                     : await MeditationPlanDB.updateDate(
                         originalDate, changedDayDate);
-                print(
+                debugPrint(
                     "Change $day's ${(type == 0) ? "workout plan" : "meditation plan"} to $changedDayDate 星期$changedDayWeekday.");
                 if (!mounted) return;
 
                 btnOkOnPress() {
                   Navigator.pushNamed(context, "/");
-                  print("Change!!!");
+                  debugPrint("Change!!!");
                 }
 
                 InformDialog()

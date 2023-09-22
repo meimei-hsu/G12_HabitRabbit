@@ -1,18 +1,13 @@
 import 'dart:async';
 import 'dart:collection';
-import 'package:timezone/data/latest.dart' as tz;
 
-//import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-//import 'package:flutter_datetime_picker/src/datetime_picker_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:g12/services/CRUD.dart';
-import 'package:g12/services/PlanAlgo.dart';
-
-import 'package:g12/Services/Notification.dart';
+import 'package:g12/services/crud.dart';
+import 'package:g12/Services/notification.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +23,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var plan = ["4008", "4012", "4006", "3102", "3209"];
+    // var plan = ["4008", "4012", "4006", "3102", "3209"];
 
     return Scaffold(
         body: Container(
@@ -53,7 +48,7 @@ class Home extends StatelessWidget {
                   onConfirm: (date) {},
                 );*/
               },
-              child: const Text("timecselect")),
+              child: const Text("timeSelect")),
           TextButton(
               onPressed: () {
                 // PlanAlgo.execute();
