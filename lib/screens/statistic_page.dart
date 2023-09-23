@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -62,8 +63,7 @@ class StatisticPageState extends State<StatisticPage> {
 
   Map<String, int> meditationTypeCountMap = {
     "mindfulness": 0,
-    "relax": 0,
-    "visualize": 0,
+    "work": 0,
     "kindness": 0,
   };
   Map<String, double> meditationTypePercentageMap = {};
@@ -91,8 +91,8 @@ class StatisticPageState extends State<StatisticPage> {
   final ScrollController _scrollController = ScrollController();
 
   void getUserData() async {
-    // 體重
-    var weight = await WeightDB.getTable();
+    // 體重圖表
+    var weight = await WeightDB.getTable(); // Fetch user's data from firebase
     if (weight != null) {
       weightDataMap =
           weight.map((key, value) => MapEntry(key as String, value.toDouble()));
@@ -118,153 +118,164 @@ class StatisticPageState extends State<StatisticPage> {
     }
     avgWeight = weightDataList.average;
 
-    // 計畫進度
-    var exerciseDuration = await DurationDB.getTable();
-    if (exerciseDuration != null) {
-      for (MapEntry entry in exerciseDuration.entries) {
-        var exerciseDate = DateTime.parse(entry.key);
-        exerciseCompletionRateMap[exerciseDate] =
-            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
-      }
-    }
+    // 其他圖表
+    if (isInit && !isAddingWeight) {
+      // Fetch user's data from firebase
+      var exerciseDuration = await DurationDB.getTable();
+      var meditationDuration = await MeditationDurationDB.getTable();
+      var exercisePlan = await PlanDB.getTable();
+      var meditationPlan = await MeditationPlanDB.getTable();
+      var exerciseMonthDays = Calculator.getMonthTotalDays(exerciseDuration);
+      var meditationMonthDays =
+          Calculator.getMonthTotalDays(meditationDuration);
 
-    var meditationDuration = await MeditationDurationDB.getTable();
-    if (meditationDuration != null) {
-      for (MapEntry entry in meditationDuration.entries) {
-        var meditationDate = DateTime.parse(entry.key);
-        meditationCompletionRateMap[meditationDate] =
-            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
-      }
-    }
-
-    //連續成功天數
-    if (exerciseDuration != null) {
-      DateTime? startDate;
-      DateTime? endDate;
-      for (MapEntry entry in exerciseDuration.entries) {
-        var exercise = DateTime.parse(entry.key);
-        int completionStatus =
-            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
-
-        if (completionStatus == 2) {
-          if (continuousExerciseDays == 0) {
-            startDate = exercise;
-          }
-          continuousExerciseDays++;
-          endDate = exercise;
-        } else {
-          if (continuousExerciseDays >= 2) {
-            consecutiveExerciseDaysList
-                .add([startDate, endDate, continuousExerciseDays]);
-          }
-          continuousExerciseDays = 0;
-        }
-        exerciseCompletionRateMap[exercise] = completionStatus;
-      }
-      if (continuousExerciseDays >= 2) {
-        consecutiveExerciseDaysList
-            .add([startDate, endDate, continuousExerciseDays]);
-      }
-    }
-
-    if (meditationDuration != null) {
-      DateTime? startDate;
-      DateTime? endDate;
-      for (MapEntry entry in meditationDuration.entries) {
-        var meditation = DateTime.parse(entry.key);
-        int completionStatus =
-            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
-
-        if (completionStatus == 2) {
-          if (continuousMeditationDays == 0) {
-            startDate = meditation;
-          }
-          continuousMeditationDays++;
-          endDate = meditation;
-        } else {
-          if (continuousMeditationDays >= 2) {
-            consecutiveMeditationDaysList
-                .add([startDate, endDate, continuousMeditationDays]);
-          }
-          continuousMeditationDays = 0;
-        }
-        meditationCompletionRateMap[meditation] = completionStatus;
-      }
-      if (continuousMeditationDays >= 2) {
-        consecutiveMeditationDaysList
-            .add([startDate, endDate, continuousMeditationDays]);
-      }
-    }
-
-    //累積時長
-    if (exerciseDuration != null) {
-      for (MapEntry entry in exerciseDuration.entries) {
-        var exerciseDate = DateTime.parse(entry.key);
-        int completionStatus =
-            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
-
-        if (completionStatus == 2) {
-          var type = await PlanDB.getType(exerciseDate) ?? "unknown";
-          if (exerciseTypeCountMap.containsKey(type)) {
-            exerciseTypeCountMap[type] = exerciseTypeCountMap[type]! + 1;
-
-            int totalExerciseTypeCount =
-                exerciseTypeCountMap.values.reduce((sum, count) => sum + count);
-
-            exerciseTypeCountMap.forEach((type, count) {
-              double percentage = (count / totalExerciseTypeCount) * 100;
-              exerciseTypePercentageMap[type] = percentage;
-              percentageExerciseList.add([type, percentage.toInt()]);
-            });
-          }
+      // 計畫進度圖表
+      if (exerciseDuration != null) {
+        for (MapEntry entry in exerciseDuration.entries) {
+          var exerciseDate = DateTime.parse(entry.key);
+          exerciseCompletionRateMap[exerciseDate] =
+              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
         }
       }
-    }
 
-    if (meditationDuration != null) {
-      for (MapEntry entry in meditationDuration.entries) {
-        var meditationDate = DateTime.parse(entry.key);
-        int completionStatus =
-            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+      if (meditationDuration != null) {
+        for (MapEntry entry in meditationDuration.entries) {
+          var meditationDate = DateTime.parse(entry.key);
+          meditationCompletionRateMap[meditationDate] =
+              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+        }
+      }
 
-        if (completionStatus == 2) {
-          var type =
-              await MeditationPlanDB.getType(meditationDate) ?? "unknown";
-          if (meditationTypeCountMap.containsKey(type)) {
-            meditationTypeCountMap[type] = meditationTypeCountMap[type]! + 1;
+      // 連續成功天數圖表
+      if (exerciseDuration != null) {
+        DateTime? startDate;
+        DateTime? endDate;
+        for (MapEntry entry in exerciseDuration.entries) {
+          var exercise = DateTime.parse(entry.key);
+          int completionStatus =
+              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
-            int totalMeditationTypeCount = meditationTypeCountMap.values
-                .reduce((sum, count) => sum + count);
+          if (completionStatus == 2) {
+            if (continuousExerciseDays == 0) {
+              startDate = exercise;
+            }
+            continuousExerciseDays++;
+            endDate = exercise;
+          } else {
+            if (continuousExerciseDays >= 2) {
+              consecutiveExerciseDaysList
+                  .add([startDate, endDate, continuousExerciseDays]);
+            }
+            continuousExerciseDays = 0;
+          }
+          exerciseCompletionRateMap[exercise] = completionStatus;
+        }
+        if (continuousExerciseDays >= 2) {
+          consecutiveExerciseDaysList
+              .add([startDate, endDate, continuousExerciseDays]);
+        }
+      }
 
-            meditationTypeCountMap.forEach((type, count) {
-              double percentage = (count / totalMeditationTypeCount) * 100;
-              meditationTypePercentageMap[type] = percentage;
-              percentageMeditationList.add([type, percentage.toInt()]);
-            });
+      if (meditationDuration != null) {
+        DateTime? startDate;
+        DateTime? endDate;
+        for (MapEntry entry in meditationDuration.entries) {
+          var meditation = DateTime.parse(entry.key);
+          int completionStatus =
+              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+
+          if (completionStatus == 2) {
+            if (continuousMeditationDays == 0) {
+              startDate = meditation;
+            }
+            continuousMeditationDays++;
+            endDate = meditation;
+          } else {
+            if (continuousMeditationDays >= 2) {
+              consecutiveMeditationDaysList
+                  .add([startDate, endDate, continuousMeditationDays]);
+            }
+            continuousMeditationDays = 0;
+          }
+          meditationCompletionRateMap[meditation] = completionStatus;
+        }
+        if (continuousMeditationDays >= 2) {
+          consecutiveMeditationDaysList
+              .add([startDate, endDate, continuousMeditationDays]);
+        }
+      }
+
+      // 累積時長圖表
+      if (exerciseDuration != null && exercisePlan != null) {
+        for (MapEntry entry in exerciseDuration.entries) {
+          var exerciseDate = entry.key;
+          int completionStatus =
+              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+
+          if (completionStatus == 2) {
+            var type =
+                await PlanDB.getTypeFromPlan(exercisePlan[exerciseDate]) ??
+                    "unknown";
+            if (exerciseTypeCountMap.containsKey(type)) {
+              exerciseTypeCountMap[type] = exerciseTypeCountMap[type]! + 1;
+
+              int totalExerciseTypeCount = exerciseTypeCountMap.values
+                  .reduce((sum, count) => sum + count);
+
+              exerciseTypeCountMap.forEach((type, count) {
+                double percentage = (count / totalExerciseTypeCount) * 100;
+                exerciseTypePercentageMap[type] = percentage;
+                percentageExerciseList.add([type, percentage.toInt()]);
+              });
+            }
           }
         }
       }
-    }
 
-    // 每月成功天數
-    var exerciseMonthDays = await DurationDB.getMonthTotalDays();
-    var meditationMonthDays = await MeditationDurationDB.getMonthTotalDays();
-    setState(() {
-      exerciseMonthDaysList = exerciseMonthDays ?? [];
-      meditationMonthDaysList = meditationMonthDays ?? [];
-    });
+      if (meditationDuration != null && meditationPlan != null) {
+        for (MapEntry entry in meditationDuration.entries) {
+          var meditationDate = entry.key;
+          int completionStatus =
+              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
-    List<double> exerciseDays = [];
-    for (int i = 0; i < exerciseMonthDaysList.length; i++) {
-      exerciseDays.add(exerciseMonthDaysList[i][2].toDouble());
-    }
-    maxExerciseDays = exerciseDays.reduce(max) + 10;
+          if (completionStatus == 2) {
+            var type = await MeditationPlanDB.getTypeFromPlan(
+                    meditationPlan[meditationDate]) ??
+                "unknown";
+            if (meditationTypeCountMap.containsKey(type)) {
+              meditationTypeCountMap[type] = meditationTypeCountMap[type]! + 1;
 
-    List<double> meditationDays = [];
-    for (int i = 0; i < meditationMonthDaysList.length; i++) {
-      meditationDays.add(meditationMonthDaysList[i][2].toDouble());
+              int totalMeditationTypeCount = meditationTypeCountMap.values
+                  .reduce((sum, count) => sum + count);
+
+              meditationTypeCountMap.forEach((type, count) {
+                double percentage = (count / totalMeditationTypeCount) * 100;
+                meditationTypePercentageMap[type] = percentage;
+                percentageMeditationList.add([type, percentage.toInt()]);
+              });
+            }
+          }
+        }
+      }
+
+      // 每月成功天數圖表
+      setState(() {
+        exerciseMonthDaysList = exerciseMonthDays ?? [];
+        meditationMonthDaysList = meditationMonthDays ?? [];
+      });
+
+      List<double> exerciseDays = [];
+      for (int i = 0; i < exerciseMonthDaysList.length; i++) {
+        exerciseDays.add(exerciseMonthDaysList[i][2].toDouble());
+      }
+      maxExerciseDays = exerciseDays.reduce(max) + 10;
+
+      List<double> meditationDays = [];
+      for (int i = 0; i < meditationMonthDaysList.length; i++) {
+        meditationDays.add(meditationMonthDaysList[i][2].toDouble());
+      }
+      maxMeditationDays = meditationDays.reduce(max) + 10;
     }
-    maxMeditationDays = meditationDays.reduce(max) + 10;
 
     // After getting user's data, hide the loading mask
     isInit = false;
@@ -407,17 +418,22 @@ class StatisticPageState extends State<StatisticPage> {
                                               topRight: Radius.circular(20),
                                               topLeft: Radius.circular(20)),
                                         ),
-                                        backgroundColor: ColorSet.bottomBarColor,
+                                        backgroundColor:
+                                            ColorSet.bottomBarColor,
                                         context: context,
                                         builder: (context) {
                                           return StatefulBuilder(builder:
                                               (BuildContext context,
                                                   StateSetter setModalState) {
                                             return AnimatedPadding(
-                                                padding: MediaQuery.of(context).viewInsets,
-                                                duration: const Duration(milliseconds: 10),
+                                                padding: MediaQuery.of(context)
+                                                    .viewInsets,
+                                                duration: const Duration(
+                                                    milliseconds: 10),
                                                 child: SingleChildScrollView(
-                                                    child: getAddWeightBottomSheet(setModalState)));
+                                                    child:
+                                                        getAddWeightBottomSheet(
+                                                            setModalState)));
                                           });
                                         });
                                   },
@@ -441,27 +457,34 @@ class StatisticPageState extends State<StatisticPage> {
                                           // lineTouchData: 觸摸交互詳細訊息
                                           lineTouchData: LineTouchData(
                                             handleBuiltInTouches: true,
-                                            touchTooltipData: LineTouchTooltipData(
+                                            touchTooltipData:
+                                                LineTouchTooltipData(
                                               fitInsideHorizontally: true,
                                               fitInsideVertically: true,
-                                              tooltipBgColor: ColorSet.bottomBarColor.withOpacity(0.8),
+                                              tooltipBgColor: ColorSet
+                                                  .bottomBarColor
+                                                  .withOpacity(0.8),
                                               getTooltipItems:
                                                   (List<LineBarSpot>
                                                       touchedBarSpots) {
-                                                return touchedBarSpots.map((barSpot) {
+                                                return touchedBarSpots
+                                                    .map((barSpot) {
                                                   final flSpot = barSpot;
 
                                                   return LineTooltipItem(
                                                     '${weightDataMap.keys.toList()[flSpot.x.toInt()]}\n',
                                                     const TextStyle(
                                                       color: ColorSet.textColor,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                     children: [
                                                       TextSpan(
-                                                        text: '${flSpot.y.toString()} 公斤',
+                                                        text:
+                                                            '${flSpot.y.toString()} 公斤',
                                                         style: const TextStyle(
-                                                          color: ColorSet.textColor,
+                                                          color: ColorSet
+                                                              .textColor,
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.w900,
@@ -480,13 +503,20 @@ class StatisticPageState extends State<StatisticPage> {
                                                 y: avgWeight,
                                                 label: HorizontalLineLabel(
                                                     show: true,
-                                                    padding: const EdgeInsets.only(left: 10),
-                                                    labelResolver: (line) => '平均：${avgWeight.round()}',
-                                                    alignment: Alignment.topRight,
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 10),
+                                                    labelResolver: (line) =>
+                                                        '平均：${avgWeight.round()}',
+                                                    alignment:
+                                                        Alignment.topRight,
                                                     style: TextStyle(
-                                                        color: ColorSet.textColor.withOpacity(0.7),
+                                                        color: ColorSet
+                                                            .textColor
+                                                            .withOpacity(0.7),
                                                         fontSize: 15,
-                                                        fontWeight: FontWeight.bold)),
+                                                        fontWeight:
+                                                            FontWeight.bold)),
                                                 color: ColorSet.textColor
                                                     .withOpacity(0.7),
                                                 dashArray: [5, 5],
@@ -506,7 +536,8 @@ class StatisticPageState extends State<StatisticPage> {
                                               );
                                             },
                                             checkToShowHorizontalLine: (value) {
-                                              return value % 5 == 0; // Show horizontal grid lines at intervals of 5
+                                              return value % 5 ==
+                                                  0; // Show horizontal grid lines at intervals of 5
                                             },
                                           ),
                                           // titlesData: 四個方向的標題
@@ -518,9 +549,11 @@ class StatisticPageState extends State<StatisticPage> {
                                                   const TextStyle(
                                                       color: ColorSet.textColor,
                                                       fontSize: 15,
-                                                      fontWeight: FontWeight.bold),
+                                                      fontWeight:
+                                                          FontWeight.bold),
                                               getTitles: (value) {
-                                                return weightDataMap.keys.toList()[value.toInt()];
+                                                return weightDataMap.keys
+                                                    .toList()[value.toInt()];
                                               },
                                               margin: 8,
                                             ),
@@ -567,7 +600,8 @@ class StatisticPageState extends State<StatisticPage> {
                                               dotData: FlDotData(
                                                 show: true,
                                                 getDotPainter: (spot, percent,
-                                                        barData, index) => FlDotCirclePainter(
+                                                        barData, index) =>
+                                                    FlDotCirclePainter(
                                                   color: ColorSet.textColor,
                                                   radius: 3,
                                                 ),
@@ -903,15 +937,15 @@ class StatisticPageState extends State<StatisticPage> {
                                                 data.y,
                                             pointColorMapper:
                                                 (ChartData data, _) {
-                                                  if (data.x == "有氧") {
-                                                    return const Color(0xfffbd9c6);
-                                                  } else if (data.x == "重訓") {
-                                                    return const Color(0xfffae5da);
-                                                  } else if (data.x == "瑜珈") {
-                                                    return const Color(0xfffcf1ec);
-                                                  } else {
-                                                    return const Color(0xfffdfdfd);
-                                                  }
+                                              if (data.x == "有氧") {
+                                                return const Color(0xfffbd9c6);
+                                              } else if (data.x == "重訓") {
+                                                return const Color(0xfffae5da);
+                                              } else if (data.x == "瑜珈") {
+                                                return const Color(0xfffcf1ec);
+                                              } else {
+                                                return const Color(0xfffdfdfd);
+                                              }
                                             },
                                             //顯示數字(趴數)
                                             dataLabelSettings:
@@ -943,17 +977,15 @@ class StatisticPageState extends State<StatisticPage> {
                                                 data.y,
                                             pointColorMapper:
                                                 (ChartData data, _) {
-                                                  if (data.x == "正念冥想") {
-                                                    return const Color(0xfff3f4fd);
-                                                  } else if (data.x == "放鬆冥想") {
-                                                    return const Color(0xffe9eafd);
-                                                  } else if (data.x == "想像冥想") {
-                                                    return const Color(0xffd6d8fa);
-                                                  } else if (data.x == "慈愛冥想") {
-                                                    return const Color(0xffc2c5f7);
-                                                  } else {
-                                                    return const Color(0xfffdfdfd);
-                                                  }
+                                              if (data.x == "正念冥想") {
+                                                return const Color(0xffe9eafd);
+                                              } else if (data.x == "工作冥想") {
+                                                return const Color(0xffd6d8fa);
+                                              } else if (data.x == "慈心冥想") {
+                                                return const Color(0xffc2c5f7);
+                                              } else {
+                                                return const Color(0xfffdfdfd);
+                                              }
                                             },
                                             dataLabelSettings:
                                                 const DataLabelSettings(
@@ -1282,9 +1314,8 @@ class StatisticPageState extends State<StatisticPage> {
     "yoga": "瑜珈",
     "strength": "重訓",
     "mindfulness": "正念冥想",
-    "relax": "放鬆冥想",
-    "visualize": "想像冥想",
-    "kindness": "慈愛冥想",
+    "work": "工作冥想",
+    "kindness": "慈心冥想",
   };
 
   String translateTypeToChinese(String englishType) {
@@ -1342,7 +1373,8 @@ class StatisticPageState extends State<StatisticPage> {
 
   // 新增體重 bottom sheet
   Widget getAddWeightBottomSheet(StateSetter setModalState) {
-    String showingDate = "${selectedDate.year} / ${selectedDate.month} / ${selectedDate.day}";
+    String showingDate =
+        "${selectedDate.year} / ${selectedDate.month} / ${selectedDate.day}";
 
     return Container(
         padding:

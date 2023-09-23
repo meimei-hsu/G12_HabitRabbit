@@ -59,7 +59,7 @@ class PlanAlgo {
     var db = await algo.initializeThisWeek();
     var date = Calendar.dateToString(dateTime);
 
-    var workoutType = await PlanDB.getType(dateTime);
+    var workoutType = await PlanDB.getTypeFromDate(dateTime);
     var timeSpan = await PlanDB.getPlanLong(dateTime);
     if (workoutType != null) {
       var plan = await algo.arrangeWorkout(db, workoutType, timeSpan);
@@ -104,7 +104,7 @@ class PlanAlgo {
           if (zero == 3) {
             // adjust the difficulty of next day and the day after
             for (i = 1; i <= 2; i++) {
-              String? type = await PlanDB.getType(dates[today + i]);
+              String? type = await PlanDB.getTypeFromDate(dates[today + i]);
               if (type != null) {
                 var plan = (i == 1)
                     ? await algo.getFiveMinWorkout(db, type)
@@ -123,7 +123,7 @@ class PlanAlgo {
 
               // adjust the difficulty of next day and the day after
               for (i = 1; i <= 2; i++) {
-                String? type = await PlanDB.getType(dates[today + i]);
+                String? type = await PlanDB.getTypeFromDate(dates[today + i]);
                 if (type != null) {
                   String plan = "";
                   switch (planLong) {
@@ -452,7 +452,7 @@ class MeditationPlanAlgo {
     var db = await algo.initializeThisWeek();
     var date = Calendar.dateToString(dateTime);
 
-    var meditationType = await MeditationPlanDB.getType(dateTime);
+    var meditationType = await MeditationPlanDB.getTypeFromDate(dateTime);
     if (meditationType != null) {
       var plan = await algo.arrangeMeditation(db, meditationType);
       await MeditationPlanDB.update({date: plan});

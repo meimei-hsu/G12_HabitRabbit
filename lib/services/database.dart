@@ -835,10 +835,15 @@ class PlanDB {
     return (await getFromDate(date))?.split(", ").length;
   }
 
-  static Future<String?> getType(DateTime date) async {
+  static Future<String?> getTypeFromDate(DateTime date) async {
+    var plan = await getFromDate(date);
+    return (plan != null) ? getTypeFromPlan(plan) : null;
+  }
+
+  static Future<String?> getTypeFromPlan(String? plan) async {
     // The third element of the plan is the first workout after the warmup,
     // and its first character's index (which indicates the workout type) is 18.
-    switch ((await getFromDate(date))?[18]) {
+    switch (plan?[18]) {
       case '1':
         return "strength";
       case '2':
@@ -936,9 +941,14 @@ class MeditationPlanDB {
     return (await getFromDate(date))?.split(", ").length;
   }
 
-  static Future<String?> getType(DateTime date) async {
+  static Future<String?> getTypeFromDate(DateTime date) async {
+    var plan = await getFromDate(date);
+    return (plan != null) ? getTypeFromPlan(plan) : null;
+  }
+
+  static Future<String?> getTypeFromPlan(String? plan) async {
     // the first character indicates the meditation type
-    switch ((await getFromDate(date))?[0]) {
+    switch (plan?[0]) {
       case '1':
         return "mindfulness";
       case '2':

@@ -768,7 +768,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
               debugPrint("FeedbackData: $feedbackData");
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false);
-              var type = await PlanDB.getType(DateTime.now());
+              var type = await PlanDB.getTypeFromDate(DateTime.now());
               if (type != null) {
                 UserDB.updateWorkoutFeedback(type, feedbackData);
               }
@@ -1034,7 +1034,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
 
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (Route<dynamic> route) => false);
-                  var type = await PlanDB.getType(DateTime.now());
+                  var type = await PlanDB.getTypeFromDate(DateTime.now());
                   if (type != null) {
                     UserDB.updateWorkoutFeedback(type, feedbackData);
                   }
@@ -1050,7 +1050,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
 
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (Route<dynamic> route) => false);
-                  var type = await MeditationPlanDB.getType(DateTime.now());
+                  var type = await MeditationPlanDB.getTypeFromDate(DateTime.now());
                   if (type != null) {
                     UserDB.updateMeditationFeedback(type, feedbackData);
                   }
