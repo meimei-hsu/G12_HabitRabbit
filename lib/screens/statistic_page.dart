@@ -932,15 +932,15 @@ class StatisticPageState extends State<StatisticPage> {
                                                 data.y,
                                             pointColorMapper:
                                                 (ChartData data, _) {
-                                              if (data.x == "有氧") {
-                                                return const Color(0xffEDEEFC);
-                                              } else if (data.x == "重訓") {
-                                                return const Color(0xffd4d6fc);
-                                              } else if (data.x == "瑜珈") {
-                                                return const Color(0xffA1A7FC);
-                                              } else {
-                                                return Colors.grey;
-                                              }
+                                                  if (data.x == "有氧") {
+                                                    return const Color(0xfffbd9c6);
+                                                  } else if (data.x == "重訓") {
+                                                    return const Color(0xfffae5da);
+                                                  } else if (data.x == "瑜珈") {
+                                                    return const Color(0xfffcf1ec);
+                                                  } else {
+                                                    return const Color(0xfffdfdfd);
+                                                  }
                                             },
                                             //顯示數字(趴數)
                                             dataLabelSettings:
@@ -972,17 +972,17 @@ class StatisticPageState extends State<StatisticPage> {
                                                 data.y,
                                             pointColorMapper:
                                                 (ChartData data, _) {
-                                              if (data.x == "正念冥想") {
-                                                return const Color(0xffEDEEFC);
-                                              } else if (data.x == "放鬆冥想") {
-                                                return const Color(0xffd4d6fc);
-                                              } else if (data.x == "想像冥想") {
-                                                return const Color(0xffA1A7FC);
-                                              } else if (data.x == "慈愛冥想") {
-                                                return const Color(0xff5661FC);
-                                              } else {
-                                                return Colors.grey;
-                                              }
+                                                  if (data.x == "正念冥想") {
+                                                    return const Color(0xfff3f4fd);
+                                                  } else if (data.x == "放鬆冥想") {
+                                                    return const Color(0xffe9eafd);
+                                                  } else if (data.x == "想像冥想") {
+                                                    return const Color(0xffd6d8fa);
+                                                  } else if (data.x == "慈愛冥想") {
+                                                    return const Color(0xffc2c5f7);
+                                                  } else {
+                                                    return const Color(0xfffdfdfd);
+                                                  }
                                             },
                                             dataLabelSettings:
                                                 const DataLabelSettings(

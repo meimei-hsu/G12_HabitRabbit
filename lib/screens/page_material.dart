@@ -11,6 +11,8 @@ class ColorSet {
   static const Color failColor = Color(0xFFDEF0DE);
   static const Color exerciseColor = Color(0xFFFAE5DA);
   static const Color meditationColor = Color(0xFFE9EAFD);
+  static const Color friendColor = Color(0xFFFAE5DA);
+  static const Color usersColor = Color(0xFFE9EAFD);
   static const Color textColor = Color(0xFF2F4F4F);
   static const Color iconColor = Color(0xFF2F4F4F);
   static const Color borderColor = Color(0xFF2F4F4F);

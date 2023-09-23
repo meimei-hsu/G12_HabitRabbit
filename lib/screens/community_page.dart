@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:g12/screens/friend_status_page.dart';
@@ -16,6 +17,7 @@ class CommunityPage extends StatefulWidget {
 
 class CommunityPageState extends State<CommunityPage>
     with TickerProviderStateMixin {
+  User? user = FirebaseAuth.instance.currentUser;
   late TabController _controller;
   int _currentIndex = 0;
 
@@ -44,9 +46,9 @@ class CommunityPageState extends State<CommunityPage>
         backgroundColor: ColorSet.backgroundColor,
         appBar: AppBar(
           elevation: 0,
-          title: const Text(
-            'Mary 的朋友圈',
-            style: TextStyle(
+          title: Text(
+            '${user?.displayName!} 的朋友圈',
+            style: const TextStyle(
                 color: ColorSet.textColor,
                 fontSize: 28,
                 letterSpacing: 2,
@@ -69,10 +71,10 @@ class CommunityPageState extends State<CommunityPage>
                     child: SizedBox(
                       child: TabBar(
                         controller: _controller,
-                        tabs: [
+                        tabs: const [
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.group,
                                   color: ColorSet.iconColor,
@@ -89,7 +91,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.emoji_events,
                                   color: ColorSet.iconColor, // 设置图标颜色
@@ -106,7 +108,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.sports_kabaddi,
                                   color: ColorSet.iconColor,
@@ -393,9 +395,9 @@ class FriendListPageState extends State<FriendListPage> {
                       width: 1.0,
                     ),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Icon(Icons.emoji_events),
@@ -569,11 +571,11 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                           radiusStyle: true,
                           labels: const ['好友', '全用戶'],
                           activeBgColors: const [
-                            [Color(0xfff6cdb7)],
-                            [Color(0xffd4d6fc)],
+                            [ColorSet.friendColor],
+                            [ColorSet.usersColor]
                           ],
                           activeFgColor: ColorSet.textColor,
-                          inactiveBgColor: const Color(0xfffdfdf5),
+                          inactiveBgColor: ColorSet.bottomBarColor,
                           inactiveFgColor: ColorSet.textColor,
                           totalSwitches: 2,
                           onToggle: (index) {
@@ -736,11 +738,11 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                           radiusStyle: true,
                           labels: const ['好友', '全用戶'],
                           activeBgColors: const [
-                            [Color(0xfff6cdb7)],
-                            [Color(0xffd4d6fc)],
+                            [ColorSet.friendColor],
+                            [ColorSet.usersColor]
                           ],
                           activeFgColor: ColorSet.textColor,
-                          inactiveBgColor: const Color(0xfffdfdf5),
+                          inactiveBgColor: ColorSet.bottomBarColor,
                           inactiveFgColor: ColorSet.textColor,
                           totalSwitches: 2,
                           onToggle: (index) {
@@ -827,6 +829,9 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                       height: 30,
                                       decoration: BoxDecoration(
                                         color: const Color(0xffffffff),
+                                        border: Border.all(
+                                            color: ColorSet.borderColor,
+                                            width: 2),
                                         borderRadius: BorderRadius.circular(50),
                                       ),
                                       child: Row(children: [
@@ -899,11 +904,11 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                           radiusStyle: true,
                           labels: const ['好友', '全用戶'],
                           activeBgColors: const [
-                            [Color(0xfff6cdb7)],
-                            [Color(0xffd4d6fc)],
+                            [ColorSet.friendColor],
+                            [ColorSet.usersColor]
                           ],
                           activeFgColor: ColorSet.textColor,
-                          inactiveBgColor: const Color(0xfffdfdf5),
+                          inactiveBgColor: ColorSet.bottomBarColor,
                           inactiveFgColor: ColorSet.textColor,
                           totalSwitches: 2,
                           onToggle: (index) {
@@ -988,6 +993,9 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                       height: 30,
                                       decoration: BoxDecoration(
                                         color: const Color(0xffffffff),
+                                        border: Border.all(
+                                            color: ColorSet.borderColor,
+                                            width: 2),
                                         borderRadius: BorderRadius.circular(50),
                                       ),
                                       child: Row(children: [
@@ -1059,11 +1067,11 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                         radiusStyle: true,
                         labels: const ['好友', '全用戶'],
                         activeBgColors: const [
-                          [Color(0xfff6cdb7)],
-                          [Color(0xffd4d6fc)],
+                          [ColorSet.friendColor],
+                          [ColorSet.usersColor]
                         ],
                         activeFgColor: ColorSet.textColor,
-                        inactiveBgColor: const Color(0xfffdfdf5),
+                        inactiveBgColor: ColorSet.bottomBarColor,
                         inactiveFgColor: ColorSet.textColor,
                         totalSwitches: 2,
                         onToggle: (index) {
@@ -1148,6 +1156,9 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                     height: 30,
                                     decoration: BoxDecoration(
                                       color: const Color(0xffffffff),
+                                      border: Border.all(
+                                          color: ColorSet.borderColor,
+                                          width: 2),
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                     child: Row(children: [
@@ -1203,10 +1214,11 @@ final List<Widget> competitionList = [
   Container(
     decoration: BoxDecoration(
       color: ColorSet.backgroundColor,
+      border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -1224,10 +1236,11 @@ final List<Widget> competitionList = [
   Container(
     decoration: BoxDecoration(
       color: ColorSet.backgroundColor,
+      border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -1245,10 +1258,11 @@ final List<Widget> competitionList = [
   Container(
     decoration: BoxDecoration(
       color: ColorSet.backgroundColor,
+      border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -1266,10 +1280,11 @@ final List<Widget> competitionList = [
   Container(
     decoration: BoxDecoration(
       color: ColorSet.backgroundColor,
+      border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -1287,10 +1302,11 @@ final List<Widget> competitionList = [
   Container(
     decoration: BoxDecoration(
       color: ColorSet.backgroundColor,
+      border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -1311,10 +1327,11 @@ final List<Widget> teamworkList = [
   Container(
     decoration: BoxDecoration(
       color: ColorSet.backgroundColor,
+      border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -1332,10 +1349,11 @@ final List<Widget> teamworkList = [
   Container(
     decoration: BoxDecoration(
       color: ColorSet.backgroundColor,
+      border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -1353,10 +1371,11 @@ final List<Widget> teamworkList = [
   Container(
     decoration: BoxDecoration(
       color: ColorSet.backgroundColor,
+      border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -1374,10 +1393,11 @@ final List<Widget> teamworkList = [
   Container(
     decoration: BoxDecoration(
       color: ColorSet.backgroundColor,
+      border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -1395,10 +1415,11 @@ final List<Widget> teamworkList = [
   Container(
     decoration: BoxDecoration(
       color: ColorSet.backgroundColor,
+      border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -1482,8 +1503,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: Row(
-                            children: const [
+                          child: const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -1519,8 +1540,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: Row(
-                            children: const [
+                          child: const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -1713,11 +1734,11 @@ class TeamCompetitionPageState extends State<TeamCompetitionPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Padding(
+              const Padding(
                 padding:
-                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                    EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
-                  children: const [
+                  children: [
                     Text("團隊競爭賽",
                         style: TextStyle(
                           color: ColorSet.textColor,
@@ -1830,11 +1851,11 @@ class TeamWorkPageState extends State<TeamWorkPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Padding(
+              const Padding(
                 padding:
-                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                    EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
-                  children: const [
+                  children: [
                     Text("團隊合作賽",
                         style: TextStyle(
                           color: ColorSet.textColor,

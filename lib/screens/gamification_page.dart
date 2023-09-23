@@ -59,26 +59,15 @@ class GamificationPageState extends State<GamificationPage> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0, top: 16.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        '${user?.displayName!} 的角色',
-                        style: const TextStyle(
-                          fontFamily: 'WorkSans',
-                          color: ColorSet.textColor,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.1,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      //TODO: 根據等級改變Icon
-                      const Icon(
-                        Icons.looks_two,
-                        color: ColorSet.iconColor,
-                        size: 40,
-                      ),
-                    ],
+                  child: Text(
+                    '${user?.displayName!} 的角色',
+                    style: const TextStyle(
+                      fontFamily: 'WorkSans',
+                      color: ColorSet.textColor,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.1,
+                    ),
                   ),
                 ),
                 const Padding(
