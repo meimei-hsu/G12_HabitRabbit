@@ -384,11 +384,6 @@ class StatisticPageState extends State<StatisticPage> {
                           child: Column(
                             children: [
                               ListTile(
-                                /*leading: const Icon(
-                            Icons.monitor_weight_outlined,
-                            color: Color(0xff4b4370),
-                            size: 28,
-                          ),*/
                                 title: const Text(
                                   "體重紀錄",
                                   style: TextStyle(
@@ -412,22 +407,17 @@ class StatisticPageState extends State<StatisticPage> {
                                               topRight: Radius.circular(20),
                                               topLeft: Radius.circular(20)),
                                         ),
-                                        backgroundColor:
-                                            const Color(0xfffdeed9),
+                                        backgroundColor: ColorSet.bottomBarColor,
                                         context: context,
                                         builder: (context) {
                                           return StatefulBuilder(builder:
                                               (BuildContext context,
                                                   StateSetter setModalState) {
                                             return AnimatedPadding(
-                                                padding: MediaQuery.of(context)
-                                                    .viewInsets,
-                                                duration: const Duration(
-                                                    milliseconds: 10),
+                                                padding: MediaQuery.of(context).viewInsets,
+                                                duration: const Duration(milliseconds: 10),
                                                 child: SingleChildScrollView(
-                                                    child:
-                                                        getAddWeightBottomSheet(
-                                                            setModalState)));
+                                                    child: getAddWeightBottomSheet(setModalState)));
                                           });
                                         });
                                   },
@@ -451,34 +441,27 @@ class StatisticPageState extends State<StatisticPage> {
                                           // lineTouchData: 觸摸交互詳細訊息
                                           lineTouchData: LineTouchData(
                                             handleBuiltInTouches: true,
-                                            touchTooltipData:
-                                                LineTouchTooltipData(
+                                            touchTooltipData: LineTouchTooltipData(
                                               fitInsideHorizontally: true,
                                               fitInsideVertically: true,
-                                              tooltipBgColor: ColorSet
-                                                  .bottomBarColor
-                                                  .withOpacity(0.8),
+                                              tooltipBgColor: ColorSet.bottomBarColor.withOpacity(0.8),
                                               getTooltipItems:
                                                   (List<LineBarSpot>
                                                       touchedBarSpots) {
-                                                return touchedBarSpots
-                                                    .map((barSpot) {
+                                                return touchedBarSpots.map((barSpot) {
                                                   final flSpot = barSpot;
 
                                                   return LineTooltipItem(
                                                     '${weightDataMap.keys.toList()[flSpot.x.toInt()]}\n',
                                                     const TextStyle(
                                                       color: ColorSet.textColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                      fontWeight: FontWeight.bold,
                                                     ),
                                                     children: [
                                                       TextSpan(
-                                                        text:
-                                                            '${flSpot.y.toString()} 公斤',
+                                                        text: '${flSpot.y.toString()} 公斤',
                                                         style: const TextStyle(
-                                                          color: ColorSet
-                                                              .textColor,
+                                                          color: ColorSet.textColor,
                                                           fontSize: 16,
                                                           fontWeight:
                                                               FontWeight.w900,
@@ -497,20 +480,13 @@ class StatisticPageState extends State<StatisticPage> {
                                                 y: avgWeight,
                                                 label: HorizontalLineLabel(
                                                     show: true,
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 10),
-                                                    labelResolver: (line) =>
-                                                        '平均：${avgWeight.round()}',
-                                                    alignment:
-                                                        Alignment.topRight,
+                                                    padding: const EdgeInsets.only(left: 10),
+                                                    labelResolver: (line) => '平均：${avgWeight.round()}',
+                                                    alignment: Alignment.topRight,
                                                     style: TextStyle(
-                                                        color: ColorSet
-                                                            .textColor
-                                                            .withOpacity(0.7),
+                                                        color: ColorSet.textColor.withOpacity(0.7),
                                                         fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
+                                                        fontWeight: FontWeight.bold)),
                                                 color: ColorSet.textColor
                                                     .withOpacity(0.7),
                                                 dashArray: [5, 5],
@@ -530,8 +506,7 @@ class StatisticPageState extends State<StatisticPage> {
                                               );
                                             },
                                             checkToShowHorizontalLine: (value) {
-                                              return value % 5 ==
-                                                  0; // Show horizontal grid lines at intervals of 5
+                                              return value % 5 == 0; // Show horizontal grid lines at intervals of 5
                                             },
                                           ),
                                           // titlesData: 四個方向的標題
@@ -543,11 +518,9 @@ class StatisticPageState extends State<StatisticPage> {
                                                   const TextStyle(
                                                       color: ColorSet.textColor,
                                                       fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                      fontWeight: FontWeight.bold),
                                               getTitles: (value) {
-                                                return weightDataMap.keys
-                                                    .toList()[value.toInt()];
+                                                return weightDataMap.keys.toList()[value.toInt()];
                                               },
                                               margin: 8,
                                             ),
@@ -594,16 +567,14 @@ class StatisticPageState extends State<StatisticPage> {
                                               dotData: FlDotData(
                                                 show: true,
                                                 getDotPainter: (spot, percent,
-                                                        barData, index) =>
-                                                    FlDotCirclePainter(
+                                                        barData, index) => FlDotCirclePainter(
                                                   color: ColorSet.textColor,
                                                   radius: 3,
                                                 ),
                                               ),
                                             ),
                                           ],
-                                          minY: minY,
-                                          // y軸最小值
+                                          minY: minY, // y軸最小值
                                           maxY: maxY, // y軸最大值
                                         ),
                                       ),
@@ -1371,8 +1342,7 @@ class StatisticPageState extends State<StatisticPage> {
 
   // 新增體重 bottom sheet
   Widget getAddWeightBottomSheet(StateSetter setModalState) {
-    String showingDate =
-        "${selectedDate.year} / ${selectedDate.month} / ${selectedDate.day}";
+    String showingDate = "${selectedDate.year} / ${selectedDate.month} / ${selectedDate.day}";
 
     return Container(
         padding:
@@ -1389,11 +1359,11 @@ class StatisticPageState extends State<StatisticPage> {
             ),
             trailing: Container(
               padding: const EdgeInsets.only(right: 20, left: 20),
-              decoration: BoxDecoration(
+              /*decoration: BoxDecoration(
                 border: Border.all(color: ColorSet.textColor, width: 2),
                 color: Colors.transparent,
                 shape: BoxShape.circle,
-              ),
+              ),*/
               child: IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
@@ -1591,7 +1561,7 @@ class StatisticPageState extends State<StatisticPage> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(right: 10, left: 10),
-                backgroundColor: const Color(0xfff6cdb7),
+                backgroundColor: ColorSet.backgroundColor,
                 shadowColor: Colors.transparent,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(

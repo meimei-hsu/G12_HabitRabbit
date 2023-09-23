@@ -269,11 +269,11 @@ class HomepageState extends State<Homepage> {
                       const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                   decoration: BoxDecoration(
                       color: (isInit)
-                          ? const Color(0xffd4d6fc)
+                          ? ColorSet.bottomBarColor
                           : const Color(0xFFfdeed9),
                       border: Border.all(
                           color: (isInit)
-                              ? const Color(0xffd4d6fc)
+                              ? ColorSet.bottomBarColor
                               : const Color(0xFFfdeed9)),
                       borderRadius:
                           const BorderRadius.all(Radius.circular(20))),
@@ -282,13 +282,13 @@ class HomepageState extends State<Homepage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       LoadingAnimationWidget.horizontalRotatingDots(
-                        color: const Color(0xff4b3d70),
+                        color: ColorSet.textColor,
                         size: 100,
                       ),
                       Text(
                         (isInit) ? "載入計畫中..." : "重新整理中...",
                         style: const TextStyle(
-                          color: Color(0xff4b3d70),
+                          color: ColorSet.textColor,
                         ),
                       )
                     ],

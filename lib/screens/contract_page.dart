@@ -79,17 +79,13 @@ class FirstContractPageState extends State<FirstContractPage> {
         onTap: updateDialog,
         child: Stack(
           children: [
-            Align(
-              alignment: Alignment.center,
+            Padding(
+              padding: const EdgeInsets.only(top: 100, left: 20, right: 20),
               child: Container(
                 margin: const EdgeInsets.only(left: 20.0, right: 20.0),
                 padding: const EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [ColorSet.bottomBarColor, ColorSet.bottomBarColor],
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                  ),
+                  color: ColorSet.bottomBarColor,
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 child: Column(
@@ -124,55 +120,55 @@ class FirstContractPageState extends State<FirstContractPage> {
                         children: [
                           Expanded(
                               child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              padding:
+                                style: ElevatedButton.styleFrom(
+                                  padding:
                                   const EdgeInsets.only(right: 10, left: 10),
-                              backgroundColor: ColorSet.backgroundColor,
-                              shadowColor: Colors.transparent,
-                              elevation: 0,
-                              minimumSize: const Size.fromHeight(40),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/');
-                            },
-                            child: const Text(
-                              '再考慮一下',
-                              style: TextStyle(
-                                color: ColorSet.textColor,
-                                fontSize: 17,
-                              ),
-                            ),
-                          )),
+                                  backgroundColor: ColorSet.backgroundColor,
+                                  shadowColor: Colors.transparent,
+                                  elevation: 0,
+                                  minimumSize: const Size.fromHeight(40),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/');
+                                },
+                                child: const Text(
+                                  '再考慮一下',
+                                  style: TextStyle(
+                                    color: ColorSet.textColor,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                              )),
                           const SizedBox(width: 10.0),
                           Expanded(
                               child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              padding:
+                                style: ElevatedButton.styleFrom(
+                                  padding:
                                   const EdgeInsets.only(right: 10, left: 10),
-                              backgroundColor: ColorSet.backgroundColor,
-                              shadowColor: Colors.transparent,
-                              elevation: 0,
-                              minimumSize: const Size.fromHeight(40),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                tapCount++;
-                              });
-                            },
-                            child: const Text(
-                              '確定挑戰！',
-                              style: TextStyle(
-                                color: ColorSet.textColor,
-                                fontSize: 17,
-                              ),
-                            ),
-                          )),
+                                  backgroundColor: ColorSet.backgroundColor,
+                                  shadowColor: Colors.transparent,
+                                  elevation: 0,
+                                  minimumSize: const Size.fromHeight(40),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    tapCount++;
+                                  });
+                                },
+                                child: const Text(
+                                  '確定挑戰！',
+                                  style: TextStyle(
+                                    color: ColorSet.textColor,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                              )),
                         ],
                       ),
                     ],
@@ -182,55 +178,55 @@ class FirstContractPageState extends State<FirstContractPage> {
                         children: [
                           Expanded(
                               child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              side: const BorderSide(
-                                color: ColorSet.borderColor,
-                              ),
-                              backgroundColor: ColorSet.backgroundColor,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                tapCount++;
-                                contractData["type"] = '運動'; // 賦值给type字段
-                              });
-                            },
-                            child: const Text(
-                              '運動',
-                              style: TextStyle(
-                                color: ColorSet.textColor,
-                                fontSize: 17,
-                              ),
-                            ),
-                          )),
+                                style: OutlinedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  side: const BorderSide(
+                                    color: ColorSet.borderColor,
+                                  ),
+                                  backgroundColor: ColorSet.backgroundColor,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    tapCount++;
+                                    contractData["type"] = '運動'; // 賦值给type字段
+                                  });
+                                },
+                                child: const Text(
+                                  '運動',
+                                  style: TextStyle(
+                                    color: ColorSet.textColor,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                              )),
                           const SizedBox(width: 10.0),
                           Expanded(
                               child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              side: const BorderSide(
-                                color: ColorSet.borderColor,
-                              ),
-                              backgroundColor: ColorSet.backgroundColor,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                tapCount++;
-                                contractData["type"] = '冥想';
-                              });
-                            },
-                            child: const Text(
-                              '冥想',
-                              style: TextStyle(
-                                color: ColorSet.textColor,
-                                fontSize: 17,
-                              ),
-                            ),
-                          )),
+                                style: OutlinedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  side: const BorderSide(
+                                    color: ColorSet.borderColor,
+                                  ),
+                                  backgroundColor: ColorSet.backgroundColor,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    tapCount++;
+                                    contractData["type"] = '冥想';
+                                  });
+                                },
+                                child: const Text(
+                                  '冥想',
+                                  style: TextStyle(
+                                    color: ColorSet.textColor,
+                                    fontSize: 17,
+                                  ),
+                                ),
+                              )),
                         ],
                       ),
                     ],
@@ -355,7 +351,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                             focusedBorder: focusedAndErrorBorder,
                             focusedErrorBorder: focusedAndErrorBorder,
                             labelStyle:
-                                const TextStyle(color: ColorSet.textColor),
+                            const TextStyle(color: ColorSet.textColor),
                             hintStyle: const TextStyle(color: Colors.grey),
                             errorStyle: const TextStyle(
                                 height: 1,
@@ -399,7 +395,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const SecondContractPage(),
+                                  const SecondContractPage(),
                                 ),
                               );
                             });
@@ -465,17 +461,13 @@ class SecondContractPageState extends State<SecondContractPage> {
       ),
       body: Stack(
         children: [
-          Align(
-            alignment: Alignment.center,
+          Padding(
+            padding: const EdgeInsets.only(top: 20, left: 10, right:10),
             child: Container(
               margin: const EdgeInsets.only(left: 20.0, right: 20.0),
               padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [ColorSet.bottomBarColor, ColorSet.bottomBarColor],
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                ),
+                color: ColorSet.bottomBarColor,
                 borderRadius: BorderRadius.circular(20.0),
               ),
               child: Column(
@@ -493,25 +485,25 @@ class SecondContractPageState extends State<SecondContractPage> {
                   ),
                   Text(
                     '立契約人於約定期間積極養成  ${contractData["type"]}  習慣'
-                    '\n選擇方案為  ${contractData["content"]}'
-                    '\n投入金額為  ${contractData["money"]}  元'
-                    '\n\n若未達成設定目標，立契約人同意將投入金額全數捐出；'
-                    '若達成設定目標則由系統將全數金額退還。',
+                        '\n選擇方案為  ${contractData["content"]}'
+                        '\n投入金額為  ${contractData["money"]}  元'
+                        '\n\n若未達成設定目標，立契約人同意將投入金額全數捐出；'
+                        '若達成設定目標則由系統將全數金額退還。',
                     style: const TextStyle(
                       fontSize: 16.0,
                       color: ColorSet.textColor,
                     ),
                   ),
                   const SizedBox(height: 10.0),
-                  Align(
-                    alignment: Alignment.centerRight,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 100),
                     child: Row(
                       children: [
                         Expanded(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               padding:
-                                  const EdgeInsets.only(right: 10, left: 10),
+                              const EdgeInsets.only(right: 10, left: 10),
                               backgroundColor: ColorSet.backgroundColor,
                               shadowColor: Colors.transparent,
                               elevation: 0,
@@ -537,7 +529,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               padding:
-                                  const EdgeInsets.only(right: 10, left: 10),
+                              const EdgeInsets.only(right: 10, left: 10),
                               backgroundColor: ColorSet.backgroundColor,
                               shadowColor: Colors.transparent,
                               elevation: 0,
@@ -558,10 +550,10 @@ class SecondContractPageState extends State<SecondContractPage> {
 
                               ConfirmDialog()
                                   .get(
-                                      context,
-                                      '確定要執行嗎？',
-                                      "一旦執行動作後就無法進行修改或刪除。您確定要繼續嗎？",
-                                      btnOkOnPress)
+                                  context,
+                                  '確定要執行嗎？',
+                                  "一旦執行動作後就無法進行修改或刪除。您確定要繼續嗎？",
+                                  btnOkOnPress)
                                   .show();
                             },
                             child: const Text(
@@ -639,19 +631,12 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
           PageView(
             controller: _pageController,
             children: [
-              Align(
-                alignment: const Alignment(0.0, -0.3),
+              Padding(
+                padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
                 child: Container(
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        ColorSet.bottomBarColor,
-                        ColorSet.bottomBarColor
-                      ],
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                    ),
+                    color: ColorSet.bottomBarColor,
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: Column(
@@ -660,8 +645,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                       FutureBuilder<Map<String, dynamic>?>(
                         future: ContractDB.getContract(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
                             return const CircularProgressIndicator();
                           } else if (snapshot.hasError) {
                             return const Text('Error fetching data');
@@ -669,13 +653,13 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                             Map data = snapshot.data![type1];
                             return Text(
                               '立契約人將依照選擇之方案來養成各項習慣，'
-                              '若目標達成系統將投入金額全數退回，失敗則全數捐出。\n'
-                              '\n您選擇養成的習慣：${data["type"]}'
-                              '\n您選擇的方案：${data["content"]}'
-                              '\n您所投入的金額：${data["money"]}\n'
-                              '\n合約開始日：${data["startDay"]}'
-                              '\n合約結束日：${data["endDay"]}'
-                              '\n距離成功已完成：${Calculator.calcProgress(data["gem"])}%',
+                                  '若目標達成系統將投入金額全數退回，失敗則全數捐出。\n'
+                                  '\n您選擇養成的習慣：${data["type"]}'
+                                  '\n您選擇的方案：${data["content"]}'
+                                  '\n您所投入的金額：${data["money"]}\n'
+                                  '\n合約開始日：${data["startDay"]}'
+                                  '\n合約結束日：${data["endDay"]}'
+                                  '\n距離成功已完成：${Calculator.calcProgress(data["gem"])}%',
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 letterSpacing: 1.2,
@@ -692,20 +676,13 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                   ),
                 ),
               ),
-              Align(
-                alignment: const Alignment(0.0, -0.3),
+              Padding(
+                padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
                 child: Container(
                   margin: const EdgeInsets.only(left: 10.0),
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        ColorSet.bottomBarColor,
-                        ColorSet.bottomBarColor
-                      ],
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                    ),
+                    color: ColorSet.bottomBarColor,
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                   child: Column(
@@ -723,13 +700,13 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                             Map data = snapshot.data![type2];
                             return Text(
                               '立契約人將依照選擇之方案來養成各項習慣，'
-                              '若目標達成系統將投入金額全數退回，失敗則全數捐出。\n'
-                              '\n您選擇養成的習慣：${data["type"]}'
-                              '\n您選擇的方案：${data["content"]}'
-                              '\n您所投入的金額：${data["money"]}\n'
-                              '\n合約開始日：${data["startDay"]}'
-                              '\n合約結束日：${data["endDay"]}'
-                              '\n距離成功已完成：${Calculator.calcProgress(data["gem"])}%',
+                                  '若目標達成系統將投入金額全數退回，失敗則全數捐出。\n'
+                                  '\n您選擇養成的習慣：${data["type"]}'
+                                  '\n您選擇的方案：${data["content"]}'
+                                  '\n您所投入的金額：${data["money"]}\n'
+                                  '\n合約開始日：${data["startDay"]}'
+                                  '\n合約結束日：${data["endDay"]}'
+                                  '\n距離成功已完成：${Calculator.calcProgress(data["gem"])}%',
                               style: const TextStyle(
                                 fontSize: 18.0,
                                 letterSpacing: 1.2,
@@ -890,7 +867,8 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                 fontSize: 18,
                 fontWeight: FontWeight.bold),
           ),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Row(
+              mainAxisAlignment: MainAxisAlignment.center, children: [
             OutlinedButton(
               style: OutlinedButton.styleFrom(
                 shape: RoundedRectangleBorder(
