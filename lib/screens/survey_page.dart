@@ -1331,6 +1331,7 @@ class ResultPageState extends State<ResultPage> {
   @override
   void initState() {
     super.initState();
+    // TODO: change to new character photos
     personalityType += userInfo["neuroticism"] > 0 ? "N" : "S";
     personalityType += userInfo["openness"] > 0 ? "O" : "G";
     personalityType += userInfo["conscientiousness"] > 0 ? "C" : "F";

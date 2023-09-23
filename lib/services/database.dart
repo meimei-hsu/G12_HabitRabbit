@@ -9,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:g12/services/crud.dart';
 import 'package:g12/Services/notification.dart';
 
+// ignore_for_file: avoid_print
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // ensure initialisation
@@ -552,6 +554,7 @@ class GamificationDB {
         "meditationGem", // num
         "workoutFragment", // String
         "meditationFragment", // String
+        "character", // String
         "friends" // String
       ];
 

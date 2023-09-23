@@ -16,6 +16,8 @@ class SettingsPageData {
   User user = FirebaseAuth.instance.currentUser!;
   Map userData = {};
   Map timeForecast = {};
+  // TODO: character photo
+  AssetImage characterImage = const AssetImage("assets/images/Rabbit_2.png");
   String habitType = ""; // e.g. workout, meditation
   String habitTypeZH = ""; // habitType in Chinese
   String profileType = ""; // the type of profile data that user is modifying
@@ -79,209 +81,213 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
+  void refresh() {
+    setState(() {
+      mem.user = FirebaseAuth.instance.currentUser!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
       backgroundColor: ColorSet.backgroundColor,
-          appBar: AppBar(
-            title: const Text(
-              "個人設定",
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  color: ColorSet.textColor,
-                  fontSize: 32,
-                  letterSpacing: 0,
-                  fontWeight: FontWeight.bold,
-                  height: 1),
+      appBar: AppBar(
+        title: const Text(
+          "個人設定",
+          textAlign: TextAlign.left,
+          style: TextStyle(
+              color: ColorSet.textColor,
+              fontSize: 32,
+              letterSpacing: 0,
+              fontWeight: FontWeight.bold,
+              height: 1),
+        ),
+        backgroundColor: ColorSet.backgroundColor,
+        elevation: 0,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10),
+        child: ListView(
+          children: [
+            // user card
+            SimpleUserCard(
+              userName: mem.user.displayName!,
+              userProfilePic: (mem.user.photoURL != null)
+                  ? NetworkImage(mem.user.photoURL!)
+                  : mem.characterImage as ImageProvider,
             ),
-            backgroundColor: ColorSet.backgroundColor,
-            elevation: 0,
-          ),
-            body: Padding(
-              padding: const EdgeInsets.all(10),
-              child: ListView(
-                children: [
-                  // user card
-                  SimpleUserCard(
-                    userName: mem.user.displayName!,
-                    // Todo: user photo
-                    userProfilePic: const NetworkImage(
-                        "https://pokoloruj.com.pl/static/gallery/gwiazdy-pop/yr3ylitu.png"),
-                  ),
-                  SettingsGroup(
-                    settingsGroupTitle: "運動",
-                    items: [
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingWorkout();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeDurationDialog());
-                        },
-                        icons: CupertinoIcons.timer,
-                        iconStyle: iconStyle,
-                        title: '運動時長',
-                        subtitle: "更改每次運動計畫的長度",
-                      ),
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingWorkout();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeDayDialog());
-                        },
-                        icons: Icons.calendar_today_outlined,
-                        iconStyle: iconStyle,
-                        title: '週運動日',
-                        subtitle: "更改每週可以運動的日子",
-                      ),
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingWorkout();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeStartTimeDialog());
-                        },
-                        icons: Icons.notifications_none,
-                        iconStyle: iconStyle,
-                        title: '運動通知',
-                        subtitle: "更改每天開始運動的時間",
-                      ),
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingWorkout();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeLikingDialog());
-                        },
-                        icons: CupertinoIcons.heart_circle,
-                        iconStyle: iconStyle,
-                        title: '運動偏好',
-                        subtitle: "更改每類運動的喜愛程度",
-                      ),
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingWorkout();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeGoalDialog());
-                        },
-                        icons: Icons.gps_fixed,
-                        iconStyle: iconStyle,
-                        title: '運動目標',
-                        subtitle: "更改運動的目標與動機",
-                      ),
-                    ],
-                  ),
-                  SettingsGroup(
-                    settingsGroupTitle: "冥想",
-                    items: [
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingMeditation();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeDurationDialog());
-                        },
-                        icons: CupertinoIcons.timer,
-                        iconStyle: iconStyle,
-                        title: '冥想時長',
-                        subtitle: "更改每次冥想計畫的長度",
-                      ),
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingMeditation();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeDayDialog());
-                        },
-                        icons: Icons.calendar_today_outlined,
-                        iconStyle: iconStyle,
-                        title: '週冥想日',
-                        subtitle: "更改每週可以冥想的日子",
-                      ),
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingMeditation();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeStartTimeDialog());
-                        },
-                        icons: Icons.notifications_none,
-                        iconStyle: iconStyle,
-                        title: '冥想通知',
-                        subtitle: "更改每天開始冥想的時間",
-                      ),
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingMeditation();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeLikingDialog());
-                        },
-                        icons: CupertinoIcons.heart_circle,
-                        iconStyle: iconStyle,
-                        title: '冥想偏好',
-                        subtitle: "更改每類冥想的喜愛程度",
-                      ),
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingMeditation();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeGoalDialog());
-                        },
-                        icons: Icons.gps_fixed,
-                        iconStyle: iconStyle,
-                        title: '冥想目標',
-                        subtitle: "更改冥想的目標與動機",
-                      ),
-                    ],
-                  ),
-                  // TODO: (Firebase_auth) user settings
-                  SettingsGroup(
-                    settingsGroupTitle: "個人",
-                    items: [
-                      SettingsItem(
-                          onTap: () {
-                            mem.isSettingPassword();
-                            showDialog<double>(
-                                context: context,
-                                builder: (context) => const ChangeProfileDialog());
-                          },
-                          icons: Icons.password_outlined,
-                          iconStyle: IconStyle(
-                            iconsColor: const Color(0xff0d3b66),
-                            withBackground: true,
-                            backgroundColor: const Color(0xfffaf0ca),
-                          ),
-                          title: '更改密碼'),
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingDisplayName();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeProfileDialog());
-                        },
-                        icons: CupertinoIcons.textformat_alt,
-                        iconStyle: iconStyle,
-                        title: '更改暱稱',
-                      ),
-                      SettingsItem(
-                        onTap: () {
-                          mem.isSettingPhotoURL();
-                          showDialog<double>(
-                              context: context,
-                              builder: (context) => const ChangeProfileDialog());
-                        },
-                        icons: CupertinoIcons.photo_on_rectangle,
-                        iconStyle: iconStyle,
-                        title: '更改照片',
-                      ),
-                    ],
-                  ),
-                  /*SettingsGroup(
+            SettingsGroup(
+              settingsGroupTitle: "運動",
+              items: [
+                SettingsItem(
+                  onTap: () {
+                    mem.isSettingWorkout();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeDurationDialog());
+                  },
+                  icons: CupertinoIcons.timer,
+                  iconStyle: iconStyle,
+                  title: '運動時長',
+                  subtitle: "更改每次運動計畫的長度",
+                ),
+                SettingsItem(
+                  onTap: () {
+                    mem.isSettingWorkout();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeDayDialog());
+                  },
+                  icons: Icons.calendar_today_outlined,
+                  iconStyle: iconStyle,
+                  title: '週運動日',
+                  subtitle: "更改每週可以運動的日子",
+                ),
+                SettingsItem(
+                  onTap: () {
+                    mem.isSettingWorkout();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeStartTimeDialog());
+                  },
+                  icons: Icons.notifications_none,
+                  iconStyle: iconStyle,
+                  title: '運動通知',
+                  subtitle: "更改每天開始運動的時間",
+                ),
+                SettingsItem(
+                  onTap: () {
+                    mem.isSettingWorkout();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeLikingDialog());
+                  },
+                  icons: CupertinoIcons.heart_circle,
+                  iconStyle: iconStyle,
+                  title: '運動偏好',
+                  subtitle: "更改每類運動的喜愛程度",
+                ),
+                SettingsItem(
+                  onTap: () {
+                    mem.isSettingWorkout();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeGoalDialog());
+                  },
+                  icons: Icons.gps_fixed,
+                  iconStyle: iconStyle,
+                  title: '運動目標',
+                  subtitle: "更改運動的目標與動機",
+                ),
+              ],
+            ),
+            // TODO: Combine to habits group
+            SettingsGroup(
+              settingsGroupTitle: "冥想",
+              items: [
+                SettingsItem(
+                  onTap: () {
+                    mem.isSettingMeditation();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeDurationDialog());
+                  },
+                  icons: CupertinoIcons.timer,
+                  iconStyle: iconStyle,
+                  title: '冥想時長',
+                  subtitle: "更改每次冥想計畫的長度",
+                ),
+                SettingsItem(
+                  onTap: () {
+                    mem.isSettingMeditation();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeDayDialog());
+                  },
+                  icons: Icons.calendar_today_outlined,
+                  iconStyle: iconStyle,
+                  title: '週冥想日',
+                  subtitle: "更改每週可以冥想的日子",
+                ),
+                SettingsItem(
+                  onTap: () {
+                    mem.isSettingMeditation();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeStartTimeDialog());
+                  },
+                  icons: Icons.notifications_none,
+                  iconStyle: iconStyle,
+                  title: '冥想通知',
+                  subtitle: "更改每天開始冥想的時間",
+                ),
+                SettingsItem(
+                  onTap: () {
+                    mem.isSettingMeditation();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeLikingDialog());
+                  },
+                  icons: CupertinoIcons.heart_circle,
+                  iconStyle: iconStyle,
+                  title: '冥想偏好',
+                  subtitle: "更改每類冥想的喜愛程度",
+                ),
+                SettingsItem(
+                  onTap: () {
+                    mem.isSettingMeditation();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeGoalDialog());
+                  },
+                  icons: Icons.gps_fixed,
+                  iconStyle: iconStyle,
+                  title: '冥想目標',
+                  subtitle: "更改冥想的目標與動機",
+                ),
+              ],
+            ),
+            SettingsGroup(
+              settingsGroupTitle: "個人",
+              items: [
+                SettingsItem(
+                  onTap: () async {
+                    mem.isSettingDisplayName();
+                    await showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeProfileDialog());
+                    refresh();
+                  },
+                  icons: CupertinoIcons.textformat_alt,
+                  iconStyle: iconStyle,
+                  title: '更改暱稱',
+                ),
+                SettingsItem(
+                  onTap: () async {
+                    mem.isSettingPhotoURL();
+                    await showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeProfileDialog());
+                    refresh();
+                  },
+                  icons: CupertinoIcons.photo_on_rectangle,
+                  iconStyle: iconStyle,
+                  title: '更改照片',
+                ),
+                SettingsItem(
+                    onTap: () {
+                      mem.isSettingPassword();
+                      showDialog<double>(
+                          context: context,
+                          builder: (context) => const ChangeProfileDialog());
+                    },
+                    icons: Icons.password_outlined,
+                    iconStyle: iconStyle,
+                    title: '更改密碼'),
+              ],
+            ),
+            /*SettingsGroup(
               settingsGroupTitle: "其他",
               items: [
                 SettingsItem(
@@ -296,34 +302,33 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
               ],
             ),*/
-                  SettingsGroup(
-                    settingsGroupTitle: "帳號",
-                    items: [
-                      SettingsItem(
-                        onTap: () async {
-                          await FirebaseAuth.instance.signOut();
-                          if (!mounted) return;
-                          Navigator.popAndPushNamed(context, '/register');
-                        },
-                        icons: Icons.exit_to_app_rounded,
-                        title: "登出帳號",
-                      ),
-                      SettingsItem(
-                        onTap: () {},
-                        icons: CupertinoIcons.delete_solid,
-                        title: "刪除帳號",
-                        titleStyle: const TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+            SettingsGroup(
+              settingsGroupTitle: "帳號",
+              items: [
+                SettingsItem(
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
+                    if (!mounted) return;
+                    Navigator.popAndPushNamed(context, '/register');
+                  },
+                  icons: Icons.exit_to_app_rounded,
+                  title: "登出帳號",
+                ),
+                SettingsItem(
+                  onTap: () {},
+                  icons: CupertinoIcons.delete_solid,
+                  title: "刪除帳號",
+                  titleStyle: const TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-        )
-    );
+          ],
+        ),
+      ),
+    ));
   }
 }
 
@@ -698,7 +703,6 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // TODO: Combine start time with habit days
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.1,
             width: double.maxFinite,
@@ -1071,9 +1075,11 @@ class ChangeProfileDialog extends StatefulWidget {
 
 class ChangeProfileDialogState extends State<ChangeProfileDialog> {
   TextEditingController controller = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
   bool isPasswordVisible = false;
 
-  Widget _getTextFormField() => TextFormField(
+  Widget _getTextFormField({required controller, hintText = ""}) =>
+      TextFormField(
         controller: controller,
         validator:
             (mem.profileType == "密碼") ? Validator.validatePassword : null,
@@ -1100,12 +1106,8 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
                   },
                 )
               : null,
-          labelText: mem.profileType,
-          hintText: (mem.profileType == "密碼")
-              ? '至少 6 位元'
-              : (mem.profileType == "照片")
-                  ? '照片網址'
-                  : mem.user.displayName,
+          labelText: (mem.profileType == "密碼") ? hintText : mem.profileType,
+          hintText: hintText,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: const BorderSide(
@@ -1134,7 +1136,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
         cursorColor: const Color(0xfff6cdb7),
         style: const TextStyle(fontSize: 18, color: ColorSet.textColor),
         keyboardType: TextInputType.text,
-        obscureText: !isPasswordVisible,
+        obscureText: (mem.profileType == "密碼") ? !isPasswordVisible : false,
       );
 
   @override
@@ -1150,13 +1152,36 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: (mem.profileType == "密碼")
-                ? MediaQuery.of(context).size.width * 0.2
-                : MediaQuery.of(context).size.width * 0.1,
-            width: double.maxFinite,
-            child: _getTextFormField(),
-          ),
+          (mem.profileType == "密碼")
+              ? SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.4,
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.2,
+                        width: double.maxFinite,
+                        child: _getTextFormField(
+                            controller: controller, hintText: "目前密碼"),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.2,
+                        width: double.maxFinite,
+                        child: _getTextFormField(
+                            controller: newPasswordController, hintText: "新密碼"),
+                      ),
+                    ],
+                  ),
+                )
+              : SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.1,
+                  width: double.maxFinite,
+                  child: (mem.profileType == "照片")
+                      ? _getTextFormField(
+                          controller: controller, hintText: "照片URL")
+                      : _getTextFormField(controller: controller),
+                ),
         ],
       ),
       actions: [
@@ -1176,12 +1201,20 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
               backgroundColor: const Color(0xfffbb87f),
             ),
             onPressed: () async {
-              if (mem.habitType == "密碼") {
-                mem.user.updatePassword(controller.text);
-              } else if (mem.habitType == "暱稱") {
-                mem.user.updateDisplayName(controller.text);
-              } else if (mem.habitType == "照片") {
-                mem.user.updatePhotoURL(controller.text);
+              if (mem.profileType == "密碼") {
+                AuthCredential credential = EmailAuthProvider.credential(
+                  email: mem.user.email!,
+                  password: controller.text,
+                );
+                mem.user
+                    .reauthenticateWithCredential(credential)
+                    .then((userCredential) {
+                  return mem.user.updatePassword(newPasswordController.text);
+                });
+              } else if (mem.profileType == "暱稱") {
+                await mem.user.updateDisplayName(controller.text);
+              } else if (mem.profileType == "照片") {
+                await mem.user.updatePhotoURL(controller.text);
               }
 
               if (!mounted) return;

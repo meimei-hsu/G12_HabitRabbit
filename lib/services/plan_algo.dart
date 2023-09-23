@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:g12/services/database.dart';
 
+// ignore_for_file: avoid_print
+
 /*
 ################################################################################
 Workout plan algorithm

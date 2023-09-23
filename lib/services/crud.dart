@@ -4,6 +4,8 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'package:g12/services/database.dart';
 
+// ignore_for_file: avoid_print
+
 class DB {
   // Select all entries in the given table {table}
   static Future<DataSnapshot?> selectAll(String table) async {

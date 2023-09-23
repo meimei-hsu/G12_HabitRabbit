@@ -59,6 +59,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
           )
       ];
 
+      /*
       Radius r = const Radius.circular(20);
       BorderRadius? borderRadius;
 
@@ -70,6 +71,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
       } else {
         borderRadius = null;
       }
+      */
 
       expansionTitleList.add(ExpansionTile(
         title: Text(
