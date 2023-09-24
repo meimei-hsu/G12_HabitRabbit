@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import 'package:g12/screens/page_material.dart';
-
 import 'package:g12/services/database.dart';
 
+import '../services/page_data.dart';
+
+// GamificationPage User Data
 int workoutGem = 0;
 int meditationGem = 0;
 double workoutPercent = 0;
@@ -24,6 +26,7 @@ class GamificationPage extends StatefulWidget {
 
 class GamificationPageState extends State<GamificationPage> {
   User? user = FirebaseAuth.instance.currentUser;
+  bool isFetchingData = true;
 
   @override
   void initState() {
@@ -32,16 +35,19 @@ class GamificationPageState extends State<GamificationPage> {
   }
 
   Future<void> _fetchGamificationData() async {
-    final game = await GamificationDB.getGamification();
-    final contract = await ContractDB.getContract();
+    final game = Data.game;
+    final contract = Data.contract;
     if (game != null) {
       setState(() {
+        workoutGem = game["workoutGem"];
+        meditationGem = game["meditationGem"];
         workoutPercent =
             Calculator.calcProgress(game["workoutFragment"]).toDouble();
         meditationPercent =
             Calculator.calcProgress(game["meditationFragment"]).toDouble();
         totalPercent = (workoutGem + meditationGem) / 48 * 100;
         if (contract != null) hasContract = true;
+        isFetchingData = false;
       });
     }
   }
@@ -77,14 +83,14 @@ class GamificationPageState extends State<GamificationPage> {
                     style: TextStyle(
                       fontFamily: 'WorkSans',
                       color: ColorSet.textColor,
-                      fontSize: 25,
+                      fontSize: 18,
                       fontWeight: FontWeight.normal,
                       letterSpacing: 1.1,
                     ),
                   ),
                 ),
-                const Expanded(
-                  child: CharacterWidget(),
+                Expanded(
+                  child: (isFetchingData) ? Column() : const CharacterWidget(),
                 ),
               ],
             ),
@@ -148,8 +154,7 @@ class CharacterWidget extends StatelessWidget {
                     _showGrowDialog(context);
                   },
                   backgroundColor: ColorSet.backgroundColor,
-                  child: const Icon(Icons.style,
-                      color: ColorSet.iconColor),
+                  child: const Icon(Icons.style, color: ColorSet.iconColor),
                 ),
               ),
               const SizedBox(width: 10),
@@ -270,9 +275,7 @@ class CharacterWidget extends StatelessWidget {
       ),
       builder: (BuildContext context) {
         return const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: GrowDialog(arguments: null)
-        );
+            padding: EdgeInsets.all(8.0), child: GrowDialog(arguments: null));
       },
     );
   }
@@ -369,7 +372,7 @@ class QuizDialogState extends State<QuizDialog> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 10, left:20, right:20),
+              padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
               child: Column(
                 children: [
                   const Text(
@@ -460,7 +463,8 @@ class GrowDialogState extends State<GrowDialog> {
           children: <Widget>[
             ListTile(
               contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
-              title: const Text("角色進化圖",
+              title: const Text(
+                "角色進化圖",
                 style: TextStyle(
                     color: ColorSet.textColor,
                     fontSize: 24,
@@ -509,7 +513,8 @@ class GrowDialogState extends State<GrowDialog> {
                           'assets/images/Rabbit_1.png',
                         ),
                         const SizedBox(width: 25),
-                        const Text('第一階段',
+                        const Text(
+                          '第一階段',
                           style: TextStyle(
                             fontSize: 20,
                             color: ColorSet.textColor,

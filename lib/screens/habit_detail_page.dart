@@ -19,7 +19,7 @@ class ExerciseDetailPage extends StatefulWidget {
 }
 
 class ExerciseDetailPageState extends State<ExerciseDetailPage> {
-  DateTime? day = Calendar.today();
+  DateTime? day = DateTime.now();
   bool isBefore = false;
   bool isAfter = false;
   bool isToday = true;
@@ -223,7 +223,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                         }
                       } else if (value == 2) {
                         btnOkOnPress() {
-                          PlanAlgo.regenerate(day!);
+                          PlanAlgo.regenerateWorkout(day!);
                           setState(() {
                             isFetchingData = true;
                           });
@@ -422,7 +422,7 @@ class MeditationDetailPage extends StatefulWidget {
 }
 
 class MeditationDetailPageState extends State<MeditationDetailPage> {
-  DateTime? day = Calendar.today();
+  DateTime? day = DateTime.now();
   bool isBefore = false;
   bool isAfter = false;
   bool isToday = true;
@@ -569,7 +569,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                         }
                       } else if (value == 2) {
                         btnOkOnPress() {
-                          MeditationPlanAlgo.regenerate(day!);
+                          PlanAlgo.regenerateMeditation(day!);
                           setState(() {
                             isFetchingData = true;
                           });
@@ -971,7 +971,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
     isToday = widget.arguments['isToday'];
     type = widget.arguments['type'];
 
-    today = getDateOnly(Calendar.today());
+    today = getDateOnly(DateTime.now());
 
     super.initState();
   }

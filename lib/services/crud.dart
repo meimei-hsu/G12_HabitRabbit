@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:firebase_database/firebase_database.dart';
 
 import 'package:g12/services/database.dart';
+import 'package:g12/services/page_data.dart';
 
 // ignore_for_file: avoid_print
 
@@ -34,6 +35,7 @@ class DB {
     final DatabaseReference ref = FirebaseDatabase.instance.ref(path);
     try {
       await ref.set(data);
+      Data.updated = true;
       return true;
     } catch (error) {
       print("DB.insert: $error");
@@ -47,6 +49,7 @@ class DB {
     final DatabaseReference ref = FirebaseDatabase.instance.ref(path);
     try {
       await ref.update(Map<String, Object>.from(data));
+      Data.updated = true;
       return true;
     } catch (error) {
       print("DB.update: $error");
@@ -59,6 +62,7 @@ class DB {
     final DatabaseReference ref = FirebaseDatabase.instance.ref("$path/$id");
     try {
       await ref.remove();
+      Data.updated = true;
       return true;
     } catch (error) {
       print("DB.delete: $error");

@@ -43,14 +43,8 @@ class Home extends StatelessWidget {
                 // WorkoutDB.toNames(plan);
                 // WeightDB.insert(mary, {"2023-05-14": "47"});
                 // ClockDB.updateForecast(DateTime.parse("2023-08-31"));
-                /* DatePicker.showDateTimePicker(
-                  context,
-                  showTitleActions: true,
-                  onChanged: (date) => scheduleTime = date,
-                  onConfirm: (date) {},
-                );*/
               },
-              child: const Text("timeSelect")),
+              child: const Text("text")),
           TextButton(
               onPressed: () {
                 // PlanAlgo.execute();
@@ -143,14 +137,17 @@ class Home extends StatelessWidget {
   }
 }
 
-// Set userID
-// Mary: "j6QYBrgbLIQH7h8iRyslntFFKV63"
-// John: "1UFfKQ4ONxf5rGQIro8vpcyUM9z1"
+/* userID
+  - Mary: "j6QYBrgbLIQH7h8iRyslntFFKV63"
+  - John: "1UFfKQ4ONxf5rGQIro8vpcyUM9z1"
+*/
 
 class Calendar {
-  static DateTime today() => DateTime.now();
+  static String get today => dateToString(DateTime.now());
 
-  static DateTime firstDay() => getSunday(today());
+  static int get todayWeekday => DateTime.now().weekday;
+
+  static DateTime get firstDay => getSunday(DateTime.now());
 
   static DateTime getSunday(DateTime date) =>
       (date.weekday == 7) ? date : date.subtract(Duration(days: date.weekday));
@@ -181,18 +178,18 @@ class Calendar {
 
   // Get next sunday
   static DateTime nextSunday(DateTime today) =>
-      (today.weekday == 7) ? today : firstDay().add(const Duration(days: 7));
+      (today.weekday == 7) ? today : firstDay.add(const Duration(days: 7));
   // Get the days of week that have already passed
   static List<String> daysPassed() =>
-      (today().weekday != 7) ? getWeekFrom(firstDay(), today().weekday) : [];
+      (todayWeekday != 7) ? getWeekFrom(firstDay, todayWeekday) : [];
   // Get the days of week that are yet to come
   static List<String> daysComing() =>
-      (today().weekday != 6) ? getWeekFrom(today(), 7 - today().weekday) : [];
+      (todayWeekday != 6) ? getWeekFrom(DateTime.now(), 7 - todayWeekday) : [];
   // Get the days of week from the first day
-  static List<String> thisWeek() => getWeekFrom(firstDay(), 7);
+  static List<String> thisWeek() => getWeekFrom(firstDay, 7);
   // Get the days of week from the eighth day
   static List<String> nextWeek() =>
-      getWeekFrom(firstDay().add(const Duration(days: 7)), 7);
+      getWeekFrom(firstDay.add(const Duration(days: 7)), 7);
   // Get the days of the following two weeks
   static List<String> bothWeeks() => [...thisWeek(), ...nextWeek()];
 }
@@ -236,12 +233,6 @@ class UserDB {
         "yogaAbility",
       ];
 
-  // Select all users
-  static Future<Map?> getAll() async {
-    var snapshot = await DB.selectAll(db);
-    return (snapshot?.value) as Map?;
-  }
-
   // Select user from userID
   static Future<Map?> getUser() async {
     var snapshot = await DB.select(db, uid);
@@ -251,26 +242,29 @@ class UserDB {
   }
 
 // Select workout dynamic data from userID
-  static Future<List<Map<String, dynamic>>?> getPlanVariables() async {
-    final Map? user = await getUser();
-
+  static List<Map<String, dynamic>>? getPlanVariables(Map? user) {
     if (user != null) {
+      var likings = {
+        'strengthLiking': user["strengthLiking"],
+        'cardioLiking': user["cardioLiking"],
+        'yogaLiking': user["yogaLiking"],
+      };
+      var abilities = {
+        'strengthAbility': user["strengthAbility"],
+        'cardioAbility': user["cardioAbility"],
+        'yogaAbility': user["yogaAbility"],
+      };
+
       return [
         {
           'openness': user["openness"],
           'workoutTime': user["workoutTime"],
-          'workoutDays': user['workoutDays'].split('').map(int.parse).toList(),
+          'workoutDays': user['workoutDays'].split('').map(int.parse).toList()
         },
-        {
-          'strengthLiking': user["strengthLiking"],
-          'cardioLiking': user["cardioLiking"],
-          'yogaLiking': user["yogaLiking"],
-        },
-        {
-          'strengthAbility': user["strengthAbility"],
-          'cardioAbility': user["cardioAbility"],
-          'yogaAbility': user["yogaAbility"],
-        },
+        Map.fromEntries(likings.entries.toList()
+          ..sort((e1, e2) => e1.value.compareTo(e2.value))),
+        Map.fromEntries(abilities.entries.toList()
+          ..sort((e1, e2) => e1.value.compareTo(e2.value))),
       ];
     } else {
       return null;
@@ -278,42 +272,30 @@ class UserDB {
   }
 
   // Select meditation dynamic data from userID
-  static Future<List<Map<String, dynamic>>?>
-      getMeditationPlanVariables() async {
-    final Map? user = await getUser();
-
+  static List<Map<String, dynamic>>? getMeditationPlanVariables(Map? user) {
     if (user != null) {
+      var likings = {
+        'mindfulnessLiking': user["mindfulnessLiking"],
+        'workLiking': user["workLiking"],
+        'kindnessLiking': user["kindnessLiking"],
+      };
+
       return [
         {
           'meditationTime': user["meditationTime"],
           'meditationDays':
-              user['meditationDays'].split('').map(int.parse).toList(),
+              user['meditationDays'].split('').map(int.parse).toList()
         },
-        {
-          'mindfulnessLiking': user["mindfulnessLiking"],
-          'workLiking': user["workLiking"],
-          'kindnessLiking': user["kindnessLiking"],
-        },
+        Map.fromEntries(likings.entries.toList()
+          ..sort((e1, e2) => e1.value.compareTo(e2.value))),
       ];
     } else {
       return null;
     }
   }
 
-  static Future<Map?> getLikings() async {
-    return (await getPlanVariables())?[1];
-  }
-
-  static Future<Map?> getAbilities() async {
-    return (await getPlanVariables())?[2];
-  }
-
   static Future<int?> getWorkoutTime() async {
     return (await getUser())?["workoutTime"] as int;
-  }
-
-  static Future<Map?> getMeditationLikings() async {
-    return (await getMeditationPlanVariables())?[1];
   }
 
   static Future<int?> getMeditationTime() async {
@@ -357,13 +339,13 @@ class UserDB {
   }
 
   static Future<List?> getBothWeekWorkoutDays() async {
-    List? workoutDays = (await getPlanVariables())?[0]["workoutDays"];
+    String? workoutDays = (await getUser())?["workoutDays"];
     if (workoutDays != null) {
       List retVal = [];
       List thisWeek = Calendar.thisWeek();
       List nextWeek = Calendar.nextWeek();
       for (int i = 0; i < 7; i++) {
-        if (workoutDays[i] == 1) {
+        if (workoutDays[i] == "1") {
           retVal.add(thisWeek[i]);
           retVal.add(nextWeek[i]);
         }
@@ -374,14 +356,13 @@ class UserDB {
   }
 
   static Future<List?> getBothWeekMeditationDays() async {
-    List? meditationDays =
-        (await getMeditationPlanVariables())?[0]["meditationDays"];
+    String? meditationDays = (await getUser())?["meditationDays"];
     if (meditationDays != null) {
       List retVal = [];
       List thisWeek = Calendar.thisWeek();
       List nextWeek = Calendar.nextWeek();
       for (int i = 0; i < 7; i++) {
-        if (meditationDays[i] == 1) {
+        if (meditationDays[i] == "1") {
           retVal.add(thisWeek[i]);
           retVal.add(nextWeek[i]);
         }
@@ -395,17 +376,16 @@ class UserDB {
   static Future<bool?> isWorkoutDay(DateTime date) async {
     int idx = Calendar.bothWeeks().indexOf(Calendar.dateToString(date));
     idx = (idx >= 7) ? idx - 7 : idx;
-    List? workoutDays = (await getPlanVariables())?[0]["workoutDays"];
-    bool isWorkoutDay = (workoutDays?[idx] == 1) ? true : false;
+    String? workoutDays = (await getUser())?["workoutDays"];
+    bool isWorkoutDay = (workoutDays?[idx] == "1") ? true : false;
     return (workoutDays != null) ? isWorkoutDay : null;
   }
 
   static Future<bool?> isMeditationDay(DateTime date) async {
     int idx = Calendar.bothWeeks().indexOf(Calendar.dateToString(date));
     idx = (idx >= 7) ? idx - 7 : idx;
-    List? meditationDays =
-        (await getMeditationPlanVariables())?[0]["meditationDays"];
-    bool isMeditationDay = (meditationDays?[idx] == 1) ? true : false;
+    String? meditationDays = (await getUser())?["meditationDays"];
+    bool isMeditationDay = (meditationDays?[idx] == "1") ? true : false;
     return (meditationDays != null) ? isMeditationDay : null;
   }
 
@@ -445,11 +425,11 @@ class UserDB {
 
   // Update plan variables by user's feedback [滿意度, 疲憊度]
   static Future<bool> updateWorkoutFeedback(String type, List feedback) async {
-    final List? data = await getPlanVariables();
+    final Map? data = await getUser();
 
     if (data != null) {
       String index1 = "${type}Liking", index2 = "${type}Ability";
-      num liking = data[1][index1], ability = data[2][index2];
+      num liking = data[index1], ability = data[index2];
 
       List adjVal = [-5, -2, 0, 2, 5];
       liking += adjVal[feedback[0] - 1];
@@ -462,13 +442,12 @@ class UserDB {
 
   static Future<bool> updateMeditationFeedback(
       String type, List feedback) async {
-    final List? data = await getMeditationPlanVariables();
+    final Map? data = await getUser();
 
     if (data != null) {
-      Map updateVal = data[1];
-
       String index = "${type}Liking";
-      List keys = updateVal.keys.toList();
+      List keys = ["mindfulnessLiking", "workLiking", "kindnessLiking"];
+      Map updateVal = Map.fromIterables(keys, [for (String key in keys) data[key]]);
 
       List adjVal = [-5, -2, 0, 2, 5];
       updateVal[index] += adjVal[feedback[0] - 1];
@@ -599,13 +578,16 @@ class GamificationDB {
         userInfo["workoutDays"].map(int.parse).fold(0, (p, c) => c + p);
     int meditationDays =
         userInfo["meditationDays"].map(int.parse).fold(0, (p, c) => c + p);
-    List values = [0, 0, "0, $workoutDays", "0, $meditationDays", ""];
+    // TODO: getCharacter()
+    List values = [0, 0, "0, $workoutDays", "0, $meditationDays", "", ""];
     return await DB.insert("$db/$uid/", Map.fromIterables(columns, values));
   }
 
   // Update data {columnName: value} from userID
   static Future<bool> update(Map data) async =>
       await DB.update("$db/$uid/", data);
+
+  // TODO: updateFriends(), updateCharacter()
 
   // Update fragment or gem whenever user completes a plan
   static Future<bool> updateFragment(String habit) async {

@@ -184,7 +184,7 @@ class DoExercisePageState extends State<DoExercisePage> {
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
         DurationDB.update(
-            {Calendar.dateToString(DateTime.now()): countdownTime});
+            {Calendar.dateToString(DateTime.now()): widget.arguments["exerciseTime"]});
         GamificationDB.updateFragment("workout");
         //_showFeedbackDialog();
         showModalBottomSheet(
@@ -1054,7 +1054,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                   if (type != null) {
                     UserDB.updateMeditationFeedback(type, feedbackData);
                   }
-                  await MeditationPlanAlgo.execute();
+                  await PlanAlgo.execute();
                 }
                 //Navigator.pop(context);
               },

@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,8 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'package:g12/screens/page_material.dart';
 
 import 'package:g12/services/database.dart';
+
+import '../services/page_data.dart';
 
 class StatisticPage extends StatefulWidget {
   final Map arguments;
@@ -92,7 +93,7 @@ class StatisticPageState extends State<StatisticPage> {
 
   void getUserData() async {
     // 體重圖表
-    var weight = await WeightDB.getTable(); // Fetch user's data from firebase
+    var weight = Data.weights; // Fetch user's data from firebase
     if (weight != null) {
       weightDataMap =
           weight.map((key, value) => MapEntry(key as String, value.toDouble()));
@@ -121,10 +122,10 @@ class StatisticPageState extends State<StatisticPage> {
     // 其他圖表
     if (isInit && !isAddingWeight) {
       // Fetch user's data from firebase
-      var exerciseDuration = await DurationDB.getTable();
-      var meditationDuration = await MeditationDurationDB.getTable();
-      var exercisePlan = await PlanDB.getTable();
-      var meditationPlan = await MeditationPlanDB.getTable();
+      var exerciseDuration = Data.durations?["workout"];
+      var meditationDuration = Data.durations?["meditation"];
+      var exercisePlan = Data.plans?["workout"];
+      var meditationPlan = Data.plans?["meditation"];
       var exerciseMonthDays = Calculator.getMonthTotalDays(exerciseDuration);
       var meditationMonthDays =
           Calculator.getMonthTotalDays(meditationDuration);

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:banner_carousel/banner_carousel.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -14,6 +13,8 @@ import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/database.dart';
 import 'package:g12/services/plan_algo.dart';
 
+import '../services/page_data.dart';
+
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
@@ -23,16 +24,13 @@ class Homepage extends StatefulWidget {
 
 class HomepageState extends State<Homepage> {
   bool isInit = true;
-
-  User? user = FirebaseAuth.instance.currentUser;
   bool isFetchingData = true;
 
   // Plan 相關資料
   String? workoutPlan;
   Map workoutPlanList = {};
   int? workoutProgress;
-  Map progressList = {};
-  List bothWeekWorkoutList = [];
+  Map workoutProgressList = {};
   int currentIndex = 0;
 
   //Meditation Plan 相關資料
@@ -40,20 +38,14 @@ class HomepageState extends State<Homepage> {
   Map meditationPlanList = {};
   int? meditationProgress;
   Map meditationProgressList = {};
-  List bothWeekMeditationList = [];
   int meditationCurrentIndex = 0;
 
-  // Contract 資料
-  Map contractData = {};
-
   // Calendar 相關設定
-  DateTime today = Calendar.today();
-  DateTime _focusedDay = DateTime(
-      Calendar.today().year, Calendar.today().month, Calendar.today().day);
+  DateTime today = DateTime.now();
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay = DateTime.now();
 
-  DateTime? _selectedDay = Calendar.today();
-
-  get firstDay => Calendar.firstDay();
+  get firstDay => Calendar.firstDay;
 
   get lastDay => firstDay.add(const Duration(days: 13));
 
@@ -99,7 +91,7 @@ class HomepageState extends State<Homepage> {
               // Exercise
               if (id == "1") {
                 Navigator.pushNamed(context, '/detail/exercise', arguments: {
-                  'user': user,
+                  'user': Data.user,
                   'day': _selectedDay,
                   'isToday': isToday ? true : false,
                   'isBefore': isBefore ? true : false,
@@ -113,13 +105,13 @@ class HomepageState extends State<Homepage> {
               // Meditation
               if (id == "2") {
                 Navigator.pushNamed(context, '/detail/meditation', arguments: {
-                  'user': user,
+                  'user': Data.user,
                   'day': _selectedDay,
                   'isToday': isToday ? true : false,
                   'isBefore': isBefore ? true : false,
                   'isAfter': isAfter ? true : false,
                   'percentage': meditationProgress,
-                  'meditationTime': await UserDB.getMeditationTime(),
+                  'meditationTime': Data.profile!["meditationTime"],
                   'meditationPlan': meditationPlan
                 });
               }
@@ -164,39 +156,32 @@ class HomepageState extends State<Homepage> {
   }
 
   void getPlanData() async {
-    if (user != null) await PlanAlgo.execute();
-    isFetchingData = true;
-    var plan = await PlanDB.getThisWeekByName();
-    var progress = await DurationDB.getWeekProgress();
-    var workoutDays = await UserDB.getBothWeekWorkoutDays();
-    var index = await DurationDB.getFromDate(today);
+    if (Data.user != null) await PlanAlgo.execute();
+
+    if (isInit || Data.updated) {
+      await HomeData.fetch();
+      setState(() {
+        isFetchingData = true;
+      });
+    }
+
+    // set workout variables
     setState(() {
-      workoutPlanList = plan ?? {};
-      progressList = progress ?? {};
-      bothWeekWorkoutList = workoutDays ?? [];
-      currentIndex = index ?? 0;
-      isFetchingData = false;
-      isInit = false;
+      workoutPlanList = HomeData.planList["workout"] ?? {};
+      workoutProgressList = HomeData.progressList["workout"] ?? {};
+      currentIndex = Data.durations?["workout"]?[today] ?? 0;
     });
 
     setState(() {
       workoutPlan = workoutPlanList[Calendar.dateToString(_selectedDay!)];
-      workoutProgress = progressList[Calendar.dateToString(_selectedDay!)];
+      workoutProgress = workoutProgressList[Calendar.dateToString(_selectedDay!)];
     });
-  }
 
-  void getMeditationPlanData() async {
-    if (user != null) await MeditationPlanAlgo.execute();
-    isFetchingData = true;
-    var plan = await MeditationPlanDB.getThisWeekByName();
-    var progress = await MeditationDurationDB.getWeekProgress();
-    var meditationDays = await UserDB.getBothWeekMeditationDays();
-    var index = await MeditationDurationDB.getFromDate(today);
+    // set meditation variables
     setState(() {
-      meditationPlanList = plan ?? {};
-      meditationProgressList = progress ?? {};
-      bothWeekMeditationList = meditationDays ?? [];
-      meditationCurrentIndex = index ?? 0;
+      meditationPlanList = HomeData.planList["meditation"] ?? {};
+      meditationProgressList = HomeData.progressList["meditation"] ?? {};
+      currentIndex = Data.durations?["meditation"]?[today] ?? 0;
       isFetchingData = false;
       isInit = false;
     });
@@ -204,39 +189,25 @@ class HomepageState extends State<Homepage> {
     setState(() {
       meditationPlan = meditationPlanList[Calendar.dateToString(_selectedDay!)];
       meditationProgress =
-          meditationProgressList[Calendar.dateToString(_selectedDay!)];
-    });
-  }
-
-  void getContractData() async {
-    var contract = await ContractDB.getContract();
-    setState(() {
-      contractData = contract ?? {};
+      meditationProgressList[Calendar.dateToString(_selectedDay!)];
     });
   }
 
   @override
   void initState() {
     super.initState();
-
     getPlanData();
-    getMeditationPlanData();
-    getContractData();
   }
 
   void refresh() {
-    setState(() {
-      isFetchingData = true;
-    });
     getPlanData();
-    getMeditationPlanData();
     setState(() {});
   }
 
   void refreshLists() {
     setState(() {
       workoutPlan = workoutPlanList[Calendar.dateToString(_selectedDay!)];
-      workoutProgress = progressList[Calendar.dateToString(_selectedDay!)];
+      workoutProgress = workoutProgressList[Calendar.dateToString(_selectedDay!)];
       meditationPlan = meditationPlanList[Calendar.dateToString(_selectedDay!)];
       meditationProgress =
           meditationProgressList[Calendar.dateToString(_selectedDay!)];
@@ -421,7 +392,7 @@ class HomepageState extends State<Homepage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       BubbleSpecialThree(
-                        text: 'Hello ${user?.displayName}～\n${getDialogText()}',
+                        text: 'Hello ${Data.user?.displayName}～\n${getDialogText()}',
                         color: const Color(0xFFfdeed9),
                         tail: true,
                         textStyle: const TextStyle(
@@ -832,8 +803,8 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
               onPressed: () async {
                 DateTime selectedDay = widget.arguments['selectedDay'];
                 (planToAdd == 0)
-                    ? await PlanAlgo.generate(selectedDay, exerciseTime)
-                    : await MeditationPlanAlgo.generate(
+                    ? await PlanAlgo.generateWorkout(selectedDay, exerciseTime)
+                    : await PlanAlgo.generateMeditation(
                         selectedDay, meditationType);
 
                 debugPrint((planToAdd == 0)

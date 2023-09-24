@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
+import 'package:g12/services/page_data.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:g12/screens/community_page.dart';
@@ -20,9 +20,8 @@ class AppEntryPoint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var currentUser = FirebaseAuth.instance.currentUser;
-    String initialRoute = "";
-    if (currentUser == null) {
+        String initialRoute = "";
+    if (Data.user == null) {
       initialRoute = "/register";
     } else {
       initialRoute = "/";
@@ -53,8 +52,6 @@ class BottomNavigationController extends StatefulWidget {
 
 class BottomNavigationControllerState
     extends State<BottomNavigationController> {
-  var user = FirebaseAuth.instance.currentUser;
-
   // 目前選擇頁索引值
   int _currentIndex = 2; // 預設值 = homepage
   // TODO: 確認 arguments 會不會有問題
@@ -97,7 +94,7 @@ class BottomNavigationControllerState
           items: const [
             BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.insights,
+                  Icons.bar_chart_outlined,
                   size: 40,
                 ),
                 label: 'tickets'),
@@ -121,7 +118,7 @@ class BottomNavigationControllerState
                 label: 'microphone'),
             BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.manage_accounts_outlined,
+                  Icons.settings_outlined,
                   size: 40,
                 ),
                 label: 'search')
@@ -134,5 +131,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // configure firebase: https://stackoverflow.com/questions/70320263/the-term-flutterfire-is-not-recognized-as-the-name-of-a-cmdlet-function-scri
   await Firebase.initializeApp();
+  await Data.init();
   initializeDateFormatting().then((_) => runApp(const AppEntryPoint()));
 }
