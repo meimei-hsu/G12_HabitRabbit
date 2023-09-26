@@ -215,7 +215,7 @@ class StatisticPageState extends State<StatisticPage> {
 
           if (completionStatus == 2) {
             var type =
-                await PlanDB.getTypeFromPlan(exercisePlan[exerciseDate]) ??
+                PlanDB.toPlanType("workout", exercisePlan[exerciseDate]) ??
                     "unknown";
             if (exerciseTypeCountMap.containsKey(type)) {
               exerciseTypeCountMap[type] = exerciseTypeCountMap[type]! + 1;
@@ -240,8 +240,7 @@ class StatisticPageState extends State<StatisticPage> {
               (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
           if (completionStatus == 2) {
-            var type = await MeditationPlanDB.getTypeFromPlan(
-                    meditationPlan[meditationDate]) ??
+            var type = PlanDB.toPlanType("meditation", meditationPlan[meditationDate]) ??
                 "unknown";
             if (meditationTypeCountMap.containsKey(type)) {
               meditationTypeCountMap[type] = meditationTypeCountMap[type]! + 1;

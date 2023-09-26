@@ -12,6 +12,8 @@ import 'package:g12/services/database.dart';
 import 'package:g12/services/plan_algo.dart';
 import 'package:g12/Services/notification.dart';
 
+import '../services/page_data.dart';
+
 class DoExercisePage extends StatefulWidget {
   final Map arguments;
 
@@ -124,7 +126,7 @@ class DoExercisePageState extends State<DoExercisePage> {
      */
 
     btnNoOnPress() {
-      DurationDB.update({Calendar.dateToString(DateTime.now()): currentIndex});
+      DurationDB.update("workout", {Calendar.dateToString(DateTime.now()): currentIndex});
       canExit = true;
       showModalBottomSheet(
           isDismissible: false,
@@ -147,7 +149,7 @@ class DoExercisePageState extends State<DoExercisePage> {
     }
 
     btnYesOnPress() {
-      DurationDB.update({Calendar.dateToString(DateTime.now()): currentIndex});
+      DurationDB.update("workout", {Calendar.dateToString(DateTime.now()): currentIndex});
       canExit = true;
       NotificationService().scheduleNotification(
           title: '該開始運動了!',
@@ -183,7 +185,7 @@ class DoExercisePageState extends State<DoExercisePage> {
 
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
-        DurationDB.update(
+        DurationDB.update("workout",
             {Calendar.dateToString(DateTime.now()): widget.arguments["exerciseTime"]});
         GamificationDB.updateFragment("workout");
         //_showFeedbackDialog();
@@ -448,7 +450,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
      */
 
     btnNoOnPress() {
-      MeditationDurationDB.update({
+      DurationDB.update("meditation", {
         Calendar.dateToString(DateTime.now()):
             (widget.arguments['meditationTime'] * _progress).round()
       });
@@ -509,7 +511,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
 
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
-        MeditationDurationDB.update({
+        DurationDB.update("meditation", {
           Calendar.dateToString(DateTime.now()):
               (widget.arguments['meditationTime'] * _progress).round()
         });
@@ -768,7 +770,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
               debugPrint("FeedbackData: $feedbackData");
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false);
-              var type = await PlanDB.getTypeFromDate(DateTime.now());
+              var type = Data.plans?["workout"]?[Calendar.today];
               if (type != null) {
                 UserDB.updateWorkoutFeedback(type, feedbackData);
               }
@@ -1034,7 +1036,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
 
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (Route<dynamic> route) => false);
-                  var type = await PlanDB.getTypeFromDate(DateTime.now());
+                  var type = Data.plans?["workout"]?[Calendar.today];
                   if (type != null) {
                     UserDB.updateWorkoutFeedback(type, feedbackData);
                   }
@@ -1050,7 +1052,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
 
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (Route<dynamic> route) => false);
-                  var type = await MeditationPlanDB.getTypeFromDate(DateTime.now());
+                  var type = Data.plans?["meditation"]?[Calendar.today];
                   if (type != null) {
                     UserDB.updateMeditationFeedback(type, feedbackData);
                   }

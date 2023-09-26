@@ -9,6 +9,8 @@ import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/database.dart';
 import 'package:g12/services/plan_algo.dart';
 
+import '../services/page_data.dart';
+
 class ExerciseDetailPage extends StatefulWidget {
   final Map arguments;
 
@@ -228,12 +230,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             isFetchingData = true;
                           });
                           Timer(const Duration(seconds: 5), () async {
-                            var plan = await PlanDB.getThisWeekByName();
-                            var progress = await DurationDB.getWeekProgress();
+                            var date = Calendar.dateToString(day!);
                             setState(() {
-                              workoutPlan = plan?[Calendar.dateToString(day!)];
+                              workoutPlan = HomeData.planList["workout"]?[date];
                               workoutProgress =
-                                  progress?[Calendar.dateToString(day!)];
+                                  HomeData.progressList["workout"]?[date];
                               isFetchingData = false;
                             });
                             if (!mounted) return;
@@ -253,7 +254,8 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             .show();
                       } else {
                         btnOkOnPress() async {
-                          await PlanDB.delete(Calendar.dateToString(day!));
+                          await PlanDB.delete(
+                              "workout", Calendar.dateToString(day!));
                           if (!mounted) return;
                           Navigator.pushNamed(context, "/");
                         }
@@ -334,8 +336,8 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           data: Theme.of(context)
                               .copyWith(dividerColor: Colors.transparent),
                           child: ListView(
-                            children:
-                                _getSportList(PlanDB.toList(workoutPlan!)),
+                            children: _getSportList(
+                                PlanDB.toWorkoutList(workoutPlan!)),
                           ),
                         ),
                       ),
@@ -574,15 +576,12 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             isFetchingData = true;
                           });
                           Timer(const Duration(seconds: 5), () async {
-                            var plan =
-                                await MeditationPlanDB.getThisWeekByName();
-                            var progress =
-                                await MeditationDurationDB.getWeekProgress();
+                            var date = Calendar.dateToString(day!);
                             setState(() {
                               meditationPlan =
-                                  plan?[Calendar.dateToString(day!)];
+                                  HomeData.planList["workout"]?[date];
                               meditationProgress =
-                                  progress?[Calendar.dateToString(day!)];
+                                  HomeData.progressList["workout"]?[date];
                               isFetchingData = false;
                             });
                             if (!mounted) return;
@@ -602,8 +601,8 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             .show();
                       } else {
                         btnOkOnPress() async {
-                          await MeditationPlanDB.delete(
-                              Calendar.dateToString(day!));
+                          await PlanDB.delete(
+                              "meditation", Calendar.dateToString(day!));
                           if (!mounted) return;
                           Navigator.pushNamed(context, "/");
                         }
@@ -1118,9 +1117,8 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
                 // FIXME: 如果修改天數，換到已經有計畫的日子怎麼辦? (現在是直接蓋掉原本的)
                 DateTime originalDate = day;
                 (type == 0)
-                    ? await PlanDB.updateDate(originalDate, changedDayDate)
-                    : await MeditationPlanDB.updateDate(
-                        originalDate, changedDayDate);
+                    ? await PlanDB.updateDate("workout", originalDate, changedDayDate)
+                    : await PlanDB.updateDate("meditation", originalDate, changedDayDate);
                 debugPrint(
                     "Change $day's ${(type == 0) ? "workout plan" : "meditation plan"} to $changedDayDate 星期$changedDayWeekday.");
                 if (!mounted) return;

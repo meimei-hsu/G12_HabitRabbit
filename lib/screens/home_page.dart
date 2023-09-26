@@ -392,7 +392,7 @@ class HomepageState extends State<Homepage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       BubbleSpecialThree(
-                        text: 'Hello ${Data.user?.displayName}～\n${getDialogText()}',
+                        text: 'Hello ${Data.user!.displayName}～\n${getDialogText()}',
                         color: const Color(0xFFfdeed9),
                         tail: true,
                         textStyle: const TextStyle(

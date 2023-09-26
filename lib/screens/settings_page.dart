@@ -10,61 +10,7 @@ import 'package:motion_toast/resources/arrays.dart';
 import 'package:g12/services/database.dart';
 
 import '../services/authentication.dart';
-
-// SettingsPage's data
-class SettingsPageData {
-  User user = FirebaseAuth.instance.currentUser!;
-  Map userData = {};
-  Map timeForecast = {};
-  // TODO: character photo
-  AssetImage characterImage = const AssetImage("assets/images/Rabbit_2.png");
-  String habitType = ""; // e.g. workout, meditation
-  String habitTypeZH = ""; // habitType in Chinese
-  String profileType = ""; // the type of profile data that user is modifying
-
-  SettingsPageData() {
-    getUserData();
-  }
-
-  void getUserData() async {
-    userData = (await UserDB.getUser())!;
-    userData["workoutDays"] =
-        userData["workoutDays"].split("").map(int.parse).toList();
-    userData["meditationDays"] =
-        userData["meditationDays"].split("").map(int.parse).toList();
-    userData["workoutGoals"] = userData["workoutGoals"].split(", ");
-    userData["meditationGoals"] = userData["meditationGoals"].split(", ");
-
-    timeForecast["workoutClock"] = (await ClockDB.getPredictions())!;
-    timeForecast["meditationClock"] =
-        (await MeditationClockDB.getPredictions())!;
-  }
-
-  void isSettingWorkout() {
-    habitType = "workout";
-    habitTypeZH = "運動";
-  }
-
-  void isSettingMeditation() {
-    habitType = "meditation";
-    habitTypeZH = "冥想";
-  }
-
-  void isSettingDisplayName() {
-    profileType = "暱稱";
-  }
-
-  void isSettingPhotoURL() {
-    profileType = "照片";
-  }
-
-  void isSettingPassword() {
-    profileType = "密碼";
-  }
-}
-
-// Public variables
-SettingsPageData mem = SettingsPageData(); // SettingsPage's working memory
+import '../services/page_data.dart';
 
 IconStyle iconStyle = IconStyle(
   iconsColor: ColorSet.iconColor,
@@ -83,8 +29,13 @@ class SettingsPage extends StatefulWidget {
 class SettingsPageState extends State<SettingsPage> {
   void refresh() {
     setState(() {
-      mem.user = FirebaseAuth.instance.currentUser!;
+      Data.user = FirebaseAuth.instance.currentUser!;
     });
+  }
+
+  @override
+  void initState() {
+    SettingsData.fetch();
   }
 
   @override
@@ -112,17 +63,17 @@ class SettingsPageState extends State<SettingsPage> {
           children: [
             // user card
             SimpleUserCard(
-              userName: mem.user.displayName!,
-              userProfilePic: (mem.user.photoURL != null)
-                  ? NetworkImage(mem.user.photoURL!)
-                  : mem.characterImage as ImageProvider,
+              userName: Data.user!.displayName!,
+              userProfilePic: (Data.user!.photoURL != null)
+                  ? NetworkImage(Data.user!.photoURL!)
+                  : SettingsData.characterImage as ImageProvider,
             ),
             SettingsGroup(
               settingsGroupTitle: "運動",
               items: [
                 SettingsItem(
                   onTap: () {
-                    mem.isSettingWorkout();
+                    SettingsData.isSettingWorkout();
                     showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeDurationDialog());
@@ -134,7 +85,7 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    mem.isSettingWorkout();
+                    SettingsData.isSettingWorkout();
                     showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeDayDialog());
@@ -146,7 +97,7 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    mem.isSettingWorkout();
+                    SettingsData.isSettingWorkout();
                     showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeStartTimeDialog());
@@ -158,7 +109,7 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    mem.isSettingWorkout();
+                    SettingsData.isSettingWorkout();
                     showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeLikingDialog());
@@ -170,7 +121,7 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    mem.isSettingWorkout();
+                    SettingsData.isSettingWorkout();
                     showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeGoalDialog());
@@ -188,7 +139,7 @@ class SettingsPageState extends State<SettingsPage> {
               items: [
                 SettingsItem(
                   onTap: () {
-                    mem.isSettingMeditation();
+                    SettingsData.isSettingMeditation();
                     showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeDurationDialog());
@@ -200,7 +151,7 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    mem.isSettingMeditation();
+                    SettingsData.isSettingMeditation();
                     showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeDayDialog());
@@ -212,7 +163,7 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    mem.isSettingMeditation();
+                    SettingsData.isSettingMeditation();
                     showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeStartTimeDialog());
@@ -224,7 +175,7 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    mem.isSettingMeditation();
+                    SettingsData.isSettingMeditation();
                     showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeLikingDialog());
@@ -236,7 +187,7 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    mem.isSettingMeditation();
+                    SettingsData.isSettingMeditation();
                     showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeGoalDialog());
@@ -253,7 +204,7 @@ class SettingsPageState extends State<SettingsPage> {
               items: [
                 SettingsItem(
                   onTap: () async {
-                    mem.isSettingDisplayName();
+                    SettingsData.isSettingDisplayName();
                     await showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeProfileDialog());
@@ -265,7 +216,7 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () async {
-                    mem.isSettingPhotoURL();
+                    SettingsData.isSettingPhotoURL();
                     await showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeProfileDialog());
@@ -277,7 +228,7 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                     onTap: () {
-                      mem.isSettingPassword();
+                      SettingsData.isSettingPassword();
                       showDialog<double>(
                           context: context,
                           builder: (context) => const ChangeProfileDialog());
@@ -342,12 +293,12 @@ class ChangeDurationDialog extends StatefulWidget {
 
 class ChangeDurationDialogState extends State<ChangeDurationDialog> {
   int exerciseTime = 0;
-  String key = "${mem.habitType}Time";
+  String key = "${SettingsData.habitType}Time";
 
   @override
   initState() {
     super.initState();
-    exerciseTime = mem.userData[key];
+    exerciseTime = SettingsData.userData[key];
   }
 
   List<Widget> _getDurationBtnList() {
@@ -388,7 +339,7 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        "${mem.habitTypeZH}時長(分鐘)",
+        "${SettingsData.habitTypeZH}時長(分鐘)",
         style: const TextStyle(
           color: Color(0xff0d3b66),
           fontWeight: FontWeight.bold,
@@ -423,10 +374,10 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
               backgroundColor: const Color(0xfffbb87f),
             ),
             onPressed: () async {
-              num original = mem.userData[key];
+              num original = SettingsData.userData[key];
               num modified = exerciseTime;
               if (modified != original) {
-                mem.userData[key] = modified;
+                SettingsData.userData[key] = modified;
                 await UserDB.update({key: modified});
               }
 
@@ -436,7 +387,7 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
                 icon: Icons.done_all_rounded,
                 primaryColor: const Color(0xffffa493),
                 description: Text(
-                  "${mem.habitTypeZH}時長已更新",
+                  "${SettingsData.habitTypeZH}時長已更新",
                   style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,
@@ -474,12 +425,12 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
   List weekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
   List selectedDays = [];
   List selectedNames = [];
-  String key = "${mem.habitType}Days";
+  String key = "${SettingsData.habitType}Days";
 
   @override
   initState() {
     super.initState();
-    selectedDays = mem.userData[key];
+    selectedDays = SettingsData.userData[key];
     selectedNames = [
       for (int i = 0; i < 7; i++)
         if (selectedDays[i] == 1) weekdayNameList[i]
@@ -532,7 +483,7 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        "每週${mem.habitTypeZH}日",
+        "每週${SettingsData.habitTypeZH}日",
         style: const TextStyle(
           color: Color(0xff0d3b66),
           fontWeight: FontWeight.bold,
@@ -566,10 +517,10 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
               backgroundColor: const Color(0xfffbb87f),
             ),
             onPressed: () async {
-              List original = mem.userData[key];
+              List original = SettingsData.userData[key];
               List modified = selectedDays;
               if (modified != original) {
-                mem.userData[key] = modified;
+                SettingsData.userData[key] = modified;
                 await UserDB.update({key: modified.join("")});
               }
 
@@ -579,7 +530,7 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
                 icon: Icons.done_all_rounded,
                 primaryColor: const Color(0xffffa493),
                 description: Text(
-                  "週${mem.habitTypeZH}日已更新",
+                  "週${SettingsData.habitTypeZH}日已更新",
                   style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,
@@ -617,16 +568,16 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
   List weekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
   List selectedDays = []; // the index of the weekdays
   Map forecast = {};
-  String key = "${mem.habitType}Clock";
+  String key = "${SettingsData.habitType}Clock";
 
   @override
   initState() {
     super.initState();
     selectedDays = [
       for (int i = 0; i < 7; i++)
-        if (mem.userData["${mem.habitType}Days"][i] == 1) i
+        if (SettingsData.userData["${SettingsData.habitType}Days"][i] == 1) i
     ];
-    forecast = mem.timeForecast[key];
+    forecast = SettingsData.timeForecast[key];
   }
 
   List<Widget> _getTimeBtnList() {
@@ -694,7 +645,7 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        "${mem.habitTypeZH}通知時間",
+        "${SettingsData.habitTypeZH}通知時間",
         style: const TextStyle(
           color: Color(0xff0d3b66),
           fontWeight: FontWeight.bold,
@@ -728,13 +679,8 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
               backgroundColor: const Color(0xfffbb87f),
             ),
             onPressed: () async {
-              mem.timeForecast[key] = forecast;
-              if (mem.habitType == "workout") {
-                await ClockDB.update(Map<String, String>.from(forecast));
-              } else if (mem.habitType == "meditation") {
-                await MeditationClockDB.update(
-                    Map<String, String>.from(forecast));
-              }
+              SettingsData.timeForecast[key] = forecast;
+              ClockDB.update(SettingsData.habitType, Map<String, String>.from(forecast));
 
               if (!mounted) return;
               Navigator.pop(context);
@@ -742,7 +688,7 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
                 icon: Icons.done_all_rounded,
                 primaryColor: const Color(0xffffa493),
                 description: Text(
-                  "${mem.habitTypeZH}通知時間已更新",
+                  "${SettingsData.habitTypeZH}通知時間已更新",
                   style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,
@@ -786,7 +732,7 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
   @override
   initState() {
     super.initState();
-    if (mem.habitType == "workout") {
+    if (SettingsData.habitType == "workout") {
       categories = ["肌力運動", "有氧運動", "瑜珈運動"];
       keys = ["strengthLiking", "cardioLiking", "yogaLiking"];
       icons = {
@@ -794,7 +740,7 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
         "有氧運動": Icons.directions_run,
         "瑜珈運動": Icons.self_improvement
       };
-    } else if (mem.habitType == "meditation") {
+    } else if (SettingsData.habitType == "meditation") {
       categories = ["正念冥想", "工作冥想", "慈心冥想"];
       keys = ["mindfulnessLiking", "workLiking", "kindnessLiking"];
       icons = {
@@ -803,7 +749,7 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
         "慈心冥想": Icons.volunteer_activism_outlined
       };
     }
-    likings = {for (var item in keys) item: mem.userData[item]};
+    likings = {for (var item in keys) item: SettingsData.userData[item]};
     dropdownValue = categories.first;
   }
 
@@ -837,7 +783,7 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        "${mem.habitTypeZH}偏好(0~5分)",
+        "${SettingsData.habitTypeZH}偏好(0~5分)",
         style: const TextStyle(
           color: ColorSet.textColor,
           fontWeight: FontWeight.bold,
@@ -899,10 +845,10 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
               backgroundColor: ColorSet.backgroundColor,
             ),
             onPressed: () async {
-              Map original = {for (var item in keys) item: mem.userData[item]};
+              Map original = {for (var item in keys) item: SettingsData.userData[item]};
               Map<String, Object> modified = likings;
               if (modified != original) {
-                mem.userData.update(keys, (value) => modified[value]);
+                SettingsData.userData.update(keys, (value) => modified[value]);
                 await UserDB.update(modified);
               }
 
@@ -912,7 +858,7 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
                 icon: Icons.done_all_rounded,
                 primaryColor: const Color(0xffffa493),
                 description: Text(
-                  "${mem.habitTypeZH}偏好已更新",
+                  "${SettingsData.habitTypeZH}偏好已更新",
                   style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,
@@ -949,13 +895,13 @@ class ChangeGoalDialog extends StatefulWidget {
 class ChangeGoalDialogState extends State<ChangeGoalDialog> {
   List selectableItems = [];
   List goal = [];
-  String key = "${mem.habitType}Goals";
+  String key = "${SettingsData.habitType}Goals";
 
   @override
   initState() {
     super.initState();
-    goal = mem.userData[key];
-    if (mem.habitType == "workout") {
+    goal = SettingsData.userData[key];
+    if (SettingsData.habitType == "workout") {
       selectableItems = [
         "減脂減重",
         "塑型增肌",
@@ -966,7 +912,7 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
         "提升大腦功能",
         "提升睡眠品質"
       ];
-    } else if (mem.habitType == "meditation") {
+    } else if (SettingsData.habitType == "meditation") {
       selectableItems = [
         "壓力",
         "憂慮",
@@ -987,7 +933,7 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        "${mem.habitTypeZH}目標",
+        "${SettingsData.habitTypeZH}目標",
         style: const TextStyle(
           color: Color(0xff0d3b66),
           fontWeight: FontWeight.bold,
@@ -1026,10 +972,10 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
               backgroundColor: const Color(0xfffbb87f),
             ),
             onPressed: () async {
-              List original = mem.userData[key];
+              List original = SettingsData.userData[key];
               List modified = goal;
               if (modified != original) {
-                mem.userData[key] = modified;
+                SettingsData.userData[key] = modified;
                 await UserDB.update({key: modified.join(", ")});
               }
 
@@ -1039,7 +985,7 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
                 icon: Icons.done_all_rounded,
                 primaryColor: const Color(0xffffa493),
                 description: Text(
-                  "${mem.habitTypeZH}時長已更新",
+                  "${SettingsData.habitTypeZH}時長已更新",
                   style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,
@@ -1082,7 +1028,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
       TextFormField(
         controller: controller,
         validator:
-            (mem.profileType == "密碼") ? Validator.validatePassword : null,
+            (SettingsData.profileType == "密碼") ? Validator.validatePassword : null,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           isDense: true,
@@ -1090,7 +1036,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
             Icons.abc_rounded,
             color: ColorSet.iconColor,
           ),
-          suffixIcon: (mem.profileType == "密碼")
+          suffixIcon: (SettingsData.profileType == "密碼")
               ? IconButton(
                   icon: Icon(
                     // Based on passwordVisible state choose the icon
@@ -1106,7 +1052,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
                   },
                 )
               : null,
-          labelText: (mem.profileType == "密碼") ? hintText : mem.profileType,
+          labelText: (SettingsData.profileType == "密碼") ? hintText : SettingsData.profileType,
           hintText: hintText,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
@@ -1136,14 +1082,14 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
         cursorColor: const Color(0xfff6cdb7),
         style: const TextStyle(fontSize: 18, color: ColorSet.textColor),
         keyboardType: TextInputType.text,
-        obscureText: (mem.profileType == "密碼") ? !isPasswordVisible : false,
+        obscureText: (SettingsData.profileType == "密碼") ? !isPasswordVisible : false,
       );
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        mem.profileType,
+        SettingsData.profileType,
         style: const TextStyle(
           color: Color(0xff0d3b66),
           fontWeight: FontWeight.bold,
@@ -1152,7 +1098,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          (mem.profileType == "密碼")
+          (SettingsData.profileType == "密碼")
               ? SizedBox(
                   height: MediaQuery.of(context).size.width * 0.4,
                   width: double.maxFinite,
@@ -1177,7 +1123,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
               : SizedBox(
                   height: MediaQuery.of(context).size.width * 0.1,
                   width: double.maxFinite,
-                  child: (mem.profileType == "照片")
+                  child: (SettingsData.profileType == "照片")
                       ? _getTextFormField(
                           controller: controller, hintText: "照片URL")
                       : _getTextFormField(controller: controller),
@@ -1201,20 +1147,20 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
               backgroundColor: const Color(0xfffbb87f),
             ),
             onPressed: () async {
-              if (mem.profileType == "密碼") {
+              if (SettingsData.profileType == "密碼") {
                 AuthCredential credential = EmailAuthProvider.credential(
-                  email: mem.user.email!,
+                  email: Data.user!.email!,
                   password: controller.text,
                 );
-                mem.user
+                Data.user!
                     .reauthenticateWithCredential(credential)
                     .then((userCredential) {
-                  return mem.user.updatePassword(newPasswordController.text);
+                  return Data.user!.updatePassword(newPasswordController.text);
                 });
-              } else if (mem.profileType == "暱稱") {
-                await mem.user.updateDisplayName(controller.text);
-              } else if (mem.profileType == "照片") {
-                await mem.user.updatePhotoURL(controller.text);
+              } else if (SettingsData.profileType == "暱稱") {
+                await Data.user!.updateDisplayName(controller.text);
+              } else if (SettingsData.profileType == "照片") {
+                await Data.user!.updatePhotoURL(controller.text);
               }
 
               if (!mounted) return;
@@ -1223,7 +1169,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
                 icon: Icons.done_all_rounded,
                 primaryColor: const Color(0xffffa493),
                 description: Text(
-                  "${mem.profileType}已更新",
+                  "${SettingsData.profileType}已更新",
                   style: const TextStyle(
                     color: Color(0xff0d3b66),
                     fontSize: 16,

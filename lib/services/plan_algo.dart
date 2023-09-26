@@ -26,12 +26,12 @@ class PlanAlgo {
         await PlanData.fetch(habit: "workout", thisWeek: true);
         var skd = await WorkoutAlgorithm.arrangeSchedule();
         var plan = await WorkoutAlgorithm.arrangePlan(skd);
-        await PlanDB.update(plan);
+        await PlanDB.update("workout", plan);
       }
       await PlanData.fetch(habit: "workout", thisWeek: false);
       var skd = await WorkoutAlgorithm.arrangeSchedule();
       var plan = await WorkoutAlgorithm.arrangePlan(skd);
-      await PlanDB.update(plan);
+      await PlanDB.update("workout", plan);
     } else {
       print("Not the time to generate a workout plan.");
     }
@@ -53,12 +53,12 @@ class PlanAlgo {
         await PlanData.fetch(habit: "meditation", thisWeek: true);
         var skd = await MeditationAlgorithm.arrangeSchedule();
         var plan = await MeditationAlgorithm.arrangePlan(skd);
-        await MeditationPlanDB.update(plan);
+        await PlanDB.update("meditation", plan);
       }
       await PlanData.fetch(habit: "meditation", thisWeek: false);
       var skd = await MeditationAlgorithm.arrangeSchedule();
       var plan = await MeditationAlgorithm.arrangePlan(skd);
-      await MeditationPlanDB.update(plan);
+      await PlanDB.update("meditation", plan);
     } else {
       print("Not the time to generate a meditation plan.");
     }
@@ -67,20 +67,21 @@ class PlanAlgo {
   // Regenerate the plan for a day in the current week
   static regenerateWorkout(DateTime dateTime) async {
     var date = Calendar.dateToString(dateTime);
-    var workoutType = await PlanDB.getTypeFromDate(dateTime);
-    var timeSpan = await PlanDB.getPlanLong(dateTime);
+    var plan = HomeData.planList["workout"][date];
+    var workoutType = PlanDB.toPlanType("workout", plan);
+    var timeSpan = plan.split(", ").length;
     if (workoutType != null) {
-      var plan = await WorkoutAlgorithm.arrangeWorkout(workoutType, timeSpan);
-      await PlanDB.update({date: plan});
+      plan = await WorkoutAlgorithm.arrangeWorkout(workoutType, timeSpan);
+      await PlanDB.update("workout", {date: plan});
     }
   }
 
   static regenerateMeditation(DateTime dateTime) async {
     var date = Calendar.dateToString(dateTime);
-    var meditationType = await MeditationPlanDB.getTypeFromDate(dateTime);
+    var meditationType = PlanDB.toPlanType("meditation", HomeData.planList["meditation"][date]);
     if (meditationType != null) {
       var plan = await MeditationAlgorithm.arrangeMeditation(meditationType);
-      await MeditationPlanDB.update({date: plan});
+      await PlanDB.update("meditation", {date: plan});
     }
   }
 
@@ -90,14 +91,14 @@ class PlanAlgo {
     int idx = Random().nextInt(3);
     var plan =
         await WorkoutAlgorithm.arrangeWorkout(workoutType[idx], timeSpan);
-    await PlanDB.update({date: plan});
+    await PlanDB.update("workout", {date: plan});
   }
 
   static generateMeditation(DateTime dateTime, int meditationType) async {
     var date = Calendar.dateToString(dateTime);
     String type = ["mindfulness", "work", "kindness"][meditationType - 1];
     var meditationPlan = await MeditationAlgorithm.arrangeMeditation(type);
-    await MeditationPlanDB.update({date: meditationPlan});
+    await PlanDB.update("meditation", {date: meditationPlan});
   }
 
   // Adjust the difficulty if user's completion rate is not as expected
@@ -105,11 +106,12 @@ class PlanAlgo {
   // else if the completion rate is zero for three days, then return 0
   // else, return -1
   static Future<int> adjust() async {
-    var data = await DurationDB.getTable();
+    var data = Data.durations?["workout"];
 
     if (data != null) {
       List dates = data.keys.toList();
       int today = dates.indexOf(Calendar.dateToString(DateTime.now()));
+      List planList = HomeData.planList["workout"];
 
       int lessThanHalf = 0; // count the consecutive days when completion < 50%
       int zero = 0; // count the consecutive days when completion = 0%
@@ -123,12 +125,12 @@ class PlanAlgo {
           if (zero == 3) {
             // adjust the difficulty of next day and the day after
             for (i = 1; i <= 2; i++) {
-              String? type = await PlanDB.getTypeFromDate(dates[today + i]);
+              String? type = PlanDB.toPlanType("workout", planList[today]);
               if (type != null) {
                 var plan = (i == 1)
                     ? await WorkoutAlgorithm.getFiveMinWorkout(type)
                     : await WorkoutAlgorithm.getTenMinWorkout(type);
-                await PlanDB.update({dates[today + i]: plan.join(", ")});
+                await PlanDB.update("workout", {dates[today + i]: plan.join(", ")});
               }
             }
             // return 0 to trigger app notification
@@ -136,13 +138,13 @@ class PlanAlgo {
           }
 
           if (++lessThanHalf == 3) {
-            int? planLong = await PlanDB.getPlanLong(dates[today]);
+            int? planLong = planList[today].split(", ").length;
             if (planLong != null) {
               planLong ~/= 3;
 
               // adjust the difficulty of next day and the day after
               for (i = 1; i <= 2; i++) {
-                String? type = await PlanDB.getTypeFromDate(dates[today + i]);
+                String? type = PlanDB.toPlanType("workout", dates[today + i]);
                 if (type != null) {
                   String plan = "";
                   switch (planLong) {
@@ -167,7 +169,7 @@ class PlanAlgo {
                           .join(", ");
                       break;
                   }
-                  await PlanDB.update({dates[today + i]: plan});
+                  await PlanDB.update("workout", {dates[today + i]: plan});
                 }
               }
             }
