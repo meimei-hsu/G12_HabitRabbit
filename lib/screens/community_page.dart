@@ -71,10 +71,10 @@ class CommunityPageState extends State<CommunityPage>
                     child: SizedBox(
                       child: TabBar(
                         controller: _controller,
-                        tabs: [
+                        tabs: const [
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.group,
                                   color: ColorSet.iconColor,
@@ -91,7 +91,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.emoji_events,
                                   color: ColorSet.iconColor, // 设置图标颜色
@@ -108,7 +108,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.sports_kabaddi,
                                   color: ColorSet.iconColor,
@@ -395,9 +395,9 @@ class FriendListPageState extends State<FriendListPage> {
                       width: 1.0,
                     ),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Icon(Icons.emoji_events),
@@ -452,6 +452,7 @@ class LeaderboardPage extends StatefulWidget {
 }
 
 class LeaderboardPageState extends State<LeaderboardPage> {
+  User? user = FirebaseAuth.instance.currentUser;
   int personalRank = 0;
   int roleRank = 0;
   int exerciseRank = 0;
@@ -462,8 +463,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
     'Andy',
     'Bethany',
     'Daniel',
-    'Chloe',
-    'Mary'
+    'Mary',
+    'Chloe'
   ];
   final List<String> wholePersonalRank = <String>[
     'Andy',
@@ -473,8 +474,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
     'Daniel',
     'Kevin',
     'Angel',
-    'Chloe',
-    'Mary'
+    'Mary',
+    'Chloe'
   ];
   final List<String> friendRoleRank = <String>[
     'Chloe',
@@ -590,17 +591,20 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getPersonalRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
+                                  itemBuilder: (BuildContext context, int index) {
                                     final int rank = index + 1;
+                                    final String userName = getPersonalRankList()[index];
+                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final Color containerColor = isCurrentUser
+                                        ? ColorSet.friendColor
+                                        : ColorSet.backgroundColor;
 
                                     return Container(
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: ColorSet.backgroundColor,
+                                        color: containerColor,
                                         border: Border.all(
                                             color: ColorSet.borderColor,
                                             width: 2),
@@ -629,7 +633,7 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                         ),
                                         const SizedBox(width: 15),
                                         Text(
-                                          getPersonalRankList()[index],
+                                          userName,
                                           style: const TextStyle(
                                             color: ColorSet.textColor,
                                             fontSize: 16,
@@ -657,11 +661,16 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     final int rank = index + 1;
+                                    final String userName = getPersonalRankList()[index];
+                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final Color containerColor = isCurrentUser
+                                        ? ColorSet.usersColor
+                                        : ColorSet.backgroundColor;
 
                                     return Container(
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: ColorSet.backgroundColor,
+                                        color: containerColor,
                                         border: Border.all(
                                             color: ColorSet.borderColor,
                                             width: 2),
@@ -757,17 +766,20 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getRoleRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
+                                  itemBuilder: (BuildContext context, int index) {
                                     final int rank = index + 1;
+                                    final String userName = getRoleRankList()[index];
+                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final Color containerColor = isCurrentUser
+                                        ? ColorSet.friendColor
+                                        : ColorSet.backgroundColor;
 
                                     return Container(
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: ColorSet.backgroundColor,
+                                        color: containerColor,
                                         border: Border.all(
                                             color: ColorSet.borderColor,
                                             width: 2),
@@ -824,11 +836,16 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     final int rank = index + 1;
+                                    final String userName = getRoleRankList()[index];
+                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final Color containerColor = isCurrentUser
+                                        ? ColorSet.usersColor
+                                        : ColorSet.backgroundColor;
 
                                     return Container(
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xffffffff),
+                                        color: containerColor,
                                         border: Border.all(
                                             color: ColorSet.borderColor,
                                             width: 2),
@@ -923,22 +940,24 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getExerciseRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
+                                  itemBuilder: (BuildContext context, int index) {
                                     final int rank = index + 1;
+                                    final String userName = getExerciseRankList()[index];
+                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final Color containerColor = isCurrentUser
+                                        ? ColorSet.friendColor
+                                        : ColorSet.backgroundColor;
 
                                     return Container(
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: ColorSet.backgroundColor,
+                                        color: containerColor,
                                         border: Border.all(
                                             color: ColorSet.borderColor,
                                             width: 2),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20)),
+                                        borderRadius: const BorderRadius.all(Radius.circular(20)),
                                       ),
                                       child: Row(children: [
                                         const SizedBox(width: 15),
@@ -982,17 +1001,20 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getExerciseRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
+                                  itemBuilder: (BuildContext context, int index) {
                                     final int rank = index + 1;
+                                    final String userName = getExerciseRankList()[index];
+                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final Color containerColor = isCurrentUser
+                                        ? ColorSet.usersColor
+                                        : ColorSet.backgroundColor;
 
                                     return Container(
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: const Color(0xffffffff),
+                                        color: containerColor,
                                         border: Border.all(
                                             color: ColorSet.borderColor,
                                             width: 2),
@@ -1091,11 +1113,16 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 itemCount: getMeditationRankList().length,
                                 itemBuilder: (BuildContext context, int index) {
                                   final int rank = index + 1;
+                                  final String userName = getMeditationRankList()[index];
+                                  final bool isCurrentUser = (userName == user?.displayName);
+                                  final Color containerColor = isCurrentUser
+                                      ? ColorSet.friendColor
+                                      : ColorSet.backgroundColor;
 
                                   return Container(
                                     height: 30,
                                     decoration: BoxDecoration(
-                                      color: ColorSet.backgroundColor,
+                                      color: containerColor,
                                       border: Border.all(
                                           color: ColorSet.borderColor,
                                           width: 2),
@@ -1151,11 +1178,16 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 itemCount: getMeditationRankList().length,
                                 itemBuilder: (BuildContext context, int index) {
                                   final int rank = index + 1;
+                                  final String userName = getMeditationRankList()[index];
+                                  final bool isCurrentUser = (userName == user?.displayName);
+                                  final Color containerColor = isCurrentUser
+                                      ? ColorSet.usersColor
+                                      : ColorSet.backgroundColor;
 
                                   return Container(
                                     height: 30,
                                     decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
+                                      color: containerColor,
                                       border: Border.all(
                                           color: ColorSet.borderColor,
                                           width: 2),
@@ -1217,8 +1249,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -1239,8 +1271,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -1261,8 +1293,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -1283,8 +1315,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -1305,8 +1337,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -1330,8 +1362,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -1352,8 +1384,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -1374,8 +1406,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -1396,8 +1428,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -1418,8 +1450,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -1503,8 +1535,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: Row(
-                            children: const [
+                          child: const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -1540,8 +1572,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: Row(
-                            children: const [
+                          child: const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -1734,11 +1766,11 @@ class TeamCompetitionPageState extends State<TeamCompetitionPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Padding(
+              const Padding(
                 padding:
-                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                    EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
-                  children: const [
+                  children: [
                     Text("團隊競爭賽",
                         style: TextStyle(
                           color: ColorSet.textColor,
@@ -1851,11 +1883,11 @@ class TeamWorkPageState extends State<TeamWorkPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Padding(
+              const Padding(
                 padding:
-                    const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+                    EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
                 child: Row(
-                  children: const [
+                  children: [
                     Text("團隊合作賽",
                         style: TextStyle(
                           color: ColorSet.textColor,

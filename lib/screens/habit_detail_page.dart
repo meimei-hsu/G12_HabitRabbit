@@ -706,8 +706,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                       padding: const EdgeInsets.only(right: 20, left: 20),
                       child: Row(
                         children: [
-                          Expanded(
-                              child: ElevatedButton.icon(
+                          Expanded(child: ElevatedButton.icon(
                             icon: const Icon(Icons.play_arrow_rounded,
                                 color: ColorSet.iconColor),
                             style: ElevatedButton.styleFrom(

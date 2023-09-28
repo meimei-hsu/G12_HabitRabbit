@@ -618,11 +618,11 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
             borderRadius: BorderRadius.circular(15),
           ),
           side: const BorderSide(
-            color: Color(0xff4b4370),
+            color: ColorSet.borderColor,
           ),
           backgroundColor: (exerciseTime == choice)
-              ? const Color(0xfff6cdb7)
-              : const Color(0xfffdfdf5),
+              ? ColorSet.exerciseColor
+              : ColorSet.backgroundColor,
         ),
         onPressed: () {
           setState(() {
@@ -632,7 +632,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
         child: Text(
           "$choice",
           style: const TextStyle(
-            color: Color(0xff4b4370),
+            color: ColorSet.textColor,
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
@@ -654,11 +654,11 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
             borderRadius: BorderRadius.circular(15),
           ),
           side: const BorderSide(
-            color: Color(0xff4b4370),
+            color: ColorSet.textColor,
           ),
           backgroundColor: (meditationTypeList[meditationType - 1] == choice)
-              ? const Color(0xfff6cdb7)
-              : const Color(0xfffdfdf5),
+              ? ColorSet.meditationColor
+              : ColorSet.backgroundColor,
         ),
         onPressed: () {
           setState(() {
@@ -668,7 +668,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
         child: Text(
           choice,
           style: const TextStyle(
-            color: Color(0xff4b4370),
+            color: ColorSet.textColor,
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
@@ -698,6 +698,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 20),
+      color: ColorSet.bottomBarColor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -706,23 +707,23 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
             title: Text(
               "新增$time的${((planToAdd == 0) ? "運動" : "冥想")}計畫",
               style: const TextStyle(
-                  color: Color(0xff4b4370),
+                  color: ColorSet.textColor,
                   fontSize: 24,
                   fontWeight: FontWeight.bold),
             ),
             trailing: Container(
               padding: const EdgeInsets.only(right: 20, left: 20),
-              decoration: BoxDecoration(
+              /*decoration: BoxDecoration(
                 border: Border.all(color: const Color(0xff4b4370), width: 2),
                 color: Colors.transparent,
                 shape: BoxShape.circle,
-              ),
+              ),*/
               child: IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
                 icon: const Icon(
                   Icons.close_rounded,
-                  color: Color(0xff4b4370),
+                  color: ColorSet.iconColor,
                 ),
                 onPressed: () {
                   Navigator.pop(context);
@@ -745,8 +746,8 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                   fontSize: 18,
                   iconSize: 20,
                   activeBgColors: const [
-                    [Color(0xfff6cdb7)],
-                    [Color(0xffd4d6fc)]
+                    [ColorSet.exerciseColor],
+                    [ColorSet.meditationColor]
                   ],
                   activeFgColor: const Color(0xff4b4370),
                   inactiveBgColor: const Color(0xfffdfdf5),
@@ -765,12 +766,12 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
               ? Text(
                   "你要在$time新增幾分鐘的運動計畫呢？",
                   style:
-                      const TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                      const TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               : Text(
                   "你要在$time新增什麼類型的冥想計畫呢？",
                   style:
-                      const TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                      const TextStyle(color: ColorSet.textColor, fontSize: 18),
                 ),
           const SizedBox(height: 10),
           (planToAdd == 0)
@@ -791,8 +792,9 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(right: 10, left: 10),
                 backgroundColor: (planToAdd == 0)
-                    ? const Color(0xfff6cdb7)
-                    : const Color(0xffd4d6fc),
+                //FIXME: 需要區分exercise和meditation顏色嗎
+                    ? ColorSet.backgroundColor
+                    : ColorSet.backgroundColor,
                 shadowColor: Colors.transparent,
                 elevation: 0,
                 minimumSize: const Size.fromHeight(50),
@@ -816,7 +818,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
               child: const Text(
                 "確定",
                 style: TextStyle(
-                  color: Color(0xff4b4370),
+                  color: ColorSet.textColor,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),

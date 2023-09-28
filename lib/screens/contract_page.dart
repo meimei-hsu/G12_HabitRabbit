@@ -597,7 +597,7 @@ class AlreadyContractPage extends StatefulWidget {
 class AlreadyContractPageState extends State<AlreadyContractPage> {
   final PageController _pageController = PageController(
     initialPage: 0,
-    viewportFraction: 0.9,
+    viewportFraction: 0.8,
   );
 
   @override
@@ -632,7 +632,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
             controller: _pageController,
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
+                padding: const EdgeInsets.only(top: 40, left: 10, right: 10),
                 child: Container(
                   padding: const EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
@@ -667,8 +667,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                               ),
                             );
                           } else {
-                            return const Text(
-                                '尚未有運動合約資料'); // If no data is found, show a message
+                            return const Text('尚未有運動合約資料'); // If no data is found, show a message
                           }
                         },
                       ),
@@ -677,7 +676,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
+                padding: const EdgeInsets.only(top: 40, left: 10, right: 10),
                 child: Container(
                   margin: const EdgeInsets.only(left: 10.0),
                   padding: const EdgeInsets.all(20.0),
@@ -724,9 +723,8 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
               ),
             ],
           ),
-          Positioned(
-            right: 5,
-            bottom: 235,
+          Padding(
+            padding: EdgeInsets.only(top: 400, left: 250, right: 10),
             child: Container(
               margin: const EdgeInsets.only(right: 5.0),
               padding: const EdgeInsets.all(8.0),
@@ -735,12 +733,12 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                   TextButton(
                     onPressed: () {
                       Future<Map<String, dynamic>?> futureContract =
-                          ContractDB.getContract();
+                      ContractDB.getContract();
                       futureContract.then((data) {
                         bool workoutContractExists =
-                            data!.containsKey("workout");
+                        data!.containsKey("workout");
                         bool meditationContractExists =
-                            data.containsKey("meditation");
+                        data.containsKey("meditation");
 
                         if (workoutContractExists && meditationContractExists) {
                           // Show the dialog message for one second and then hide it

@@ -1065,8 +1065,7 @@ class StatisticPageState extends State<StatisticPage> {
                             ),
                             (monthDays == 0)
                                 ? Container(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                     child: SfCartesianChart(
                                         // hide the border
                                         plotAreaBorderWidth: 0,
