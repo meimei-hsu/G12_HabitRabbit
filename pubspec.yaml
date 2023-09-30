@@ -80,12 +80,18 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+flutter_icons:
+  android: false
+  ios: true
+  image_path: "assets/images/Logo.png"
+  # https://www.flutterbeads.com/change-app-launcher-icon-flutter/
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -104,7 +110,7 @@ flutter:
     - assets/videos/v2.gif
     - assets/videos/v3.gif
     - assets/images/testPic.gif
-    - assets/images/Logo.jpg
+    - assets/images/Logo.png
     - assets/images/lazy.png
     - assets/images/LINE.jpg
     - assets/images/personality_NOC.png
