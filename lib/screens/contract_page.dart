@@ -724,7 +724,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(top: 400, left: 250, right: 10),
+            padding: const EdgeInsets.only(top: 400, left: 250, right: 10),
             child: Container(
               margin: const EdgeInsets.only(right: 5.0),
               padding: const EdgeInsets.all(8.0),

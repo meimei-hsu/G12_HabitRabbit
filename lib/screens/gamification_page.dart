@@ -1,59 +1,27 @@
-import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import 'package:g12/screens/page_material.dart';
-import 'package:g12/services/database.dart';
 
 import '../services/page_data.dart';
 
-// GamificationPage User Data
-int workoutGem = 0;
-int meditationGem = 0;
-double workoutPercent = 0;
-double meditationPercent = 0;
-double totalPercent = 0;
-bool hasContract = false;
-
 class GamificationPage extends StatefulWidget {
-  final Map arguments;
-  const GamificationPage({super.key, required this.arguments});
+  const GamificationPage({super.key});
 
   @override
   GamificationPageState createState() => GamificationPageState();
 }
 
 class GamificationPageState extends State<GamificationPage> {
-  User? user = FirebaseAuth.instance.currentUser;
-  bool isFetchingData = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchGamificationData();
-  }
-
-  Future<void> _fetchGamificationData() async {
-    final game = Data.game;
-    final contract = Data.contract;
-    if (game != null) {
-      setState(() {
-        workoutGem = game["workoutGem"];
-        meditationGem = game["meditationGem"];
-        workoutPercent =
-            Calculator.calcProgress(game["workoutFragment"]).toDouble();
-        meditationPercent =
-            Calculator.calcProgress(game["meditationFragment"]).toDouble();
-        totalPercent = (workoutGem + meditationGem) / 48 * 100;
-        if (contract != null) hasContract = true;
-        isFetchingData = false;
-      });
-    }
+  void refresh() async {
+    if (Data.updated) await GameData.fetch();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    refresh();
     return SafeArea(
       child: Scaffold(
         backgroundColor: ColorSet.backgroundColor,
@@ -66,7 +34,7 @@ class GamificationPageState extends State<GamificationPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0, top: 16.0),
                   child: Text(
-                    '${user?.displayName!} 的角色',
+                    '${Data.user?.displayName!} 的角色',
                     style: const TextStyle(
                       fontFamily: 'WorkSans',
                       color: ColorSet.textColor,
@@ -89,8 +57,8 @@ class GamificationPageState extends State<GamificationPage> {
                     ),
                   ),
                 ),
-                Expanded(
-                  child: (isFetchingData) ? Column() : const CharacterWidget(),
+                const Expanded(
+                  child: CharacterWidget(),
                 ),
               ],
             ),
@@ -163,7 +131,7 @@ class CharacterWidget extends StatelessWidget {
                 height: 40,
                 child: FloatingActionButton(
                   onPressed: () {
-                    if (hasContract) {
+                    if (Data.contract != null) {
                       Navigator.pushNamed(context, '/contract/already');
                     } else {
                       Navigator.pushNamed(context, '/contract/initial');
@@ -194,9 +162,9 @@ class CharacterWidget extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.85,
                 animation: true,
                 lineHeight: 15.0,
-                percent: workoutPercent / 100,
+                percent: GameData.workoutPercent / 100,
                 center: Text(
-                  "${workoutPercent.round()}%",
+                  "${GameData.workoutPercent.round()}%",
                   style: const TextStyle(
                     color: ColorSet.backgroundColor,
                     fontSize: 10,
@@ -220,9 +188,9 @@ class CharacterWidget extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.85,
                 animation: true,
                 lineHeight: 15.0,
-                percent: meditationPercent / 100,
+                percent: GameData.meditationPercent / 100,
                 center: Text(
-                  "${meditationPercent.round()}%",
+                  "${GameData.meditationPercent.round()}%",
                   style: const TextStyle(
                     color: ColorSet.backgroundColor,
                     fontSize: 10,
@@ -246,9 +214,9 @@ class CharacterWidget extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.85,
                 animation: true,
                 lineHeight: 15.0,
-                percent: totalPercent / 100,
+                percent: GameData.totalPercent / 100,
                 center: Text(
-                  "${totalPercent.round()}%",
+                  "${GameData.totalPercent.round()}%",
                   style: const TextStyle(
                     color: ColorSet.backgroundColor,
                     fontSize: 10,
@@ -396,7 +364,7 @@ class QuizDialogState extends State<QuizDialog> {
                       spacing: 5,
                       runSpacing: 10,
                       children: [
-                        for (int i = 0; i < workoutGem; i++) //運寶數量
+                        for (int i = 0; i < GameData.workoutGem; i++) //運寶數量
                           Image.asset(
                             height: 35,
                             width: 35,
@@ -426,7 +394,7 @@ class QuizDialogState extends State<QuizDialog> {
                       spacing: 5,
                       runSpacing: 10,
                       children: [
-                        for (int i = 0; i < meditationGem; i++) //冥寶數量
+                        for (int i = 0; i < GameData.meditationGem; i++) //冥寶數量
                           Image.asset(
                             height: 35,
                             width: 35,

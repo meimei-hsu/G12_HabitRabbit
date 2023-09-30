@@ -139,7 +139,7 @@ class DoExercisePageState extends State<DoExercisePage> {
           backgroundColor: ColorSet.backgroundColor,
           context: context,
           builder: (context) {
-            return const Wrap(children: [
+            return  Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -200,7 +200,7 @@ class DoExercisePageState extends State<DoExercisePage> {
             backgroundColor: ColorSet.backgroundColor,
             context: context,
             builder: (context) {
-              return const Wrap(children: [
+              return  Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 0},
                 )
@@ -466,7 +466,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           backgroundColor: ColorSet.backgroundColor,
           context: context,
           builder: (context) {
-            return const Wrap(children: [
+            return  Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
@@ -528,7 +528,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
             backgroundColor: ColorSet.backgroundColor,
             context: context,
             builder: (context) {
-              return const Wrap(children: [
+              return  Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 1},
                 )

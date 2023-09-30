@@ -67,7 +67,7 @@ class PlanAlgo {
   // Regenerate the plan for a day in the current week
   static regenerateWorkout(DateTime dateTime) async {
     var date = Calendar.dateToString(dateTime);
-    var plan = HomeData.planList["workout"][date];
+    var plan = HomeData.workoutPlanList[date];
     var workoutType = PlanDB.toPlanType("workout", plan);
     var timeSpan = plan.split(", ").length;
     if (workoutType != null) {
@@ -78,7 +78,7 @@ class PlanAlgo {
 
   static regenerateMeditation(DateTime dateTime) async {
     var date = Calendar.dateToString(dateTime);
-    var meditationType = PlanDB.toPlanType("meditation", HomeData.planList["meditation"][date]);
+    var meditationType = PlanDB.toPlanType("meditation", HomeData.meditationPlanList[date]);
     if (meditationType != null) {
       var plan = await MeditationAlgorithm.arrangeMeditation(meditationType);
       await PlanDB.update("meditation", {date: plan});
@@ -111,7 +111,7 @@ class PlanAlgo {
     if (data != null) {
       List dates = data.keys.toList();
       int today = dates.indexOf(Calendar.dateToString(DateTime.now()));
-      List planList = HomeData.planList["workout"];
+      Map planList = HomeData.workoutPlanList;
 
       int lessThanHalf = 0; // count the consecutive days when completion < 50%
       int zero = 0; // count the consecutive days when completion = 0%

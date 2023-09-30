@@ -9,11 +9,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import 'package:g12/screens/page_material.dart';
-
-import 'package:g12/services/database.dart';
 import 'package:g12/services/plan_algo.dart';
-
-import '../services/page_data.dart';
+import 'package:g12/services/page_data.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -23,51 +20,19 @@ class Homepage extends StatefulWidget {
 }
 
 class HomepageState extends State<Homepage> {
-  bool isInit = true;
-  bool isFetchingData = true;
-
-  // Plan 相關資料
-  String? workoutPlan;
-  Map workoutPlanList = {};
-  int? workoutProgress;
-  Map workoutProgressList = {};
-  int currentIndex = 0;
-
-  //Meditation Plan 相關資料
-  String? meditationPlan;
-  Map meditationPlanList = {};
-  int? meditationProgress;
-  Map meditationProgressList = {};
-  int meditationCurrentIndex = 0;
-
-  // Calendar 相關設定
-  DateTime today = DateTime.now();
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay = DateTime.now();
-
-  get firstDay => Calendar.firstDay;
-
-  get lastDay => firstDay.add(const Duration(days: 13));
-
-  get isThisWeek => Calendar.isThisWeek(_selectedDay!);
-
-  bool isBefore = false;
-  bool isAfter = false;
-  bool isToday = true;
-
-  String time = "今天";
-
   Widget getBannerCarousel() {
     const String banner1 = "assets/images/Exercise_1.jpg";
     const String banner2 = "assets/images/Meditation_1.jpg";
 
     List<BannerModel> listBanners;
 
-    if (workoutPlan == null && meditationPlan == null) {
+    if (HomeData.workoutPlan == null && HomeData.meditationPlan == null) {
       listBanners = [];
-    } else if (workoutPlan != null && meditationPlan == null) {
+    } else if (HomeData.workoutPlan != null &&
+        HomeData.meditationPlan == null) {
       listBanners = [BannerModel(imagePath: banner1, id: "1")];
-    } else if (workoutPlan == null && meditationPlan != null) {
+    } else if (HomeData.workoutPlan == null &&
+        HomeData.meditationPlan != null) {
       listBanners = [BannerModel(imagePath: banner2, id: "2")];
     } else {
       listBanners = [
@@ -92,13 +57,13 @@ class HomepageState extends State<Homepage> {
               if (id == "1") {
                 Navigator.pushNamed(context, '/detail/exercise', arguments: {
                   'user': Data.user,
-                  'day': _selectedDay,
-                  'isToday': isToday ? true : false,
-                  'isBefore': isBefore ? true : false,
-                  'isAfter': isAfter ? true : false,
-                  'percentage': workoutProgress,
-                  'currentIndex': currentIndex,
-                  'workoutPlan': workoutPlan
+                  'day': HomeData.selectedDay,
+                  'isToday': HomeData.isToday,
+                  'isBefore': HomeData.isBefore,
+                  'isAfter': HomeData.isAfter,
+                  'percentage': HomeData.workoutProgress,
+                  'currentIndex': HomeData.currentIndex,
+                  'workoutPlan': HomeData.workoutPlan
                 });
               }
 
@@ -106,13 +71,13 @@ class HomepageState extends State<Homepage> {
               if (id == "2") {
                 Navigator.pushNamed(context, '/detail/meditation', arguments: {
                   'user': Data.user,
-                  'day': _selectedDay,
-                  'isToday': isToday ? true : false,
-                  'isBefore': isBefore ? true : false,
-                  'isAfter': isAfter ? true : false,
-                  'percentage': meditationProgress,
+                  'day': HomeData.selectedDay,
+                  'isToday': HomeData.isToday,
+                  'isBefore': HomeData.isBefore,
+                  'isAfter': HomeData.isAfter,
+                  'percentage': HomeData.meditationProgress,
                   'meditationTime': Data.profile!["meditationTime"],
-                  'meditationPlan': meditationPlan
+                  'meditationPlan': HomeData.meditationPlan
                 });
               }
             },
@@ -123,129 +88,60 @@ class HomepageState extends State<Homepage> {
   String getDialogText() {
     String dialogText = "";
 
-    if (workoutPlan == null && meditationPlan == null) {
+    if (HomeData.workoutPlan == null && HomeData.meditationPlan == null) {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
-      dialogText = (isBefore) ? "沒有運動計畫\n沒有冥想計畫" : "沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
-    } else if (workoutPlan != null && meditationPlan == null) {
+      dialogText =
+          (HomeData.isBefore) ? "沒有運動計畫\n沒有冥想計畫" : "沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
+    } else if (HomeData.workoutPlan != null &&
+        HomeData.meditationPlan == null) {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
-      dialogText = (isBefore)
-          ? "運動計畫完成了 $workoutProgress %\n沒有冥想計畫"
-          : (isToday)
-              ? "運動計畫已完成 $workoutProgress %\n${(workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
+      dialogText = (HomeData.isBefore)
+          ? "運動計畫完成了 ${HomeData.workoutProgress} %\n沒有冥想計畫"
+          : (HomeData.isToday)
+              ? "運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
               : "有運動計畫\n記得要來完成噢~\n點我新增冥想計畫！";
-    } else if (workoutPlan == null && meditationPlan != null) {
+    } else if (HomeData.workoutPlan == null &&
+        HomeData.meditationPlan != null) {
       // 運動沒有、冥想有 --> 冥想完成度、新增運動
       // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
-      dialogText = (isBefore)
-          ? "冥想計畫完成了 $meditationProgress %\n沒有運動計畫"
-          : (isToday)
-              ? "冥想計畫已完成 $meditationProgress %\n${(meditationProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有運動計畫，點我新增！"
+      dialogText = (HomeData.isBefore)
+          ? "冥想計畫完成了 ${HomeData.meditationProgress} %\n沒有運動計畫"
+          : (HomeData.isToday)
+              ? "冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有運動計畫，點我新增！"
               : "有冥想計畫\n記得要來完成噢~\n點我新增運動計畫！";
     } else {
       // 運動有、冥想有 --> 運動完成度、冥想完成度
       // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
-      dialogText = (isBefore)
-          ? "運動計畫完成了 $workoutProgress %\n冥想計畫完成了 $meditationProgress %"
-          : (isToday)
-              ? "運動計畫已完成 $workoutProgress %\n冥想計畫已完成 $meditationProgress %${(workoutProgress == 100 && meditationProgress == 100) ? "\n很棒噢~~" : "\n繼續加油加油~~"}"
+      dialogText = (HomeData.isBefore)
+          ? "運動計畫完成了 ${HomeData.workoutProgress} %\n冥想計畫完成了 ${HomeData.meditationProgress} %"
+          : (HomeData.isToday)
+              ? "運動計畫已完成 ${HomeData.workoutProgress} %\n冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n很棒噢~~" : "\n繼續加油加油~~"}"
               : "有運動和冥想計畫\n記得要來完成噢~";
     }
     return dialogText;
   }
 
-  void getPlanData() async {
-    if (Data.user != null) await PlanAlgo.execute();
-
-    if (isInit || Data.updated) {
-      await HomeData.fetch();
-      setState(() {
-        isFetchingData = true;
-      });
-    }
-
-    // set workout variables
-    setState(() {
-      workoutPlanList = HomeData.planList["workout"] ?? {};
-      workoutProgressList = HomeData.progressList["workout"] ?? {};
-      currentIndex = Data.durations?["workout"]?[today] ?? 0;
-    });
-
-    setState(() {
-      workoutPlan = workoutPlanList[Calendar.dateToString(_selectedDay!)];
-      workoutProgress = workoutProgressList[Calendar.dateToString(_selectedDay!)];
-    });
-
-    // set meditation variables
-    setState(() {
-      meditationPlanList = HomeData.planList["meditation"] ?? {};
-      meditationProgressList = HomeData.progressList["meditation"] ?? {};
-      currentIndex = Data.durations?["meditation"]?[today] ?? 0;
-      isFetchingData = false;
-      isInit = false;
-    });
-
-    setState(() {
-      meditationPlan = meditationPlanList[Calendar.dateToString(_selectedDay!)];
-      meditationProgress =
-      meditationProgressList[Calendar.dateToString(_selectedDay!)];
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getPlanData();
-  }
-
-  void refresh() {
-    getPlanData();
+  void refresh() async {
+    if (Data.updated) await HomeData.fetch();
     setState(() {});
-  }
-
-  void refreshLists() {
-    setState(() {
-      workoutPlan = workoutPlanList[Calendar.dateToString(_selectedDay!)];
-      workoutProgress = workoutProgressList[Calendar.dateToString(_selectedDay!)];
-      meditationPlan = meditationPlanList[Calendar.dateToString(_selectedDay!)];
-      meditationProgress =
-          meditationProgressList[Calendar.dateToString(_selectedDay!)];
-
-      isBefore =
-          DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day)
-              .isBefore(_focusedDay);
-      isAfter =
-          DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day)
-              .isAfter(_focusedDay);
-      isToday = (DateTime(
-              _selectedDay!.year, _selectedDay!.month, _selectedDay!.day) ==
-          _focusedDay);
-    });
-    setState(() {
-      time =
-          (isToday) ? "今天" : " ${_selectedDay!.month} / ${_selectedDay!.day} ";
-    });
   }
 
   @override
   Widget build(BuildContext context) {
+    refresh();
     return SafeArea(
         child: Scaffold(
       backgroundColor: const Color(0xFFFDFDFD),
-      body: (isInit || isFetchingData)
+      body: (Data.updated)
           ? Center(
               child: Container(
                   padding:
                       const EdgeInsets.only(right: 20, left: 20, bottom: 20),
                   decoration: BoxDecoration(
-                      color: (isInit)
-                          ? ColorSet.bottomBarColor
-                          : const Color(0xFFfdeed9),
-                      border: Border.all(
-                          color: (isInit)
-                              ? ColorSet.bottomBarColor
-                              : const Color(0xFFfdeed9)),
+                      color: ColorSet.bottomBarColor,
+                      border: Border.all(color: ColorSet.bottomBarColor),
                       borderRadius:
                           const BorderRadius.all(Radius.circular(20))),
                   child: Column(
@@ -256,9 +152,9 @@ class HomepageState extends State<Homepage> {
                         color: ColorSet.textColor,
                         size: 100,
                       ),
-                      Text(
-                        (isInit) ? "載入計畫中..." : "重新整理中...",
-                        style: const TextStyle(
+                      const Text(
+                        "重新整理中...",
+                        style: TextStyle(
                           color: ColorSet.textColor,
                         ),
                       )
@@ -273,9 +169,9 @@ class HomepageState extends State<Homepage> {
                   //color: const Color(0x193598f5),
                   color: const Color(0xFFFDFDFD), //日曆背景
                   child: TableCalendar(
-                    firstDay: firstDay,
-                    lastDay: lastDay,
-                    focusedDay: _focusedDay,
+                    firstDay: HomeData.firstDay,
+                    lastDay: HomeData.lastDay,
+                    focusedDay: HomeData.focusedDay,
                     //startingDayOfWeek: StartingDayOfWeek.monday,
                     //locale: 'zh_CN',
                     calendarFormat: CalendarFormat.week,
@@ -310,9 +206,11 @@ class HomepageState extends State<Homepage> {
                       ),
                       selectedDecoration: BoxDecoration(
                         //color: const Color(0xfffbb87f),
-                        color: (DateTime(_selectedDay!.year,
-                                    _selectedDay!.month, _selectedDay!.day) ==
-                                _focusedDay)
+                        color: (DateTime(
+                                    HomeData.selectedDay!.year,
+                                    HomeData.selectedDay!.month,
+                                    HomeData.selectedDay!.day) ==
+                                HomeData.focusedDay)
                             ? const Color(0xfff6cdb7)
                             : const Color(0xfffdeed9), //點到的天數顏色
                         borderRadius: BorderRadius.circular(10.0),
@@ -368,20 +266,21 @@ class HomepageState extends State<Homepage> {
                     ),
                     headerVisible: false,
                     selectedDayPredicate: (day) {
-                      return isSameDay(_selectedDay, day);
+                      return isSameDay(HomeData.selectedDay, day);
                     },
                     onDaySelected: (selectedDay, focusedDay) {
                       // 選中的日期變成橘色
-                      if (!isSameDay(_selectedDay, selectedDay)) {
+                      if (!isSameDay(HomeData.selectedDay, selectedDay)) {
                         setState(() {
-                          _selectedDay = selectedDay;
+                          HomeData.selectedDay = selectedDay;
                         });
-                        refreshLists();
+                        HomeData.setSelectedDay();
+                        setState(() {});
                       }
                     },
                     onPageChanged: (focusedDay) {
                       // 選第2頁的日期時不會跳回第一頁
-                      _focusedDay = focusedDay;
+                      HomeData.focusedDay = focusedDay;
                     },
                   ),
                 ),
@@ -392,7 +291,8 @@ class HomepageState extends State<Homepage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       BubbleSpecialThree(
-                        text: 'Hello ${Data.user!.displayName}～\n${getDialogText()}',
+                        text:
+                            'Hello ${Data.user!.displayName}～\n${getDialogText()}',
                         color: const Color(0xFFfdeed9),
                         tail: true,
                         textStyle: const TextStyle(
@@ -404,18 +304,22 @@ class HomepageState extends State<Homepage> {
                       Expanded(
                         child: GestureDetector(
                           onTap: () {
-                            debugPrint("workoutPlan: $workoutPlan");
-                            debugPrint("meditationPlan: $meditationPlan");
-                            debugPrint("isBefore: $isBefore");
-                            debugPrint("_selectedDay: $_selectedDay");
-                            debugPrint("_focusedDay: $_focusedDay");
-                            debugPrint(DateTime(_selectedDay!.year,
-                                    _selectedDay!.month, _selectedDay!.day)
+                            debugPrint("workoutPlan: ${HomeData.workoutPlan}");
+                            debugPrint(
+                                "meditationPlan: ${HomeData.meditationPlan}");
+                            debugPrint("isBefore: ${HomeData.isBefore}");
+                            debugPrint("_selectedDay: ${HomeData.selectedDay}");
+                            debugPrint("_focusedDay: ${HomeData.focusedDay}");
+                            debugPrint(DateTime(
+                                    HomeData.selectedDay!.year,
+                                    HomeData.selectedDay!.month,
+                                    HomeData.selectedDay!.day)
                                 .toString());
-                            if (workoutPlan == null && meditationPlan == null) {
+                            if (HomeData.workoutPlan == null &&
+                                HomeData.meditationPlan == null) {
                               // 運動沒有、冥想沒有 --> 新增運動 + 冥想
                               // 今天之後 --> 新增；之前 --> 沒有
-                              (isBefore)
+                              (HomeData.isBefore)
                                   ? InformDialog()
                                       .get(context, ":(", "溯及既往 打咩！")
                                       .show()
@@ -429,18 +333,18 @@ class HomepageState extends State<Homepage> {
                                       context: context,
                                       builder: (context) {
                                         return AddPlanBottomSheet(arguments: {
-                                          "selectedDay": _selectedDay,
+                                          "selectedDay": HomeData.selectedDay,
                                           "addWorkout": true,
                                           "addMeditation": true,
-                                          "time": time,
-                                          "isToday": isToday
+                                          "time": HomeData.time,
+                                          "isToday": HomeData.isToday
                                         });
                                       });
-                            } else if (workoutPlan != null &&
-                                meditationPlan == null) {
+                            } else if (HomeData.workoutPlan != null &&
+                                HomeData.meditationPlan == null) {
                               // 運動有、冥想沒有 --> 運動完成度、新增冥想
                               // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
-                              (isBefore)
+                              (HomeData.isBefore)
                                   ? InformDialog()
                                       .get(context, ":(", "溯及既往 打咩！")
                                       .show()
@@ -454,18 +358,18 @@ class HomepageState extends State<Homepage> {
                                       context: context,
                                       builder: (context) {
                                         return AddPlanBottomSheet(arguments: {
-                                          "selectedDay": _selectedDay,
+                                          "selectedDay": HomeData.selectedDay,
                                           "addWorkout": false,
                                           "addMeditation": true,
-                                          "time": time,
-                                          "isToday": isToday
+                                          "time": HomeData.time,
+                                          "isToday": HomeData.isToday
                                         });
                                       });
-                            } else if (workoutPlan == null &&
-                                meditationPlan != null) {
+                            } else if (HomeData.workoutPlan == null &&
+                                HomeData.meditationPlan != null) {
                               // 運動沒有、冥想有 --> 冥想完成度、新增運動
                               // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
-                              (isBefore)
+                              (HomeData.isBefore)
                                   ? InformDialog()
                                       .get(context, ":(", "溯及既往 打咩！")
                                       .show()
@@ -479,17 +383,17 @@ class HomepageState extends State<Homepage> {
                                       context: context,
                                       builder: (context) {
                                         return AddPlanBottomSheet(arguments: {
-                                          "selectedDay": _selectedDay,
+                                          "selectedDay": HomeData.selectedDay,
                                           "addWorkout": true,
                                           "addMeditation": false,
-                                          "time": time,
-                                          "isToday": isToday
+                                          "time": HomeData.time,
+                                          "isToday": HomeData.isToday
                                         });
                                       });
                             } else {
                               // 運動有、冥想有 --> 運動完成度、冥想完成度
                               // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
-                              (isBefore) ? null : null;
+                              (HomeData.isBefore) ? null : null;
                             }
                           }, // Image tapped
                           child: Image.asset(
@@ -503,7 +407,8 @@ class HomepageState extends State<Homepage> {
                   ),
                 ),
                 const SizedBox(height: 50),
-                (workoutPlan != null || meditationPlan != null)
+                (HomeData.workoutPlan != null ||
+                        HomeData.meditationPlan != null)
                     ? Expanded(child: getBannerCarousel())
                     : Container(),
                 const SizedBox(height: 5),

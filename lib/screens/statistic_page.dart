@@ -1,10 +1,6 @@
-import 'dart:math';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:assorted_layout_widgets/assorted_layout_widgets.dart';
-import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:scroll_date_picker/scroll_date_picker.dart';
@@ -12,77 +8,18 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import 'package:g12/screens/page_material.dart';
-
 import 'package:g12/services/database.dart';
-
-import '../services/page_data.dart';
+import 'package:g12/services/page_data.dart';
 
 class StatisticPage extends StatefulWidget {
-  final Map arguments;
-
-  const StatisticPage({super.key, required this.arguments});
+  const StatisticPage({super.key});
 
   @override
   StatisticPageState createState() => StatisticPageState();
 }
 
 class StatisticPageState extends State<StatisticPage> {
-  bool isInit = true;
-  bool isAddingWeight = false;
-
-  User? user = FirebaseAuth.instance.currentUser;
-
-  // 體重
-  List<double> weightDataList = [0.0];
-  Map<String, double> weightDataMap = {};
-  late double weight;
-  late double avgWeight = 0.0;
-  late double minY = 0.0;
-  late double maxY = 0.0;
-
-  // 計畫進度
-  Map<DateTime, int> exerciseCompletionRateMap = {};
-  Map<DateTime, int> meditationCompletionRateMap = {};
-
-  //late String exerciseDate;
-  //late String meditationDate;
-
-  //連續完成天數
-  List consecutiveExerciseDaysList = [];
-  List consecutiveMeditationDaysList = [];
-  late double continuousExerciseDays = 0;
-  late double continuousMeditationDays = 0;
-
-  //累積時長
-  Map<String, int> exerciseTypeCountMap = {
-    "cardio": 0,
-    "yoga": 0,
-    "strength": 0,
-  };
-  Map<String, double> exerciseTypePercentageMap = {};
-  List percentageExerciseList = [];
-
-  Map<String, int> meditationTypeCountMap = {
-    "mindfulness": 0,
-    "work": 0,
-    "kindness": 0,
-  };
-  Map<String, double> meditationTypePercentageMap = {};
-  List percentageMeditationList = [];
-
-  // 每月成功天數
-  List exerciseMonthDaysList = [];
-  List meditationMonthDaysList = [];
-  late double maxExerciseDays = 0;
-  late double maxMeditationDays = 0;
-
-  //late TooltipBehavior _tooltipBehavior;
-
   // toggle switch control (0 = 運動, 1 = 冥想)
-  int planProgress = 0;
-  int consecutiveDays = 0;
-  int accumulatedTime = 0;
-  int monthDays = 0;
 
   final Map<int, Color> colorSet = {
     1: ColorSet.failColor,
@@ -91,250 +28,21 @@ class StatisticPageState extends State<StatisticPage> {
 
   final ScrollController _scrollController = ScrollController();
 
-  void getUserData() async {
-    // 體重圖表
-    var weight = Data.weights; // Fetch user's data from firebase
-    if (weight != null) {
-      weightDataMap =
-          weight.map((key, value) => MapEntry(key as String, value.toDouble()));
-      // 照時間順序排
-      weightDataMap = Map.fromEntries(weightDataMap.entries.toList()
-        ..sort((e1, e2) => e1.key.compareTo(e2.key)));
-
-      weightDataList = weightDataMap.values.toList();
-    }
-    minY = weightDataList.reduce(min);
-    maxY = weightDataList.reduce(max);
-    for (int i = 1; i <= 5; i++) {
-      if ((minY - i) % 5 == 0) {
-        minY = minY - i;
-        break;
-      }
-    }
-    for (int i = 1; i <= 5; i++) {
-      if ((maxY + i) % 5 == 0) {
-        maxY = maxY + i;
-        break;
-      }
-    }
-    avgWeight = weightDataList.average;
-
-    // 其他圖表
-    if (isInit && !isAddingWeight) {
-      // Fetch user's data from firebase
-      var exerciseDuration = Data.durations?["workout"];
-      var meditationDuration = Data.durations?["meditation"];
-      var exercisePlan = Data.plans?["workout"];
-      var meditationPlan = Data.plans?["meditation"];
-      var exerciseMonthDays = Calculator.getMonthTotalDays(exerciseDuration);
-      var meditationMonthDays =
-          Calculator.getMonthTotalDays(meditationDuration);
-
-      // 計畫進度圖表
-      if (exerciseDuration != null) {
-        for (MapEntry entry in exerciseDuration.entries) {
-          var exerciseDate = DateTime.parse(entry.key);
-          exerciseCompletionRateMap[exerciseDate] =
-              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
-        }
-      }
-
-      if (meditationDuration != null) {
-        for (MapEntry entry in meditationDuration.entries) {
-          var meditationDate = DateTime.parse(entry.key);
-          meditationCompletionRateMap[meditationDate] =
-              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
-        }
-      }
-
-      // 連續成功天數圖表
-      if (exerciseDuration != null) {
-        DateTime? startDate;
-        DateTime? endDate;
-        for (MapEntry entry in exerciseDuration.entries) {
-          var exercise = DateTime.parse(entry.key);
-          int completionStatus =
-              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
-
-          if (completionStatus == 2) {
-            if (continuousExerciseDays == 0) {
-              startDate = exercise;
-            }
-            continuousExerciseDays++;
-            endDate = exercise;
-          } else {
-            if (continuousExerciseDays >= 2) {
-              consecutiveExerciseDaysList
-                  .add([startDate, endDate, continuousExerciseDays]);
-            }
-            continuousExerciseDays = 0;
-          }
-          exerciseCompletionRateMap[exercise] = completionStatus;
-        }
-        if (continuousExerciseDays >= 2) {
-          consecutiveExerciseDaysList
-              .add([startDate, endDate, continuousExerciseDays]);
-        }
-      }
-
-      if (meditationDuration != null) {
-        DateTime? startDate;
-        DateTime? endDate;
-        for (MapEntry entry in meditationDuration.entries) {
-          var meditation = DateTime.parse(entry.key);
-          int completionStatus =
-              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
-
-          if (completionStatus == 2) {
-            if (continuousMeditationDays == 0) {
-              startDate = meditation;
-            }
-            continuousMeditationDays++;
-            endDate = meditation;
-          } else {
-            if (continuousMeditationDays >= 2) {
-              consecutiveMeditationDaysList
-                  .add([startDate, endDate, continuousMeditationDays]);
-            }
-            continuousMeditationDays = 0;
-          }
-          meditationCompletionRateMap[meditation] = completionStatus;
-        }
-        if (continuousMeditationDays >= 2) {
-          consecutiveMeditationDaysList
-              .add([startDate, endDate, continuousMeditationDays]);
-        }
-      }
-
-      // 累積時長圖表
-      if (exerciseDuration != null && exercisePlan != null) {
-        for (MapEntry entry in exerciseDuration.entries) {
-          var exerciseDate = entry.key;
-          int completionStatus =
-              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
-
-          if (completionStatus == 2) {
-            var type =
-                PlanDB.toPlanType("workout", exercisePlan[exerciseDate]) ??
-                    "unknown";
-            if (exerciseTypeCountMap.containsKey(type)) {
-              exerciseTypeCountMap[type] = exerciseTypeCountMap[type]! + 1;
-
-              int totalExerciseTypeCount = exerciseTypeCountMap.values
-                  .reduce((sum, count) => sum + count);
-
-              exerciseTypeCountMap.forEach((type, count) {
-                double percentage = (count / totalExerciseTypeCount) * 100;
-                exerciseTypePercentageMap[type] = percentage;
-                percentageExerciseList.add([type, percentage.toInt()]);
-              });
-            }
-          }
-        }
-      }
-
-      if (meditationDuration != null && meditationPlan != null) {
-        for (MapEntry entry in meditationDuration.entries) {
-          var meditationDate = entry.key;
-          int completionStatus =
-              (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
-
-          if (completionStatus == 2) {
-            var type = PlanDB.toPlanType("meditation", meditationPlan[meditationDate]) ??
-                "unknown";
-            if (meditationTypeCountMap.containsKey(type)) {
-              meditationTypeCountMap[type] = meditationTypeCountMap[type]! + 1;
-
-              int totalMeditationTypeCount = meditationTypeCountMap.values
-                  .reduce((sum, count) => sum + count);
-
-              meditationTypeCountMap.forEach((type, count) {
-                double percentage = (count / totalMeditationTypeCount) * 100;
-                meditationTypePercentageMap[type] = percentage;
-                percentageMeditationList.add([type, percentage.toInt()]);
-              });
-            }
-          }
-        }
-      }
-
-      // 每月成功天數圖表
-      setState(() {
-        exerciseMonthDaysList = exerciseMonthDays ?? [];
-        meditationMonthDaysList = meditationMonthDays ?? [];
-      });
-
-      List<double> exerciseDays = [];
-      for (int i = 0; i < exerciseMonthDaysList.length; i++) {
-        exerciseDays.add(exerciseMonthDaysList[i][2].toDouble());
-      }
-      maxExerciseDays = exerciseDays.reduce(max) + 10;
-
-      List<double> meditationDays = [];
-      for (int i = 0; i < meditationMonthDaysList.length; i++) {
-        meditationDays.add(meditationMonthDaysList[i][2].toDouble());
-      }
-      maxMeditationDays = meditationDays.reduce(max) + 10;
-    }
-
-    // After getting user's data, hide the loading mask
-    isInit = false;
-    isAddingWeight = false;
-
+  void refresh() async {
+    if (Data.updated) await StatData.fetch();
     setState(() {});
   }
 
   @override
-  void initState() {
-    /*_tooltipBehavior = TooltipBehavior(
-      enable: true,
-      shouldAlwaysShow: true,
-      activationMode: ActivationMode.longPress,
-      opacity: 0,
-      // 隱藏預設的框框（有個對話框角角）
-      builder: (dynamic data, dynamic point, dynamic series, int pointIndex,
-          int seriesIndex) {
-        return Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                color: const Color(0xfffdfdf5).withOpacity(0.6),
-                borderRadius: const BorderRadius.all(Radius.circular(10))),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  point.x,
-                  style: const TextStyle(
-                    color: Color(0xff4b3d70),
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  "${point.y} 天",
-                  style: const TextStyle(
-                    color: Color(0xff4b3d70),
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
-              ],
-            ));
-      },
-    );*/
-    super.initState();
-
-    getUserData();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    refresh();
     return SafeArea(
         child: Scaffold(
       backgroundColor: ColorSet.backgroundColor,
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          '${user?.displayName!} 的統計資料',
+          '${Data.user?.displayName!} 的統計資料',
           textAlign: TextAlign.left,
           style: const TextStyle(
               color: ColorSet.textColor,
@@ -346,33 +54,7 @@ class StatisticPageState extends State<StatisticPage> {
         backgroundColor: ColorSet.backgroundColor,
         automaticallyImplyLeading: false,
       ),
-      body: (isInit)
-          ? Center(
-              child: Container(
-                  padding:
-                      const EdgeInsets.only(right: 20, left: 20, bottom: 20),
-                  decoration: BoxDecoration(
-                      color: ColorSet.bottomBarColor,
-                      border: Border.all(color: ColorSet.bottomBarColor),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20))),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      LoadingAnimationWidget.horizontalRotatingDots(
-                        color: ColorSet.textColor,
-                        size: 100,
-                      ),
-                      const Text(
-                        "載入數據中...",
-                        style: TextStyle(
-                          color: ColorSet.textColor,
-                        ),
-                      )
-                    ],
-                  )))
-          : Padding(
+      body: Padding(
               padding: const EdgeInsets.all(10),
               //ListView可各分配空間給兩張圖
               child: ListView(
@@ -445,173 +127,153 @@ class StatisticPageState extends State<StatisticPage> {
                                 height: 300,
                                 padding: const EdgeInsets.only(
                                     left: 5, right: 20, top: 15, bottom: 15),
-                                child: (isAddingWeight)
-                                    ? Center(
-                                        child: LoadingAnimationWidget
-                                            .horizontalRotatingDots(
-                                        color: ColorSet.bottomBarColor,
-                                        size: 100,
-                                      ))
-                                    : LineChart(
-                                        LineChartData(
-                                          // lineTouchData: 觸摸交互詳細訊息
-                                          lineTouchData: LineTouchData(
-                                            handleBuiltInTouches: true,
-                                            touchTooltipData:
-                                                LineTouchTooltipData(
-                                              fitInsideHorizontally: true,
-                                              fitInsideVertically: true,
-                                              tooltipBgColor: ColorSet
-                                                  .bottomBarColor
-                                                  .withOpacity(0.8),
-                                              getTooltipItems:
-                                                  (List<LineBarSpot>
-                                                      touchedBarSpots) {
-                                                return touchedBarSpots
-                                                    .map((barSpot) {
-                                                  final flSpot = barSpot;
+                                child: LineChart(
+                                  LineChartData(
+                                    // lineTouchData: 觸摸交互詳細訊息
+                                    lineTouchData: LineTouchData(
+                                      handleBuiltInTouches: true,
+                                      touchTooltipData: LineTouchTooltipData(
+                                        fitInsideHorizontally: true,
+                                        fitInsideVertically: true,
+                                        tooltipBgColor: ColorSet.bottomBarColor
+                                            .withOpacity(0.8),
+                                        getTooltipItems: (List<LineBarSpot>
+                                            touchedBarSpots) {
+                                          return touchedBarSpots.map((barSpot) {
+                                            final flSpot = barSpot;
 
-                                                  return LineTooltipItem(
-                                                    '${weightDataMap.keys.toList()[flSpot.x.toInt()]}\n',
-                                                    const TextStyle(
-                                                      color: ColorSet.textColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                    children: [
-                                                      TextSpan(
-                                                        text:
-                                                            '${flSpot.y.toString()} 公斤',
-                                                        style: const TextStyle(
-                                                          color: ColorSet
-                                                              .textColor,
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w900,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                    textAlign: TextAlign.center,
-                                                  );
-                                                }).toList();
-                                              },
-                                            ),
-                                          ),
-                                          extraLinesData: ExtraLinesData(
-                                            horizontalLines: [
-                                              HorizontalLine(
-                                                y: avgWeight,
-                                                label: HorizontalLineLabel(
-                                                    show: true,
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 10),
-                                                    labelResolver: (line) =>
-                                                        '平均：${avgWeight.round()}',
-                                                    alignment:
-                                                        Alignment.topRight,
-                                                    style: TextStyle(
-                                                        color: ColorSet
-                                                            .textColor
-                                                            .withOpacity(0.7),
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                color: ColorSet.textColor
-                                                    .withOpacity(0.7),
-                                                dashArray: [5, 5],
+                                            return LineTooltipItem(
+                                              '${StatData.weightDataMap.keys.toList()[flSpot.x.toInt()]}\n',
+                                              const TextStyle(
+                                                color: ColorSet.textColor,
+                                                fontWeight: FontWeight.bold,
                                               ),
-                                            ],
-                                          ),
-                                          // gridData: 網格數據
-                                          gridData: FlGridData(
-                                            show: true,
-                                            drawVerticalLine: false,
-                                            // Disable vertical grid lines
-                                            drawHorizontalLine: true,
-                                            getDrawingHorizontalLine: (value) {
-                                              return FlLine(
-                                                color: ColorSet.textColor,
-                                                strokeWidth: 0.6,
-                                              );
-                                            },
-                                            checkToShowHorizontalLine: (value) {
-                                              return value % 5 ==
-                                                  0; // Show horizontal grid lines at intervals of 5
-                                            },
-                                          ),
-                                          // titlesData: 四個方向的標題
-                                          titlesData: FlTitlesData(
-                                            bottomTitles: SideTitles(
-                                              showTitles: false,
-                                              reservedSize: 28,
-                                              getTextStyles: (value) =>
-                                                  const TextStyle(
-                                                      color: ColorSet.textColor,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                              getTitles: (value) {
-                                                return weightDataMap.keys
-                                                    .toList()[value.toInt()];
-                                              },
-                                              margin: 8,
-                                            ),
-                                            leftTitles: SideTitles(
-                                              showTitles: true,
-                                              getTextStyles: (value) =>
-                                                  const TextStyle(
-                                                      color: ColorSet.textColor,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                              getTitles: (value) {
-                                                // Customize the display for values within the range
-                                                // FIXME(?): 好像沒有一定會間隔為 5?
-                                                if (value >= minY &&
-                                                    value <= maxY) {
-                                                  int intValue = value.toInt();
-                                                  if (intValue % 5 == 0) {
-                                                    return '$intValue';
-                                                  }
-                                                }
-                                                return '';
-                                              },
-                                              margin: 10,
-                                              reservedSize: 28,
-                                            ),
-                                          ),
-                                          // borderData: 邊框數據
-                                          borderData: FlBorderData(
-                                              show: true,
-                                              border: const Border(
-                                                  bottom: BorderSide(
-                                                color: ColorSet.textColor,
-                                                width: 0.6,
-                                              ))),
-                                          // lineBarsData: 數線資料
-                                          lineBarsData: [
-                                            LineChartBarData(
-                                              spots: _getWeightData(),
-                                              isCurved: false,
-                                              colors: [ColorSet.chartLineColor],
-                                              barWidth: 3,
-                                              isStrokeCapRound: true,
-                                              dotData: FlDotData(
-                                                show: true,
-                                                getDotPainter: (spot, percent,
-                                                        barData, index) =>
-                                                    FlDotCirclePainter(
-                                                  color: ColorSet.textColor,
-                                                  radius: 3,
+                                              children: [
+                                                TextSpan(
+                                                  text:
+                                                      '${flSpot.y.toString()} 公斤',
+                                                  style: const TextStyle(
+                                                    color: ColorSet.textColor,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w900,
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                          ],
-                                          minY: minY, // y軸最小值
-                                          maxY: maxY, // y軸最大值
+                                              ],
+                                              textAlign: TextAlign.center,
+                                            );
+                                          }).toList();
+                                        },
+                                      ),
+                                    ),
+                                    extraLinesData: ExtraLinesData(
+                                      horizontalLines: [
+                                        HorizontalLine(
+                                          y: StatData.avgWeight,
+                                          label: HorizontalLineLabel(
+                                              show: true,
+                                              padding: const EdgeInsets.only(
+                                                  left: 10),
+                                              labelResolver: (line) =>
+                                                  '平均：${StatData.avgWeight.round()}',
+                                              alignment: Alignment.topRight,
+                                              style: TextStyle(
+                                                  color: ColorSet.textColor
+                                                      .withOpacity(0.7),
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold)),
+                                          color: ColorSet.textColor
+                                              .withOpacity(0.7),
+                                          dashArray: [5, 5],
+                                        ),
+                                      ],
+                                    ),
+                                    // gridData: 網格數據
+                                    gridData: FlGridData(
+                                      show: true,
+                                      drawVerticalLine: false,
+                                      // Disable vertical grid lines
+                                      drawHorizontalLine: true,
+                                      getDrawingHorizontalLine: (value) {
+                                        return FlLine(
+                                          color: ColorSet.textColor,
+                                          strokeWidth: 0.6,
+                                        );
+                                      },
+                                      checkToShowHorizontalLine: (value) {
+                                        return value % 5 ==
+                                            0; // Show horizontal grid lines at intervals of 5
+                                      },
+                                    ),
+                                    // titlesData: 四個方向的標題
+                                    titlesData: FlTitlesData(
+                                      bottomTitles: SideTitles(
+                                        showTitles: false,
+                                        reservedSize: 28,
+                                        getTextStyles: (value) =>
+                                            const TextStyle(
+                                                color: ColorSet.textColor,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                        getTitles: (value) {
+                                          return StatData.weightDataMap.keys
+                                              .toList()[value.toInt()];
+                                        },
+                                        margin: 8,
+                                      ),
+                                      leftTitles: SideTitles(
+                                        showTitles: true,
+                                        getTextStyles: (value) =>
+                                            const TextStyle(
+                                                color: ColorSet.textColor,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                        getTitles: (value) {
+                                          // Customize the display for values within the range
+                                          // FIXME(?): 好像沒有一定會間隔為 5?
+                                          if (value >= StatData.minY &&
+                                              value <= StatData.maxY) {
+                                            int intValue = value.toInt();
+                                            if (intValue % 5 == 0) {
+                                              return '$intValue';
+                                            }
+                                          }
+                                          return '';
+                                        },
+                                        margin: 10,
+                                        reservedSize: 28,
+                                      ),
+                                    ),
+                                    // borderData: 邊框數據
+                                    borderData: FlBorderData(
+                                        show: true,
+                                        border: const Border(
+                                            bottom: BorderSide(
+                                          color: ColorSet.textColor,
+                                          width: 0.6,
+                                        ))),
+                                    // lineBarsData: 數線資料
+                                    lineBarsData: [
+                                      LineChartBarData(
+                                        spots: _getWeightData(),
+                                        isCurved: false,
+                                        colors: [ColorSet.chartLineColor],
+                                        barWidth: 3,
+                                        isStrokeCapRound: true,
+                                        dotData: FlDotData(
+                                          show: true,
+                                          getDotPainter:
+                                              (spot, percent, barData, index) =>
+                                                  FlDotCirclePainter(
+                                            color: ColorSet.textColor,
+                                            radius: 3,
+                                          ),
                                         ),
                                       ),
+                                    ],
+                                    minY: StatData.minY, // y軸最小值
+                                    maxY: StatData.maxY, // y軸最大值
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -642,7 +304,7 @@ class StatisticPageState extends State<StatisticPage> {
                               ),
                               trailing: ToggleSwitch(
                                 minHeight: 35,
-                                initialLabelIndex: planProgress,
+                                initialLabelIndex: StatData.planProgress,
                                 cornerRadius: 10.0,
                                 radiusStyle: true,
                                 labels: const ['運動', '冥想'],
@@ -662,7 +324,7 @@ class StatisticPageState extends State<StatisticPage> {
                                 //animate: true,
                                 //animationDuration: 300,
                                 onToggle: (index) {
-                                  planProgress = index!;
+                                  StatData.planProgress = index!;
                                   setState(() {});
                                 },
                               ),
@@ -680,9 +342,9 @@ class StatisticPageState extends State<StatisticPage> {
                                 monthFontSize: 16,
                                 flexible: true,
                                 margin: const EdgeInsets.all(2.5),
-                                datasets: (planProgress == 0)
-                                    ? exerciseCompletionRateMap
-                                    : meditationCompletionRateMap,
+                                datasets: (StatData.planProgress == 0)
+                                    ? StatData.exerciseCompletionRateMap
+                                    : StatData.meditationCompletionRateMap,
                                 colorsets: colorSet,
                                 colorTipCount: 2,
                                 colorTipSize: 20,
@@ -735,7 +397,7 @@ class StatisticPageState extends State<StatisticPage> {
                                 ),
                                 trailing: ToggleSwitch(
                                   minHeight: 35,
-                                  initialLabelIndex: consecutiveDays,
+                                  initialLabelIndex: StatData.consecutiveDays,
                                   cornerRadius: 10.0,
                                   radiusStyle: true,
                                   labels: const ['運動', '冥想'],
@@ -753,14 +415,14 @@ class StatisticPageState extends State<StatisticPage> {
                                   inactiveFgColor: ColorSet.textColor,
                                   totalSwitches: 2,
                                   onToggle: (index) {
-                                    consecutiveDays = index!;
+                                    StatData.consecutiveDays = index!;
                                     setState(() {});
                                   },
                                 ),
                                 visualDensity:
                                     const VisualDensity(vertical: -4),
                               ),
-                              (consecutiveDays == 0)
+                              (StatData.consecutiveDays == 0)
                                   ? SfCartesianChart(
                                       plotAreaBorderWidth: 0,
                                       primaryXAxis: CategoryAxis(
@@ -892,7 +554,7 @@ class StatisticPageState extends State<StatisticPage> {
                                 ),
                                 trailing: ToggleSwitch(
                                   minHeight: 35,
-                                  initialLabelIndex: accumulatedTime,
+                                  initialLabelIndex: StatData.accumulatedTime,
                                   cornerRadius: 10.0,
                                   radiusStyle: true,
                                   labels: const ['運動', '冥想'],
@@ -910,14 +572,14 @@ class StatisticPageState extends State<StatisticPage> {
                                   inactiveFgColor: ColorSet.textColor,
                                   totalSwitches: 2,
                                   onToggle: (index) {
-                                    accumulatedTime = index!;
+                                    StatData.accumulatedTime = index!;
                                     setState(() {});
                                   },
                                 ),
                                 visualDensity:
                                     const VisualDensity(vertical: -4),
                               ),
-                              (accumulatedTime == 0)
+                              (StatData.accumulatedTime == 0)
                                   ? SfCircularChart(
                                       legend: Legend(
                                           isVisible: true,
@@ -1024,7 +686,7 @@ class StatisticPageState extends State<StatisticPage> {
                               ),
                               trailing: ToggleSwitch(
                                 minHeight: 35,
-                                initialLabelIndex: monthDays,
+                                initialLabelIndex: StatData.monthDays,
                                 cornerRadius: 10.0,
                                 radiusStyle: true,
                                 labels: const ['運動', '冥想'],
@@ -1044,7 +706,7 @@ class StatisticPageState extends State<StatisticPage> {
                                 //animate: true,
                                 //animationDuration: 300,
                                 onToggle: (index) {
-                                  monthDays = index!;
+                                  StatData.monthDays = index!;
                                   setState(() {});
 
                                   // TODO: 可能可以刪，或是確認要加在哪些地方（完成統計頁後)
@@ -1063,7 +725,7 @@ class StatisticPageState extends State<StatisticPage> {
                               ),
                               visualDensity: const VisualDensity(vertical: -4),
                             ),
-                            (monthDays == 0)
+                            (StatData.monthDays == 0)
                                 ? Container(
                                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                     child: SfCartesianChart(
@@ -1089,7 +751,7 @@ class StatisticPageState extends State<StatisticPage> {
                                           // must set for data label (above the column)
                                           labelFormat: '{value} 天',
                                           minimum: 0,
-                                          maximum: maxExerciseDays,
+                                          maximum: StatData.maxExerciseDays,
                                           interval: 3,
                                           // set 0 to hide grid lines and tick lines
                                           axisLine: const AxisLine(width: 0),
@@ -1156,7 +818,7 @@ class StatisticPageState extends State<StatisticPage> {
                                           // must set for data label (above the column)
                                           labelFormat: '{value} 天',
                                           minimum: 0,
-                                          maximum: maxMeditationDays,
+                                          maximum: StatData.maxMeditationDays,
                                           interval: 7,
                                           // set 0 to hide grid lines and tick lines
                                           axisLine: const AxisLine(width: 0),
@@ -1207,13 +869,13 @@ class StatisticPageState extends State<StatisticPage> {
   }
 
   List<FlSpot> _getWeightData() {
-    if (weightDataList.isEmpty) {
+    if (StatData.weightDataList.isEmpty) {
       return [];
     }
 
     return List.generate(
-      weightDataList.length,
-      (index) => FlSpot(index.toDouble(), weightDataList[index]),
+      StatData.weightDataList.length,
+      (index) => FlSpot(index.toDouble(), StatData.weightDataList[index]),
     );
   }
 
@@ -1236,16 +898,17 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getExerciseMonthDaysData() {
     List<ChartData> chartData = [];
 
-    if (exerciseMonthDaysList.isEmpty) {
+    if (StatData.exerciseMonthDaysList.isEmpty) {
       return [];
     }
 
-    debugPrint("exerciseMonthDaysList: $exerciseMonthDaysList");
+    debugPrint("exerciseMonthDaysList: ${StatData.exerciseMonthDaysList}");
     // [[2023-04-01, 2023-04-30, 1], [2023-05-01, 2023-05-31, 7], [2023-06-01, 2023-06-30, 3], [2023-07-01, 2023-07-31, 0]]
 
-    for (int i = 0; i < exerciseMonthDaysList.length; i++) {
-      String monthEng = month[exerciseMonthDaysList[i][0].split("-")[1]];
-      chartData.add(ChartData(monthEng, exerciseMonthDaysList[i][2]));
+    for (int i = 0; i < StatData.exerciseMonthDaysList.length; i++) {
+      String monthEng =
+          month[StatData.exerciseMonthDaysList[i][0].split("-")[1]];
+      chartData.add(ChartData(monthEng, StatData.exerciseMonthDaysList[i][2]));
     }
 
     return chartData;
@@ -1254,15 +917,17 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getMeditationMonthDaysData() {
     List<ChartData> chartData = [];
 
-    if (meditationMonthDaysList.isEmpty) {
+    if (StatData.meditationMonthDaysList.isEmpty) {
       return [];
     }
 
-    debugPrint("meditationMonthDaysList: $meditationMonthDaysList");
+    debugPrint("meditationMonthDaysList: ${StatData.meditationMonthDaysList}");
 
-    for (int i = 0; i < meditationMonthDaysList.length; i++) {
-      String monthEng = month[meditationMonthDaysList[i][0].split("-")[1]];
-      chartData.add(ChartData(monthEng, meditationMonthDaysList[i][2]));
+    for (int i = 0; i < StatData.meditationMonthDaysList.length; i++) {
+      String monthEng =
+          month[StatData.meditationMonthDaysList[i][0].split("-")[1]];
+      chartData
+          .add(ChartData(monthEng, StatData.meditationMonthDaysList[i][2]));
     }
 
     return chartData;
@@ -1271,12 +936,13 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getExerciseConsecutiveDaysChartData() {
     List<ChartData> chartData = [];
 
-    debugPrint("exerciseConsecutiveDaysList: $consecutiveExerciseDaysList");
+    debugPrint(
+        "exerciseConsecutiveDaysList: ${StatData.consecutiveExerciseDaysList}");
 
-    for (int i = 0; i < consecutiveExerciseDaysList.length; i++) {
-      DateTime startDate = consecutiveExerciseDaysList[i][0];
-      DateTime endDate = consecutiveExerciseDaysList[i][1];
-      double consecutiveDays = consecutiveExerciseDaysList[i][2];
+    for (int i = 0; i < StatData.consecutiveExerciseDaysList.length; i++) {
+      DateTime startDate = StatData.consecutiveExerciseDaysList[i][0];
+      DateTime endDate = StatData.consecutiveExerciseDaysList[i][1];
+      double consecutiveDays = StatData.consecutiveExerciseDaysList[i][2];
 
       DateFormat dateFormat = DateFormat('MM/dd');
       String startLabel = dateFormat.format(startDate);
@@ -1291,12 +957,13 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getMeditationConsecutiveDaysChartData() {
     List<ChartData> chartData = [];
 
-    debugPrint("meditationConsecutiveDaysList: $consecutiveMeditationDaysList");
+    debugPrint(
+        "meditationConsecutiveDaysList: ${StatData.consecutiveMeditationDaysList}");
 
-    for (int i = 0; i < consecutiveMeditationDaysList.length; i++) {
-      DateTime startDate = consecutiveMeditationDaysList[i][0];
-      DateTime endDate = consecutiveMeditationDaysList[i][1];
-      double consecutiveDays = consecutiveMeditationDaysList[i][2];
+    for (int i = 0; i < StatData.consecutiveMeditationDaysList.length; i++) {
+      DateTime startDate = StatData.consecutiveMeditationDaysList[i][0];
+      DateTime endDate = StatData.consecutiveMeditationDaysList[i][1];
+      double consecutiveDays = StatData.consecutiveMeditationDaysList[i][2];
 
       DateFormat dateFormat = DateFormat('MM/dd');
       String startLabel = dateFormat.format(startDate);
@@ -1324,9 +991,9 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getExerciseTypePercentageChartData() {
     List<ChartData> chartData = [];
 
-    debugPrint("exercisePercentageList: $exerciseTypePercentageMap");
+    debugPrint("exercisePercentageList: ${StatData.exerciseTypePercentageMap}");
 
-    for (var entry in exerciseTypePercentageMap.entries) {
+    for (var entry in StatData.exerciseTypePercentageMap.entries) {
       String chineseType = translateTypeToChinese(entry.key);
       chartData.add(ChartData(chineseType, entry.value.toInt()));
     }
@@ -1336,9 +1003,10 @@ class StatisticPageState extends State<StatisticPage> {
   List<ChartData> getMeditationTypePercentageChartData() {
     List<ChartData> chartData = [];
 
-    debugPrint("meditationPercentageList: $meditationTypePercentageMap");
+    debugPrint(
+        "meditationPercentageList: ${StatData.meditationTypePercentageMap}");
 
-    for (var entry in meditationTypePercentageMap.entries) {
+    for (var entry in StatData.meditationTypePercentageMap.entries) {
       String chineseType = translateTypeToChinese(entry.key);
       chartData.add(ChartData(chineseType, entry.value.toInt()));
     }
@@ -1604,9 +1272,6 @@ class StatisticPageState extends State<StatisticPage> {
 
                 if (checkFormKey.currentState!.validate()) {
                   Navigator.pop(context);
-                  setState(() {
-                    isAddingWeight = true;
-                  });
 
                   double weight = double.tryParse(weightController.text) ?? 0;
                   if (weight > 0) {
@@ -1614,12 +1279,13 @@ class StatisticPageState extends State<StatisticPage> {
                       Calendar.dateToString(selectedDate): weight
                     };
                     await WeightDB.update(addedData);
-                    getUserData();
+                    await StatData.fetch();
                   }
                   weightController.clear();
                   setState(() {
                     selectedDate = DateTime.now();
                   });
+                  setState(() {});
                 }
               },
               child: const Text(

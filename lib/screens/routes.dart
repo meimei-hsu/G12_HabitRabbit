@@ -17,10 +17,10 @@ import 'package:g12/screens/video_page.dart';
 final routes = {
   '/': (context) => const Homepage(),
   '/register': (context) => const RegisterPage(),
-  '/statistic': (context, {arguments}) => StatisticPage(arguments: arguments),
+  '/statistic': (context, {arguments}) => const StatisticPage(),
   '/countdown': (context, {arguments}) => CountdownPage(arguments: arguments),
   '/settings': (context, {arguments}) => const SettingsPage(),
-  '/milestone': (context, {arguments}) => GamificationPage(arguments: arguments),
+  '/milestone': (context, {arguments}) => const GamificationPage(),
   '/community': (context, {arguments}) => CommunityPage(arguments: arguments),
   '/video': (context, {arguments}) => VideoPage(arguments: arguments),
   /* ExercisePage */

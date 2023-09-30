@@ -1,9 +1,12 @@
 import 'dart:collection';
+import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:g12/services/database.dart';
+import 'package:g12/services/plan_algo.dart';
 
 // ignore_for_file: avoid_print
 
@@ -24,13 +27,22 @@ class Data {
   static Map? habits;
 
   static Future<void> init() async {
-    await fetchPlansAndDurations();
-    await fetchGame();
-    await fetchContract();
-    await fetchProfile();
-    await fetchWeights();
-    await fetchHabits();
-    await fetchClocks();
+    print("initializing data");
+    user = FirebaseAuth.instance.currentUser;
+    if (Data.user != null) {
+      await fetchProfile();
+      await fetchHabits();
+      await PlanAlgo.execute();
+      await fetchPlansAndDurations();
+      await fetchGame();
+      await fetchContract();
+      await fetchWeights();
+      await fetchClocks();
+      await HomeData.fetch();
+      await StatData.fetch(isInit: true);
+      await GameData.fetch();
+      await SettingsData.fetch();
+    }
   }
 
   static Future<void> fetchProfile() async {
@@ -109,16 +121,6 @@ class PlanData {
   static List<Map<String, dynamic>>? planVariables;
   static Map habitLists = {};
 
-  PlanData() {
-    init();
-  }
-
-  static void init() async {
-    for (String habit in Data.habitTypes) {
-      habitLists[habit] = HabitDB.categorize(habit, Data.habits?[habit]);
-    }
-  }
-
   static Future<void> fetch(
       {required String habit, bool thisWeek = true}) async {
     if (Data.updated) {
@@ -126,12 +128,12 @@ class PlanData {
       Data.updated = false;
     }
 
-    habitIDs = habitLists[habit];
+    habitIDs = HabitDB.categorize(habit, Data.habits?[habit])!;
     planVariables = UserDB.toPlanVariables(Data.profile, habit);
-    PlanData.process(habit: habit, data: planVariables, thisWeek: thisWeek);
+    processData(habit: habit, data: planVariables, thisWeek: thisWeek);
   }
 
-  static void process(
+  static void processData(
       {required String habit, required List? data, required bool thisWeek}) {
     if (data == null) return;
 
@@ -166,10 +168,36 @@ class PlanData {
 }
 
 class HomeData {
-  static bool noWorkoutThisWeek = false, noWorkoutNextWeek = false;
-  static bool noMeditationThisWeek = false, noMeditationNextWeek = false;
-  static Map planList = {"workout": {}, "meditation": {}},
-      progressList = {"workout": {}, "meditation": {}};
+  static bool isFetchingData = true;
+
+  // Plan 相關資料
+  static String? workoutPlan;
+  static Map workoutPlanList = {};
+  static int? workoutProgress;
+  static Map workoutProgressList = {};
+  static int currentIndex = 0;
+  static bool noWorkoutThisWeek = false;
+  static bool noWorkoutNextWeek = false;
+
+  //Meditation Plan 相關資料
+  static String? meditationPlan;
+  static Map meditationPlanList = {};
+  static int? meditationProgress;
+  static Map meditationProgressList = {};
+  static bool noMeditationThisWeek = false;
+  static bool noMeditationNextWeek = false;
+
+  // Calendar 相關設定
+  static DateTime today = DateTime.now();
+  static DateTime focusedDay = DateTime.now();
+  static DateTime? selectedDay = DateTime.now();
+  static String time = "今天";
+  static DateTime firstDay = Calendar.firstDay;
+  static DateTime lastDay = firstDay.add(const Duration(days: 13));
+  static bool isThisWeek = Calendar.isThisWeek(selectedDay!);
+  static bool isBefore = false;
+  static bool isAfter = false;
+  static bool isToday = true;
 
   static Future<void> fetch() async {
     if (Data.updated) {
@@ -184,6 +212,7 @@ class HomeData {
         setProgressList(habit: habit, week: week);
       }
     }
+    setSelectedDay();
   }
 
   static void setPlanList({required String habit, required List week}) {
@@ -193,9 +222,13 @@ class HomeData {
     plans.removeWhere((key, value) => value == null);
 
     if (plans.isNotEmpty) {
-      plans = plans.map((date, plan) => MapEntry(date,
-          plan.map((value) => Data.habits?[habit]?[value]).join(", ")));
-      planList[habit].addAll(plans);
+      plans = plans.map((date, plan) => MapEntry(
+          date, plan.map((value) => Data.habits?[habit]?[value]).join(", ")));
+      if (habit == "workout") {
+        workoutPlanList.addAll(plans);
+      } else {
+        meditationPlanList.addAll(plans);
+      }
     } else {
       if (week.contains(Calendar.today)) {
         if (habit == "workout") {
@@ -222,8 +255,31 @@ class HomeData {
     if (durations.isNotEmpty) {
       durations
           .updateAll((key, value) => Calculator.calcProgress(value).round());
-      progressList[habit].addAll(durations);
+      if (habit == "workout") {
+        workoutProgressList.addAll(durations);
+      } else {
+        meditationProgressList.addAll(durations);
+      }
     }
+  }
+
+  static void setSelectedDay() {
+    currentIndex = Data.durations?["workout"]?[today] ?? 0;
+    workoutPlan = workoutPlanList[Calendar.dateToString(selectedDay!)];
+    workoutProgress = workoutProgressList[Calendar.dateToString(selectedDay!)];
+    meditationPlan = meditationPlanList[Calendar.dateToString(selectedDay!)];
+    meditationProgress =
+        meditationProgressList[Calendar.dateToString(selectedDay!)];
+    isBefore = DateTime(selectedDay!.year, selectedDay!.month, selectedDay!.day)
+        .isBefore(focusedDay);
+    isAfter = DateTime(selectedDay!.year, selectedDay!.month, selectedDay!.day)
+        .isAfter(focusedDay);
+    isToday =
+        (DateTime(selectedDay!.year, selectedDay!.month, selectedDay!.day) ==
+            focusedDay);
+    time = (isToday) ? "今天" : " ${selectedDay!.month} / ${selectedDay!.day} ";
+
+    isFetchingData = false;
   }
 }
 
@@ -245,7 +301,7 @@ class SettingsData {
       Data.updated = false;
     }
 
-    userData = Data.profile ?? {};
+    userData = Map.from(Data.profile ?? {});
     userData["workoutDays"] =
         userData["workoutDays"].split("").map(int.parse).toList();
     userData["meditationDays"] =
@@ -278,5 +334,305 @@ class SettingsData {
 
   static void isSettingPassword() {
     profileType = "密碼";
+  }
+}
+
+class StatData {
+  // 體重
+  static List<double> weightDataList = [0.0];
+  static Map<String, double> weightDataMap = {};
+  static double weight = 0.0;
+  static double avgWeight = 0.0;
+  static double minY = 0.0;
+  static double maxY = 0.0;
+
+  // 計畫進度
+  static Map<DateTime, int> exerciseCompletionRateMap = {};
+  static Map<DateTime, int> meditationCompletionRateMap = {};
+
+  //連續完成天數
+  static List consecutiveExerciseDaysList = [];
+  static List consecutiveMeditationDaysList = [];
+  static double continuousExerciseDays = 0;
+  static double continuousMeditationDays = 0;
+
+  //累積時長
+  static Map<String, int> exerciseTypeCountMap = {
+    "cardio": 0,
+    "yoga": 0,
+    "strength": 0,
+  };
+  static Map<String, double> exerciseTypePercentageMap = {};
+  static List percentageExerciseList = [];
+
+  static Map<String, int> meditationTypeCountMap = {
+    "mindfulness": 0,
+    "work": 0,
+    "kindness": 0,
+  };
+  static Map<String, double> meditationTypePercentageMap = {};
+  static List percentageMeditationList = [];
+
+  // 每月成功天數
+  static List exerciseMonthDaysList = [];
+  static List meditationMonthDaysList = [];
+  static double maxExerciseDays = 0;
+  static double maxMeditationDays = 0;
+
+  static int planProgress = 0;
+  static int consecutiveDays = 0;
+  static int accumulatedTime = 0;
+  static int monthDays = 0;
+
+  static Future<void> fetch({bool isInit = false}) async {
+    await setWeightData();
+    if (isInit) {
+      await setPlanCompletionData();
+      await setConsecutiveDaysData();
+      await setCumulativeTimeData();
+      await setMonthSuccessData();
+    }
+  }
+
+  // 體重圖表
+  static Future<void> setWeightData() async {
+    if (Data.updated) {
+      await Data.fetchWeights();
+      Data.updated = false;
+    }
+
+    var weight = Data.weights; // Fetch user's data from firebase
+    if (weight != null) {
+      weightDataMap =
+          weight.map((key, value) => MapEntry(key as String, value.toDouble()));
+      // 照時間順序排
+      weightDataMap = Map.fromEntries(weightDataMap.entries.toList()
+        ..sort((e1, e2) => e1.key.compareTo(e2.key)));
+
+      weightDataList = weightDataMap.values.toList();
+    }
+    minY = weightDataList.reduce(min);
+    maxY = weightDataList.reduce(max);
+    for (int i = 1; i <= 5; i++) {
+      if ((minY - i) % 5 == 0) {
+        minY = minY - i;
+        break;
+      }
+    }
+    for (int i = 1; i <= 5; i++) {
+      if ((maxY + i) % 5 == 0) {
+        maxY = maxY + i;
+        break;
+      }
+    }
+    avgWeight = weightDataList.average;
+  }
+
+  // 計畫進度圖表
+  static Future<void> setPlanCompletionData() async {
+    if (Data.updated) {
+      await Data.fetchDurations();
+      Data.updated = false;
+    }
+
+    var exerciseDuration = Data.durations?["workout"];
+    if (exerciseDuration != null) {
+      for (MapEntry entry in exerciseDuration.entries) {
+        var exerciseDate = DateTime.parse(entry.key);
+        exerciseCompletionRateMap[exerciseDate] =
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+      }
+    }
+
+    var meditationDuration = Data.durations?["meditation"];
+    if (meditationDuration != null) {
+      for (MapEntry entry in meditationDuration.entries) {
+        var meditationDate = DateTime.parse(entry.key);
+        meditationCompletionRateMap[meditationDate] =
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+      }
+    }
+  }
+
+  // 連續成功天數圖表
+  static Future<void> setConsecutiveDaysData() async {
+    if (Data.updated) {
+      await Data.fetchDurations();
+      Data.updated = false;
+    }
+
+    var exerciseDuration = Data.durations?["workout"];
+    if (exerciseDuration != null) {
+      DateTime? startDate;
+      DateTime? endDate;
+      for (MapEntry entry in exerciseDuration.entries) {
+        var exercise = DateTime.parse(entry.key);
+        int completionStatus =
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+
+        if (completionStatus == 2) {
+          if (continuousExerciseDays == 0) {
+            startDate = exercise;
+          }
+          continuousExerciseDays++;
+          endDate = exercise;
+        } else {
+          if (continuousExerciseDays >= 2) {
+            consecutiveExerciseDaysList
+                .add([startDate, endDate, continuousExerciseDays]);
+          }
+          continuousExerciseDays = 0;
+        }
+        exerciseCompletionRateMap[exercise] = completionStatus;
+      }
+      if (continuousExerciseDays >= 2) {
+        consecutiveExerciseDaysList
+            .add([startDate, endDate, continuousExerciseDays]);
+      }
+    }
+
+    var meditationDuration = Data.durations?["meditation"];
+    if (meditationDuration != null) {
+      DateTime? startDate;
+      DateTime? endDate;
+      for (MapEntry entry in meditationDuration.entries) {
+        var meditation = DateTime.parse(entry.key);
+        int completionStatus =
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+
+        if (completionStatus == 2) {
+          if (continuousMeditationDays == 0) {
+            startDate = meditation;
+          }
+          continuousMeditationDays++;
+          endDate = meditation;
+        } else {
+          if (continuousMeditationDays >= 2) {
+            consecutiveMeditationDaysList
+                .add([startDate, endDate, continuousMeditationDays]);
+          }
+          continuousMeditationDays = 0;
+        }
+        meditationCompletionRateMap[meditation] = completionStatus;
+      }
+      if (continuousMeditationDays >= 2) {
+        consecutiveMeditationDaysList
+            .add([startDate, endDate, continuousMeditationDays]);
+      }
+    }
+  }
+
+  // 累積時長圖表
+  static Future<void> setCumulativeTimeData() async {
+    if (Data.updated) {
+      await Data.fetchPlansAndDurations();
+      Data.updated = false;
+    }
+
+    var exerciseDuration = Data.durations?["workout"];
+    var exercisePlan = Data.plans?["workout"];
+    if (exerciseDuration != null && exercisePlan != null) {
+      for (MapEntry entry in exerciseDuration.entries) {
+        var exerciseDate = entry.key;
+        int completionStatus =
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+
+        if (completionStatus == 2) {
+          var type = PlanDB.toPlanType("workout", exercisePlan[exerciseDate]) ??
+              "unknown";
+          if (exerciseTypeCountMap.containsKey(type)) {
+            exerciseTypeCountMap[type] = exerciseTypeCountMap[type]! + 1;
+
+            int totalExerciseTypeCount =
+                exerciseTypeCountMap.values.reduce((sum, count) => sum + count);
+
+            exerciseTypeCountMap.forEach((type, count) {
+              double percentage = (count / totalExerciseTypeCount) * 100;
+              exerciseTypePercentageMap[type] = percentage;
+              percentageExerciseList.add([type, percentage.toInt()]);
+            });
+          }
+        }
+      }
+    }
+
+    var meditationDuration = Data.durations?["meditation"];
+    var meditationPlan = Data.plans?["meditation"];
+    if (meditationDuration != null && meditationPlan != null) {
+      for (MapEntry entry in meditationDuration.entries) {
+        var meditationDate = entry.key;
+        int completionStatus =
+            (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
+
+        if (completionStatus == 2) {
+          var type =
+              PlanDB.toPlanType("meditation", meditationPlan[meditationDate]) ??
+                  "unknown";
+          if (meditationTypeCountMap.containsKey(type)) {
+            meditationTypeCountMap[type] = meditationTypeCountMap[type]! + 1;
+
+            int totalMeditationTypeCount = meditationTypeCountMap.values
+                .reduce((sum, count) => sum + count);
+
+            meditationTypeCountMap.forEach((type, count) {
+              double percentage = (count / totalMeditationTypeCount) * 100;
+              meditationTypePercentageMap[type] = percentage;
+              percentageMeditationList.add([type, percentage.toInt()]);
+            });
+          }
+        }
+      }
+    }
+  }
+
+  // 每月成功天數圖表
+  static Future<void> setMonthSuccessData() async {
+    if (Data.updated) {
+      await Data.fetchDurations();
+      Data.updated = false;
+    }
+
+    exerciseMonthDaysList =
+        Calculator.getMonthTotalDays(Data.durations?["workout"]) ?? [];
+    meditationMonthDaysList =
+        Calculator.getMonthTotalDays(Data.durations?["meditation"]) ?? [];
+
+    List<double> exerciseDays = [];
+    for (int i = 0; i < exerciseMonthDaysList.length; i++) {
+      exerciseDays.add(exerciseMonthDaysList[i][2].toDouble());
+    }
+    maxExerciseDays = exerciseDays.reduce(max) + 10;
+
+    List<double> meditationDays = [];
+    for (int i = 0; i < meditationMonthDaysList.length; i++) {
+      meditationDays.add(meditationMonthDaysList[i][2].toDouble());
+    }
+    maxMeditationDays = meditationDays.reduce(max) + 10;
+  }
+}
+
+class GameData {
+  static int workoutGem = 0;
+  static int meditationGem = 0;
+  static double workoutPercent = 0;
+  static double meditationPercent = 0;
+  static double totalPercent = 0;
+
+  static Future<void> fetch() async {
+    if (Data.updated) {
+      await Data.fetchGame();
+      await Data.fetchContract();
+      Data.updated = false;
+    }
+
+    if (Data.game != null) {
+      workoutGem = Data.game?["workoutGem"];
+      meditationGem = Data.game?["meditationGem"];
+      workoutPercent =
+          Calculator.calcProgress(Data.game?["workoutFragment"]).toDouble();
+      meditationPercent =
+          Calculator.calcProgress(Data.game?["meditationFragment"]).toDouble();
+      totalPercent = (workoutGem + meditationGem) / 48 * 100;
+    }
   }
 }

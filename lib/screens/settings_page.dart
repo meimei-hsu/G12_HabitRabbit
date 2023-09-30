@@ -27,19 +27,17 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
-  void refresh() {
+  Future<void> refresh() async {
+    if (Data.updated) await SettingsData.fetch();
+
     setState(() {
       Data.user = FirebaseAuth.instance.currentUser!;
     });
   }
 
   @override
-  void initState() {
-    SettingsData.fetch();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    refresh();
     return MaterialApp(
         home: Scaffold(
       backgroundColor: ColorSet.backgroundColor,
@@ -64,9 +62,7 @@ class SettingsPageState extends State<SettingsPage> {
             // user card
             SimpleUserCard(
               userName: Data.user!.displayName!,
-              userProfilePic: (Data.user!.photoURL != null)
-                  ? NetworkImage(Data.user!.photoURL!)
-                  : SettingsData.characterImage as ImageProvider,
+              userProfilePic: SettingsData.characterImage,
             ),
             SettingsGroup(
               settingsGroupTitle: "運動",
@@ -215,18 +211,6 @@ class SettingsPageState extends State<SettingsPage> {
                   title: '更改暱稱',
                 ),
                 SettingsItem(
-                  onTap: () async {
-                    SettingsData.isSettingPhotoURL();
-                    await showDialog<double>(
-                        context: context,
-                        builder: (context) => const ChangeProfileDialog());
-                    refresh();
-                  },
-                  icons: CupertinoIcons.photo_on_rectangle,
-                  iconStyle: iconStyle,
-                  title: '更改照片',
-                ),
-                SettingsItem(
                     onTap: () {
                       SettingsData.isSettingPassword();
                       showDialog<double>(
@@ -238,21 +222,6 @@ class SettingsPageState extends State<SettingsPage> {
                     title: '更改密碼'),
               ],
             ),
-            /*SettingsGroup(
-              settingsGroupTitle: "其他",
-              items: [
-                SettingsItem(
-                  onTap: () {},
-                  icons: Icons.dark_mode_rounded,
-                  iconStyle: iconStyle,
-                  title: '夜間模式',
-                  trailing: Switch.adaptive(
-                    value: false,
-                    onChanged: (value) {},
-                  ),
-                ),
-              ],
-            ),*/
             SettingsGroup(
               settingsGroupTitle: "帳號",
               items: [
@@ -680,7 +649,8 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
             ),
             onPressed: () async {
               SettingsData.timeForecast[key] = forecast;
-              ClockDB.update(SettingsData.habitType, Map<String, String>.from(forecast));
+              ClockDB.update(
+                  SettingsData.habitType, Map<String, String>.from(forecast));
 
               if (!mounted) return;
               Navigator.pop(context);
@@ -845,7 +815,9 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
               backgroundColor: ColorSet.backgroundColor,
             ),
             onPressed: () async {
-              Map original = {for (var item in keys) item: SettingsData.userData[item]};
+              Map original = {
+                for (var item in keys) item: SettingsData.userData[item]
+              };
               Map<String, Object> modified = likings;
               if (modified != original) {
                 SettingsData.userData.update(keys, (value) => modified[value]);
@@ -1027,8 +999,9 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
   Widget _getTextFormField({required controller, hintText = ""}) =>
       TextFormField(
         controller: controller,
-        validator:
-            (SettingsData.profileType == "密碼") ? Validator.validatePassword : null,
+        validator: (SettingsData.profileType == "密碼")
+            ? Validator.validatePassword
+            : null,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           isDense: true,
@@ -1052,7 +1025,9 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
                   },
                 )
               : null,
-          labelText: (SettingsData.profileType == "密碼") ? hintText : SettingsData.profileType,
+          labelText: (SettingsData.profileType == "密碼")
+              ? hintText
+              : SettingsData.profileType,
           hintText: hintText,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
@@ -1082,7 +1057,8 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
         cursorColor: const Color(0xfff6cdb7),
         style: const TextStyle(fontSize: 18, color: ColorSet.textColor),
         keyboardType: TextInputType.text,
-        obscureText: (SettingsData.profileType == "密碼") ? !isPasswordVisible : false,
+        obscureText:
+            (SettingsData.profileType == "密碼") ? !isPasswordVisible : false,
       );
 
   @override
@@ -1123,10 +1099,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
               : SizedBox(
                   height: MediaQuery.of(context).size.width * 0.1,
                   width: double.maxFinite,
-                  child: (SettingsData.profileType == "照片")
-                      ? _getTextFormField(
-                          controller: controller, hintText: "照片URL")
-                      : _getTextFormField(controller: controller),
+                  child: _getTextFormField(controller: controller),
                 ),
         ],
       ),
@@ -1159,8 +1132,6 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
                 });
               } else if (SettingsData.profileType == "暱稱") {
                 await Data.user!.updateDisplayName(controller.text);
-              } else if (SettingsData.profileType == "照片") {
-                await Data.user!.updatePhotoURL(controller.text);
               }
 
               if (!mounted) return;

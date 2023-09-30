@@ -9,6 +9,9 @@ import 'package:g12/screens/page_material.dart';
 
 import 'package:g12/services/authentication.dart';
 
+import '../services/page_data.dart';
+import '../services/plan_algo.dart';
+
 OutlineInputBorder enabledBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(20),
   borderSide: const BorderSide(
@@ -243,50 +246,18 @@ class LoginFormState extends State<LoginForm> {
                                     debugPrint("$email : $password");
 
                                     String errMsg = "";
+                                    User? user;
 
                                     if (loginFormKey.currentState!.validate()) {
                                       try {
-                                        User? user = await FireAuth.signIn(
+                                        user = await FireAuth.signIn(
                                           email: email,
                                           password: password,
                                         );
-
-                                        if (user != null) {
-                                          if (!mounted) return;
-                                          Navigator.pushNamedAndRemoveUntil(
-                                              context,
-                                              '/',
-                                              (Route<dynamic> route) => false);
-                                        }
                                       } catch (e) {
                                         errMsg = "$e";
                                       }
                                     }
-                                    /*errMsg +=
-                                        Validator.validateEmail(email) ?? "";
-                                    errMsg +=
-                                        Validator.validatePassword(password) ??
-                                            "";
-
-                                    if (errMsg.isEmpty) {
-                                      try {
-                                        User? user = await FireAuth.signIn(
-                                          email: email,
-                                          password: password,
-                                        );
-
-                                        if (user != null) {
-                                          await PlanAlgo.execute();
-                                          if (!mounted) return;
-                                          Navigator.pushNamedAndRemoveUntil(
-                                              context,
-                                              '/',
-                                              (Route<dynamic> route) => false);
-                                        }
-                                      } catch (e) {
-                                        errMsg = "$e";
-                                      }
-                                    }*/
 
                                     if (errMsg.isNotEmpty) {
                                       if (!mounted) return;
@@ -308,6 +279,16 @@ class LoginFormState extends State<LoginForm> {
                                         animationCurve: Curves.bounceIn,
                                         //displaySideBar: false,
                                       ).show(context);
+                                    } else {
+                                      if (user != null) {
+                                        await Data.init();
+                                        await PlanAlgo.execute();
+                                        if (!mounted) return;
+                                        Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            '/',
+                                                (Route<dynamic> route) => false);
+                                      }
                                     }
 
                                     setState(() {

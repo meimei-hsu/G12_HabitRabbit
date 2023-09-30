@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -20,8 +21,8 @@ class AppEntryPoint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        String initialRoute = "";
-    if (Data.user == null) {
+    String initialRoute = "";
+    if (FirebaseAuth.instance.currentUser == null) {
       initialRoute = "/register";
     } else {
       initialRoute = "/";
@@ -57,8 +58,8 @@ class BottomNavigationControllerState
   // TODO: 確認 arguments 會不會有問題
   // 先初始一個 list 才不會出現 RangeError (index): Invalid value: Valid value range is empty: 2
   List<Widget> pages = [
-    const StatisticPage(arguments: {}),
-    const GamificationPage(arguments: {}),
+    const StatisticPage(),
+    const GamificationPage(),
     const Homepage(),
     const CommunityPage(arguments: {}),
     const SettingsPage(),
@@ -131,6 +132,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // configure firebase: https://stackoverflow.com/questions/70320263/the-term-flutterfire-is-not-recognized-as-the-name-of-a-cmdlet-function-scri
   await Firebase.initializeApp();
-  await Data.init();
+  if (FirebaseAuth.instance.currentUser != null) await Data.init();
   initializeDateFormatting().then((_) => runApp(const AppEntryPoint()));
 }

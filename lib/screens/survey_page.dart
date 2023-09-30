@@ -8,21 +8,9 @@ import 'dart:async';
 
 import 'package:g12/services/database.dart';
 
+import '../services/page_data.dart';
+import '../services/plan_algo.dart';
 import 'page_material.dart';
-
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: "Quiz",
-        theme: ThemeData(primarySwatch: Colors.deepOrange),
-        home: const TitlePage(arguments: {"part": 0}),
-      );
-}
 
 //////////////////////////////  Data Type  /////////////////////////////////////
 
@@ -1378,6 +1366,8 @@ class ResultPageState extends State<ResultPage> {
                   onPressed: () async {
                     await UserDB.insert(userInfo);
                     await GamificationDB.insert(userInfo);
+                    await Data.init();
+                    await PlanAlgo.execute();
                     if (!mounted) return;
                     Navigator.pushNamedAndRemoveUntil(
                         context, '/', (Route<dynamic> route) => false);
