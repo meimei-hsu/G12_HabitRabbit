@@ -143,11 +143,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.edit_calendar_outlined,
                                 color: ColorSet.iconColor),
                             SizedBox(
@@ -161,11 +161,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.cached, color: ColorSet.iconColor),
                             SizedBox(
                               width: 10,
@@ -178,11 +178,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.delete_outline,
                                 color: Colors.deepOrangeAccent),
                             SizedBox(
@@ -495,11 +495,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.edit_calendar_outlined,
                                 color: ColorSet.iconColor),
                             SizedBox(
@@ -513,11 +513,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.cached, color: ColorSet.iconColor),
                             SizedBox(
                               width: 10,
@@ -530,11 +530,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           ],
                         ),
                       ),
-                      const PopupMenuItem(
+                      PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.delete_outline,
                                 color: Colors.deepOrangeAccent),
                             SizedBox(
@@ -1010,7 +1010,9 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
             color: ColorSet.borderColor,
           ),
           backgroundColor: (changedDayWeekday == weekdayNameList[i])
-              ? (type == 0) ? ColorSet.exerciseColor : ColorSet.meditationColor
+              ? (type == 0)
+                  ? ColorSet.exerciseColor
+                  : ColorSet.meditationColor
               : ColorSet.backgroundColor,
         ),
         onPressed: () {
@@ -1117,7 +1119,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
                 controller: _controller,
                 thumbVisibility: true,
                 child: ListView(
-                  controller: _controller,
+                    controller: _controller,
                     scrollDirection: Axis.horizontal,
                     children: _getAllowedDayList()),
               )),

@@ -24,44 +24,6 @@ class GamificationPageState extends State<GamificationPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: ColorSet.backgroundColor,
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0, top: 16.0),
-                  child: Text(
-                    '${Data.user?.displayName!} 的角色',
-                    style: const TextStyle(
-                      fontFamily: 'WorkSans',
-                      color: ColorSet.textColor,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.1,
-                    ),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 32.0, right: 32.0, top: 20.0),
-                  child: Text(
-                    '請養成規律的運動與冥想習慣蒐集寶物讓我長大吧！',
-                    style: TextStyle(
-                      fontFamily: 'WorkSans',
-                      color: ColorSet.textColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.normal,
-                      letterSpacing: 1.1,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Expanded(
-                  child: CharacterWidget(),
-                ),
-              ],
-            ),
         appBar: AppBar(
           elevation: 0,
           title: Text(
@@ -77,10 +39,10 @@ class GamificationPageState extends State<GamificationPage> {
           backgroundColor: ColorSet.backgroundColor,
           automaticallyImplyLeading: false,
         ),
-        body: const SafeArea(
+        body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Padding(
                 padding:
                     EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 20),
@@ -115,8 +77,8 @@ class CharacterWidget extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     return Stack(
       children: [
-        Align(
-          alignment: Alignment.bottomCenter,
+        Container(
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           child: ClipPath(
             clipper: CharacterCardBackgroundClipper(),
             child: Container(
@@ -128,15 +90,14 @@ class CharacterWidget extends StatelessWidget {
             ),
           ),
         ),
-        Align(
-          alignment: Alignment.topCenter,
-          child: Image.asset(
+        Column(children: [
+          Image.asset(
             Data.characterImageURL,
             height: screenHeight * 0.35,
             width: screenWidth * 0.6,
           ),
           Container(
-            padding: EdgeInsets.only(left: 40),
+            padding: const EdgeInsets.only(left: 40),
             child: Row(
               children: [
                 SizedBox(
@@ -198,97 +159,11 @@ class CharacterWidget extends StatelessWidget {
               ],
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 450, left: 30),
-          child: Column(
-            children: [
-              const Text(
-                '本周運動達成率：',
-                style: TextStyle(
-                  fontFamily: 'WorkSans',
-                  color: ColorSet.textColor,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 5),
-              // FIXME: 完成率顯示不出來，要先setState?
-              LinearPercentIndicator(
-                width: MediaQuery.of(context).size.width * 0.85,
-                animation: true,
-                lineHeight: 15.0,
-                percent: GameData.workoutPercent / 100,
-                center: Text(
-                  "${GameData.workoutPercent.round()}%",
-                  style: const TextStyle(
-                    color: ColorSet.backgroundColor,
-                    fontSize: 10,
-                  ),
-                ),
-                barRadius: const Radius.circular(16),
-                backgroundColor: ColorSet.backgroundColor,
-                progressColor: ColorSet.textColor,
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                '本周冥想達成率：',
-                style: TextStyle(
-                  fontFamily: 'WorkSans',
-                  color: ColorSet.textColor,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 5),
-              LinearPercentIndicator(
-                width: MediaQuery.of(context).size.width * 0.85,
-                animation: true,
-                lineHeight: 15.0,
-                percent: GameData.meditationPercent / 100,
-                center: Text(
-                  "${GameData.meditationPercent.round()}%",
-                  style: const TextStyle(
-                    color: ColorSet.backgroundColor,
-                    fontSize: 10,
-                  ),
-                ),
-                barRadius: const Radius.circular(16),
-                backgroundColor: ColorSet.backgroundColor,
-                progressColor: ColorSet.textColor,
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                '全部完成率：',
-                style: TextStyle(
-                  fontFamily: 'WorkSans',
-                  color: ColorSet.textColor,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 5),
-              LinearPercentIndicator(
-                width: MediaQuery.of(context).size.width * 0.85,
-                animation: true,
-                lineHeight: 15.0,
-                percent: GameData.totalPercent / 100,
-                center: Text(
-                  "${GameData.totalPercent.round()}%",
-                  style: const TextStyle(
-                    color: ColorSet.backgroundColor,
-                    fontSize: 10,
-                  ),
-                ),
-                barRadius: const Radius.circular(16),
-                backgroundColor: ColorSet.backgroundColor,
-                progressColor: ColorSet.textColor,
-              ),
-            ],
-          ),
-        ),
           const SizedBox(
             height: 10,
           ),
           Container(
-            padding: const EdgeInsets.only(left: 30,right:20),
+            padding: const EdgeInsets.only(left: 30, right: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -375,7 +250,7 @@ class CharacterWidget extends StatelessWidget {
               ],
             ),
           ),
-        ],),
+        ])
       ],
     );
   }
