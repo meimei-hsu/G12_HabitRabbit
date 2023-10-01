@@ -1020,7 +1020,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(right: 10, left: 10),
                 backgroundColor: ColorSet.backgroundColor,
-                shadowColor: Colors.transparent,
+                shadowColor: ColorSet.borderColor,
                 //elevation: 0,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(

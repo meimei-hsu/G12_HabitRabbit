@@ -31,6 +31,8 @@ class VideoPageState extends State<VideoPage> {
                     alignment: Alignment.topLeft,
                     child: IconButton(
                         icon: const Icon(Icons.close),
+                        color: ColorSet.iconColor,
+                        tooltip: "關閉",
                         onPressed: () => Navigator.of(context).pop())),
               ],
             ),

@@ -1070,6 +1070,7 @@ class StatisticPageState extends State<StatisticPage> {
                   Icons.close_rounded,
                   color: ColorSet.textColor,
                 ),
+                tooltip: "關閉",
                 onPressed: () {
                   weightController.clear();
                   setState(() {
@@ -1261,7 +1262,7 @@ class StatisticPageState extends State<StatisticPage> {
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(right: 10, left: 10),
                 backgroundColor: ColorSet.backgroundColor,
-                shadowColor: Colors.transparent,
+                shadowColor: ColorSet.borderColor,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),

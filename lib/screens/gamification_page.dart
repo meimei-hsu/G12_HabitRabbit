@@ -107,10 +107,11 @@ class CharacterWidget extends StatelessWidget {
                 width: 40,
                 height: 40,
                 child: FloatingActionButton(
+                  backgroundColor: ColorSet.backgroundColor,
+                  tooltip: "寶物蒐集概況",
                   onPressed: () {
                     _showQuizDialog(context);
                   },
-                  backgroundColor: ColorSet.backgroundColor,
                   child: const Icon(Icons.list_alt, color: ColorSet.iconColor),
                 ),
               ),
@@ -119,10 +120,11 @@ class CharacterWidget extends StatelessWidget {
                 width: 40,
                 height: 40,
                 child: FloatingActionButton(
+                  backgroundColor: ColorSet.backgroundColor,
+                  tooltip: "角色進化圖",
                   onPressed: () {
                     _showGrowDialog(context);
                   },
-                  backgroundColor: ColorSet.backgroundColor,
                   child: const Icon(Icons.style, color: ColorSet.iconColor),
                 ),
               ),
@@ -131,6 +133,8 @@ class CharacterWidget extends StatelessWidget {
                 width: 40,
                 height: 40,
                 child: FloatingActionButton(
+                  backgroundColor: ColorSet.backgroundColor,
+                  tooltip: "承諾合約",
                   onPressed: () {
                     if (Data.contract != null) {
                       Navigator.pushNamed(context, '/contract/already');
@@ -138,7 +142,6 @@ class CharacterWidget extends StatelessWidget {
                       Navigator.pushNamed(context, '/contract/initial');
                     }
                   },
-                  backgroundColor: ColorSet.backgroundColor,
                   child: const Icon(Icons.request_quote_outlined,
                       color: ColorSet.iconColor),
                 ),
@@ -148,10 +151,11 @@ class CharacterWidget extends StatelessWidget {
                 width: 40,
                 height: 40,
                 child: FloatingActionButton(
+                  backgroundColor: ColorSet.backgroundColor,
+                  tooltip: "資訊",
                   onPressed: () {
 
                   },
-                  backgroundColor: ColorSet.backgroundColor,
                   child: const Icon(Icons.info_outline,
                       color: ColorSet.iconColor),
                 ),
@@ -255,6 +259,7 @@ class CharacterWidget extends StatelessWidget {
         borderRadius: BorderRadius.only(
             topRight: Radius.circular(20), topLeft: Radius.circular(20)),
       ),
+      backgroundColor: ColorSet.bottomBarColor,
       builder: (BuildContext context) {
         return const Padding(
             padding: EdgeInsets.all(8.0), child: GrowDialog(arguments: null));
@@ -271,6 +276,7 @@ void _showQuizDialog(BuildContext context) {
       borderRadius: BorderRadius.only(
           topRight: Radius.circular(20), topLeft: Radius.circular(20)),
     ),
+    backgroundColor: ColorSet.bottomBarColor,
     builder: (BuildContext context) {
       return const Padding(
         padding: EdgeInsets.all(8.0),
@@ -363,6 +369,7 @@ class QuizDialogState extends State<QuizDialog> {
                   Container(
                     height: 170,
                     width: 0.85 * screenWidth,
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       border: Border.all(color: ColorSet.textColor, width: 1),
@@ -394,6 +401,7 @@ class QuizDialogState extends State<QuizDialog> {
                   Container(
                     height: 170,
                     width: 0.85 * screenWidth,
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       border: Border.all(color: ColorSet.textColor, width: 1),

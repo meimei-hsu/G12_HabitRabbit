@@ -80,9 +80,9 @@ class BottomNavigationControllerState
           padding: EdgeInsets.zero,
           height: 80,
           backgroundColor: ColorSet.bottomBarColor,
-          snakeViewColor: const Color(0xFFFDFDFD),
-          selectedItemColor: const Color(0xFF2F4F4F),
-          unselectedItemColor: const Color(0xFF2F4F4F),
+          snakeViewColor: ColorSet.backgroundColor,
+          selectedItemColor: ColorSet.iconColor,
+          unselectedItemColor: ColorSet.iconColor,
           showUnselectedLabels: false,
           showSelectedLabels: false,
           currentIndex: _currentIndex,
@@ -115,31 +115,36 @@ class BottomNavigationControllerState
                   Icons.bar_chart_outlined,
                   size: 40,
                 ),
-                label: 'tickets'),
+                label: '統計資料',
+                tooltip: "統計資料"),
             BottomNavigationBarItem(
                 icon: Icon(
                   Icons.workspace_premium_outlined,
                   size: 40,
                 ),
-                label: 'calendar'),
+                label: '角色成長',
+                tooltip: "角色成長"),
             BottomNavigationBarItem(
                 icon: Icon(
                   Icons.home_outlined,
                   size: 40,
                 ),
-                label: 'home'),
+                label: '首頁',
+                tooltip: "首頁"),
             BottomNavigationBarItem(
                 icon: Icon(
                   Icons.groups,
                   size: 40,
                 ),
-                label: 'microphone'),
+                label: '朋友社群',
+                tooltip: "朋友社群"),
             BottomNavigationBarItem(
                 icon: Icon(
                   Icons.settings_outlined,
                   size: 40,
                 ),
-                label: 'search')
+                label: '個人設定',
+                tooltip: "個人設定")
           ],
         ));
   }

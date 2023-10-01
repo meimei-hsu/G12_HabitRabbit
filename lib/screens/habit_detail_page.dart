@@ -113,6 +113,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_rounded,
                 color: ColorSet.iconColor),
+            tooltip: "返回首頁",
             onPressed: () => Navigator.of(context).pop(),
           ),
           elevation: 0,
@@ -467,6 +468,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_rounded,
                 color: ColorSet.iconColor),
+            tooltip: "返回首頁",
             onPressed: () => Navigator.of(context).pop(),
           ),
           elevation: 0,
@@ -727,6 +729,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                                   ? ColorSet.meditationColor
                                   : ColorSet.chartLineColor,
                               shadowColor: ColorSet.backgroundColor,
+                              elevation: 0,
                               minimumSize: const Size(0, 45),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
@@ -1089,11 +1092,11 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
             ),
             trailing: Container(
               padding: const EdgeInsets.only(right: 20, left: 20),
-              decoration: BoxDecoration(
+              /*decoration: BoxDecoration(
                 border: Border.all(color: ColorSet.borderColor, width: 2),
                 color: Colors.transparent,
                 shape: BoxShape.circle,
-              ),
+              ),*/
               child: IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
@@ -1101,6 +1104,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
                   Icons.close_rounded,
                   color: ColorSet.iconColor,
                 ),
+                tooltip: "關閉",
                 onPressed: () {
                   Navigator.pop(context);
                 },

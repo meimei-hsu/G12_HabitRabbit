@@ -93,33 +93,33 @@ class HomepageState extends State<Homepage> {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
       dialogText =
-          (HomeData.isBefore) ? "${HomeData.time}沒有運動計畫\n沒有冥想計畫" : "${HomeData.time}沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
+          (HomeData.isBefore) ? "沒有運動計畫\n沒有冥想計畫" : "沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
     } else if (HomeData.workoutPlan != null &&
         HomeData.meditationPlan == null) {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
       dialogText = (HomeData.isBefore)
-          ? "${HomeData.time}運動計畫完成了 ${HomeData.workoutProgress} %\n沒有冥想計畫"
+          ? "運動計畫完成了 ${HomeData.workoutProgress} %\n沒有冥想計畫"
           : (HomeData.isToday)
-              ? "${HomeData.time}運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
-              : "${HomeData.time}有運動計畫\n記得要來完成噢~\n點我新增冥想計畫！";
+              ? "運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
+              : "有運動計畫\n記得要來完成噢~\n點我新增冥想計畫！";
     } else if (HomeData.workoutPlan == null &&
         HomeData.meditationPlan != null) {
       // 運動沒有、冥想有 --> 冥想完成度、新增運動
       // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
       dialogText = (HomeData.isBefore)
-          ? "${HomeData.time}冥想計畫完成了 ${HomeData.meditationProgress} %\n沒有運動計畫"
+          ? "冥想計畫完成了 ${HomeData.meditationProgress} %\n沒有運動計畫"
           : (HomeData.isToday)
-              ? "${HomeData.time}冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有運動計畫，點我新增！"
-              : "${HomeData.time}有冥想計畫\n記得要來完成噢~\n點我新增運動計畫！";
+              ? "冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有運動計畫，點我新增！"
+              : "有冥想計畫\n記得要來完成噢~\n點我新增運動計畫！";
     } else {
       // 運動有、冥想有 --> 運動完成度、冥想完成度
       // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
       dialogText = (HomeData.isBefore)
-          ? "${HomeData.time}運動計畫完成了 ${HomeData.workoutProgress} %\n冥想計畫完成了 ${HomeData.meditationProgress} %"
+          ? "運動計畫完成了 ${HomeData.workoutProgress} %\n冥想計畫完成了 ${HomeData.meditationProgress} %"
           : (HomeData.isToday)
-              ? "${HomeData.time}運動計畫已完成 ${HomeData.workoutProgress} %\n冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n很棒噢~~" : "\n繼續加油加油~~"}"
-              : "${HomeData.time}有運動和冥想計畫\n記得要來完成噢~";
+              ? "運動計畫已完成 ${HomeData.workoutProgress} %\n冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n很棒噢~~" : "\n繼續加油加油~~"}"
+              : "有運動和冥想計畫\n記得要來完成噢~";
     }
     return dialogText;
   }
@@ -627,6 +627,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                   Icons.close_rounded,
                   color: ColorSet.iconColor,
                 ),
+                tooltip: "關閉",
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -700,7 +701,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                     // FIXME: 需要區分exercise和meditation顏色嗎
                     ? ColorSet.backgroundColor
                     : ColorSet.backgroundColor,
-                shadowColor: Colors.transparent,
+                shadowColor: ColorSet.borderColor,
                 //elevation: 0,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
