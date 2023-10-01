@@ -33,7 +33,6 @@ class Data {
     if (Data.user != null) {
       await fetchProfile();
       await fetchHabits();
-      await PlanAlgo.execute();
       await fetchPlansAndDurations();
       await fetchGame();
       await fetchCharacter();
@@ -44,6 +43,7 @@ class Data {
       await StatData.fetch(isInit: true);
       await GameData.fetch();
       await SettingsData.fetch();
+      await PlanAlgo.execute();
     }
   }
 
@@ -128,7 +128,6 @@ class PlanData {
   static int sumAbilities = 0, repetition = 0;
   // database records:
   static List<Map<String, dynamic>>? planVariables;
-  static Map habitLists = {};
 
   static Future<void> fetch(
       {required String habit, bool thisWeek = true}) async {
@@ -180,21 +179,19 @@ class HomeData {
   static bool isFetchingData = true;
 
   // Plan 相關資料
-  static String? workoutPlan;
   static Map workoutPlanList = {};
-  static int? workoutProgress;
   static Map workoutProgressList = {};
+  static String? workoutPlan;
+  static int? workoutProgress;
   static int currentIndex = 0;
-  static bool noWorkoutThisWeek = false;
-  static bool noWorkoutNextWeek = false;
+  static int workoutDuration = 0;
 
   //Meditation Plan 相關資料
-  static String? meditationPlan;
   static Map meditationPlanList = {};
-  static int? meditationProgress;
   static Map meditationProgressList = {};
-  static bool noMeditationThisWeek = false;
-  static bool noMeditationNextWeek = false;
+  static String? meditationPlan;
+  static int? meditationProgress;
+  static int meditationDuration = 0;
 
   // Calendar 相關設定
   static DateTime today = DateTime.now();
@@ -209,24 +206,26 @@ class HomeData {
   static bool isToday = true;
 
   static Future<void> fetch() async {
+    isFetchingData = true;
+
     if (Data.updated) {
       await Data.fetchPlansAndDurations();
       await Data.fetchProfile();
       Data.updated = false;
     }
 
+    List twoWeeks = Calendar.bothWeeks();
     for (String habit in ["workout", "meditation"]) {
-      for (List week in [Calendar.thisWeek(), Calendar.nextWeek()]) {
-        setPlanList(habit: habit, week: week);
-        setProgressList(habit: habit, week: week);
-      }
+      setPlanList(habit: habit, twoWeeks: twoWeeks);
+      setProgressList(habit: habit, twoWeeks: twoWeeks);
     }
     setSelectedDay();
+    isFetchingData = false;
   }
 
-  static void setPlanList({required String habit, required List week}) {
+  static void setPlanList({required String habit, required List twoWeeks}) {
     Map plans = {
-      for (String date in week) date: Data.plans?[habit]?[date]?.split(", ")
+      for (String date in twoWeeks) date: Data.plans?[habit]?[date]?.split(", ")
     };
     plans.removeWhere((key, value) => value == null);
 
@@ -234,30 +233,16 @@ class HomeData {
       plans = plans.map((date, plan) => MapEntry(
           date, plan.map((value) => Data.habits?[habit]?[value]).join(", ")));
       if (habit == "workout") {
-        workoutPlanList.addAll(plans);
+        workoutPlanList = plans;
       } else {
-        meditationPlanList.addAll(plans);
-      }
-    } else {
-      if (week.contains(Calendar.today)) {
-        if (habit == "workout") {
-          noWorkoutThisWeek = true;
-        } else {
-          noMeditationThisWeek = true;
-        }
-      } else {
-        if (habit == "workout") {
-          noWorkoutNextWeek = true;
-        } else {
-          noMeditationNextWeek = true;
-        }
+        meditationPlanList = plans;
       }
     }
   }
 
-  static void setProgressList({required String habit, required List week}) {
+  static void setProgressList({required String habit, required List twoWeeks}) {
     Map durations = {
-      for (String date in week) date: Data.durations?[habit]?[date]
+      for (String date in twoWeeks) date: Data.durations?[habit]?[date]
     };
     durations.removeWhere((key, value) => value == null);
 
@@ -265,30 +250,33 @@ class HomeData {
       durations
           .updateAll((key, value) => Calculator.calcProgress(value).round());
       if (habit == "workout") {
-        workoutProgressList.addAll(durations);
+        workoutProgressList = durations;
       } else {
-        meditationProgressList.addAll(durations);
+        meditationProgressList = durations;
       }
     }
   }
 
   static void setSelectedDay() {
-    currentIndex = Data.durations?["workout"]?[today] ?? 0;
-    workoutPlan = workoutPlanList[Calendar.dateToString(selectedDay!)];
-    workoutProgress = workoutProgressList[Calendar.dateToString(selectedDay!)];
-    meditationPlan = meditationPlanList[Calendar.dateToString(selectedDay!)];
-    meditationProgress =
-        meditationProgressList[Calendar.dateToString(selectedDay!)];
-    isBefore = DateTime(selectedDay!.year, selectedDay!.month, selectedDay!.day)
-        .isBefore(focusedDay);
-    isAfter = DateTime(selectedDay!.year, selectedDay!.month, selectedDay!.day)
-        .isAfter(focusedDay);
-    isToday =
-        (DateTime(selectedDay!.year, selectedDay!.month, selectedDay!.day) ==
-            focusedDay);
-    time = (isToday) ? "今天" : " ${selectedDay!.month} / ${selectedDay!.day} ";
+    // set variables for today
+    String tdDate = Calendar.today;
+    var tdDur =
+        Data.durations?["workout"]?[tdDate]?.split(", ")?.map(int.parse);
+    currentIndex = tdDur?.first ?? 0;
+    workoutDuration = tdDur?.last ?? 0;
+    tdDur = Data.durations?["meditation"]?[tdDate]?.split(", ")?.map(int.parse);
+    meditationDuration = tdDur?.last ?? 0;
 
-    isFetchingData = false;
+    // set variables for selectedDay
+    String selectedDate = Calendar.dateToString(selectedDay!);
+    workoutPlan = workoutPlanList[selectedDate];
+    workoutProgress = workoutProgressList[selectedDate];
+    meditationPlan = meditationPlanList[selectedDate];
+    meditationProgress = meditationProgressList[selectedDate];
+    isBefore = selectedDay!.isBefore(focusedDay);
+    isAfter = selectedDay!.isAfter(focusedDay);
+    isToday = selectedDate == Calendar.dateToString(focusedDay);
+    time = (isToday) ? "今天" : " ${selectedDay!.month} / ${selectedDay!.day} ";
   }
 }
 
@@ -544,8 +532,7 @@ class StatData {
             (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
         if (completionStatus == 2) {
-          var type = PlanDB.toPlanType("workout", exercisePlan[exerciseDate]) ??
-              "unknown";
+          var type = PlanDB.toPlanType("workout", exerciseDate) ?? "unknown";
           if (exerciseTypeCountMap.containsKey(type)) {
             exerciseTypeCountMap[type] = exerciseTypeCountMap[type]! + 1;
 
@@ -572,8 +559,7 @@ class StatData {
 
         if (completionStatus == 2) {
           var type =
-              PlanDB.toPlanType("meditation", meditationPlan[meditationDate]) ??
-                  "unknown";
+              PlanDB.toPlanType("meditation", meditationDate) ?? "unknown";
           if (meditationTypeCountMap.containsKey(type)) {
             meditationTypeCountMap[type] = meditationTypeCountMap[type]! + 1;
 

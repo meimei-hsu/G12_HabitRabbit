@@ -9,13 +9,32 @@ class PlanAlgo {
   // Start point of the planning algorithm
   // Execute when user login or after giving feedback.
   static execute() async {
+    // Check if user has no plan within two weeks
+    Map<String, bool> check = {
+      "noWorkoutThisWeek": false,
+      "noWorkoutNextWeek": false,
+      "noMeditationThisWeek": false,
+      "noMeditationNextWeek": false,
+    };
+    List twoWeeks = Calendar.bothWeeks();
+    for (String habit in Data.habitTypes) {
+      Map plans = {
+        for (String date in twoWeeks) date: Data.plans?[habit]?[date]
+      };
+      plans.removeWhere((key, value) => value == null);
+
+      List b = plans.keys.map((date) => twoWeeks.indexOf(date) ~/ 7).toList();
+      if (!b.contains(0)) check["no${habit}ThisWeek"] = true;
+      if (!b.contains(1)) check["no${habit}NextWeek"] = true;
+    }
+
     // Check condition before generating new plans.
     bool? thisWeek;
-    if (HomeData.noWorkoutNextWeek) {
+    if (check["noWorkoutNextWeek"]!) {
       thisWeek = false;
       print("Generate next week's workout plan.");
     }
-    if (HomeData.noWorkoutThisWeek) {
+    if (check["noWorkoutThisWeek"]!) {
       thisWeek = true;
       print("Generate this week's workout plan.");
     }
@@ -38,11 +57,11 @@ class PlanAlgo {
 
     // Check condition before generating new plans
     thisWeek = null;
-    if (HomeData.noMeditationNextWeek) {
+    if (check["noMeditationNextWeek"]!) {
       thisWeek = false;
       print("Generate next week's meditation plan.");
     }
-    if (HomeData.noMeditationThisWeek) {
+    if (check["noMeditationThisWeek"]!) {
       thisWeek = true;
       print("Generate this week's meditation plan.");
     }
@@ -62,13 +81,19 @@ class PlanAlgo {
     } else {
       print("Not the time to generate a meditation plan.");
     }
+
+    // Reset GamificationDB's workoutFragment/meditationFragment to zero since a new week has come
+    if (check.containsValue(true)) await GamificationDB.resetFragment();
   }
 
   // Regenerate the plan for a day in the current week
   static regenerateWorkout(DateTime dateTime) async {
+    await PlanData.fetch(
+        habit: "workout", thisWeek: Calendar.isThisWeek(dateTime));
+
     var date = Calendar.dateToString(dateTime);
     var plan = HomeData.workoutPlanList[date];
-    var workoutType = PlanDB.toPlanType("workout", plan);
+    var workoutType = PlanDB.toPlanType("workout", date);
     var timeSpan = plan.split(", ").length;
     if (workoutType != null) {
       plan = await WorkoutAlgorithm.arrangeWorkout(workoutType, timeSpan);
@@ -77,8 +102,11 @@ class PlanAlgo {
   }
 
   static regenerateMeditation(DateTime dateTime) async {
+    await PlanData.fetch(
+        habit: "meditation", thisWeek: Calendar.isThisWeek(dateTime));
+
     var date = Calendar.dateToString(dateTime);
-    var meditationType = PlanDB.toPlanType("meditation", HomeData.meditationPlanList[date]);
+    var meditationType = PlanDB.toPlanType("meditation", date);
     if (meditationType != null) {
       var plan = await MeditationAlgorithm.arrangeMeditation(meditationType);
       await PlanDB.update("meditation", {date: plan});
@@ -86,18 +114,26 @@ class PlanAlgo {
   }
 
   static generateWorkout(DateTime dateTime, int timeSpan) async {
+    await PlanData.fetch(
+        habit: "workout", thisWeek: Calendar.isThisWeek(dateTime));
+
     var date = Calendar.dateToString(dateTime);
     List workoutType = ["strength", "cardio", "yoga"];
     int idx = Random().nextInt(3);
     var plan =
         await WorkoutAlgorithm.arrangeWorkout(workoutType[idx], timeSpan);
+
     await PlanDB.update("workout", {date: plan});
   }
 
   static generateMeditation(DateTime dateTime, int meditationType) async {
+    await PlanData.fetch(
+        habit: "meditation", thisWeek: Calendar.isThisWeek(dateTime));
+
     var date = Calendar.dateToString(dateTime);
     String type = ["mindfulness", "work", "kindness"][meditationType - 1];
     var meditationPlan = await MeditationAlgorithm.arrangeMeditation(type);
+
     await PlanDB.update("meditation", {date: meditationPlan});
   }
 
@@ -110,7 +146,7 @@ class PlanAlgo {
 
     if (data != null) {
       List dates = data.keys.toList();
-      int today = dates.indexOf(Calendar.dateToString(DateTime.now()));
+      int today = dates.indexOf(Calendar.today);
       Map planList = HomeData.workoutPlanList;
 
       int lessThanHalf = 0; // count the consecutive days when completion < 50%
@@ -125,12 +161,13 @@ class PlanAlgo {
           if (zero == 3) {
             // adjust the difficulty of next day and the day after
             for (i = 1; i <= 2; i++) {
-              String? type = PlanDB.toPlanType("workout", planList[today]);
+              String? type = PlanDB.toPlanType("workout", dates[today]);
               if (type != null) {
                 var plan = (i == 1)
                     ? await WorkoutAlgorithm.getFiveMinWorkout(type)
                     : await WorkoutAlgorithm.getTenMinWorkout(type);
-                await PlanDB.update("workout", {dates[today + i]: plan.join(", ")});
+                await PlanDB.update(
+                    "workout", {dates[today + i]: plan.join(", ")});
               }
             }
             // return 0 to trigger app notification

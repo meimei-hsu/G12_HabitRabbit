@@ -362,11 +362,11 @@ class StatisticPageState extends State<StatisticPage> {
                                         fontWeight: FontWeight.w500),
                                   )
                                 ],
-                                onClick: (value) {
+                                /*onClick: (value) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(value.toString())),
                                   );
-                                },
+                                },*/
                               ),
                             )
                           ]),

@@ -8,7 +8,6 @@ import 'package:g12/screens/page_material.dart';
 
 import 'package:g12/services/database.dart';
 import 'package:g12/services/plan_algo.dart';
-import 'package:g12/services/page_data.dart';
 
 class ExerciseDetailPage extends StatefulWidget {
   final Map arguments;
@@ -229,7 +228,6 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             isFetchingData = true;
                           });
                           Timer(const Duration(seconds: 5), () async {
-                            await HomeData.fetch();
                             setState(() {
                               isFetchingData = false;
                             });
@@ -252,7 +250,6 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                         btnOkOnPress() async {
                           await PlanDB.delete(
                               "workout", Calendar.dateToString(day!));
-                          await HomeData.fetch();
                           if (!mounted) return;
                           Navigator.pushNamed(context, "/");
                         }
@@ -365,7 +362,6 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                 ? () {
                                     int currentIndex =
                                         widget.arguments['currentIndex'];
-                                    debugPrint("Current Index: $currentIndex");
                                     List items = workoutPlan!.split(", ");
                                     for (int i = 0; i < items.length; i++) {
                                       if (i <= 2) {
@@ -580,7 +576,6 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             isFetchingData = true;
                           });
                           Timer(const Duration(seconds: 5), () async {
-                            await HomeData.fetch();
                             setState(() {
                               isFetchingData = false;
                             });
@@ -603,7 +598,6 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                         btnOkOnPress() async {
                           await PlanDB.delete(
                               "meditation", Calendar.dateToString(day!));
-                          await HomeData.fetch();
                           if (!mounted) return;
                           Navigator.pushNamed(context, "/");
                         }
@@ -1128,7 +1122,6 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
                         "workout", originalDate, changedDayDate)
                     : await PlanDB.updateDate(
                         "meditation", originalDate, changedDayDate);
-                await HomeData.fetch();
                 debugPrint(
                     "Change $day's ${(type == 0) ? "workout plan" : "meditation plan"} to $changedDayDate 星期$changedDayWeekday.");
                 if (!mounted) return;

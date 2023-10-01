@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:banner_carousel/banner_carousel.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -124,7 +122,14 @@ class HomepageState extends State<Homepage> {
   }
 
   void refresh() async {
-    if (Data.updated) await HomeData.fetch();
+    if (Data.updated) {
+      await HomeData.fetch();
+      await StatData.fetch();
+      await GameData.fetch();
+      await SettingsData.fetch();
+      // FIXME: 新增計畫，不會顯示在 Statistic 的 HeatMap
+      // TODO: await FriendData.fetch();
+    }
     setState(() {});
   }
 
@@ -134,7 +139,7 @@ class HomepageState extends State<Homepage> {
     return SafeArea(
         child: Scaffold(
       backgroundColor: const Color(0xFFFDFDFD),
-      body: (Data.updated)
+      body: (HomeData.isFetchingData)
           ? Center(
               child: Container(
                   padding:
@@ -412,79 +417,6 @@ class HomepageState extends State<Homepage> {
                     ? Expanded(child: getBannerCarousel())
                     : Container(),
                 const SizedBox(height: 5),
-                // TODO: delete after QuestionnairePage & ContractPage testing
-
-                /*Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, "/contract/initial",
-                              arguments: {});
-                        },
-                        icon: const Icon(Icons.workspace_premium_outlined,
-                            size: 40)),
-                    IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, "/questionnaire",
-                              arguments: {"part": 0});
-                        },
-                        icon: const Icon(Icons.quiz_rounded, size: 40)),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                // TODO: delete after ExercisePage's feedback testing
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                              isDismissible: false,
-                              isScrollControlled: true,
-                              enableDrag: false,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(20),
-                                    topLeft: Radius.circular(20)),
-                              ),
-                              backgroundColor: const Color(0xfffdeed9),
-                              context: context,
-                              builder: (context) {
-                                return Wrap(children: const [
-                                  FeedbackBottomSheet(
-                                    arguments: {"type": 0},
-                                  )
-                                ]);
-                              });
-                        },
-                        icon: const Icon(Icons.fitness_center_outlined,
-                            size: 40)),
-                    IconButton(
-                        onPressed: () {
-                          showModalBottomSheet(
-                              isDismissible: false,
-                              isScrollControlled: true,
-                              enableDrag: false,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(20),
-                                    topLeft: Radius.circular(20)),
-                              ),
-                              backgroundColor: const Color(0xfffdeed9),
-                              context: context,
-                              builder: (context) {
-                                return Wrap(children: const [
-                                  FeedbackBottomSheet(
-                                    arguments: {"type": 1},
-                                  )
-                                ]);
-                              });
-                        },
-                        icon: const Icon(Icons.self_improvement_outlined,
-                            size: 40))
-                  ],
-                ),*/
               ],
             ),
     ));
@@ -697,7 +629,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(right: 10, left: 10),
                 backgroundColor: (planToAdd == 0)
-                //FIXME: 需要區分exercise和meditation顏色嗎
+                    //FIXME: 需要區分exercise和meditation顏色嗎
                     ? ColorSet.backgroundColor
                     : ColorSet.backgroundColor,
                 shadowColor: Colors.transparent,
@@ -733,267 +665,5 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
         ],
       ),
     );
-  }
-}
-
-// 運動回饋
-class FeedbackBottomSheet extends StatefulWidget {
-  final Map arguments;
-
-  const FeedbackBottomSheet({super.key, required this.arguments});
-
-  @override
-  FeedbackBottomSheetState createState() => FeedbackBottomSheetState();
-}
-
-class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
-  int type = 0; // 0 = 運動, 1 = 冥想
-
-  double satisfiedScore = 1; // Q1
-  double tiredScore = 1; // Q2
-  bool isAnxious = false; // Q3-1
-  bool haveToSdebugPrint = false; // Q3-2
-  bool isSatisfied = false; // Q3-3
-  List<int> feedbackData = [];
-
-  onSatisfiedScoreUpdate(rating) {
-    setState(() {
-      satisfiedScore = rating;
-    });
-  }
-
-  onTiredScoreUpdate(rating) {
-    setState(() {
-      tiredScore = rating;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    type = widget.arguments["type"];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.only(bottom: 20),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          ListTile(
-            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
-            title: Text(
-              "${(type == 0) ? "運動" : "冥想"}回饋",
-              style: const TextStyle(
-                  color: Color(0xff4b4370),
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          TextLiquidFill(
-            text: 'Well Done!',
-            waveColor: const Color(0xffd4d6fc),
-            boxBackgroundColor: const Color(0xfffdeed9),
-            textStyle: const TextStyle(
-              fontSize: 50.0,
-              fontWeight: FontWeight.bold,
-            ),
-            boxHeight: 80.0,
-          ),
-          const Divider(
-            thickness: 1.5,
-            indent: 20,
-            endIndent: 20,
-          ),
-          Text(
-            "是否滿意今天的${(type == 0) ? "運動" : "冥想"}計劃呢？",
-            style: const TextStyle(
-                color: Color(0xff4b4370),
-                fontSize: 20,
-                fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          RatingScoreBar().getSatisfiedScoreBar(onSatisfiedScoreUpdate),
-          const SizedBox(
-            height: 10,
-          ),
-          const Divider(
-            thickness: 1.5,
-            indent: 20,
-            endIndent: 20,
-          ),
-          Text(
-            (type == 0) ? "今天的運動計劃\n做起來是否會很疲憊呢？" : "今天的冥想計劃\n是否會太長或太短呢？",
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-                color: Color(0xff4b4370),
-                fontSize: 20,
-                fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          RatingScoreBar().getTiredScoreBar(onTiredScoreUpdate, type),
-          (type == 0)
-              ? Container()
-              : const SizedBox(
-                  height: 10,
-                ),
-          (type == 0)
-              ? Container()
-              : const Divider(
-                  thickness: 1.5,
-                  indent: 20,
-                  endIndent: 20,
-                ),
-          (type == 0)
-              ? Container()
-              : const Text(
-                  "最近狀況調查",
-                  style: TextStyle(
-                      color: Color(0xff4b4370),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-          (type == 0)
-              ? Container()
-              : const SizedBox(
-                  height: 10,
-                ),
-          (type == 0)
-              ? Container()
-              : Container(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "最近是否有憂慮、失眠、\n或是壓力大的情況？",
-                            style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 18),
-                          ),
-                          RoundCheckBox(
-                            isChecked: isAnxious,
-                            borderColor: const Color(0xff4b4370),
-                            uncheckedColor: const Color(0xfffdfdf5),
-                            checkedColor: const Color(0xfff6cdb7),
-                            size: 30,
-                            onTap: (selected) {
-                              setState(() {
-                                isAnxious = selected!;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "最近是否有一個短期目標需要衝刺？",
-                            style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 18),
-                          ),
-                          RoundCheckBox(
-                            isChecked: haveToSdebugPrint,
-                            borderColor: const Color(0xff4b4370),
-                            uncheckedColor: const Color(0xfffdfdf5),
-                            checkedColor: const Color(0xfff6cdb7),
-                            size: 30,
-                            onTap: (selected) {
-                              setState(() {
-                                haveToSdebugPrint = selected!;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "最近是否感到情感上的滿足？",
-                            style: TextStyle(
-                                color: Color(0xff4b4370), fontSize: 18),
-                          ),
-                          RoundCheckBox(
-                            isChecked: isSatisfied,
-                            borderColor: const Color(0xff4b4370),
-                            uncheckedColor: const Color(0xfffdfdf5),
-                            checkedColor: const Color(0xfff6cdb7),
-                            size: 30,
-                            onTap: (selected) {
-                              setState(() {
-                                isSatisfied = selected!;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  )),
-          const SizedBox(
-            height: 20,
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 20, right: 18),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.only(right: 10, left: 10),
-                backgroundColor: const Color(0xfff6cdb7),
-                shadowColor: Colors.transparent,
-                elevation: 0,
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () async {
-                if (type == 0) {
-                  feedbackData.add(satisfiedScore.toInt());
-                  feedbackData.add(tiredScore.toInt());
-                  debugPrint("Exercise feedbackData: $feedbackData");
-                  /*Navigator.pushNamedAndRemoveUntil(
-                    context, '/', (Route<dynamic> route) => false);
-                  var type = await PlanDB.getWorkoutType(DateTime.now());
-                  if (type != null) {
-                    UserDB.updateByFeedback(type, feedbackData);
-                  }
-                  await PlanAlgo.execute();*/
-                } else {
-                  feedbackData.add(satisfiedScore.toInt());
-                  feedbackData.add(tiredScore.toInt());
-                  // True = 1, false = 0
-                  feedbackData.add((isAnxious) ? 1 : 0);
-                  feedbackData.add((haveToSdebugPrint) ? 1 : 0);
-                  feedbackData.add((isSatisfied) ? 1 : 0);
-
-                  debugPrint("Meditation feedbackData: $feedbackData");
-                }
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "確定",
-                style: TextStyle(
-                  color: Color(0xff4b4370),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ]));
   }
 }

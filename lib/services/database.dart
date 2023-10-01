@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -349,24 +350,18 @@ class UserDB {
 
   static Future<bool> updateMeditationFeedback(
       String type, List feedback) async {
-    final Map? data = await getUser();
+    String index = "${type}Liking";
+    List keys = ["mindfulnessLiking", "workLiking", "kindnessLiking"];
+    Map updateVal = {for (String key in keys) key: Data.profile![key]!};
 
-    if (data != null) {
-      String index = "${type}Liking";
-      List keys = ["mindfulnessLiking", "workLiking", "kindnessLiking"];
-      Map updateVal =
-          Map.fromIterables(keys, [for (String key in keys) data[key]]);
+    List adjVal = [-5, -2, 0, 2, 5];
+    updateVal[index] += adjVal[feedback[0] - 1];
 
-      List adjVal = [-5, -2, 0, 2, 5];
-      updateVal[index] += adjVal[feedback[0] - 1];
-
-      for (int i = 0; i < 3; i++) {
-        updateVal[keys[i]] += (feedback[i + 1] == 1) ? 10 : 0;
-      }
-
-      return await update(updateVal);
+    for (int i = 0; i < 3; i++) {
+      updateVal[keys[i]] += (feedback[i + 1] == 1) ? 10 : 0;
     }
-    return false;
+
+    return await update(updateVal);
   }
 
   // Delete data from userName
@@ -411,11 +406,11 @@ class ContractDB {
       "$db/$uid/${(data["type"] == "運動") ? "workout" : "meditation"}", data);
 
   static Future<bool> updateGem(String habit) async {
-    Map? table = await getContract();
-    if (table != null) {
-      List gem = table["${habit}Gem"].split(", ").map(int.parse).toList();
+    var data = Data.contract?[habit]?["gem"];
+    if (data != null) {
+      List gem = data.split(", ").map(int.parse).toList();
       return await DB
-          .update("$db/$uid/$habit", {"gem": "${gem[0]++}, ${gem[1]}"});
+          .update("$db/$uid/$habit", {"gem": "${++gem[0]}, ${gem[1]}"});
     }
     return false;
   }
@@ -481,7 +476,14 @@ class GamificationDB {
         userInfo["workoutDays"].map(int.parse).fold(0, (p, c) => c + p);
     int meditationDays =
         userInfo["meditationDays"].map(int.parse).fold(0, (p, c) => c + p);
-    List values = [0, 0, "0, $workoutDays", "0, $meditationDays", character, ""];
+    List values = [
+      0,
+      0,
+      "0, $workoutDays",
+      "0, $meditationDays",
+      character,
+      ""
+    ];
     return await DB.insert("$db/$uid/", Map.fromIterables(columns, values));
   }
 
@@ -504,7 +506,7 @@ class GamificationDB {
 
   // Update fragment or gem whenever user completes a plan
   static Future<bool> updateFragment(String habit) async {
-    Map? table = await getGamification();
+    Map? table = Data.game;
     if (table != null) {
       List fragment =
           table["${habit}Fragment"].split(", ").map(int.parse).toList();
@@ -516,9 +518,23 @@ class GamificationDB {
         return await update(table) && await ContractDB.updateGem(habit);
       } else {
         // 當 fragment 前後兩個數字不同，第一個數字加一
-        return await DB.update("$db/$uid/$habit",
-            {"Fragment": "${fragment[0]++}, ${fragment[1]}"});
+        return await DB.update("$db/$uid/",
+            {"${habit}Fragment": "${++fragment[0]}, ${fragment[1]}"});
       }
+    }
+    return false;
+  }
+
+  static Future<bool> resetFragment() async {
+    Map? table = Data.profile;
+    if (table != null) {
+      int wDays =
+          List<int>.from(table["workoutDays"].split("").map(int.parse)).sum;
+      int mDays =
+          List<int>.from(table["meditationDays"].split("").map(int.parse)).sum;
+
+      return await DB.update("$db/$uid/", {"workoutFragment": "0, $wDays"}) &&
+          await DB.update("$db/$uid/", {"meditationFragment": "0, $mDays"});
     }
     return false;
   }
@@ -654,7 +670,9 @@ class PlanDB {
   static Future<String?> getFromDate(String habit, DateTime date) async =>
       await JournalDB.getFromDate(uid, date, "$habit$table");
 
-  static String? toPlanType(String habit, String? plan) {
+  static String? toPlanType(String habit, [String? planDate]) {
+    planDate = planDate ?? Calendar.today;
+    String? plan = Data.plans?[habit]?[planDate];
     if (habit == "workout") {
       // The third element of the plan is the first workout after the warmup,
       // and its first character's index (which indicates the workout type) is 18.

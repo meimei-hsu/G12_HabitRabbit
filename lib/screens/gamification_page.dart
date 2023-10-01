@@ -57,6 +57,7 @@ class GamificationPageState extends State<GamificationPage> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 10),
                 const Expanded(
                   child: CharacterWidget(),
                 ),
@@ -91,8 +92,8 @@ class CharacterWidget extends StatelessWidget {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 20, left: 120),
+        Align(
+          alignment: Alignment.topCenter,
           child: Image.asset(
             Data.characterImageURL,
             height: screenHeight * 0.4,
@@ -158,6 +159,7 @@ class CharacterWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 5),
+              // FIXME: 完成率顯示不出來，要先setState?
               LinearPercentIndicator(
                 width: MediaQuery.of(context).size.width * 0.85,
                 animation: true,

@@ -126,7 +126,7 @@ class DoExercisePageState extends State<DoExercisePage> {
      */
 
     btnNoOnPress() {
-      DurationDB.update("workout", {Calendar.dateToString(DateTime.now()): currentIndex});
+      DurationDB.update("workout", {Calendar.today: currentIndex});
       canExit = true;
       showModalBottomSheet(
           isDismissible: false,
@@ -139,7 +139,7 @@ class DoExercisePageState extends State<DoExercisePage> {
           backgroundColor: ColorSet.backgroundColor,
           context: context,
           builder: (context) {
-            return  Wrap(children: const [
+            return Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -149,7 +149,7 @@ class DoExercisePageState extends State<DoExercisePage> {
     }
 
     btnYesOnPress() {
-      DurationDB.update("workout", {Calendar.dateToString(DateTime.now()): currentIndex});
+      DurationDB.update("workout", {Calendar.today: currentIndex});
       canExit = true;
       NotificationService().scheduleNotification(
           title: '該開始運動了!',
@@ -185,8 +185,8 @@ class DoExercisePageState extends State<DoExercisePage> {
 
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
-        DurationDB.update("workout",
-            {Calendar.dateToString(DateTime.now()): widget.arguments["exerciseTime"]});
+        DurationDB.update(
+            "workout", {Calendar.today: HomeData.workoutDuration});
         GamificationDB.updateFragment("workout");
         //_showFeedbackDialog();
         showModalBottomSheet(
@@ -200,7 +200,7 @@ class DoExercisePageState extends State<DoExercisePage> {
             backgroundColor: ColorSet.backgroundColor,
             context: context,
             builder: (context) {
-              return  Wrap(children: const [
+              return Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 0},
                 )
@@ -450,10 +450,8 @@ class DoMeditationPageState extends State<DoMeditationPage> {
      */
 
     btnNoOnPress() {
-      DurationDB.update("meditation", {
-        Calendar.dateToString(DateTime.now()):
-            (widget.arguments['meditationTime'] * _progress).round()
-      });
+      DurationDB.update("meditation",
+          {Calendar.today: (HomeData.meditationDuration * _progress).round()});
       canExit = true;
       showModalBottomSheet(
           isDismissible: false,
@@ -466,7 +464,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           backgroundColor: ColorSet.backgroundColor,
           context: context,
           builder: (context) {
-            return  Wrap(children: const [
+            return Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
@@ -511,10 +509,8 @@ class DoMeditationPageState extends State<DoMeditationPage> {
 
     Timer.periodic(period, (timer) {
       if (totalTime < 1) {
-        DurationDB.update("meditation", {
-          Calendar.dateToString(DateTime.now()):
-              (widget.arguments['meditationTime'] * _progress).round()
-        });
+        DurationDB.update(
+            "meditation", {Calendar.today: HomeData.meditationDuration});
         GamificationDB.updateFragment("meditation");
         //_showFeedbackDialog();
         showModalBottomSheet(
@@ -528,7 +524,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
             backgroundColor: ColorSet.backgroundColor,
             context: context,
             builder: (context) {
-              return  Wrap(children: const [
+              return Wrap(children: const [
                 FeedbackBottomSheet(
                   arguments: {"type": 1},
                 )
@@ -770,7 +766,7 @@ class FeedbackDialogState extends State<FeedbackDialog> {
               debugPrint("FeedbackData: $feedbackData");
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false);
-              var type = Data.plans?["workout"]?[Calendar.today];
+              var type = PlanDB.toPlanType("workout");
               if (type != null) {
                 UserDB.updateWorkoutFeedback(type, feedbackData);
               }
@@ -1036,7 +1032,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
 
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (Route<dynamic> route) => false);
-                  var type = Data.plans?["workout"]?[Calendar.today];
+                  var type = PlanDB.toPlanType("workout");
                   if (type != null) {
                     UserDB.updateWorkoutFeedback(type, feedbackData);
                   }
@@ -1052,7 +1048,7 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
 
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (Route<dynamic> route) => false);
-                  var type = Data.plans?["meditation"]?[Calendar.today];
+                  var type = PlanDB.toPlanType("meditation");
                   if (type != null) {
                     UserDB.updateMeditationFeedback(type, feedbackData);
                   }
