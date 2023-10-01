@@ -133,6 +133,8 @@ class HomepageState extends State<Homepage> {
     setState(() {});
   }
 
+  Color selectedColor = ColorSet.buttonColor;
+
   @override
   Widget build(BuildContext context) {
     refresh();
@@ -140,6 +142,8 @@ class HomepageState extends State<Homepage> {
         child: Scaffold(
       backgroundColor: const Color(0xFFFDFDFD),
       body: (HomeData.isFetchingData)
+      backgroundColor: ColorSet.backgroundColor,
+      body: (Data.updated)
           ? Center(
               child: Container(
                   padding:
@@ -171,8 +175,7 @@ class HomepageState extends State<Homepage> {
                   height: 10,
                 ),
                 Container(
-                  //color: const Color(0x193598f5),
-                  color: const Color(0xFFFDFDFD), //日曆背景
+                  color: ColorSet.backgroundColor, //日曆背景
                   child: TableCalendar(
                     firstDay: HomeData.firstDay,
                     lastDay: HomeData.lastDay,
@@ -183,15 +186,11 @@ class HomepageState extends State<Homepage> {
                     daysOfWeekHeight: 24,
                     daysOfWeekStyle: const DaysOfWeekStyle(
                       weekdayStyle: TextStyle(
-                        //color: Color(0xff0d3b66),
-                        //color: Color(0xff4b3d70),
-                        color: Color(0xfff6cdb7),
+                        color: ColorSet.textColor,
                         fontSize: 16,
                       ),
                       weekendStyle: TextStyle(
-                        //color: Color(0xff0d3b66),
-                        //color: Color(0xff4b3d70),
-                        color: Color(0xfff6cdb7),
+                        color: ColorSet.textColor,
                         fontSize: 16,
                       ),
                     ),
@@ -199,29 +198,22 @@ class HomepageState extends State<Homepage> {
                       tablePadding: const EdgeInsets.only(
                           right: 10, left: 10, top: 10, bottom: 10),
                       todayDecoration: BoxDecoration(
-                        //color: const Color(0xffffa493),
-                        color: const Color(0xfff6cdb7), //今天顏色
+                        color: ColorSet.buttonColor, //今天顏色
+                        border: Border.all(color: ColorSet.borderColor),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       todayTextStyle: const TextStyle(
-                        //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        color: ColorSet.textColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       selectedDecoration: BoxDecoration(
-                        //color: const Color(0xfffbb87f),
-                        color: (DateTime(
-                                    HomeData.selectedDay!.year,
-                                    HomeData.selectedDay!.month,
-                                    HomeData.selectedDay!.day) ==
-                                HomeData.focusedDay)
-                            ? const Color(0xfff6cdb7)
-                            : const Color(0xfffdeed9), //點到的天數顏色
+                        color: selectedColor, //點到的天數顏色
+                        border: Border.all(color: ColorSet.borderColor),
                         borderRadius: BorderRadius.circular(10.0),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
+                            color: ColorSet.borderColor.withOpacity(0.5),
                             spreadRadius: 2,
                             blurRadius: 8,
                             offset: const Offset(
@@ -230,41 +222,37 @@ class HomepageState extends State<Homepage> {
                         ],
                       ),
                       selectedTextStyle: const TextStyle(
-                        //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        color: ColorSet.textColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       defaultDecoration: BoxDecoration(
-                        //color: const Color(0xfffaf0ca),
-                        color: const Color(0xfffdeed9),
+                        //color: const Color(0xfffdeed9),
+                        border: Border.all(color: ColorSet.borderColor),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       defaultTextStyle: const TextStyle(
-                        //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        color: ColorSet.textColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       weekendDecoration: BoxDecoration(
-                        //color: const Color(0xfffaf0ca),
-                        color: const Color(0xfffdeed9),
+                        //color: const Color(0xfffdeed9),
+                        border: Border.all(color: ColorSet.borderColor),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       weekendTextStyle: const TextStyle(
-                        //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        color: ColorSet.textColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       outsideDecoration: BoxDecoration(
-                        //color: const Color(0xfffaf0ca),
-                        color: const Color(0xfffdeed9),
+                        //color: const Color(0xfffdeed9),
+                        border: Border.all(color: ColorSet.borderColor),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       outsideTextStyle: const TextStyle(
-                        //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        color: ColorSet.textColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
@@ -274,6 +262,7 @@ class HomepageState extends State<Homepage> {
                       return isSameDay(HomeData.selectedDay, day);
                     },
                     onDaySelected: (selectedDay, focusedDay) {
+                      print("focusedDay: $focusedDay");
                       // 選中的日期變成橘色
                       if (!isSameDay(HomeData.selectedDay, selectedDay)) {
                         setState(() {
@@ -282,6 +271,16 @@ class HomepageState extends State<Homepage> {
                         HomeData.setSelectedDay();
                         setState(() {});
                       }
+
+                      DateTime today = DateTime(HomeData.today.year,
+                          HomeData.today.month, HomeData.today.day);
+                      DateTime sDay = DateTime(selectedDay.year,
+                          selectedDay.month, selectedDay.day);
+                      setState(() {
+                        selectedColor = (sDay == today)
+                            ? ColorSet.buttonColor
+                            : ColorSet.backgroundColor;
+                      });
                     },
                     onPageChanged: (focusedDay) {
                       // 選第2頁的日期時不會跳回第一頁
@@ -298,10 +297,10 @@ class HomepageState extends State<Homepage> {
                       BubbleSpecialThree(
                         text:
                             'Hello ${Data.user!.displayName}～\n${getDialogText()}',
-                        color: const Color(0xFFfdeed9),
+                        color: ColorSet.buttonColor,
                         tail: true,
                         textStyle: const TextStyle(
-                          color: Color(0xFF4b3d70),
+                          color: ColorSet.textColor,
                           fontSize: 18,
                           //fontWeight: FontWeight.bold,
                         ),
@@ -334,7 +333,7 @@ class HomepageState extends State<Homepage> {
                                             topRight: Radius.circular(20),
                                             topLeft: Radius.circular(20)),
                                       ),
-                                      backgroundColor: const Color(0xfffdeed9),
+                                      backgroundColor: ColorSet.bottomBarColor,
                                       context: context,
                                       builder: (context) {
                                         return AddPlanBottomSheet(arguments: {
@@ -359,7 +358,7 @@ class HomepageState extends State<Homepage> {
                                             topRight: Radius.circular(20),
                                             topLeft: Radius.circular(20)),
                                       ),
-                                      backgroundColor: const Color(0xfffdeed9),
+                                      backgroundColor: ColorSet.bottomBarColor,
                                       context: context,
                                       builder: (context) {
                                         return AddPlanBottomSheet(arguments: {
@@ -384,7 +383,7 @@ class HomepageState extends State<Homepage> {
                                             topRight: Radius.circular(20),
                                             topLeft: Radius.circular(20)),
                                       ),
-                                      backgroundColor: const Color(0xfffdeed9),
+                                      backgroundColor: ColorSet.bottomBarColor,
                                       context: context,
                                       builder: (context) {
                                         return AddPlanBottomSheet(arguments: {
@@ -535,7 +534,6 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 20),
-      color: ColorSet.bottomBarColor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -562,6 +560,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                   Icons.close_rounded,
                   color: ColorSet.iconColor,
                 ),
+                tooltip: "關閉",
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -586,9 +585,9 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                     [ColorSet.exerciseColor],
                     [ColorSet.meditationColor]
                   ],
-                  activeFgColor: const Color(0xff4b4370),
-                  inactiveBgColor: const Color(0xfffdfdf5),
-                  inactiveFgColor: const Color(0xff4b4370),
+                  activeFgColor: ColorSet.textColor,
+                  inactiveBgColor: ColorSet.backgroundColor,
+                  inactiveFgColor: ColorSet.textColor,
                   totalSwitches: 2,
                   onToggle: (index) {
                     planToAdd = index!;
@@ -628,18 +627,23 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(right: 10, left: 10),
+                // FIXME: 感覺白底按鈕不是很明顯？還是加邊框？
+                //side: const BorderSide(color: ColorSet.borderColor, width: 2),
+                //BorderSide(color: (planToAdd == 0)?ColorSet.exerciseColor:ColorSet.meditationColor, width: 3),
                 backgroundColor: (planToAdd == 0)
-                    //FIXME: 需要區分exercise和meditation顏色嗎
+                    // FIXME: 需要區分exercise和meditation顏色嗎
                     ? ColorSet.backgroundColor
                     : ColorSet.backgroundColor,
-                shadowColor: Colors.transparent,
-                elevation: 0,
+                shadowColor: ColorSet.borderColor,
+                //elevation: 0,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
               onPressed: () async {
+                // FIXME: 新增運動計畫有錯誤：Null check operator used on a null value
+                // FIXME: 新增冥想計畫有錯誤：NoSuchMethodError: The method '[]' was called on null.
                 DateTime selectedDay = widget.arguments['selectedDay'];
                 (planToAdd == 0)
                     ? await PlanAlgo.generateWorkout(selectedDay, exerciseTime)
@@ -665,5 +669,268 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
         ],
       ),
     );
+  }
+}
+
+// TODO: Delete after feedback testing
+// 運動回饋
+class FeedbackBottomSheet extends StatefulWidget {
+  final Map arguments;
+
+  const FeedbackBottomSheet({super.key, required this.arguments});
+
+  @override
+  FeedbackBottomSheetState createState() => FeedbackBottomSheetState();
+}
+
+class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
+  int type = 0; // 0 = 運動, 1 = 冥想
+
+  double satisfiedScore = 1; // Q1
+  double tiredScore = 1; // Q2
+  bool isAnxious = false; // Q3-1
+  bool haveToSdebugPrint = false; // Q3-2
+  bool isSatisfied = false; // Q3-3
+  List<int> feedbackData = [];
+
+  onSatisfiedScoreUpdate(rating) {
+    setState(() {
+      satisfiedScore = rating;
+    });
+  }
+
+  onTiredScoreUpdate(rating) {
+    setState(() {
+      tiredScore = rating;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    type = widget.arguments["type"];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+            title: Text(
+              "${(type == 0) ? "運動" : "冥想"}回饋",
+              style: const TextStyle(
+                  color: Color(0xff4b4370),
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          TextLiquidFill(
+            text: 'Well Done!',
+            waveColor: const Color(0xffd4d6fc),
+            boxBackgroundColor: const Color(0xfffdeed9),
+            textStyle: const TextStyle(
+              fontSize: 50.0,
+              fontWeight: FontWeight.bold,
+            ),
+            boxHeight: 80.0,
+          ),
+          const Divider(
+            thickness: 1.5,
+            indent: 20,
+            endIndent: 20,
+          ),
+          Text(
+            "是否滿意今天的${(type == 0) ? "運動" : "冥想"}計劃呢？",
+            style: const TextStyle(
+                color: Color(0xff4b4370),
+                fontSize: 20,
+                fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          RatingScoreBar().getSatisfiedScoreBar(onSatisfiedScoreUpdate),
+          const SizedBox(
+            height: 10,
+          ),
+          const Divider(
+            thickness: 1.5,
+            indent: 20,
+            endIndent: 20,
+          ),
+          Text(
+            (type == 0) ? "今天的運動計劃\n做起來是否會很疲憊呢？" : "今天的冥想計劃\n是否會太長或太短呢？",
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                color: Color(0xff4b4370),
+                fontSize: 20,
+                fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          RatingScoreBar().getTiredScoreBar(onTiredScoreUpdate, type),
+          (type == 0)
+              ? Container()
+              : const SizedBox(
+                  height: 10,
+                ),
+          (type == 0)
+              ? Container()
+              : const Divider(
+                  thickness: 1.5,
+                  indent: 20,
+                  endIndent: 20,
+                ),
+          (type == 0)
+              ? Container()
+              : const Text(
+                  "最近狀況調查",
+                  style: TextStyle(
+                      color: Color(0xff4b4370),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+          (type == 0)
+              ? Container()
+              : const SizedBox(
+                  height: 10,
+                ),
+          (type == 0)
+              ? Container()
+              : Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "最近是否有憂慮、失眠、\n或是壓力大的情況？",
+                            style: TextStyle(
+                                color: Color(0xff4b4370), fontSize: 18),
+                          ),
+                          RoundCheckBox(
+                            isChecked: isAnxious,
+                            borderColor: const Color(0xff4b4370),
+                            uncheckedColor: const Color(0xfffdfdf5),
+                            checkedColor: const Color(0xfff6cdb7),
+                            size: 30,
+                            onTap: (selected) {
+                              setState(() {
+                                isAnxious = selected!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "最近是否有一個短期目標需要衝刺？",
+                            style: TextStyle(
+                                color: Color(0xff4b4370), fontSize: 18),
+                          ),
+                          RoundCheckBox(
+                            isChecked: haveToSdebugPrint,
+                            borderColor: const Color(0xff4b4370),
+                            uncheckedColor: const Color(0xfffdfdf5),
+                            checkedColor: const Color(0xfff6cdb7),
+                            size: 30,
+                            onTap: (selected) {
+                              setState(() {
+                                haveToSdebugPrint = selected!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "最近是否感到情感上的滿足？",
+                            style: TextStyle(
+                                color: Color(0xff4b4370), fontSize: 18),
+                          ),
+                          RoundCheckBox(
+                            isChecked: isSatisfied,
+                            borderColor: const Color(0xff4b4370),
+                            uncheckedColor: const Color(0xfffdfdf5),
+                            checkedColor: const Color(0xfff6cdb7),
+                            size: 30,
+                            onTap: (selected) {
+                              setState(() {
+                                isSatisfied = selected!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  )),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 18),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                backgroundColor: const Color(0xfff6cdb7),
+                shadowColor: Colors.transparent,
+                elevation: 0,
+                minimumSize: const Size.fromHeight(50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                if (type == 0) {
+                  feedbackData.add(satisfiedScore.toInt());
+                  feedbackData.add(tiredScore.toInt());
+                  debugPrint("Exercise feedbackData: $feedbackData");
+                  /*Navigator.pushNamedAndRemoveUntil(
+                    context, '/', (Route<dynamic> route) => false);
+                  var type = await PlanDB.getWorkoutType(DateTime.now());
+                  if (type != null) {
+                    UserDB.updateByFeedback(type, feedbackData);
+                  }
+                  await PlanAlgo.execute();*/
+                } else {
+                  feedbackData.add(satisfiedScore.toInt());
+                  feedbackData.add(tiredScore.toInt());
+                  // True = 1, false = 0
+                  feedbackData.add((isAnxious) ? 1 : 0);
+                  feedbackData.add((haveToSdebugPrint) ? 1 : 0);
+                  feedbackData.add((isSatisfied) ? 1 : 0);
+
+                  debugPrint("Meditation feedbackData: $feedbackData");
+                }
+                Navigator.pop(context);
+              },
+              child: const Text(
+                "確定",
+                style: TextStyle(
+                  color: Color(0xff4b4370),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ]));
   }
 }

@@ -16,6 +16,9 @@ class ColorSet {
   static const Color textColor = Color(0xFF2F4F4F);
   static const Color iconColor = Color(0xFF2F4F4F);
   static const Color borderColor = Color(0xFF2F4F4F);
+  static const Color buttonColor = Color(0xFFFAE5DA);
+  static const Color errorColor = Color(0xFFFAE5DA);
+  static const Color hintColor = Color(0xFFCAD2D2);
 }
 
 class InformDialog {
@@ -32,25 +35,25 @@ class InformDialog {
           Radius.circular(100),
         ),
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        dialogBackgroundColor: const Color(0xfffdfdf5),
+        dialogBackgroundColor: ColorSet.backgroundColor,
         dismissOnTouchOutside: true,
         dismissOnBackKeyPress: true,
         headerAnimationLoop: false,
         animType: AnimType.bottomSlide,
         desc: desc,
         descTextStyle: const TextStyle(
-          color: Color(0xff4b4370),
+          color: ColorSet.textColor,
           fontSize: 16,
         ),
         title: title,
         titleTextStyle: const TextStyle(
-            color: Color(0xfff6cdb7),
+            color: ColorSet.buttonColor,
             fontSize: 20,
             fontWeight: FontWeight.bold),
         btnOkText: '好',
-        btnOkColor: const Color(0xfff6cdb7),
+        btnOkColor: ColorSet.buttonColor,
         buttonsTextStyle: const TextStyle(
-            color: Color(0xff4b4370),
+            color: ColorSet.textColor,
             fontSize: 18,
             fontWeight: FontWeight.bold),
         btnOkOnPress: () {
@@ -74,32 +77,32 @@ class ConfirmDialog {
           Radius.circular(100),
         ),
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        dialogBackgroundColor: const Color(0xfffdfdf5),
+        dialogBackgroundColor: ColorSet.backgroundColor,
         dismissOnTouchOutside: true,
         dismissOnBackKeyPress: true,
         headerAnimationLoop: false,
         animType: AnimType.bottomSlide,
         desc: desc,
         descTextStyle: const TextStyle(
-          color: Color(0xff4b4370),
+          color: ColorSet.textColor,
           fontSize: 16,
         ),
         title: title,
         titleTextStyle: const TextStyle(
-            color: Color(0xfff6cdb7),
+            color: ColorSet.buttonColor,
             fontSize: 20,
             fontWeight: FontWeight.bold),
         btnOkText: (options != null) ? options[0] : '確定',
-        btnOkColor: const Color(0xfff6cdb7),
+        btnOkColor: ColorSet.buttonColor,
         buttonsTextStyle: const TextStyle(
-            color: Color(0xff4b4370),
+            color:  ColorSet.textColor,
             fontSize: 18,
             fontWeight: FontWeight.bold),
         btnOkOnPress: () {
           btnOkOnPress();
         },
         btnCancelText: (options != null) ? options[1] : '取消',
-        btnCancelColor: const Color(0xfffdfdf5),
+        btnCancelColor:  ColorSet.backgroundColor,
         btnCancelOnPress: () {
           (btnCancelOnPress != null) ? btnCancelOnPress() : null;
         });
@@ -112,7 +115,7 @@ class RatingScoreBar {
       initialRating: 0,
       itemCount: 5,
       itemSize: 60,
-      glowColor: const Color(0xffd4d6fc),
+      glowColor: ColorSet.hintColor,
       glowRadius: 1,
       itemBuilder: (context, index) {
         switch (index) {
@@ -126,7 +129,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "不滿意",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                  style: TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               ],
             );
@@ -140,7 +143,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                  style: TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               ],
             );
@@ -154,7 +157,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "還行",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                  style: TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               ],
             );
@@ -168,7 +171,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                  style: TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               ],
             );
@@ -182,7 +185,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "非常滿意",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                  style: TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               ],
             );
@@ -216,7 +219,7 @@ class RatingScoreBar {
                 Text(
                   (type == 0) ? "完全不累" : "太短",
                   style:
-                      const TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                      const TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               ],
             );
@@ -230,7 +233,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                  style: TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               ],
             );
@@ -244,7 +247,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "剛好",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                  style: TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               ],
             );
@@ -258,7 +261,7 @@ class RatingScoreBar {
                 ),
                 const Text(
                   "",
-                  style: TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                  style: TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               ],
             );
@@ -273,7 +276,7 @@ class RatingScoreBar {
                 Text(
                   (type == 0) ? "非常累" : "太長",
                   style:
-                      const TextStyle(color: Color(0xff4b4370), fontSize: 18),
+                      const TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               ],
             );

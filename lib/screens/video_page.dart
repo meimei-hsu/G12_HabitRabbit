@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:g12/screens/page_material.dart';
+
 class VideoPage extends StatefulWidget {
   final Map arguments;
 
@@ -13,7 +15,7 @@ class VideoPageState extends State<VideoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xfffdfdf5),
+      backgroundColor: ColorSet.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -29,6 +31,8 @@ class VideoPageState extends State<VideoPage> {
                     alignment: Alignment.topLeft,
                     child: IconButton(
                         icon: const Icon(Icons.close),
+                        color: ColorSet.iconColor,
+                        tooltip: "關閉",
                         onPressed: () => Navigator.of(context).pop())),
               ],
             ),
@@ -44,39 +48,39 @@ class VideoPageState extends State<VideoPage> {
                         child: Text(
                           widget.arguments['item'],
                           style: const TextStyle(
-                              color: Color(0xff4b4370),
+                              color: ColorSet.textColor,
                               fontWeight: FontWeight.bold,
                               fontSize: 24,
                               letterSpacing: 10),
                         )),
-                    subtitle: Column(
+                    subtitle: const Column(
                       children: [
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               " \u2022  轉轉肩膀",
                               style: TextStyle(
-                                  color: Color(0xff4b4370), fontSize: 18),
+                                  color: ColorSet.textColor, fontSize: 18),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 5),
+                        SizedBox(height: 5),
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               " \u2022  扭扭脖子",
                               style: TextStyle(
-                                  color: Color(0xff4b4370), fontSize: 18),
+                                  color: ColorSet.textColor, fontSize: 18),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 5),
+                        SizedBox(height: 5),
                         Row(
-                          children: const [
+                          children: [
                             Text(
                               " \u2022  動動嘴巴",
                               style: TextStyle(
-                                  color: Color(0xff4b4370), fontSize: 18),
+                                  color: ColorSet.textColor, fontSize: 18),
                             ),
                           ],
                         ),

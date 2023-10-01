@@ -126,6 +126,7 @@ class PlanData {
   static String mostLike = '', leastLike = '';
   static String bestAbility = '', worstAbility = '';
   static int sumAbilities = 0, repetition = 0;
+
   // database records:
   static List<Map<String, dynamic>>? planVariables;
 
@@ -277,6 +278,8 @@ class HomeData {
     isAfter = selectedDay!.isAfter(focusedDay);
     isToday = selectedDate == Calendar.dateToString(focusedDay);
     time = (isToday) ? "今天" : " ${selectedDay!.month} / ${selectedDay!.day} ";
+
+    isFetchingData = false;
   }
 }
 

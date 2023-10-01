@@ -282,11 +282,11 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
           style: OutlinedButton.styleFrom(
             shape: const CircleBorder(),
             side: const BorderSide(
-              color: Color(0xff0d3b66),
+              color: ColorSet.textColor,
             ),
             backgroundColor: (exerciseTime == choice)
-                ? const Color(0xffffa493)
-                : Colors.white70,
+                ? ColorSet.exerciseColor
+                : ColorSet.backgroundColor,
           ),
           onPressed: () {
             setState(() {
@@ -296,7 +296,7 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
           child: Text(
             "$choice",
             style: const TextStyle(
-              color: Color(0xff0d3b66),
+              color: ColorSet.textColor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -309,10 +309,11 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: ColorSet.backgroundColor,
       title: Text(
         "${SettingsData.habitTypeZH}時長(分鐘)",
         style: const TextStyle(
-          color: Color(0xff0d3b66),
+          color: ColorSet.textColor,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -333,7 +334,7 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
             child: const Text(
               "取消",
               style: TextStyle(
-                color: Color(0xff0d3b66),
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -342,7 +343,7 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
             }),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xfffbb87f),
+              backgroundColor: ColorSet.exerciseColor,
             ),
             onPressed: () async {
               num original = SettingsData.userData[key];
@@ -360,7 +361,7 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
                 description: Text(
                   "${SettingsData.habitTypeZH}時長已更新",
                   style: const TextStyle(
-                    color: Color(0xff0d3b66),
+                    color: ColorSet.textColor,
                     fontSize: 16,
                     letterSpacing: 0,
                     fontWeight: FontWeight.bold,
@@ -376,7 +377,7 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
             child: const Text(
               "確定",
               style: TextStyle(
-                color: Color(0xff0d3b66),
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
               ),
             )),
@@ -417,11 +418,11 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
           style: OutlinedButton.styleFrom(
             shape: const CircleBorder(),
             side: const BorderSide(
-              color: Color(0xff0d3b66),
+              color: ColorSet.textColor,
             ),
             backgroundColor: (selectedNames.contains(weekdayNameList[i]))
-                ? const Color(0xffffa493)
-                : Colors.white70,
+                ? ColorSet.exerciseColor
+                : ColorSet.backgroundColor,
           ),
           onPressed: () {
             String choice = weekdayNameList[i];
@@ -440,7 +441,7 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
           child: Text(
             weekdayNameList[i],
             style: const TextStyle(
-              color: Color(0xff0d3b66),
+              color: ColorSet.textColor,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -453,10 +454,11 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: ColorSet.backgroundColor,
       title: Text(
         "每週${SettingsData.habitTypeZH}日",
         style: const TextStyle(
-          color: Color(0xff0d3b66),
+          color: ColorSet.textColor,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -476,7 +478,7 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
             child: const Text(
               "取消",
               style: TextStyle(
-                color: Color(0xff0d3b66),
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -485,7 +487,7 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
             }),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xfffbb87f),
+              backgroundColor: ColorSet.exerciseColor,
             ),
             onPressed: () async {
               List original = SettingsData.userData[key];
@@ -503,7 +505,7 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
                 description: Text(
                   "週${SettingsData.habitTypeZH}日已更新",
                   style: const TextStyle(
-                    color: Color(0xff0d3b66),
+                    color: ColorSet.textColor,
                     fontSize: 16,
                     letterSpacing: 0,
                     fontWeight: FontWeight.bold,
@@ -519,7 +521,7 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
             child: const Text(
               "確定",
               style: TextStyle(
-                color: Color(0xff0d3b66),
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
               ),
             )),
@@ -588,9 +590,9 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
             });
           },
           style: OutlinedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: const Color(0xff0d3b66),
-            side: const BorderSide(color: Colors.white),
+            backgroundColor: ColorSet.backgroundColor,
+            foregroundColor: ColorSet.textColor,
+            side: const BorderSide(color: ColorSet.borderColor),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.max,
@@ -615,10 +617,11 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: ColorSet.backgroundColor,
       title: Text(
         "${SettingsData.habitTypeZH}通知時間",
         style: const TextStyle(
-          color: Color(0xff0d3b66),
+          color: ColorSet.textColor,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -638,7 +641,7 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
             child: const Text(
               "取消",
               style: TextStyle(
-                color: Color(0xff0d3b66),
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -647,7 +650,7 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
             }),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xfffbb87f),
+              backgroundColor: ColorSet.exerciseColor,
             ),
             onPressed: () async {
               SettingsData.timeForecast[key] = forecast;
@@ -662,7 +665,7 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
                 description: Text(
                   "${SettingsData.habitTypeZH}通知時間已更新",
                   style: const TextStyle(
-                    color: Color(0xff0d3b66),
+                    color: ColorSet.textColor,
                     fontSize: 16,
                     letterSpacing: 0,
                     fontWeight: FontWeight.bold,
@@ -678,7 +681,7 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
             child: const Text(
               "確定",
               style: TextStyle(
-                color: Color(0xff0d3b66),
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
               ),
             )),
@@ -754,6 +757,7 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: ColorSet.backgroundColor,
       title: Text(
         "${SettingsData.habitTypeZH}偏好(0~5分)",
         style: const TextStyle(
@@ -814,7 +818,7 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
             }),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: ColorSet.backgroundColor,
+              backgroundColor: ColorSet.exerciseColor,
             ),
             onPressed: () async {
               Map original = {
@@ -834,7 +838,7 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
                 description: Text(
                   "${SettingsData.habitTypeZH}偏好已更新",
                   style: const TextStyle(
-                    color: Color(0xff0d3b66),
+                    color: ColorSet.textColor,
                     fontSize: 16,
                     letterSpacing: 0,
                     fontWeight: FontWeight.bold,
@@ -850,7 +854,7 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
             child: const Text(
               "確定",
               style: TextStyle(
-                color: Color(0xff0d3b66),
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
               ),
             )),
@@ -909,7 +913,7 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
       title: Text(
         "${SettingsData.habitTypeZH}目標",
         style: const TextStyle(
-          color: Color(0xff0d3b66),
+          color: ColorSet.textColor,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -934,7 +938,7 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
             child: const Text(
               "取消",
               style: TextStyle(
-                color: Color(0xff0d3b66),
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -943,7 +947,7 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
             }),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xfffbb87f),
+              backgroundColor: ColorSet.exerciseColor,
             ),
             onPressed: () async {
               List original = SettingsData.userData[key];
@@ -961,7 +965,7 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
                 description: Text(
                   "${SettingsData.habitTypeZH}時長已更新",
                   style: const TextStyle(
-                    color: Color(0xff0d3b66),
+                    color: ColorSet.textColor,
                     fontSize: 16,
                     letterSpacing: 0,
                     fontWeight: FontWeight.bold,
@@ -977,7 +981,7 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
             child: const Text(
               "確定",
               style: TextStyle(
-                color: Color(0xff0d3b66),
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
               ),
             )),
@@ -1034,7 +1038,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: const BorderSide(
-              color: Color(0xff4b4370),
+              color: ColorSet.textColor,
               width: 3,
             ),
           ),
@@ -1069,7 +1073,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
       title: Text(
         SettingsData.profileType,
         style: const TextStyle(
-          color: Color(0xff0d3b66),
+          color: ColorSet.textColor,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -1110,7 +1114,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
             child: const Text(
               "取消",
               style: TextStyle(
-                color: Color(0xff0d3b66),
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -1119,7 +1123,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
             }),
         ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xfffbb87f),
+              backgroundColor: ColorSet.exerciseColor,
             ),
             onPressed: () async {
               if (SettingsData.profileType == "密碼") {
@@ -1145,7 +1149,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
                 description: Text(
                   "${SettingsData.profileType}已更新",
                   style: const TextStyle(
-                    color: Color(0xff0d3b66),
+                    color: ColorSet.textColor,
                     fontSize: 16,
                     letterSpacing: 0,
                     fontWeight: FontWeight.bold,
@@ -1161,7 +1165,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
             child: const Text(
               "確定",
               style: TextStyle(
-                color: Color(0xff0d3b66),
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
               ),
             )),

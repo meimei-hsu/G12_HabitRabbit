@@ -13,7 +13,6 @@ class GamificationPage extends StatefulWidget {
 }
 
 class GamificationPageState extends State<GamificationPage> {
-
   void refresh() async {
     if (Data.updated) await GameData.fetch();
     setState(() {});
@@ -63,6 +62,43 @@ class GamificationPageState extends State<GamificationPage> {
                 ),
               ],
             ),
+        appBar: AppBar(
+          elevation: 0,
+          title: Text(
+            '${Data.user?.displayName!} 的角色',
+            textAlign: TextAlign.left,
+            style: const TextStyle(
+                color: ColorSet.textColor,
+                fontSize: 28,
+                letterSpacing: 2,
+                fontWeight: FontWeight.bold,
+                height: 1),
+          ),
+          backgroundColor: ColorSet.backgroundColor,
+          automaticallyImplyLeading: false,
+        ),
+        body: const SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding:
+                    EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 20),
+                child: Text(
+                  '請養成規律的運動與冥想習慣，蒐集寶物讓我長大吧！',
+                  style: TextStyle(
+                    fontFamily: 'WorkSans',
+                    color: ColorSet.textColor,
+                    fontSize: 25,
+                    fontWeight: FontWeight.normal,
+                    letterSpacing: 1.1,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: CharacterWidget(),
+              ),
+            ],
           ),
         ),
       ),
@@ -84,7 +120,7 @@ class CharacterWidget extends StatelessWidget {
           child: ClipPath(
             clipper: CharacterCardBackgroundClipper(),
             child: Container(
-              height: 0.7 * screenHeight,
+              height: 0.65 * screenHeight,
               width: 0.9 * screenWidth,
               decoration: const BoxDecoration(
                 color: ColorSet.bottomBarColor,
@@ -96,54 +132,71 @@ class CharacterWidget extends StatelessWidget {
           alignment: Alignment.topCenter,
           child: Image.asset(
             Data.characterImageURL,
-            height: screenHeight * 0.4,
+            height: screenHeight * 0.35,
+            width: screenWidth * 0.6,
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 400, left: 40),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    _showQuizDialog(context);
-                  },
-                  backgroundColor: ColorSet.backgroundColor,
-                  child: const Icon(Icons.list_alt, color: ColorSet.iconColor),
+          Container(
+            padding: EdgeInsets.only(left: 40),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: FloatingActionButton(
+                    backgroundColor: ColorSet.backgroundColor,
+                    tooltip: "寶物蒐集概況",
+                    onPressed: () {
+                      _showQuizDialog(context);
+                    },
+                    child:
+                        const Icon(Icons.list_alt, color: ColorSet.iconColor),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    _showGrowDialog(context);
-                  },
-                  backgroundColor: ColorSet.backgroundColor,
-                  child: const Icon(Icons.style, color: ColorSet.iconColor),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: FloatingActionButton(
+                    backgroundColor: ColorSet.backgroundColor,
+                    tooltip: "角色進化圖",
+                    onPressed: () {
+                      _showGrowDialog(context);
+                    },
+                    child: const Icon(Icons.style, color: ColorSet.iconColor),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    if (Data.contract != null) {
-                      Navigator.pushNamed(context, '/contract/already');
-                    } else {
-                      Navigator.pushNamed(context, '/contract/initial');
-                    }
-                  },
-                  backgroundColor: ColorSet.backgroundColor,
-                  child: const Icon(Icons.request_quote_outlined,
-                      color: ColorSet.iconColor),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: FloatingActionButton(
+                    backgroundColor: ColorSet.backgroundColor,
+                    tooltip: "承諾合約",
+                    onPressed: () {
+                      if (Data.contract != null) {
+                        Navigator.pushNamed(context, '/contract/already');
+                      } else {
+                        Navigator.pushNamed(context, '/contract/initial');
+                      }
+                    },
+                    child: const Icon(Icons.request_quote_outlined,
+                        color: ColorSet.iconColor),
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: FloatingActionButton(
+                    backgroundColor: ColorSet.backgroundColor,
+                    tooltip: "資訊",
+                    onPressed: () {},
+                    child: const Icon(Icons.info_outline,
+                        color: ColorSet.iconColor),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         Padding(
@@ -231,6 +284,98 @@ class CharacterWidget extends StatelessWidget {
             ],
           ),
         ),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 30,right:20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: const Text(
+                      '本周運動達成率：',
+                      style: TextStyle(
+                        color: ColorSet.textColor,
+                        fontSize: 16,
+                      ),
+                    )),
+                const SizedBox(height: 5),
+                LinearPercentIndicator(
+                  width: MediaQuery.of(context).size.width * 0.76,
+                  animation: true,
+                  lineHeight: 15.0,
+                  percent: GameData.workoutPercent / 100,
+                  trailing: Text(
+                    "${GameData.workoutPercent.round()}%",
+                    style: const TextStyle(
+                      color: ColorSet.textColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                  barRadius: const Radius.circular(16),
+                  backgroundColor: ColorSet.backgroundColor,
+                  progressColor: ColorSet.textColor,
+                ),
+                const SizedBox(height: 10),
+                Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: const Text(
+                      '本周冥想達成率：',
+                      style: TextStyle(
+                        color: ColorSet.textColor,
+                        fontSize: 16,
+                      ),
+                    )),
+                const SizedBox(height: 5),
+                LinearPercentIndicator(
+                  width: MediaQuery.of(context).size.width * 0.76,
+                  animation: true,
+                  lineHeight: 15.0,
+                  percent: GameData.meditationPercent / 100,
+                  trailing: Text(
+                    "${GameData.meditationPercent.round()}%",
+                    style: const TextStyle(
+                      color: ColorSet.textColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                  barRadius: const Radius.circular(16),
+                  backgroundColor: ColorSet.backgroundColor,
+                  progressColor: ColorSet.textColor,
+                ),
+                const SizedBox(height: 10),
+                Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: const Text(
+                      '全部完成率：',
+                      style: TextStyle(
+                        color: ColorSet.textColor,
+                        fontSize: 16,
+                      ),
+                    )),
+                const SizedBox(height: 5),
+                LinearPercentIndicator(
+                  width: MediaQuery.of(context).size.width * 0.76,
+                  animation: true,
+                  lineHeight: 15.0,
+                  percent: GameData.totalPercent / 100,
+                  trailing: Text(
+                    "${GameData.totalPercent.round()}%",
+                    style: const TextStyle(
+                      color: ColorSet.textColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                  barRadius: const Radius.circular(16),
+                  backgroundColor: ColorSet.backgroundColor,
+                  progressColor: ColorSet.textColor,
+                ),
+              ],
+            ),
+          ),
+        ],),
       ],
     );
   }
@@ -243,6 +388,7 @@ class CharacterWidget extends StatelessWidget {
         borderRadius: BorderRadius.only(
             topRight: Radius.circular(20), topLeft: Radius.circular(20)),
       ),
+      backgroundColor: ColorSet.bottomBarColor,
       builder: (BuildContext context) {
         return const Padding(
             padding: EdgeInsets.all(8.0), child: GrowDialog(arguments: null));
@@ -259,6 +405,7 @@ void _showQuizDialog(BuildContext context) {
       borderRadius: BorderRadius.only(
           topRight: Radius.circular(20), topLeft: Radius.circular(20)),
     ),
+    backgroundColor: ColorSet.bottomBarColor,
     builder: (BuildContext context) {
       return const Padding(
         padding: EdgeInsets.all(8.0),
@@ -323,11 +470,6 @@ class QuizDialogState extends State<QuizDialog> {
               ),
               trailing: Container(
                 padding: const EdgeInsets.only(right: 10, left: 10),
-                /*decoration: BoxDecoration(
-                  border: Border.all(color: ColorSet.borderColor, width: 2),
-                  color: Colors.transparent,
-                  shape: BoxShape.circle,
-                ),*/
                 child: IconButton(
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -356,6 +498,7 @@ class QuizDialogState extends State<QuizDialog> {
                   Container(
                     height: 170,
                     width: 0.85 * screenWidth,
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       border: Border.all(color: ColorSet.textColor, width: 1),
@@ -370,7 +513,7 @@ class QuizDialogState extends State<QuizDialog> {
                           Image.asset(
                             height: 35,
                             width: 35,
-                            'assets/images/treasure.png',
+                            'assets/images/Carrot.png',
                           ),
                       ],
                     ),
@@ -387,6 +530,7 @@ class QuizDialogState extends State<QuizDialog> {
                   Container(
                     height: 170,
                     width: 0.85 * screenWidth,
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       border: Border.all(color: ColorSet.textColor, width: 1),
@@ -400,7 +544,7 @@ class QuizDialogState extends State<QuizDialog> {
                           Image.asset(
                             height: 35,
                             width: 35,
-                            'assets/images/treasure.png',
+                            'assets/images/BowTie.png',
                           ),
                       ],
                     ),

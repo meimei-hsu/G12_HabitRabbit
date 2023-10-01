@@ -71,6 +71,8 @@ class CommunityPageState extends State<CommunityPage>
                     child: SizedBox(
                       child: TabBar(
                         controller: _controller,
+                        indicatorColor: ColorSet.borderColor,
+                        indicatorWeight: 3,
                         tabs:  [
                           Tab(
                             icon: Column(
@@ -201,6 +203,7 @@ class FriendListPageState extends State<FriendListPage> {
             children: [
               Expanded(
                 child: TextField(
+                  // TODO: change border color
                   decoration: InputDecoration(
                     hintText: '快輸社交碼 加入新朋友！',
                     contentPadding: const EdgeInsets.symmetric(
