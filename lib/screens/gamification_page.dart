@@ -13,7 +13,6 @@ class GamificationPage extends StatefulWidget {
 }
 
 class GamificationPageState extends State<GamificationPage> {
-
   void refresh() async {
     if (Data.updated) await GameData.fetch();
     setState(() {});
@@ -25,43 +24,43 @@ class GamificationPageState extends State<GamificationPage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: ColorSet.backgroundColor,
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0, top: 16.0),
-                  child: Text(
-                    '${Data.user?.displayName!} 的角色',
-                    style: const TextStyle(
-                      fontFamily: 'WorkSans',
-                      color: ColorSet.textColor,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.1,
-                    ),
+        appBar: AppBar(
+          elevation: 0,
+          title: Text(
+            '${Data.user?.displayName!} 的角色',
+            textAlign: TextAlign.left,
+            style: const TextStyle(
+                color: ColorSet.textColor,
+                fontSize: 28,
+                letterSpacing: 2,
+                fontWeight: FontWeight.bold,
+                height: 1),
+          ),
+          backgroundColor: ColorSet.backgroundColor,
+          automaticallyImplyLeading: false,
+        ),
+        body: const SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding:
+                    EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 20),
+                child: Text(
+                  '請養成規律的運動與冥想習慣，蒐集寶物讓我長大吧！',
+                  style: TextStyle(
+                    fontFamily: 'WorkSans',
+                    color: ColorSet.textColor,
+                    fontSize: 25,
+                    fontWeight: FontWeight.normal,
+                    letterSpacing: 1.1,
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 32.0, right: 32.0, top: 20.0),
-                  child: Text(
-                    '請養成規律的運動與冥想習慣蒐集寶物讓我長大吧！',
-                    style: TextStyle(
-                      fontFamily: 'WorkSans',
-                      color: ColorSet.textColor,
-                      fontSize: 25,
-                      fontWeight: FontWeight.normal,
-                      letterSpacing: 1.1,
-                    ),
-                  ),
-                ),
-                const Expanded(
-                  child: CharacterWidget(),
-                ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: CharacterWidget(),
+              ),
+            ],
           ),
         ),
       ),
@@ -78,8 +77,8 @@ class CharacterWidget extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     return Stack(
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
+        Container(
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           child: ClipPath(
             clipper: CharacterCardBackgroundClipper(),
             child: Container(
@@ -91,162 +90,167 @@ class CharacterWidget extends StatelessWidget {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 10, left: 100),
-          child: Image.asset(
+        Column(children: [
+          Image.asset(
             Data.characterImageURL,
             height: screenHeight * 0.35,
             width: screenWidth * 0.6,
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 330, left: 40),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: FloatingActionButton(
-                  backgroundColor: ColorSet.backgroundColor,
-                  tooltip: "寶物蒐集概況",
-                  onPressed: () {
-                    _showQuizDialog(context);
-                  },
-                  child: const Icon(Icons.list_alt, color: ColorSet.iconColor),
+          Container(
+            padding: const EdgeInsets.only(left: 40),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: FloatingActionButton(
+                    backgroundColor: ColorSet.backgroundColor,
+                    tooltip: "寶物蒐集概況",
+                    onPressed: () {
+                      _showQuizDialog(context);
+                    },
+                    child:
+                        const Icon(Icons.list_alt, color: ColorSet.iconColor),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: FloatingActionButton(
-                  backgroundColor: ColorSet.backgroundColor,
-                  tooltip: "角色進化圖",
-                  onPressed: () {
-                    _showGrowDialog(context);
-                  },
-                  child: const Icon(Icons.style, color: ColorSet.iconColor),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: FloatingActionButton(
+                    backgroundColor: ColorSet.backgroundColor,
+                    tooltip: "角色進化圖",
+                    onPressed: () {
+                      _showGrowDialog(context);
+                    },
+                    child: const Icon(Icons.style, color: ColorSet.iconColor),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: FloatingActionButton(
-                  backgroundColor: ColorSet.backgroundColor,
-                  tooltip: "承諾合約",
-                  onPressed: () {
-                    if (Data.contract != null) {
-                      Navigator.pushNamed(context, '/contract/already');
-                    } else {
-                      Navigator.pushNamed(context, '/contract/initial');
-                    }
-                  },
-                  child: const Icon(Icons.request_quote_outlined,
-                      color: ColorSet.iconColor),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: FloatingActionButton(
+                    backgroundColor: ColorSet.backgroundColor,
+                    tooltip: "承諾合約",
+                    onPressed: () {
+                      if (Data.contract != null) {
+                        Navigator.pushNamed(context, '/contract/already');
+                      } else {
+                        Navigator.pushNamed(context, '/contract/initial');
+                      }
+                    },
+                    child: const Icon(Icons.request_quote_outlined,
+                        color: ColorSet.iconColor),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: FloatingActionButton(
-                  backgroundColor: ColorSet.backgroundColor,
-                  tooltip: "資訊",
-                  onPressed: () {
-
-                  },
-                  child: const Icon(Icons.info_outline,
-                      color: ColorSet.iconColor),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: FloatingActionButton(
+                    backgroundColor: ColorSet.backgroundColor,
+                    tooltip: "資訊",
+                    onPressed: () {},
+                    child: const Icon(Icons.info_outline,
+                        color: ColorSet.iconColor),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 400, left: 30),
-          child: Column(
-            children: [
-              const Text(
-                '本周運動達成率：',
-                style: TextStyle(
-                  fontFamily: 'WorkSans',
-                  color: ColorSet.textColor,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 5),
-              LinearPercentIndicator(
-                width: MediaQuery.of(context).size.width * 0.85,
-                animation: true,
-                lineHeight: 15.0,
-                percent: GameData.workoutPercent / 100,
-                center: Text(
-                  "${GameData.workoutPercent.round()}%",
-                  style: const TextStyle(
-                    color: ColorSet.backgroundColor,
-                    fontSize: 10,
-                  ),
-                ),
-                barRadius: const Radius.circular(16),
-                backgroundColor: ColorSet.backgroundColor,
-                progressColor: ColorSet.textColor,
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                '本周冥想達成率：',
-                style: TextStyle(
-                  fontFamily: 'WorkSans',
-                  color: ColorSet.textColor,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 5),
-              LinearPercentIndicator(
-                width: MediaQuery.of(context).size.width * 0.85,
-                animation: true,
-                lineHeight: 15.0,
-                percent: GameData.meditationPercent / 100,
-                center: Text(
-                  "${GameData.meditationPercent.round()}%",
-                  style: const TextStyle(
-                    color: ColorSet.backgroundColor,
-                    fontSize: 10,
-                  ),
-                ),
-                barRadius: const Radius.circular(16),
-                backgroundColor: ColorSet.backgroundColor,
-                progressColor: ColorSet.textColor,
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                '全部完成率：',
-                style: TextStyle(
-                  fontFamily: 'WorkSans',
-                  color: ColorSet.textColor,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 5),
-              LinearPercentIndicator(
-                width: MediaQuery.of(context).size.width * 0.85,
-                animation: true,
-                lineHeight: 15.0,
-                percent: GameData.totalPercent / 100,
-                center: Text(
-                  "${GameData.totalPercent.round()}%",
-                  style: const TextStyle(
-                    color: ColorSet.backgroundColor,
-                    fontSize: 10,
-                  ),
-                ),
-                barRadius: const Radius.circular(16),
-                backgroundColor: ColorSet.backgroundColor,
-                progressColor: ColorSet.textColor,
-              ),
-            ],
+          const SizedBox(
+            height: 10,
           ),
-        ),
+          Container(
+            padding: const EdgeInsets.only(left: 30,right:20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: const Text(
+                      '本周運動達成率：',
+                      style: TextStyle(
+                        color: ColorSet.textColor,
+                        fontSize: 16,
+                      ),
+                    )),
+                const SizedBox(height: 5),
+                LinearPercentIndicator(
+                  width: MediaQuery.of(context).size.width * 0.76,
+                  animation: true,
+                  lineHeight: 15.0,
+                  percent: GameData.workoutPercent / 100,
+                  trailing: Text(
+                    "${GameData.workoutPercent.round()}%",
+                    style: const TextStyle(
+                      color: ColorSet.textColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                  barRadius: const Radius.circular(16),
+                  backgroundColor: ColorSet.backgroundColor,
+                  progressColor: ColorSet.textColor,
+                ),
+                const SizedBox(height: 10),
+                Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: const Text(
+                      '本周冥想達成率：',
+                      style: TextStyle(
+                        color: ColorSet.textColor,
+                        fontSize: 16,
+                      ),
+                    )),
+                const SizedBox(height: 5),
+                LinearPercentIndicator(
+                  width: MediaQuery.of(context).size.width * 0.76,
+                  animation: true,
+                  lineHeight: 15.0,
+                  percent: GameData.meditationPercent / 100,
+                  trailing: Text(
+                    "${GameData.meditationPercent.round()}%",
+                    style: const TextStyle(
+                      color: ColorSet.textColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                  barRadius: const Radius.circular(16),
+                  backgroundColor: ColorSet.backgroundColor,
+                  progressColor: ColorSet.textColor,
+                ),
+                const SizedBox(height: 10),
+                Container(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: const Text(
+                      '全部完成率：',
+                      style: TextStyle(
+                        color: ColorSet.textColor,
+                        fontSize: 16,
+                      ),
+                    )),
+                const SizedBox(height: 5),
+                LinearPercentIndicator(
+                  width: MediaQuery.of(context).size.width * 0.76,
+                  animation: true,
+                  lineHeight: 15.0,
+                  percent: GameData.totalPercent / 100,
+                  trailing: Text(
+                    "${GameData.totalPercent.round()}%",
+                    style: const TextStyle(
+                      color: ColorSet.textColor,
+                      fontSize: 12,
+                    ),
+                  ),
+                  barRadius: const Radius.circular(16),
+                  backgroundColor: ColorSet.backgroundColor,
+                  progressColor: ColorSet.textColor,
+                ),
+              ],
+            ),
+          ),
+        ])
       ],
     );
   }
