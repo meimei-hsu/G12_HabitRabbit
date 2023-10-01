@@ -51,7 +51,7 @@ class GamificationPageState extends State<GamificationPage> {
                     style: TextStyle(
                       fontFamily: 'WorkSans',
                       color: ColorSet.textColor,
-                      fontSize: 18,
+                      fontSize: 25,
                       fontWeight: FontWeight.normal,
                       letterSpacing: 1.1,
                     ),
@@ -78,12 +78,12 @@ class CharacterWidget extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     return Stack(
       children: [
-        Align(
-          alignment: Alignment.bottomCenter,
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20),
           child: ClipPath(
             clipper: CharacterCardBackgroundClipper(),
             child: Container(
-              height: 0.7 * screenHeight,
+              height: 0.65 * screenHeight,
               width: 0.9 * screenWidth,
               decoration: const BoxDecoration(
                 color: ColorSet.bottomBarColor,
@@ -92,14 +92,15 @@ class CharacterWidget extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 20, left: 120),
+          padding: const EdgeInsets.only(top: 10, left: 100),
           child: Image.asset(
             Data.characterImageURL,
-            height: screenHeight * 0.4,
+            height: screenHeight * 0.35,
+            width: screenWidth * 0.6,
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 400, left: 40),
+          padding: const EdgeInsets.only(top: 330, left: 40),
           child: Row(
             children: [
               SizedBox(
@@ -142,11 +143,24 @@ class CharacterWidget extends StatelessWidget {
                       color: ColorSet.iconColor),
                 ),
               ),
+              const SizedBox(width: 10),
+              SizedBox(
+                width: 40,
+                height: 40,
+                child: FloatingActionButton(
+                  onPressed: () {
+
+                  },
+                  backgroundColor: ColorSet.backgroundColor,
+                  child: const Icon(Icons.info_outline,
+                      color: ColorSet.iconColor),
+                ),
+              ),
             ],
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 450, left: 30),
+          padding: const EdgeInsets.only(top: 400, left: 30),
           child: Column(
             children: [
               const Text(
@@ -321,11 +335,6 @@ class QuizDialogState extends State<QuizDialog> {
               ),
               trailing: Container(
                 padding: const EdgeInsets.only(right: 10, left: 10),
-                /*decoration: BoxDecoration(
-                  border: Border.all(color: ColorSet.borderColor, width: 2),
-                  color: Colors.transparent,
-                  shape: BoxShape.circle,
-                ),*/
                 child: IconButton(
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -368,7 +377,7 @@ class QuizDialogState extends State<QuizDialog> {
                           Image.asset(
                             height: 35,
                             width: 35,
-                            'assets/images/treasure.png',
+                            'assets/images/Carrot.png',
                           ),
                       ],
                     ),
@@ -398,7 +407,7 @@ class QuizDialogState extends State<QuizDialog> {
                           Image.asset(
                             height: 35,
                             width: 35,
-                            'assets/images/treasure.png',
+                            'assets/images/BowTie.png',
                           ),
                       ],
                     ),
