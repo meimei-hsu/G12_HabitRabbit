@@ -136,10 +136,10 @@ class DoExercisePageState extends State<DoExercisePage> {
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(20), topLeft: Radius.circular(20)),
           ),
-          backgroundColor: ColorSet.backgroundColor,
+          backgroundColor: ColorSet.bottomBarColor,
           context: context,
           builder: (context) {
-            return  Wrap(children: const [
+            return  const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -197,10 +197,10 @@ class DoExercisePageState extends State<DoExercisePage> {
               borderRadius: BorderRadius.only(
                   topRight: Radius.circular(20), topLeft: Radius.circular(20)),
             ),
-            backgroundColor: ColorSet.backgroundColor,
+            backgroundColor: ColorSet.bottomBarColor,
             context: context,
             builder: (context) {
-              return  Wrap(children: const [
+              return  const Wrap(children: [
                 FeedbackBottomSheet(
                   arguments: {"type": 0},
                 )
@@ -348,7 +348,7 @@ class DoExercisePageState extends State<DoExercisePage> {
               const SizedBox(height: 10),
               Container(
                 decoration: const BoxDecoration(
-                    color: Color(0xfff6cdb7),
+                    color: ColorSet.exerciseColor,
                     borderRadius: BorderRadius.all(Radius.circular(13))),
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.only(left: 10),
@@ -376,7 +376,7 @@ class DoExercisePageState extends State<DoExercisePage> {
                   progress: _progress,
                   // provide the progress in a range from 0.0 to 1.0
                   solidBarColor: Colors.amber,
-                  emptyBarColor: const Color(0xfff6cdb7),
+                  emptyBarColor: ColorSet.exerciseColor,
                   strokeWidth: 10,
                   gradientBarColor: const LinearGradient(
                     begin: Alignment.topRight,
@@ -398,7 +398,7 @@ class DoExercisePageState extends State<DoExercisePage> {
                 children: [
                   Ink(
                     decoration: const ShapeDecoration(
-                      color: Color(0xfff6cdb7),
+                      color: ColorSet.exerciseColor,
                       shape: CircleBorder(),
                     ),
                     child: IconButton(
@@ -463,10 +463,10 @@ class DoMeditationPageState extends State<DoMeditationPage> {
             borderRadius: BorderRadius.only(
                 topRight: Radius.circular(20), topLeft: Radius.circular(20)),
           ),
-          backgroundColor: ColorSet.backgroundColor,
+          backgroundColor: ColorSet.bottomBarColor,
           context: context,
           builder: (context) {
-            return  Wrap(children: const [
+            return  const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
@@ -525,10 +525,10 @@ class DoMeditationPageState extends State<DoMeditationPage> {
               borderRadius: BorderRadius.only(
                   topRight: Radius.circular(20), topLeft: Radius.circular(20)),
             ),
-            backgroundColor: ColorSet.backgroundColor,
+            backgroundColor: ColorSet.bottomBarColor,
             context: context,
             builder: (context) {
-              return  Wrap(children: const [
+              return  const Wrap(children: [
                 FeedbackBottomSheet(
                   arguments: {"type": 1},
                 )
@@ -590,7 +590,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
               const SizedBox(height: 10),
               Container(
                 decoration: const BoxDecoration(
-                    color: Color(0xffd4d6fc),
+                    color: ColorSet.meditationColor,
                     borderRadius: BorderRadius.all(Radius.circular(13))),
                 alignment: Alignment.centerLeft,
                 padding: const EdgeInsets.only(left: 10),
@@ -601,7 +601,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
                   widget.arguments['meditationPlan'],
                   textAlign: TextAlign.left,
                   style: const TextStyle(
-                      color: Color(0xff4b4370),
+                      color: ColorSet.textColor,
                       fontSize: 32,
                       letterSpacing: 0,
                       fontWeight: FontWeight.bold,
@@ -617,7 +617,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
                   progress: _progress,
                   // provide the progress in a range from 0.0 to 1.0
                   solidBarColor: Colors.amber,
-                  emptyBarColor: const Color(0xffd4d6fc),
+                  emptyBarColor: ColorSet.meditationColor,
                   strokeWidth: 10,
                   gradientBarColor: const LinearGradient(
                     begin: Alignment.topRight,
@@ -638,7 +638,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
                 children: [
                   Ink(
                     decoration: const ShapeDecoration(
-                      color: Color(0xffd4d6fc),
+                      color: ColorSet.meditationColor,
                       shape: CircleBorder(),
                     ),
                     child: IconButton(
@@ -646,10 +646,10 @@ class DoMeditationPageState extends State<DoMeditationPage> {
                         ifStart
                             ? Icons.pause_rounded
                             : Icons.play_arrow_rounded,
-                        color: const Color(0xff4b4370),
+                        color: ColorSet.iconColor,
                       ),
                       iconSize: 60,
-                      color: const Color(0xff4b4370),
+                      color: ColorSet.iconColor,
                       onPressed: () => startTimer(),
                     ),
                   ),
@@ -849,8 +849,8 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
           // TODO: 試一下再放個東西的感覺，說不定可以放張 hooray 的圖(?
           TextLiquidFill(
             text: 'Well Done!',
-            waveColor: const Color(0xffd4d6fc),
-            boxBackgroundColor: const Color(0xfffdeed9),
+            waveColor: ColorSet.backgroundColor,
+            boxBackgroundColor: ColorSet.buttonColor,
             textStyle: const TextStyle(
               fontSize: 50.0,
               fontWeight: FontWeight.bold,
@@ -948,8 +948,8 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           RoundCheckBox(
                             isChecked: isAnxious,
                             borderColor: ColorSet.borderColor,
-                            uncheckedColor: const Color(0xfffdfdf5),
-                            checkedColor: const Color(0xfff6cdb7),
+                            uncheckedColor: ColorSet.backgroundColor,
+                            checkedColor: ColorSet.buttonColor,
                             size: 30,
                             onTap: (selected) {
                               setState(() {
@@ -973,8 +973,8 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           RoundCheckBox(
                             isChecked: haveToSprint,
                             borderColor: ColorSet.borderColor,
-                            uncheckedColor: const Color(0xfffdfdf5),
-                            checkedColor: const Color(0xfff6cdb7),
+                            uncheckedColor: ColorSet.backgroundColor,
+                            checkedColor: ColorSet.buttonColor,
                             size: 30,
                             onTap: (selected) {
                               setState(() {
@@ -998,8 +998,8 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                           RoundCheckBox(
                             isChecked: isSatisfied,
                             borderColor: ColorSet.borderColor,
-                            uncheckedColor: const Color(0xfffdfdf5),
-                            checkedColor: const Color(0xfff6cdb7),
+                            uncheckedColor: ColorSet.backgroundColor,
+                            checkedColor: ColorSet.buttonColor,
                             size: 30,
                             onTap: (selected) {
                               setState(() {
@@ -1019,9 +1019,9 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(right: 10, left: 10),
-                backgroundColor: const Color(0xfff6cdb7),
+                backgroundColor: ColorSet.backgroundColor,
                 shadowColor: Colors.transparent,
-                elevation: 0,
+                //elevation: 0,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),

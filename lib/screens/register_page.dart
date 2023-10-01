@@ -1,21 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:motion_toast/motion_toast.dart';
-import 'package:motion_toast/resources/arrays.dart';
 
 import 'package:g12/screens/page_material.dart';
 
 import 'package:g12/services/authentication.dart';
-
-import '../services/page_data.dart';
-import '../services/plan_algo.dart';
+import 'package:g12/services/page_data.dart';
+import 'package:g12/services/plan_algo.dart';
 
 OutlineInputBorder enabledBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(20),
   borderSide: const BorderSide(
-    color: Color(0xff4b4370),
+    color: ColorSet.borderColor,
     width: 3,
   ),
 );
@@ -23,15 +19,7 @@ OutlineInputBorder enabledBorder = OutlineInputBorder(
 OutlineInputBorder focusedAndErrorBorder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(20),
   borderSide: const BorderSide(
-    color: Color(0xfff6cdb7),
-    width: 3,
-  ),
-);
-
-OutlineInputBorder errorBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.circular(20),
-  borderSide: const BorderSide(
-    color: Colors.green,
+    color: ColorSet.errorColor,
     width: 3,
   ),
 );
@@ -82,23 +70,28 @@ class LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Scaffold(
         resizeToAvoidBottomInset: true,
-        //backgroundColor: const Color(0xfffaf0ca), // TODO: 底色設為圖片背景色
+        backgroundColor: ColorSet.backgroundColor,
         body: SafeArea(
             child: Column(
           children: [
+            const SizedBox(height: 50,),
             // TODO: 調整 flex (根據背景圖?)
             Expanded(
-              flex: 2,
+              flex: 1,
               child: Image.asset(
-                "assets/images/personality_SGF.png",
+                "assets/images/Logo.png",
                 width: double.infinity,
-                fit: BoxFit.fitWidth,
+                //fit: BoxFit.fitWidth,
               ),
             ),
             Expanded(
-                flex: 5,
+                flex: 2,
                 child: SingleChildScrollView(
                   //physics: const NeverScrollableScrollPhysics(),
                   // Disable scrolling
@@ -106,7 +99,7 @@ class LoginFormState extends State<LoginForm> {
                     key: loginFormKey,
                     child: Container(
                       padding: const EdgeInsets.only(
-                          right: 20, left: 20, top: 80, bottom: 110),
+                          right: 20, left: 20, top: 50, bottom: 110),
                       decoration: BoxDecoration(
                           color: ColorSet.backgroundColor,
                           border: Border.all(color: ColorSet.backgroundColor),
@@ -150,17 +143,17 @@ class LoginFormState extends State<LoginForm> {
                               focusedErrorBorder: focusedAndErrorBorder,
                               labelStyle:
                                   const TextStyle(color: ColorSet.textColor),
-                              hintStyle: const TextStyle(color: Colors.grey),
+                              hintStyle: const TextStyle(color: ColorSet.hintColor),
                               errorStyle: const TextStyle(
                                   height: 1,
-                                  color: Color(0xfff6cdb7),
+                                  color: ColorSet.errorColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16),
                               errorMaxLines: 1,
                               filled: true,
                               fillColor: ColorSet.backgroundColor,
                             ),
-                            cursorColor: const Color(0xfff6cdb7),
+                            cursorColor: ColorSet.errorColor,
                             style: const TextStyle(
                               fontSize: 18,
                               color: ColorSet.textColor,
@@ -202,17 +195,17 @@ class LoginFormState extends State<LoginForm> {
                               focusedErrorBorder: focusedAndErrorBorder,
                               labelStyle:
                                   const TextStyle(color: ColorSet.textColor),
-                              hintStyle: const TextStyle(color: Colors.grey),
+                              hintStyle: const TextStyle(color: ColorSet.hintColor,),
                               errorStyle: const TextStyle(
                                   height: 1,
-                                  color: Color(0xfff6cdb7),
+                                  color: ColorSet.errorColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16),
                               errorMaxLines: 1,
                               filled: true,
                               fillColor: ColorSet.backgroundColor,
                             ),
-                            cursorColor: const Color(0xfff6cdb7),
+                            cursorColor: ColorSet.errorColor,
                             style: const TextStyle(
                                 fontSize: 18, color: ColorSet.textColor),
                             keyboardType: TextInputType.text,
@@ -223,13 +216,13 @@ class LoginFormState extends State<LoginForm> {
                               ? Center(
                                   child: LoadingAnimationWidget
                                       .horizontalRotatingDots(
-                                  color: ColorSet.backgroundColor,
+                                  color: ColorSet.bottomBarColor,
                                   size: 100,
                                 ))
                               : ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     elevation: 0,
-                                    backgroundColor: const Color(0xfff6cdb7),
+                                    backgroundColor: ColorSet.buttonColor,
                                     minimumSize: const Size.fromHeight(50),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10),
@@ -261,24 +254,9 @@ class LoginFormState extends State<LoginForm> {
 
                                     if (errMsg.isNotEmpty) {
                                       if (!mounted) return;
-                                      MotionToast(
-                                        icon: Icons.done_all_rounded,
-                                        primaryColor: const Color(0xfff6cdb7),
-                                        description: Text(
-                                          errMsg,
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            letterSpacing: 0,
-                                            fontWeight: FontWeight.bold,
-                                            height: 1,
-                                          ),
-                                        ),
-                                        position: MotionToastPosition.bottom,
-                                        animationType: AnimationType.fromBottom,
-                                        animationCurve: Curves.bounceIn,
-                                        //displaySideBar: false,
-                                      ).show(context);
+                                      InformDialog()
+                                          .get(context, ":(", errMsg)
+                                          .show();
                                     } else {
                                       if (user != null) {
                                         await Data.init();
@@ -322,7 +300,7 @@ class LoginFormState extends State<LoginForm> {
                                 child: const Text(
                                   '註冊',
                                   style: TextStyle(
-                                      color: Color(0xfff6cdb7),
+                                      color: ColorSet.buttonColor,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -335,7 +313,7 @@ class LoginFormState extends State<LoginForm> {
                   ),
                 ))
           ],
-        )));
+        ))));
   }
 }
 
@@ -360,23 +338,28 @@ class SignupFormState extends State<SignupForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: Scaffold(
         resizeToAvoidBottomInset: true,
-        //backgroundColor: const Color(0xfffaf0ca), // TODO: 底色設為圖片背景色
+        backgroundColor: ColorSet.backgroundColor,
         body: SafeArea(
           child: Column(
             children: [
+              const SizedBox(height: 50,),
               // TODO: 調整 flex (根據背景圖?)
               Expanded(
-                flex: 2,
+                flex: 1,
                 child: Image.asset(
-                  "assets/images/personality_SGF.png",
+                  "assets/images/Logo.png",
                   width: double.infinity,
-                  fit: BoxFit.fitWidth,
+                  //fit: BoxFit.fitWidth,
                 ),
               ),
               Expanded(
-                  flex: 5,
+                  flex: 2,
                   child: SingleChildScrollView(
                       //physics: const NeverScrollableScrollPhysics(),
                       // Disable scrolling
@@ -430,17 +413,17 @@ class SignupFormState extends State<SignupForm> {
                                       labelStyle: const TextStyle(
                                           color: ColorSet.textColor),
                                       hintStyle:
-                                          const TextStyle(color: Colors.grey),
+                                          const TextStyle(color: ColorSet.hintColor),
                                       errorStyle: const TextStyle(
                                           height: 1,
-                                          color: Color(0xfff6cdb7),
+                                          color: ColorSet.errorColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16),
                                       errorMaxLines: 1,
                                       filled: true,
                                       fillColor: ColorSet.backgroundColor,
                                     ),
-                                    cursorColor: const Color(0xfff6cdb7),
+                                    cursorColor: ColorSet.errorColor,
                                     style: const TextStyle(
                                         fontSize: 18,
                                         color: ColorSet.textColor),
@@ -469,17 +452,17 @@ class SignupFormState extends State<SignupForm> {
                                       labelStyle: const TextStyle(
                                           color: ColorSet.textColor),
                                       hintStyle:
-                                          const TextStyle(color: Colors.grey),
+                                          const TextStyle(color: ColorSet.hintColor,),
                                       errorStyle: const TextStyle(
                                           height: 1,
-                                          color: Color(0xfff6cdb7),
+                                          color: ColorSet.errorColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16),
                                       errorMaxLines: 1,
                                       filled: true,
                                       fillColor: ColorSet.backgroundColor,
                                     ),
-                                    cursorColor: const Color(0xfff6cdb7),
+                                    cursorColor: ColorSet.errorColor,
                                     style: const TextStyle(
                                         fontSize: 18,
                                         color: ColorSet.textColor),
@@ -523,10 +506,10 @@ class SignupFormState extends State<SignupForm> {
                                       labelStyle: const TextStyle(
                                           color: ColorSet.textColor),
                                       hintStyle:
-                                          const TextStyle(color: Colors.grey),
+                                          const TextStyle(color: ColorSet.hintColor,),
                                       errorStyle: const TextStyle(
                                           height: 1,
-                                          color: Color(0xfff6cdb7),
+                                          color: ColorSet.errorColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16),
                                       errorMaxLines: 1,
@@ -545,14 +528,14 @@ class SignupFormState extends State<SignupForm> {
                                       ? Center(
                                           child: LoadingAnimationWidget
                                               .horizontalRotatingDots(
-                                          color: ColorSet.backgroundColor,
+                                          color: ColorSet.bottomBarColor,
                                           size: 100,
                                         ))
                                       : ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                             elevation: 0,
                                             backgroundColor:
-                                                const Color(0xfff6cdb7),
+                                            ColorSet.buttonColor,
                                             minimumSize:
                                                 const Size.fromHeight(50),
                                             shape: RoundedRectangleBorder(
@@ -602,75 +585,11 @@ class SignupFormState extends State<SignupForm> {
                                               }
                                             }
 
-                                            /*String name = _nameController.text;
-                                            String email =
-                                                _accountController.text;
-                                            String password =
-                                                _passwordController.text;
-                                            print("$email : $password");
-
-                                            String errMsg = "";
-                                            errMsg +=
-                                                Validator.validateName(name) ??
-                                                    "";
-                                            errMsg += Validator.validateEmail(
-                                                    email) ??
-                                                "";
-                                            errMsg +=
-                                                Validator.validatePassword(
-                                                        password) ??
-                                                    "";
-
-                                            if (errMsg.isEmpty) {
-                                              try {
-                                                User? user =
-                                                    await FireAuth.register(
-                                                  name: name,
-                                                  email: email,
-                                                  password: password,
-                                                );
-
-                                                if (user != null) {
-                                                  if (!mounted) return;
-                                                  Navigator
-                                                      .pushNamedAndRemoveUntil(
-                                                          context,
-                                                          '/questionnaire',
-                                                          (Route<dynamic>
-                                                                  route) =>
-                                                              false,
-                                                          arguments: {
-                                                        "part": 0
-                                                      });
-                                                }
-                                              } catch (e) {
-                                                errMsg = "$e";
-                                              }
-                                            }*/
-
                                             if (errMsg.isNotEmpty) {
                                               if (!mounted) return;
-                                              MotionToast(
-                                                icon: Icons.done_all_rounded,
-                                                primaryColor:
-                                                    const Color(0xfff6cdb7),
-                                                description: Text(
-                                                  errMsg,
-                                                  style: const TextStyle(
-                                                    color: ColorSet.textColor,
-                                                    fontSize: 16,
-                                                    letterSpacing: 0,
-                                                    fontWeight: FontWeight.bold,
-                                                    height: 1,
-                                                  ),
-                                                ),
-                                                position:
-                                                    MotionToastPosition.bottom,
-                                                animationType:
-                                                    AnimationType.fromBottom,
-                                                animationCurve: Curves.bounceIn,
-                                                //displaySideBar: false,
-                                              ).show(context);
+                                              InformDialog()
+                                                  .get(context, ":(", errMsg)
+                                                  .show();
                                             }
 
                                             setState(() {
@@ -704,7 +623,7 @@ class SignupFormState extends State<SignupForm> {
                                         child: const Text(
                                           '登入',
                                           style: TextStyle(
-                                              color: Color(0xfff6cdb7),
+                                              color: ColorSet.buttonColor,
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold),
                                         ),
@@ -715,6 +634,6 @@ class SignupFormState extends State<SignupForm> {
                               ))))),
             ],
           ),
-        ));
+        )));
   }
 }

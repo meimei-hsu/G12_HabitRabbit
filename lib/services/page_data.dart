@@ -121,11 +121,13 @@ class PlanData {
   static int habitDuration = 15;
   static int sumLikings = 0, sumHabitDays = 0;
   static Map habitIDs = {};
+
   // workout-specific variables:
   static Map<String, dynamic> abilities = {};
   static String mostLike = '', leastLike = '';
   static String bestAbility = '', worstAbility = '';
   static int sumAbilities = 0, repetition = 0;
+
   // database records:
   static List<Map<String, dynamic>>? planVariables;
   static Map habitLists = {};
@@ -199,7 +201,7 @@ class HomeData {
   // Calendar 相關設定
   static DateTime today = DateTime.now();
   static DateTime focusedDay = DateTime.now();
-  static DateTime? selectedDay = DateTime.now();
+  static DateTime? selectedDay = today;
   static String time = "今天";
   static DateTime firstDay = Calendar.firstDay;
   static DateTime lastDay = firstDay.add(const Duration(days: 13));
@@ -279,6 +281,8 @@ class HomeData {
     meditationPlan = meditationPlanList[Calendar.dateToString(selectedDay!)];
     meditationProgress =
         meditationProgressList[Calendar.dateToString(selectedDay!)];
+
+    DateTime focusedDay = DateTime(today!.year, today!.month, today!.day);
     isBefore = DateTime(selectedDay!.year, selectedDay!.month, selectedDay!.day)
         .isBefore(focusedDay);
     isAfter = DateTime(selectedDay!.year, selectedDay!.month, selectedDay!.day)

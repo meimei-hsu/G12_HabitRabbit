@@ -53,6 +53,7 @@ class HomepageState extends State<Homepage> {
             showIndicator: false,
             banners: listBanners,
             onTap: (id) async {
+              print("isToday: ${HomeData.isToday}");
               // Exercise
               if (id == "1") {
                 Navigator.pushNamed(context, '/detail/exercise', arguments: {
@@ -92,33 +93,33 @@ class HomepageState extends State<Homepage> {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
       dialogText =
-          (HomeData.isBefore) ? "沒有運動計畫\n沒有冥想計畫" : "沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
+          (HomeData.isBefore) ? "${HomeData.time}沒有運動計畫\n沒有冥想計畫" : "${HomeData.time}沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
     } else if (HomeData.workoutPlan != null &&
         HomeData.meditationPlan == null) {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
       dialogText = (HomeData.isBefore)
-          ? "運動計畫完成了 ${HomeData.workoutProgress} %\n沒有冥想計畫"
+          ? "${HomeData.time}運動計畫完成了 ${HomeData.workoutProgress} %\n沒有冥想計畫"
           : (HomeData.isToday)
-              ? "運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
-              : "有運動計畫\n記得要來完成噢~\n點我新增冥想計畫！";
+              ? "${HomeData.time}運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
+              : "${HomeData.time}有運動計畫\n記得要來完成噢~\n點我新增冥想計畫！";
     } else if (HomeData.workoutPlan == null &&
         HomeData.meditationPlan != null) {
       // 運動沒有、冥想有 --> 冥想完成度、新增運動
       // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
       dialogText = (HomeData.isBefore)
-          ? "冥想計畫完成了 ${HomeData.meditationProgress} %\n沒有運動計畫"
+          ? "${HomeData.time}冥想計畫完成了 ${HomeData.meditationProgress} %\n沒有運動計畫"
           : (HomeData.isToday)
-              ? "冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有運動計畫，點我新增！"
-              : "有冥想計畫\n記得要來完成噢~\n點我新增運動計畫！";
+              ? "${HomeData.time}冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有運動計畫，點我新增！"
+              : "${HomeData.time}有冥想計畫\n記得要來完成噢~\n點我新增運動計畫！";
     } else {
       // 運動有、冥想有 --> 運動完成度、冥想完成度
       // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
       dialogText = (HomeData.isBefore)
-          ? "運動計畫完成了 ${HomeData.workoutProgress} %\n冥想計畫完成了 ${HomeData.meditationProgress} %"
+          ? "${HomeData.time}運動計畫完成了 ${HomeData.workoutProgress} %\n冥想計畫完成了 ${HomeData.meditationProgress} %"
           : (HomeData.isToday)
-              ? "運動計畫已完成 ${HomeData.workoutProgress} %\n冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n很棒噢~~" : "\n繼續加油加油~~"}"
-              : "有運動和冥想計畫\n記得要來完成噢~";
+              ? "${HomeData.time}運動計畫已完成 ${HomeData.workoutProgress} %\n冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n很棒噢~~" : "\n繼續加油加油~~"}"
+              : "${HomeData.time}有運動和冥想計畫\n記得要來完成噢~";
     }
     return dialogText;
   }
@@ -128,12 +129,14 @@ class HomepageState extends State<Homepage> {
     setState(() {});
   }
 
+  Color selectedColor = ColorSet.buttonColor;
+
   @override
   Widget build(BuildContext context) {
     refresh();
     return SafeArea(
         child: Scaffold(
-      backgroundColor: const Color(0xFFFDFDFD),
+      backgroundColor: ColorSet.backgroundColor,
       body: (Data.updated)
           ? Center(
               child: Container(
@@ -166,8 +169,7 @@ class HomepageState extends State<Homepage> {
                   height: 10,
                 ),
                 Container(
-                  //color: const Color(0x193598f5),
-                  color: const Color(0xFFFDFDFD), //日曆背景
+                  color: ColorSet.backgroundColor, //日曆背景
                   child: TableCalendar(
                     firstDay: HomeData.firstDay,
                     lastDay: HomeData.lastDay,
@@ -178,15 +180,11 @@ class HomepageState extends State<Homepage> {
                     daysOfWeekHeight: 24,
                     daysOfWeekStyle: const DaysOfWeekStyle(
                       weekdayStyle: TextStyle(
-                        //color: Color(0xff0d3b66),
-                        //color: Color(0xff4b3d70),
-                        color: Color(0xfff6cdb7),
+                        color: ColorSet.textColor,
                         fontSize: 16,
                       ),
                       weekendStyle: TextStyle(
-                        //color: Color(0xff0d3b66),
-                        //color: Color(0xff4b3d70),
-                        color: Color(0xfff6cdb7),
+                        color: ColorSet.textColor,
                         fontSize: 16,
                       ),
                     ),
@@ -194,29 +192,22 @@ class HomepageState extends State<Homepage> {
                       tablePadding: const EdgeInsets.only(
                           right: 10, left: 10, top: 10, bottom: 10),
                       todayDecoration: BoxDecoration(
-                        //color: const Color(0xffffa493),
-                        color: const Color(0xfff6cdb7), //今天顏色
+                        color: ColorSet.buttonColor, //今天顏色
+                        border: Border.all(color: ColorSet.borderColor),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       todayTextStyle: const TextStyle(
-                        //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        color: ColorSet.textColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       selectedDecoration: BoxDecoration(
-                        //color: const Color(0xfffbb87f),
-                        color: (DateTime(
-                                    HomeData.selectedDay!.year,
-                                    HomeData.selectedDay!.month,
-                                    HomeData.selectedDay!.day) ==
-                                HomeData.focusedDay)
-                            ? const Color(0xfff6cdb7)
-                            : const Color(0xfffdeed9), //點到的天數顏色
+                        color: selectedColor, //點到的天數顏色
+                        border: Border.all(color: ColorSet.borderColor),
                         borderRadius: BorderRadius.circular(10.0),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
+                            color: ColorSet.borderColor.withOpacity(0.5),
                             spreadRadius: 2,
                             blurRadius: 8,
                             offset: const Offset(
@@ -225,41 +216,37 @@ class HomepageState extends State<Homepage> {
                         ],
                       ),
                       selectedTextStyle: const TextStyle(
-                        //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        color: ColorSet.textColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       defaultDecoration: BoxDecoration(
-                        //color: const Color(0xfffaf0ca),
-                        color: const Color(0xfffdeed9),
+                        //color: const Color(0xfffdeed9),
+                        border: Border.all(color: ColorSet.borderColor),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       defaultTextStyle: const TextStyle(
-                        //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        color: ColorSet.textColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       weekendDecoration: BoxDecoration(
-                        //color: const Color(0xfffaf0ca),
-                        color: const Color(0xfffdeed9),
+                        //color: const Color(0xfffdeed9),
+                        border: Border.all(color: ColorSet.borderColor),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       weekendTextStyle: const TextStyle(
-                        //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        color: ColorSet.textColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
                       outsideDecoration: BoxDecoration(
-                        //color: const Color(0xfffaf0ca),
-                        color: const Color(0xfffdeed9),
+                        //color: const Color(0xfffdeed9),
+                        border: Border.all(color: ColorSet.borderColor),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       outsideTextStyle: const TextStyle(
-                        //color: Color(0xff0d3b66),
-                        color: Color(0xff4b3d70),
+                        color: ColorSet.textColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
@@ -269,6 +256,7 @@ class HomepageState extends State<Homepage> {
                       return isSameDay(HomeData.selectedDay, day);
                     },
                     onDaySelected: (selectedDay, focusedDay) {
+                      print("focusedDay: $focusedDay");
                       // 選中的日期變成橘色
                       if (!isSameDay(HomeData.selectedDay, selectedDay)) {
                         setState(() {
@@ -277,6 +265,16 @@ class HomepageState extends State<Homepage> {
                         HomeData.setSelectedDay();
                         setState(() {});
                       }
+
+                      DateTime today = DateTime(HomeData.today.year,
+                          HomeData.today.month, HomeData.today.day);
+                      DateTime sDay = DateTime(selectedDay.year,
+                          selectedDay.month, selectedDay.day);
+                      setState(() {
+                        selectedColor = (sDay == today)
+                            ? ColorSet.buttonColor
+                            : ColorSet.backgroundColor;
+                      });
                     },
                     onPageChanged: (focusedDay) {
                       // 選第2頁的日期時不會跳回第一頁
@@ -293,10 +291,10 @@ class HomepageState extends State<Homepage> {
                       BubbleSpecialThree(
                         text:
                             'Hello ${Data.user!.displayName}～\n${getDialogText()}',
-                        color: const Color(0xFFfdeed9),
+                        color: ColorSet.buttonColor,
                         tail: true,
                         textStyle: const TextStyle(
-                          color: Color(0xFF4b3d70),
+                          color: ColorSet.textColor,
                           fontSize: 18,
                           //fontWeight: FontWeight.bold,
                         ),
@@ -329,7 +327,7 @@ class HomepageState extends State<Homepage> {
                                             topRight: Radius.circular(20),
                                             topLeft: Radius.circular(20)),
                                       ),
-                                      backgroundColor: const Color(0xfffdeed9),
+                                      backgroundColor: ColorSet.bottomBarColor,
                                       context: context,
                                       builder: (context) {
                                         return AddPlanBottomSheet(arguments: {
@@ -354,7 +352,7 @@ class HomepageState extends State<Homepage> {
                                             topRight: Radius.circular(20),
                                             topLeft: Radius.circular(20)),
                                       ),
-                                      backgroundColor: const Color(0xfffdeed9),
+                                      backgroundColor: ColorSet.bottomBarColor,
                                       context: context,
                                       builder: (context) {
                                         return AddPlanBottomSheet(arguments: {
@@ -379,7 +377,7 @@ class HomepageState extends State<Homepage> {
                                             topRight: Radius.circular(20),
                                             topLeft: Radius.circular(20)),
                                       ),
-                                      backgroundColor: const Color(0xfffdeed9),
+                                      backgroundColor: ColorSet.bottomBarColor,
                                       context: context,
                                       builder: (context) {
                                         return AddPlanBottomSheet(arguments: {
@@ -603,7 +601,6 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 20),
-      color: ColorSet.bottomBarColor,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -654,9 +651,9 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                     [ColorSet.exerciseColor],
                     [ColorSet.meditationColor]
                   ],
-                  activeFgColor: const Color(0xff4b4370),
-                  inactiveBgColor: const Color(0xfffdfdf5),
-                  inactiveFgColor: const Color(0xff4b4370),
+                  activeFgColor: ColorSet.textColor,
+                  inactiveBgColor: ColorSet.backgroundColor,
+                  inactiveFgColor: ColorSet.textColor,
                   totalSwitches: 2,
                   onToggle: (index) {
                     planToAdd = index!;
@@ -696,18 +693,23 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(right: 10, left: 10),
+                // FIXME: 感覺白底按鈕不是很明顯？還是加邊框？
+                //side: const BorderSide(color: ColorSet.borderColor, width: 2),
+                //BorderSide(color: (planToAdd == 0)?ColorSet.exerciseColor:ColorSet.meditationColor, width: 3),
                 backgroundColor: (planToAdd == 0)
-                //FIXME: 需要區分exercise和meditation顏色嗎
+                    // FIXME: 需要區分exercise和meditation顏色嗎
                     ? ColorSet.backgroundColor
                     : ColorSet.backgroundColor,
                 shadowColor: Colors.transparent,
-                elevation: 0,
+                //elevation: 0,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
               onPressed: () async {
+                // FIXME: 新增運動計畫有錯誤：Null check operator used on a null value
+                // FIXME: 新增冥想計畫有錯誤：NoSuchMethodError: The method '[]' was called on null.
                 DateTime selectedDay = widget.arguments['selectedDay'];
                 (planToAdd == 0)
                     ? await PlanAlgo.generateWorkout(selectedDay, exerciseTime)
@@ -736,6 +738,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
   }
 }
 
+// TODO: Delete after feedback testing
 // 運動回饋
 class FeedbackBottomSheet extends StatefulWidget {
   final Map arguments;
