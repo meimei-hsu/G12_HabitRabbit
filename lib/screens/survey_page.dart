@@ -1313,17 +1313,27 @@ class ResultPage extends StatefulWidget {
 }
 
 class ResultPageState extends State<ResultPage> {
-  String personalityType = ""; //回傳一個人格類型字串
+  String character = "";
   late Widget imageWidget;
 
   @override
   void initState() {
     super.initState();
-    // TODO: change to new character photos
+    getCharacterImage();
+  }
+
+  void getCharacterImage() {
+    String personalityType = "";
     personalityType += userInfo["neuroticism"] > 0 ? "N" : "S";
     personalityType += userInfo["openness"] > 0 ? "O" : "G";
     personalityType += userInfo["conscientiousness"] > 0 ? "C" : "F";
-    imageWidget = Image.asset("assets/images/personality_$personalityType.png",
+
+    // translate personality to character
+    List personalities = ["NOC", "NOF", "NGC", "NGF", "SOC", "SOF", "SGC", "SGF"];
+    List characters = ["Fox_1", "Cat_1", "Pig_1", "Mouse_1", "Lion_1", "Sheep_1", "Dog_1", "Sloth_1"];
+    character = characters[personalities.indexOf(personalityType)];
+
+    imageWidget = Image.asset("assets/images/$character.png",
         height: 250);
   }
 
@@ -1365,7 +1375,7 @@ class ResultPageState extends State<ResultPage> {
                   ),
                   onPressed: () async {
                     await UserDB.insert(userInfo);
-                    await GamificationDB.insert(userInfo);
+                    await GamificationDB.insert(userInfo, character);
                     await Data.init();
                     await PlanAlgo.execute();
                     if (!mounted) return;

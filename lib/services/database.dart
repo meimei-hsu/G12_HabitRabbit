@@ -476,18 +476,12 @@ class GamificationDB {
     return null;
   }
 
-  static Future<String?> getFriends() async {
-    final Map? gamification = await getGamification();
-    return (gamification != null) ? gamification["friends"] : null;
-  }
-
-  static Future<bool> insert(Map userInfo) async {
+  static Future<bool> insert(Map userInfo, String character) async {
     int workoutDays =
         userInfo["workoutDays"].map(int.parse).fold(0, (p, c) => c + p);
     int meditationDays =
         userInfo["meditationDays"].map(int.parse).fold(0, (p, c) => c + p);
-    // TODO: getCharacter()
-    List values = [0, 0, "0, $workoutDays", "0, $meditationDays", "", ""];
+    List values = [0, 0, "0, $workoutDays", "0, $meditationDays", character, ""];
     return await DB.insert("$db/$uid/", Map.fromIterables(columns, values));
   }
 
@@ -495,7 +489,18 @@ class GamificationDB {
   static Future<bool> update(Map data) async =>
       await DB.update("$db/$uid/", data);
 
-  // TODO: updateFriends(), updateCharacter()
+  static Future<bool> updateFriends(String newFriends) async {
+    String? friends = Data.game?["friends"];
+    friends = (friends != null) ? "$newFriends, $friends" : newFriends;
+    return await DB.update("$db/$uid/", {"friends": friends});
+  }
+
+  static Future<bool> updateCharacterLevel() async {
+    String? character = Data.game?["character"];
+    int level = int.parse(character![character.length - 1]);
+    character = character.replaceAll("$level", "${level + 1}");
+    return await DB.update("$db/$uid/", {"character": character});
+  }
 
   // Update fragment or gem whenever user completes a plan
   static Future<bool> updateFragment(String habit) async {
@@ -573,9 +578,8 @@ class HabitDB {
       // Get the list of workoutID from the given type and difficulty
       for (int category = 1; category <= 4; category++) {
         for (int type = 1; type <= 7; type++) {
-          retVal[keys[category - 1]][type - 1] = List.from(
-              ids.where((item) =>
-              item[0] == "$category" && item[1] == "$type"));
+          retVal[keys[category - 1]][type - 1] = List.from(ids
+              .where((item) => item[0] == "$category" && item[1] == "$type"));
         }
       }
     }
@@ -1017,8 +1021,8 @@ class ClockDB {
 
   // Get the start time prediction
   static Future<String?> getPrediction(String habit, int weekday) async {
-    String? time =
-        await DB.select("journal/$uid/$habit$table", "forecast_$weekday") as String?;
+    String? time = await DB.select(
+        "journal/$uid/$habit$table", "forecast_$weekday") as String?;
     return (time != null) ? time : null;
   }
 
@@ -1039,11 +1043,25 @@ class ClockDB {
       await JournalDB.update(uid, data, "$habit$table");
 
   // Update the forecast data {"forecast": "09:00"} from table {table/userID/clock/forecast}
-  static Future<bool> updateForecast(String habit, DateTime today) async {
+  static Future<bool> updateForecast(String habit) async {
+    DateTime today = DateTime.now();
     String? actualTime = await getFromDate(habit, today);
     String? predictedTime = await getPrediction(habit, today.weekday % 7);
     if (actualTime != null && predictedTime != null) {
+      // Forecast notification time
       String forecast = Calculator.forecastStartTime(actualTime, predictedTime);
+
+      // Schedule notification time
+      List duration = forecast.split(":").map(int.parse).toList();
+      DateTime nextWeekDay = today.add(const Duration(days: 7));
+      NotificationService().scheduleNotification(
+        title: '該開始${(habit == "workout") ? "運動" : "冥想"}了!',
+        body: '加油',
+        scheduledNotificationDateTime: DateTime(nextWeekDay.year,
+            nextWeekDay.month, nextWeekDay.day, duration[0], duration[1]),
+      );
+
+      // Update to ClockDB
       return update(habit, {"forecast_${today.weekday % 7}": forecast});
     }
     return false;

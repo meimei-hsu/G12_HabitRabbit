@@ -94,7 +94,7 @@ class CharacterWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 20, left: 120),
           child: Image.asset(
-            'assets/images/Rabbit_2.png',
+            Data.characterImageURL,
             height: screenHeight * 0.4,
           ),
         ),
@@ -478,7 +478,7 @@ class GrowDialogState extends State<GrowDialog> {
                         Image.asset(
                           height: 100,
                           width: 100,
-                          'assets/images/Rabbit_1.png',
+                          'assets/images/${Data.characterName}_1.png',
                         ),
                         const SizedBox(width: 25),
                         const Text(
@@ -507,7 +507,7 @@ class GrowDialogState extends State<GrowDialog> {
                         Image.asset(
                           height: 100,
                           width: 100,
-                          'assets/images/Rabbit_2.png',
+                          'assets/images/${Data.characterName}_2.png',
                         ),
                         const SizedBox(width: 25),
                         const Text(

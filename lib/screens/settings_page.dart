@@ -29,10 +29,7 @@ class SettingsPage extends StatefulWidget {
 class SettingsPageState extends State<SettingsPage> {
   Future<void> refresh() async {
     if (Data.updated) await SettingsData.fetch();
-
-    setState(() {
-      Data.user = FirebaseAuth.instance.currentUser!;
-    });
+    setState(() {});
   }
 
   @override
@@ -62,7 +59,7 @@ class SettingsPageState extends State<SettingsPage> {
             // user card
             SimpleUserCard(
               userName: Data.user!.displayName!,
-              userProfilePic: SettingsData.characterImage,
+              userProfilePic: AssetImage(Data.characterImageURL),
             ),
             SettingsGroup(
               settingsGroupTitle: "運動",
@@ -204,7 +201,9 @@ class SettingsPageState extends State<SettingsPage> {
                     await showDialog<double>(
                         context: context,
                         builder: (context) => const ChangeProfileDialog());
-                    refresh();
+                    setState(() {
+                      Data.user = FirebaseAuth.instance.currentUser!;
+                    });
                   },
                   icons: CupertinoIcons.textformat_alt,
                   iconStyle: iconStyle,
@@ -216,6 +215,9 @@ class SettingsPageState extends State<SettingsPage> {
                       showDialog<double>(
                           context: context,
                           builder: (context) => const ChangeProfileDialog());
+                      setState(() {
+                        Data.user = FirebaseAuth.instance.currentUser!;
+                      });
                     },
                     icons: Icons.password_outlined,
                     iconStyle: iconStyle,
@@ -1132,6 +1134,7 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
                 });
               } else if (SettingsData.profileType == "暱稱") {
                 await Data.user!.updateDisplayName(controller.text);
+                await UserDB.update({"userName": controller.text});
               }
 
               if (!mounted) return;

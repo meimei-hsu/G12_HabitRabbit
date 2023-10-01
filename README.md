@@ -13,24 +13,26 @@ A milestone habit App.
     |---UserDB              (database operations for the users table)
     |---ContractDB          (database operations for the contract table)
     |---GamificationDB      (database operations for the gamification table)
-    |---WorkoutDB           (database operations for the workouts table)
-    |---MeditationDB        (database operations for the meditations table)
-    |---PlanDB              (database operations for the workoutPlan children of the journal table)
-    |---MeditationPlanDB    (database operations for the meditationPlan children of the journal table)
+    |---HabitDB             (database operations for the workouts and meditations table)
+    |---PlanDB              (database operations for the workoutPlan and meditationPlan children of the journal table)
     |---Calculator          (statistic calculations for the DurationDB)
-    |---DurationDB          (database operations for the workoutDuration children of the journal table)
-    |---MeditationDurationDB(database operations for the meditationDuration children of the journal table)
+    |---DurationDB          (database operations for the workoutDuration and meditationDuration children of the journal table)
     |---WeightDB            (database operations for the weight children of the journal table)
 ---plan_algo.dart
-    |---PlanAlgo            (execute point of the workout planning algorithm)
-    |---Algorithm           (generate plan from the workout planning algorithm)    
-    |---PlanData            (process the workout data in advance of running the algorithm)
-    |---MeditationPlanAlgo  (execute point of the meditaion planning algorithm)
-    |---MeditationAlgorithm (generate plan from the meditaion planning algorithm)    
-    |---MeditationPlanData  (process the meditaion data in advance of running the algorithm)
+    |---PlanAlgo            (execute point of the planning algorithm)
+    |---WorkoutAlgorithm    (generate plan from the workout planning algorithm)
+    |---MeditationAlgorithm (generate plan from the meditaion planning algorithm)
+---page_data.dart
+    |---Data                (global variables and database records)
+    |---PlanData            (local variables for PlanAlgo)
+    |---HomeData            (local variables for HomePage)
+    |---SettingsData        (local variables for SettingsPage)
+    |---StatData            (local variables for StatisticPage)
+    |---GameData            (local variables for GamificationPage)
 ---authentication.dart
     |---FireAuth            (user authentication by firebase)
     |---Validate            (check if the users' input are correct)
+---notification.dart        (notification service)
 ```
 
 ```

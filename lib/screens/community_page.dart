@@ -2,11 +2,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-import 'package:g12/screens/friend_status_page.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
+import 'package:g12/screens/friend_status_page.dart';
 import 'package:g12/screens/page_material.dart';
+import 'package:g12/services/page_data.dart';
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key, required arguments});
@@ -17,7 +18,6 @@ class CommunityPage extends StatefulWidget {
 
 class CommunityPageState extends State<CommunityPage>
     with TickerProviderStateMixin {
-  User? user = FirebaseAuth.instance.currentUser;
   late TabController _controller;
   int _currentIndex = 0;
 
@@ -47,7 +47,7 @@ class CommunityPageState extends State<CommunityPage>
         appBar: AppBar(
           elevation: 0,
           title: Text(
-            '${user?.displayName!} 的朋友圈',
+            '${Data.user?.displayName!} 的朋友圈',
             style: const TextStyle(
                 color: ColorSet.textColor,
                 fontSize: 28,
@@ -1931,7 +1931,7 @@ class TeamWorkPageState extends State<TeamWorkPage> {
                     SizedBox(
                       width: 100,
                       height: 100,
-                      child: Image.asset('assets/images/Rabbit_2.png'),
+                      child: Image.asset(Data.characterImageURL),
                     ),
                     LinearPercentIndicator(
                       width: 250,

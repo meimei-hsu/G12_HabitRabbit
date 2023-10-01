@@ -6,11 +6,12 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin notificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   Future<void> initNotification() async {
+    // TODO: change notification icon
     AndroidInitializationSettings initializationSettingsAndroid =
-    const AndroidInitializationSettings('flutter_logo');
+        const AndroidInitializationSettings('flutter_logo');
 
     var initializationSettingsIOS = DarwinInitializationSettings(
         requestAlertPermission: true,
@@ -28,8 +29,8 @@ class NotificationService {
 
   notificationDetails() {
     return const NotificationDetails(
-        android: AndroidNotificationDetails('channelId', 'channelName',icon:'flutter_logo',
-            importance: Importance.max),
+        android: AndroidNotificationDetails('channelId', 'channelName',
+            icon: 'flutter_logo', importance: Importance.max),
         iOS: DarwinNotificationDetails());
   }
 
@@ -41,10 +42,10 @@ class NotificationService {
 
   Future scheduleNotification(
       {int id = 0,
-        String? title,
-        String? body,
-        String? payLoad,
-        required DateTime scheduledNotificationDateTime}) async {
+      String? title,
+      String? body,
+      String? payLoad,
+      required DateTime scheduledNotificationDateTime}) async {
     final timeZone = TimeZone();
 
     // The device's timezone.
@@ -64,7 +65,7 @@ class NotificationService {
         await notificationDetails(),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime);
+            UILocalNotificationDateInterpretation.absoluteTime);
   }
 }
 
@@ -76,10 +77,11 @@ class TimeZone {
   }
   static TimeZone? _this;
 
-  Future<String> getTimeZoneName() async => FlutterNativeTimezone.getLocalTimezone();
+  Future<String> getTimeZoneName() async =>
+      FlutterNativeTimezone.getLocalTimezone();
 
   Future<tz.Location> getLocation([String? timeZoneName]) async {
-    if(timeZoneName == null || timeZoneName.isEmpty){
+    if (timeZoneName == null || timeZoneName.isEmpty) {
       timeZoneName = await getTimeZoneName();
     }
     return tz.getLocation(timeZoneName);

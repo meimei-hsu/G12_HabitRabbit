@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 
 import 'package:g12/services/database.dart';
 import 'package:g12/services/plan_algo.dart';
@@ -12,8 +11,10 @@ import 'package:g12/services/plan_algo.dart';
 
 class Data {
   static bool updated = false; // true if database is updated
-  static User? user = FirebaseAuth.instance.currentUser;
   static List habitTypes = ["workout", "meditation"];
+  static User? user = FirebaseAuth.instance.currentUser;
+  static String characterImageURL = "";
+  static String characterName = "";
 
   // general database records:
   static Map? profile; // whole user profile from UserDB
@@ -35,6 +36,7 @@ class Data {
       await PlanAlgo.execute();
       await fetchPlansAndDurations();
       await fetchGame();
+      await fetchCharacter();
       await fetchContract();
       await fetchWeights();
       await fetchClocks();
@@ -43,6 +45,13 @@ class Data {
       await GameData.fetch();
       await SettingsData.fetch();
     }
+  }
+
+  static Future<void> fetchCharacter() async {
+    if (Data.updated) await fetchGame();
+    String character = game?["character"] ?? "Rabbit_2";
+    characterImageURL = "assets/images/$character.png";
+    characterName = character.substring(0, character.length - 2);
   }
 
   static Future<void> fetchProfile() async {
@@ -286,9 +295,6 @@ class HomeData {
 class SettingsData {
   static Map userData = {};
   static Map timeForecast = {};
-  // TODO: character photo
-  static AssetImage characterImage =
-      const AssetImage("assets/images/Rabbit_2.png");
   static String habitType = ""; // e.g. workout, meditation
   static String habitTypeZH = ""; // habitType in Chinese
   static String profileType =

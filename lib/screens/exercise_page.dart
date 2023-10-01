@@ -478,7 +478,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
     btnYesOnPress() {
       canExit = true;
       NotificationService().scheduleNotification(
-          title: '該開始運動了!',
+          title: '該開始冥想了!',
           body: '加油',
           scheduledNotificationDateTime:
               DateTime.now().add(const Duration(seconds: 30)));

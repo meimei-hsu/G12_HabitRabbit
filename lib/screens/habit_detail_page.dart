@@ -8,8 +8,7 @@ import 'package:g12/screens/page_material.dart';
 
 import 'package:g12/services/database.dart';
 import 'package:g12/services/plan_algo.dart';
-
-import '../services/page_data.dart';
+import 'package:g12/services/page_data.dart';
 
 class ExerciseDetailPage extends StatefulWidget {
   final Map arguments;
@@ -377,6 +376,13 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                         items[i] = "運動：${items[i]}";
                                       }
                                     }
+
+                                    ClockDB.update("workout", {
+                                      Calendar.dateToString(DateTime.now()):
+                                          Calendar.timeToString(TimeOfDay.now())
+                                    });
+                                    ClockDB.updateForecast("workout");
+
                                     Navigator.pushNamed(context, '/countdown',
                                         arguments: {
                                           'type': 'exercise',
@@ -701,7 +707,8 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                       padding: const EdgeInsets.only(right: 20, left: 20),
                       child: Row(
                         children: [
-                          Expanded(child: ElevatedButton.icon(
+                          Expanded(
+                              child: ElevatedButton.icon(
                             icon: const Icon(Icons.play_arrow_rounded,
                                 color: ColorSet.iconColor),
                             style: ElevatedButton.styleFrom(
@@ -716,6 +723,12 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             ),
                             onPressed: (isToday)
                                 ? () {
+                                    ClockDB.update("meditation", {
+                                      Calendar.dateToString(DateTime.now()):
+                                          Calendar.timeToString(TimeOfDay.now())
+                                    });
+                                    ClockDB.updateForecast("meditation");
+
                                     Navigator.pushNamed(context, '/countdown',
                                         arguments: {
                                           'type': 'meditation',
