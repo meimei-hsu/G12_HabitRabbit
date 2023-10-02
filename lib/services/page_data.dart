@@ -299,14 +299,14 @@ class HomeData {
 
     // set variables for selectedDay
     String selectedDate = Calendar.dateToString(selectedDay!);
-    String focusedDate = Calendar.dateToString(focusedDay);
+    String today = Calendar.today;
     workoutPlan = workoutPlanList[selectedDate];
     workoutProgress = workoutProgressList[selectedDate];
     meditationPlan = meditationPlanList[selectedDate];
     meditationProgress = meditationProgressList[selectedDate];
-    isBefore = selectedDate.compareTo(focusedDate) == -1;
-    isAfter = selectedDate.compareTo(focusedDate) == 1;
-    isToday = selectedDate.compareTo(focusedDate) == 0;
+    isBefore = selectedDate.compareTo(today) == -1;
+    isAfter = selectedDate.compareTo(today) == 1;
+    isToday = selectedDate.compareTo(today) == 0;
     time = (isToday) ? "今天" : " ${selectedDay!.month} / ${selectedDay!.day} ";
 
     isFetchingData = false;

@@ -446,31 +446,6 @@ class GamificationDB {
     return (snapshot != null) ? Map.from(snapshot as Map) : null;
   }
 
-  // get the habit's progress of the week
-  static Future<num?> getWorkoutWeekProgress() async {
-    final Map? gamification = await getGamification();
-    return (gamification != null)
-        ? Calculator.calcProgress(gamification["workoutFragment"])
-        : null;
-  }
-
-  static Future<num?> getMeditationWeekProgress() async {
-    final Map? gamification = await getGamification();
-    return (gamification != null)
-        ? Calculator.calcProgress(gamification["meditationFragment"])
-        : null;
-  }
-
-  // Get both habits' progress of the half year
-  static Future<num?> getTotalProgress() async {
-    final Map? table = await getGamification();
-    if (table != null) {
-      double res = (table["workoutGem"] + table["meditationGem"]) / 48 * 100;
-      return res.round();
-    }
-    return null;
-  }
-
   static Future<bool> insert(Map userInfo, String character) async {
     int workoutDays =
         userInfo["workoutDays"].map(int.parse).fold(0, (p, c) => c + p);
