@@ -413,6 +413,11 @@ class HomepageState extends State<Homepage> {
                     ? Expanded(child: getBannerCarousel())
                     : Container(),
                 const SizedBox(height: 5),
+                IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/questionnaire", arguments: {"part": 0});
+                    },
+                    icon: Icon(Icons.accessibility_outlined, size:40))
               ],
             ),
     ));

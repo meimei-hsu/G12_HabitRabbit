@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_cupertino/datepicker_cupertino.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -330,17 +331,17 @@ class OptionsWidget extends StatelessWidget {
 
   Color getBackground(Option option) {
     if (question.selectedOptions.contains(option)) {
-      return Colors.black87;
+      return ColorSet.exerciseColor;
     } else {
-      return Colors.white;
+      return ColorSet.backgroundColor;
     }
   }
 
   Color getForeground(Option option) {
     if (question.selectedOptions.contains(option)) {
-      return Colors.white;
+      return ColorSet.textColor;
     } else {
-      return Colors.black;
+      return ColorSet.textColor;
     }
   }
 }
@@ -384,10 +385,10 @@ class QuestionNumbersWidget extends StatelessWidget {
     final isAnswered = questions[index].selectedOptions.isNotEmpty;
 
     Color color = isSelected
-        ? Colors.orange.shade300
+        ? ColorSet.exerciseColor
         : isAnswered
-            ? Colors.grey
-            : Colors.white;
+            ? ColorSet.bottomBarColor
+            : ColorSet.backgroundColor;
 
     return GestureDetector(
       onTap: () => onClickedNumber(index),
@@ -396,7 +397,7 @@ class QuestionNumbersWidget extends StatelessWidget {
         child: Text(
           '${index + 1}',
           style: const TextStyle(
-            color: Colors.black,
+            color: ColorSet.textColor,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -441,7 +442,7 @@ class QuestionsWidget extends StatelessWidget {
             Text(
               question.text,
               style: const TextStyle(
-                color: Colors.black,
+                color: ColorSet.textColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
               ),
@@ -477,7 +478,7 @@ class TitlePageState extends State<TitlePage> {
   void initState() {
     super.initState();
 
-    Timer(const Duration(seconds: 2), () {
+    Timer(const Duration(seconds: 3), () {
       switch (widget.arguments['part']) {
         case 0:
           Navigator.pushReplacement(context,
@@ -499,30 +500,44 @@ class TitlePageState extends State<TitlePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(backgroundColor: Colors.white, elevation: 0.0),
+        appBar: AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(36, 48, 36, 48),
           child: Container(
             alignment: Alignment.center,
             height: MediaQuery.of(context).size.height * 0.75,
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 2),
+              border: Border.all(color: ColorSet.borderColor, width: 2),
               borderRadius: BorderRadius.circular(20),
             ),
             padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-            child: SizedBox(
-              width: 400.0,
-              child: TextLiquidFill(
-                text: title[widget.arguments['part']],
-                boxBackgroundColor: Colors.white,
-                waveColor: Colors.orange.shade300,
-                textStyle: const TextStyle(
-                  fontSize: 60.0,
-                  fontWeight: FontWeight.bold,
+            child: Column(
+              children: [
+                /*BubbleSpecialTwo(
+                  text: 'bubble special tow with tail',
+                  isSender: true,
+                  color: Color(0xFFE8E8EE),
+                  sent: true,
+                ),*/
+                Padding(
+                  padding: const EdgeInsets.only(top: 100, left: 50, right: 50),
+                  child: Text(
+                    title[widget.arguments['part']],
+                    style: const TextStyle(
+                      color: ColorSet.textColor,
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-                boxHeight: 400.0,
-                loadDuration: const Duration(milliseconds: 1200),
-              ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 100, left: 150),
+                  child: Image.asset("assets/images/Rabbit_2.png",
+                    width: 180,
+                    height: 200,
+                  ),
+                )
+              ],
             ),
           ),
         ),
@@ -555,16 +570,18 @@ class PartOnePageState extends State<PartOnePage> {
   }
 
   Color getForegroundColor(String key, String value) {
-    return userInfo[key] == value ? Colors.white : Colors.black;
+    return userInfo[key] == value ? ColorSet.textColor : ColorSet.textColor;
   }
 
   Color getBackgroundColor(String key, String value) {
-    return userInfo[key] == value ? Colors.black87 : Colors.white;
+    return userInfo[key] == value
+        ? ColorSet.exerciseColor
+        : ColorSet.backgroundColor;
   }
 
   TextStyle getQuestionStyle() {
     return const TextStyle(
-      color: Colors.black,
+      color: ColorSet.textColor,
       fontWeight: FontWeight.bold,
       fontSize: 25,
     );
@@ -583,7 +600,8 @@ class PartOnePageState extends State<PartOnePage> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar: AppBar(backgroundColor: Colors.white, elevation: 0.0),
+        appBar:
+            AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
         body: ListView(controller: _scrollController, children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(35, 50, 35, 0),
@@ -591,7 +609,7 @@ class PartOnePageState extends State<PartOnePage> {
               alignment: Alignment.center,
               height: MediaQuery.of(context).size.height * 0.7,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 2),
+                border: Border.all(color: ColorSet.borderColor, width: 2),
                 borderRadius: BorderRadius.circular(20),
               ),
               padding: const EdgeInsets.fromLTRB(5, 18, 5, 18),
@@ -601,7 +619,6 @@ class PartOnePageState extends State<PartOnePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //const SizedBox(height: 35),
                   Padding(
                     padding: const EdgeInsets.only(left: 20),
                     child: Text(
@@ -691,14 +708,14 @@ class PartOnePageState extends State<PartOnePage> {
                       width: 250,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: ColorSet.backgroundColor,
                         border: Border.all(color: Colors.transparent),
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: DatePickerCupertino(
                         hintText: '請選擇日期',
                         style: const TextStyle(
-                          color: Colors.black,
+                          color: ColorSet.textColor,
                           fontSize: 15,
                         ),
                         onDateTimeChanged: (date) {
@@ -725,7 +742,7 @@ class PartOnePageState extends State<PartOnePage> {
                       width: 250,
                       decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(15)),
-                          color: Colors.white),
+                          color: ColorSet.backgroundColor),
                       child: TextField(
                         decoration: const InputDecoration(
                           contentPadding:
@@ -733,7 +750,7 @@ class PartOnePageState extends State<PartOnePage> {
                           border: InputBorder.none,
                           hintText: '請輸入您的身高(cm)',
                           hintStyle: TextStyle(
-                            color: Colors.black,
+                            color: ColorSet.textColor,
                             fontSize: 15,
                           ),
                         ),
@@ -764,7 +781,7 @@ class PartOnePageState extends State<PartOnePage> {
                       width: 250,
                       decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(15)),
-                          color: Colors.white),
+                          color: ColorSet.backgroundColor),
                       child: TextField(
                         decoration: const InputDecoration(
                           contentPadding:
@@ -772,7 +789,7 @@ class PartOnePageState extends State<PartOnePage> {
                           border: InputBorder.none,
                           hintText: '請輸入您的體重(kg)',
                           hintStyle: TextStyle(
-                            color: Colors.black,
+                            color: ColorSet.textColor,
                             fontSize: 15,
                           ),
                         ),
@@ -860,7 +877,7 @@ class PartTwoPageState extends State<PartTwoPage> {
               child: Container(
                 height: MediaQuery.of(context).size.height * 0.7,
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 2),
+                  border: Border.all(color: ColorSet.borderColor, width: 2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 padding: const EdgeInsets.fromLTRB(5, 18, 5, 18),
@@ -907,7 +924,7 @@ class PartTwoPageState extends State<PartTwoPage> {
   }
 
   PreferredSizeWidget? buildAppBar(context) => AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: ColorSet.backgroundColor,
         elevation: 0.0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(26),
@@ -936,10 +953,10 @@ class PartTwoPageState extends State<PartTwoPage> {
     final isAnswered = questions_2[index].selectedOptions.isNotEmpty;
 
     Color color = isSelected
-        ? Colors.orange.shade300
+        ? ColorSet.exerciseColor
         : isAnswered
-            ? Colors.grey
-            : Colors.white;
+            ? ColorSet.bottomBarColor
+            : ColorSet.backgroundColor;
 
     return GestureDetector(
       onTap: () => nextQuestion(index: index, jump: true),
@@ -948,7 +965,7 @@ class PartTwoPageState extends State<PartTwoPage> {
         child: Text(
           '${index + 1}',
           style: const TextStyle(
-            color: Colors.black,
+            color: ColorSet.textColor,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -1167,14 +1184,15 @@ class PartThreePageState extends State<PartThreePage>
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(backgroundColor: Colors.white, elevation: 0.0),
+        appBar:
+            AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(36, 48, 36, 48),
           child: Container(
             alignment: Alignment.center,
             height: MediaQuery.of(context).size.height * 0.75,
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 2),
+              border: Border.all(color: ColorSet.borderColor, width: 2),
               borderRadius: BorderRadius.circular(20),
             ),
             child: SizedBox(
@@ -1184,7 +1202,7 @@ class PartThreePageState extends State<PartThreePage>
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
                     alignment: Alignment.center,
-                    color: Colors.white,
+                    color: ColorSet.backgroundColor,
                     padding: const EdgeInsets.all(30),
                     margin: const EdgeInsets.all(30),
                     child: Stack(
@@ -1213,9 +1231,9 @@ class PartThreePageState extends State<PartThreePage>
                                 return Transform.translate(
                                   offset:
                                       Offset(controller.value * -50, 0), // X軸位移
-                                  child: Row(
+                                  child: const Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    children: const [
+                                    children: [
                                       Icon(
                                         FontAwesomeIcons.angleDoubleLeft,
                                         size: 40,
@@ -1238,9 +1256,9 @@ class PartThreePageState extends State<PartThreePage>
                                 return Transform.translate(
                                   offset:
                                       Offset(controller.value * 50, 0), // X軸位移
-                                  child: Row(
+                                  child: const Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    children: const [
+                                    children: [
                                       Text('是 Yes'),
                                       SizedBox(width: 6),
                                       Icon(
@@ -1329,26 +1347,44 @@ class ResultPageState extends State<ResultPage> {
     personalityType += userInfo["conscientiousness"] > 0 ? "C" : "F";
 
     // translate personality to character
-    List personalities = ["NOC", "NOF", "NGC", "NGF", "SOC", "SOF", "SGC", "SGF"];
-    List characters = ["Fox_1", "Cat_1", "Pig_1", "Mouse_1", "Lion_1", "Sheep_1", "Dog_1", "Sloth_1"];
+    List personalities = [
+      "NOC",
+      "NOF",
+      "NGC",
+      "NGF",
+      "SOC",
+      "SOF",
+      "SGC",
+      "SGF"
+    ];
+    List characters = [
+      "Fox_1",
+      "Cat_1",
+      "Pig_1",
+      "Mouse_1",
+      "Lion_1",
+      "Sheep_1",
+      "Dog_1",
+      "Sloth_1"
+    ];
     character = characters[personalities.indexOf(personalityType)];
 
-    imageWidget = Image.asset("assets/images/$character.png",
-        height: 250);
+    imageWidget = Image.asset("assets/images/$character.png", height: 250);
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(backgroundColor: Colors.white, elevation: 0.0),
+        appBar:
+            AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(36, 48, 36, 12),
           child: Container(
             alignment: Alignment.center,
             height: MediaQuery.of(context).size.height * 0.75,
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 2),
+              border: Border.all(color: ColorSet.textColor, width: 2),
               borderRadius: BorderRadius.circular(20),
             ),
             padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
@@ -1358,7 +1394,7 @@ class ResultPageState extends State<ResultPage> {
                 const Text(
                   '以下為您所對應的人格角色：\n',
                   style: TextStyle(
-                    color: Colors.black,
+                    color: ColorSet.textColor,
                     fontSize: 20,
                   ),
                   textAlign: TextAlign.center,
@@ -1368,9 +1404,9 @@ class ResultPageState extends State<ResultPage> {
                 const SizedBox(height: 20),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.black,
+                    foregroundColor: ColorSet.textColor,
                     side: const BorderSide(
-                      color: Colors.black,
+                      color: ColorSet.borderColor,
                     ),
                   ),
                   onPressed: () async {
