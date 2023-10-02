@@ -28,7 +28,7 @@ class SettingsPage extends StatefulWidget {
 
 class SettingsPageState extends State<SettingsPage> {
   Future<void> refresh() async {
-    if (Data.updated) await SettingsData.fetch();
+    if (Data.updatingDB || Data.updatingUI[4]) await SettingsData.fetch();
     setState(() {});
   }
 

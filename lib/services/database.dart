@@ -515,6 +515,7 @@ class GamificationDB {
         // ContractDB 的 gem 加一
         table["${habit}Gem"]++;
         table["${habit}Fragment"] = "0, ${fragment[1]}";
+        // TODO: only update gem when the week is end
         return await update(table) && await ContractDB.updateGem(habit);
       } else {
         // 當 fragment 前後兩個數字不同，第一個數字加一
