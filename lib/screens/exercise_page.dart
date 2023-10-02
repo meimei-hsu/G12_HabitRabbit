@@ -267,7 +267,7 @@ class DoExercisePageState extends State<DoExercisePage> {
               "currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
         }
       }
-      setState(() {});
+      if (totalTime >= 1) setState(() {});
     });
   }
 

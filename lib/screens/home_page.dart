@@ -122,14 +122,7 @@ class HomepageState extends State<Homepage> {
   }
 
   void refresh() async {
-    if (Data.updated) {
-      await HomeData.fetch();
-      await StatData.fetch();
-      await GameData.fetch();
-      await SettingsData.fetch();
-      // FIXME: 新增計畫，不會顯示在 Statistic 的 HeatMap
-      // TODO: await FriendData.fetch();
-    }
+    if (Data.updatingDB || Data.updatingUI[2]) await HomeData.fetch();
     setState(() {});
   }
 

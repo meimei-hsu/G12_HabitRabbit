@@ -10,7 +10,10 @@ import 'package:g12/services/plan_algo.dart';
 // ignore_for_file: avoid_print
 
 class Data {
-  static bool updated = false; // true if database is updated
+  // updatingDB is true if database is updating
+  static bool updatingDB = false;
+  // updatingUI is true if the five component of the bottom navigation bar needs to be updated
+  static List<bool> updatingUI = [false, false, false, false, false];
   static List habitTypes = ["workout", "meditation"];
   static User? user = FirebaseAuth.instance.currentUser;
   static String characterImageURL = "";
@@ -31,6 +34,7 @@ class Data {
     print("initializing data");
     user = FirebaseAuth.instance.currentUser;
     if (Data.user != null) {
+      // fetch data from database
       await fetchProfile();
       await fetchHabits();
       await fetchPlansAndDurations();
@@ -39,30 +43,42 @@ class Data {
       await fetchContract();
       await fetchWeights();
       await fetchClocks();
+      // update UI
       await HomeData.fetch();
-      await StatData.fetch(isInit: true);
+      await StatData.fetch();
       await GameData.fetch();
       await SettingsData.fetch();
+      // execute plan algorithm
       await PlanAlgo.execute();
     }
   }
 
   static Future<void> fetchCharacter() async {
-    if (Data.updated) await fetchGame();
+    if (Data.updatingDB) await fetchGame();
     String character = game?["character"] ?? "Rabbit_2";
     characterImageURL = "assets/images/$character.png";
     characterName = character.substring(0, character.length - 2);
   }
 
   static Future<void> fetchProfile() async {
+    // set HomePage and SettingsPage to true
+    updatingUI[2] = true;
+    updatingUI[4] = true;
+    // fetch user profile
     profile = await UserDB.getUser();
   }
 
   static Future<void> fetchGame() async {
+    // set GamificationPage to true
+    updatingUI[1] = true;
+    // fetch gamification data
     game = await GamificationDB.getGamification();
   }
 
   static Future<void> fetchContract() async {
+    // set GamificationPage to true
+    updatingUI[1] = true;
+    // fetch commitment contracts
     contract = await ContractDB.getContract();
   }
 
@@ -85,11 +101,18 @@ class Data {
   }
 
   static Future<void> fetchPlansAndDurations() async {
+    // set HomePage and StatisticPage to true
+    updatingUI[0] = true;
+    updatingUI[2] = true;
+    // fetch user's habit plans and execution records
     await fetchPlans();
     await fetchDurations();
   }
 
   static Future<void> fetchWeights() async {
+    // set StatisticPage to true
+    updatingUI[0] = true;
+    // fetch user's weights
     weights = await WeightDB.getTable();
   }
 
@@ -103,6 +126,9 @@ class Data {
   }
 
   static Future<void> fetchClocks() async {
+    // set SettingsPage to true
+    updatingUI[4] = true;
+    // fetch user's starting time of the habit plan
     Map temp = {};
     for (String habit in habitTypes) {
       temp[habit] = await ClockDB.getPredictions(habit);
@@ -132,9 +158,9 @@ class PlanData {
 
   static Future<void> fetch(
       {required String habit, bool thisWeek = true}) async {
-    if (Data.updated) {
+    if (Data.updatingDB) {
       await Data.fetchProfile();
-      Data.updated = false;
+      Data.updatingDB = false;
     }
 
     habitIDs = HabitDB.categorize(habit, Data.habits?[habit])!;
@@ -207,12 +233,13 @@ class HomeData {
   static bool isToday = true;
 
   static Future<void> fetch() async {
+    print("Refreshing HomePage...");
     isFetchingData = true;
 
-    if (Data.updated) {
+    if (Data.updatingDB) {
       await Data.fetchPlansAndDurations();
       await Data.fetchProfile();
-      Data.updated = false;
+      Data.updatingDB = false;
     }
 
     List twoWeeks = Calendar.bothWeeks();
@@ -221,6 +248,8 @@ class HomeData {
       setProgressList(habit: habit, twoWeeks: twoWeeks);
     }
     setSelectedDay();
+
+    Data.updatingUI[2] = false;
     isFetchingData = false;
   }
 
@@ -270,13 +299,14 @@ class HomeData {
 
     // set variables for selectedDay
     String selectedDate = Calendar.dateToString(selectedDay!);
+    String today = Calendar.today;
     workoutPlan = workoutPlanList[selectedDate];
     workoutProgress = workoutProgressList[selectedDate];
     meditationPlan = meditationPlanList[selectedDate];
     meditationProgress = meditationProgressList[selectedDate];
-    isBefore = selectedDay!.isBefore(focusedDay);
-    isAfter = selectedDay!.isAfter(focusedDay);
-    isToday = selectedDate == Calendar.dateToString(focusedDay);
+    isBefore = selectedDate.compareTo(today) == -1;
+    isAfter = selectedDate.compareTo(today) == 1;
+    isToday = selectedDate.compareTo(today) == 0;
     time = (isToday) ? "今天" : " ${selectedDay!.month} / ${selectedDay!.day} ";
 
     isFetchingData = false;
@@ -292,10 +322,11 @@ class SettingsData {
       ""; // the type of profile data that user is modifying
 
   static Future<void> fetch() async {
-    if (Data.updated) {
+    print("Refreshing SettingsPage...");
+    if (Data.updatingDB) {
       await Data.fetchClocks();
       await Data.fetchProfile();
-      Data.updated = false;
+      Data.updatingDB = false;
     }
 
     userData = Map.from(Data.profile ?? {});
@@ -309,6 +340,8 @@ class SettingsData {
     timeForecast["workoutClock"] = Data.predClocks?["workout"];
     timeForecast["meditationClock"] = Data.predClocks?["meditation"];
     timeForecast.removeWhere((key, value) => value == null);
+
+    Data.updatingUI[4] = false;
   }
 
   static void isSettingWorkout() {
@@ -381,23 +414,28 @@ class StatData {
   static int accumulatedTime = 0;
   static int monthDays = 0;
 
-  static Future<void> fetch({bool isInit = false}) async {
-    await setWeightData();
-    if (isInit) {
-      await setPlanCompletionData();
-      await setConsecutiveDaysData();
-      await setCumulativeTimeData();
-      await setMonthSuccessData();
+  static Future<void> fetch({bool isAddingWeight = false}) async {
+    print("Refreshing StatisticPage...");
+    if (Data.updatingDB) {
+      await Data.fetchWeights();
+      await Data.fetchPlansAndDurations();
+      Data.updatingDB = false;
     }
+
+    setWeightData();
+    if (!isAddingWeight) {
+      // no need to fetch other data when only weight is updated
+      setPlanCompletionData();
+      setConsecutiveDaysData();
+      setCumulativeTimeData();
+      setMonthSuccessData();
+    }
+
+    Data.updatingUI[0] = false;
   }
 
   // 體重圖表
-  static Future<void> setWeightData() async {
-    if (Data.updated) {
-      await Data.fetchWeights();
-      Data.updated = false;
-    }
-
+  static void setWeightData() {
     var weight = Data.weights; // Fetch user's data from firebase
     if (weight != null) {
       weightDataMap =
@@ -426,12 +464,7 @@ class StatData {
   }
 
   // 計畫進度圖表
-  static Future<void> setPlanCompletionData() async {
-    if (Data.updated) {
-      await Data.fetchDurations();
-      Data.updated = false;
-    }
-
+  static void setPlanCompletionData() {
     var exerciseDuration = Data.durations?["workout"];
     if (exerciseDuration != null) {
       for (MapEntry entry in exerciseDuration.entries) {
@@ -452,12 +485,7 @@ class StatData {
   }
 
   // 連續成功天數圖表
-  static Future<void> setConsecutiveDaysData() async {
-    if (Data.updated) {
-      await Data.fetchDurations();
-      Data.updated = false;
-    }
-
+  static void setConsecutiveDaysData() {
     var exerciseDuration = Data.durations?["workout"];
     if (exerciseDuration != null) {
       DateTime? startDate;
@@ -520,12 +548,7 @@ class StatData {
   }
 
   // 累積時長圖表
-  static Future<void> setCumulativeTimeData() async {
-    if (Data.updated) {
-      await Data.fetchPlansAndDurations();
-      Data.updated = false;
-    }
-
+  static void setCumulativeTimeData() {
     var exerciseDuration = Data.durations?["workout"];
     var exercisePlan = Data.plans?["workout"];
     if (exerciseDuration != null && exercisePlan != null) {
@@ -581,12 +604,7 @@ class StatData {
   }
 
   // 每月成功天數圖表
-  static Future<void> setMonthSuccessData() async {
-    if (Data.updated) {
-      await Data.fetchDurations();
-      Data.updated = false;
-    }
-
+  static void setMonthSuccessData() {
     exerciseMonthDaysList =
         Calculator.getMonthTotalDays(Data.durations?["workout"]) ?? [];
     meditationMonthDaysList =
@@ -614,10 +632,11 @@ class GameData {
   static double totalPercent = 0;
 
   static Future<void> fetch() async {
-    if (Data.updated) {
+    print("Refreshing GamificationPage...");
+    if (Data.updatingDB) {
       await Data.fetchGame();
       await Data.fetchContract();
-      Data.updated = false;
+      Data.updatingDB = false;
     }
 
     if (Data.game != null) {
@@ -629,5 +648,7 @@ class GameData {
           Calculator.calcProgress(Data.game?["meditationFragment"]).toDouble();
       totalPercent = (workoutGem + meditationGem) / 48 * 100;
     }
+
+    Data.updatingUI[1] = false;
   }
 }

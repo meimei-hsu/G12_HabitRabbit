@@ -14,7 +14,7 @@ class GamificationPage extends StatefulWidget {
 
 class GamificationPageState extends State<GamificationPage> {
   void refresh() async {
-    if (Data.updated) await GameData.fetch();
+    if (Data.updatingDB || Data.updatingUI[1]) await GameData.fetch();
     setState(() {});
   }
 

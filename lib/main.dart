@@ -87,23 +87,6 @@ class BottomNavigationControllerState
           showSelectedLabels: false,
           currentIndex: _currentIndex,
           onTap: (index) {
-            if (Data.updated) {
-              switch (_currentIndex) {
-                case 0:
-                  StatData.fetch();
-                  break;
-                case 1:
-                  GameData.fetch();
-                  break;
-                case 2:
-                  HomeData.fetch();
-                  break;
-                case 4:
-                  SettingsData.fetch();
-                  break;
-              }
-            }
-
             setState(() {
               _currentIndex = index;
               EasyLoading.dismiss();

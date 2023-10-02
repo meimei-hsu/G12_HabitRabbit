@@ -29,7 +29,7 @@ class StatisticPageState extends State<StatisticPage> {
   final ScrollController _scrollController = ScrollController();
 
   void refresh() async {
-    if (Data.updated) await StatData.fetch();
+    if (Data.updatingDB || Data.updatingUI[0]) await StatData.fetch();
     setState(() {});
   }
 
@@ -1280,7 +1280,7 @@ class StatisticPageState extends State<StatisticPage> {
                       Calendar.dateToString(selectedDate): weight
                     };
                     await WeightDB.update(addedData);
-                    await StatData.fetch();
+                    await StatData.fetch(isAddingWeight: true);
                   }
                   weightController.clear();
                   setState(() {
