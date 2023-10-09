@@ -143,11 +143,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.edit_calendar_outlined,
                                 color: ColorSet.iconColor),
                             SizedBox(
@@ -161,11 +161,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           ],
                         ),
                       ),
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.cached, color: ColorSet.iconColor),
                             SizedBox(
                               width: 10,
@@ -178,11 +178,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           ],
                         ),
                       ),
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.delete_outline,
                                 color: Colors.deepOrangeAccent),
                             SizedBox(
@@ -354,9 +354,10 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             icon: const Icon(Icons.play_arrow_rounded,
                                 color: ColorSet.iconColor),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: (isToday)
-                                  ? ColorSet.exerciseColor
-                                  : ColorSet.chartLineColor,
+                              backgroundColor:
+                                  (isToday && workoutProgress! < 100)
+                                      ? ColorSet.exerciseColor
+                                      : ColorSet.chartLineColor,
                               shadowColor: ColorSet.backgroundColor,
                               elevation: 0,
                               minimumSize: const Size(0, 45),
@@ -364,7 +365,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            onPressed: (isToday)
+                            onPressed: (isToday && workoutProgress! < 100)
                                 ? () {
                                     int currentIndex =
                                         widget.arguments['currentIndex'];
@@ -399,7 +400,11 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                           'currentIndex': currentIndex
                                         });
                                   }
-                                : null,
+                                : () {
+                                    InformDialog()
+                                        .get(context, "錯誤:(", "無法做非今日的運動計畫噢！")
+                                        .show();
+                                  },
                             label: const Text(
                               "開始運動",
                               style: TextStyle(
@@ -495,11 +500,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                     ),
                     tooltip: "功能清單",
                     itemBuilder: (context) => [
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 1,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.edit_calendar_outlined,
                                 color: ColorSet.iconColor),
                             SizedBox(
@@ -513,11 +518,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           ],
                         ),
                       ),
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 2,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.cached, color: ColorSet.iconColor),
                             SizedBox(
                               width: 10,
@@ -530,11 +535,11 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           ],
                         ),
                       ),
-                      PopupMenuItem(
+                      const PopupMenuItem(
                         value: 3,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Icon(Icons.delete_outline,
                                 color: Colors.deepOrangeAccent),
                             SizedBox(
@@ -719,9 +724,10 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             icon: const Icon(Icons.play_arrow_rounded,
                                 color: ColorSet.iconColor),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: (isToday)
-                                  ? ColorSet.meditationColor
-                                  : ColorSet.chartLineColor,
+                              backgroundColor:
+                                  (isToday && meditationProgress! < 100)
+                                      ? ColorSet.meditationColor
+                                      : ColorSet.chartLineColor,
                               shadowColor: ColorSet.backgroundColor,
                               elevation: 0,
                               minimumSize: const Size(0, 45),
@@ -729,7 +735,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            onPressed: (isToday)
+                            onPressed: (isToday && meditationProgress! < 100)
                                 ? () {
                                     ClockDB.update("meditation", {
                                       Calendar.dateToString(DateTime.now()):

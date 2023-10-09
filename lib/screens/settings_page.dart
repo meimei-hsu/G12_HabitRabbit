@@ -8,6 +8,7 @@ import 'package:motion_toast/motion_toast.dart';
 import 'package:motion_toast/resources/arrays.dart';
 
 import 'package:g12/services/database.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 import '../services/authentication.dart';
 import '../services/page_data.dart';
@@ -16,6 +17,17 @@ IconStyle iconStyle = IconStyle(
   iconsColor: ColorSet.iconColor,
   withBackground: true,
   backgroundColor: ColorSet.bottomBarColor,
+);
+
+TextStyle titleStyle = const TextStyle(
+  color: ColorSet.textColor,
+  fontSize: 18,
+  fontWeight: FontWeight.bold,
+);
+
+TextStyle subtitleStyle = const TextStyle(
+  color: ColorSet.textColor,
+  fontSize: 16,
 );
 
 // UI Layout
@@ -35,70 +47,118 @@ class SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     refresh();
-    return MaterialApp(
-        home: Scaffold(
+    return SafeArea(
+        child: Scaffold(
       backgroundColor: ColorSet.backgroundColor,
       appBar: AppBar(
+        elevation: 0,
         title: const Text(
-          "個人設定",
+          '個人設定',
           textAlign: TextAlign.left,
           style: TextStyle(
               color: ColorSet.textColor,
-              fontSize: 32,
-              letterSpacing: 0,
+              fontSize: 28,
+              letterSpacing: 2,
               fontWeight: FontWeight.bold,
               height: 1),
         ),
         backgroundColor: ColorSet.backgroundColor,
-        elevation: 0,
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.only(right: 20, left: 20),
         child: ListView(
           children: [
             // user card
             SimpleUserCard(
               userName: Data.user!.displayName!,
               userProfilePic: AssetImage(Data.characterImageURL),
+              textStyle: const TextStyle(
+                color: ColorSet.textColor,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             SettingsGroup(
-              settingsGroupTitle: "運動",
+              settingsGroupTitle: "計畫",
+              settingsGroupTitleStyle: const TextStyle(
+                color: ColorSet.textColor,
+                fontSize: 24,
+                letterSpacing: 5,
+                fontWeight: FontWeight.bold,
+              ),
               items: [
+                // FIXME: cannot change background color of SettingsItem
                 SettingsItem(
                   onTap: () {
-                    SettingsData.isSettingWorkout();
-                    showDialog<double>(
+                    //SettingsData.isSettingWorkout();
+                    showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              topLeft: Radius.circular(20)),
+                        ),
+                        backgroundColor: ColorSet.bottomBarColor,
                         context: context,
-                        builder: (context) => const ChangeDurationDialog());
+                        builder: (context) {
+                          SettingsData.isSettingWorkout();
+                          return const ChangeDurationBottomSheet();
+                        });
                   },
                   icons: CupertinoIcons.timer,
                   iconStyle: iconStyle,
-                  title: '運動時長',
-                  subtitle: "更改每次運動計畫的長度",
+                  title: '更改時長',
+                  titleStyle: titleStyle,
+                  //subtitle: "更改每次運動計畫的長度",
+                  //subtitleStyle: subtitleStyle,
                 ),
                 SettingsItem(
                   onTap: () {
-                    SettingsData.isSettingWorkout();
-                    showDialog<double>(
+                    showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              topLeft: Radius.circular(20)),
+                        ),
+                        backgroundColor: ColorSet.bottomBarColor,
                         context: context,
-                        builder: (context) => const ChangeDayDialog());
+                        builder: (context) {
+                          SettingsData.isSettingWorkout();
+                          return const ChangeDayBottomSheet();
+                        });
                   },
                   icons: Icons.calendar_today_outlined,
                   iconStyle: iconStyle,
-                  title: '週運動日',
-                  subtitle: "更改每週可以運動的日子",
+                  title: '更改計畫日',
+                  titleStyle: titleStyle,
+                  //subtitle: "更改每週可以運動的日子",
+                  //subtitleStyle: subtitleStyle,
                 ),
                 SettingsItem(
                   onTap: () {
-                    SettingsData.isSettingWorkout();
+                    showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              topLeft: Radius.circular(20)),
+                        ),
+                        backgroundColor: ColorSet.bottomBarColor,
+                        context: context,
+                        builder: (context) {
+                          SettingsData.isSettingWorkout();
+                          return const ChangeStartTimeBottomSheet();
+                        });
+                    /*SettingsData.isSettingWorkout();
                     showDialog<double>(
                         context: context,
-                        builder: (context) => const ChangeStartTimeDialog());
+                        builder: (context) => const ChangeStartTimeDialog());*/
                   },
                   icons: Icons.notifications_none,
                   iconStyle: iconStyle,
-                  title: '運動通知',
-                  subtitle: "更改每天開始運動的時間",
+                  title: '更改通知時間',
+                  titleStyle: titleStyle,
+                  //subtitle: "更改每天開始運動的時間",
+                  //subtitleStyle: subtitleStyle,
                 ),
                 SettingsItem(
                   onTap: () {
@@ -109,8 +169,10 @@ class SettingsPageState extends State<SettingsPage> {
                   },
                   icons: CupertinoIcons.heart_circle,
                   iconStyle: iconStyle,
-                  title: '運動偏好',
-                  subtitle: "更改每類運動的喜愛程度",
+                  title: '更改類型喜愛程度',
+                  titleStyle: titleStyle,
+                  //subtitle: "更改每類運動的喜愛程度",
+                  //subtitleStyle: subtitleStyle,
                 ),
                 SettingsItem(
                   onTap: () {
@@ -121,14 +183,22 @@ class SettingsPageState extends State<SettingsPage> {
                   },
                   icons: Icons.gps_fixed,
                   iconStyle: iconStyle,
-                  title: '運動目標',
-                  subtitle: "更改運動的目標與動機",
+                  title: '更改目標與動機',
+                  titleStyle: titleStyle,
+                  //subtitle: "更改運動的目標與動機",
+                  //subtitleStyle: subtitleStyle,
                 ),
               ],
             ),
             // TODO: Combine to habits group
-            SettingsGroup(
+           /*SettingsGroup(
               settingsGroupTitle: "冥想",
+              settingsGroupTitleStyle: const TextStyle(
+                color: ColorSet.textColor,
+                fontSize: 24,
+                letterSpacing: 5,
+                fontWeight: FontWeight.bold,
+              ),
               items: [
                 SettingsItem(
                   onTap: () {
@@ -140,7 +210,9 @@ class SettingsPageState extends State<SettingsPage> {
                   icons: CupertinoIcons.timer,
                   iconStyle: iconStyle,
                   title: '冥想時長',
+                  titleStyle: titleStyle,
                   subtitle: "更改每次冥想計畫的長度",
+                  subtitleStyle: subtitleStyle,
                 ),
                 SettingsItem(
                   onTap: () {
@@ -152,7 +224,9 @@ class SettingsPageState extends State<SettingsPage> {
                   icons: Icons.calendar_today_outlined,
                   iconStyle: iconStyle,
                   title: '週冥想日',
+                  titleStyle: titleStyle,
                   subtitle: "更改每週可以冥想的日子",
+                  subtitleStyle: subtitleStyle,
                 ),
                 SettingsItem(
                   onTap: () {
@@ -164,7 +238,9 @@ class SettingsPageState extends State<SettingsPage> {
                   icons: Icons.notifications_none,
                   iconStyle: iconStyle,
                   title: '冥想通知',
+                  titleStyle: titleStyle,
                   subtitle: "更改每天開始冥想的時間",
+                  subtitleStyle: subtitleStyle,
                 ),
                 SettingsItem(
                   onTap: () {
@@ -176,7 +252,9 @@ class SettingsPageState extends State<SettingsPage> {
                   icons: CupertinoIcons.heart_circle,
                   iconStyle: iconStyle,
                   title: '冥想偏好',
+                  titleStyle: titleStyle,
                   subtitle: "更改每類冥想的喜愛程度",
+                  subtitleStyle: subtitleStyle,
                 ),
                 SettingsItem(
                   onTap: () {
@@ -188,12 +266,20 @@ class SettingsPageState extends State<SettingsPage> {
                   icons: Icons.gps_fixed,
                   iconStyle: iconStyle,
                   title: '冥想目標',
+                  titleStyle: titleStyle,
                   subtitle: "更改冥想的目標與動機",
+                  subtitleStyle: subtitleStyle,
                 ),
               ],
-            ),
+            ),*/
             SettingsGroup(
               settingsGroupTitle: "個人",
+              settingsGroupTitleStyle: const TextStyle(
+                color: ColorSet.textColor,
+                fontSize: 24,
+                letterSpacing: 5,
+                fontWeight: FontWeight.bold,
+              ),
               items: [
                 SettingsItem(
                   onTap: () async {
@@ -208,24 +294,33 @@ class SettingsPageState extends State<SettingsPage> {
                   icons: CupertinoIcons.textformat_alt,
                   iconStyle: iconStyle,
                   title: '更改暱稱',
+                  titleStyle: titleStyle,
                 ),
                 SettingsItem(
-                    onTap: () {
-                      SettingsData.isSettingPassword();
-                      showDialog<double>(
-                          context: context,
-                          builder: (context) => const ChangeProfileDialog());
-                      setState(() {
-                        Data.user = FirebaseAuth.instance.currentUser!;
-                      });
-                    },
-                    icons: Icons.password_outlined,
-                    iconStyle: iconStyle,
-                    title: '更改密碼'),
+                  onTap: () {
+                    SettingsData.isSettingPassword();
+                    showDialog<double>(
+                        context: context,
+                        builder: (context) => const ChangeProfileDialog());
+                    setState(() {
+                      Data.user = FirebaseAuth.instance.currentUser!;
+                    });
+                  },
+                  icons: Icons.password_outlined,
+                  iconStyle: iconStyle,
+                  title: '更改密碼',
+                  titleStyle: titleStyle,
+                ),
               ],
             ),
             SettingsGroup(
               settingsGroupTitle: "帳號",
+              settingsGroupTitleStyle: const TextStyle(
+                color: ColorSet.textColor,
+                fontSize: 24,
+                letterSpacing: 5,
+                fontWeight: FontWeight.bold,
+              ),
               items: [
                 SettingsItem(
                   onTap: () async {
@@ -235,6 +330,7 @@ class SettingsPageState extends State<SettingsPage> {
                   },
                   icons: Icons.exit_to_app_rounded,
                   title: "登出帳號",
+                  titleStyle: titleStyle,
                 ),
                 SettingsItem(
                   onTap: () {},
@@ -255,15 +351,18 @@ class SettingsPageState extends State<SettingsPage> {
 }
 
 // UI elements
-class ChangeDurationDialog extends StatefulWidget {
-  const ChangeDurationDialog({super.key});
+class ChangeDurationBottomSheet extends StatefulWidget {
+  const ChangeDurationBottomSheet({super.key});
 
   @override
-  ChangeDurationDialogState createState() => ChangeDurationDialogState();
+  ChangeDurationBottomSheetState createState() =>
+      ChangeDurationBottomSheetState();
 }
 
-class ChangeDurationDialogState extends State<ChangeDurationDialog> {
+class ChangeDurationBottomSheetState extends State<ChangeDurationBottomSheet> {
   int exerciseTime = 0;
+  int planToChange = 0; // 0 = 運動, 1 = 冥想
+
   String key = "${SettingsData.habitType}Time";
 
   @override
@@ -280,12 +379,16 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
       btnList.add(
         OutlinedButton(
           style: OutlinedButton.styleFrom(
-            shape: const CircleBorder(),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
             side: const BorderSide(
-              color: ColorSet.textColor,
+              color: ColorSet.borderColor,
             ),
             backgroundColor: (exerciseTime == choice)
-                ? ColorSet.exerciseColor
+                ? (planToChange == 0)
+                    ? ColorSet.exerciseColor
+                    : ColorSet.meditationColor
                 : ColorSet.backgroundColor,
           ),
           onPressed: () {
@@ -308,96 +411,143 @@ class ChangeDurationDialogState extends State<ChangeDurationDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: ColorSet.backgroundColor,
-      title: Text(
-        "${SettingsData.habitTypeZH}時長(分鐘)",
-        style: const TextStyle(
-          color: ColorSet.textColor,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Column(
+    return Container(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.width * 0.1,
-            width: double.maxFinite,
-            child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: _getDurationBtnList()),
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+            title: Text(
+              "更改${SettingsData.habitTypeZH}時長（分鐘）",
+              style: const TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
+            ),
+            trailing: Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: ColorSet.iconColor,
+                ),
+                tooltip: "關閉",
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+          ToggleSwitch(
+            minWidth: MediaQuery.of(context).size.width,
+            //minHeight: 35,
+            initialLabelIndex: planToChange,
+            cornerRadius: 10.0,
+            radiusStyle: true,
+            labels: const ['運動', '冥想'],
+            icons: const [
+              Icons.fitness_center_outlined,
+              Icons.self_improvement_outlined
+            ],
+            fontSize: 18,
+            iconSize: 20,
+            activeBgColors: const [
+              [ColorSet.exerciseColor],
+              [ColorSet.meditationColor]
+            ],
+            activeFgColor: ColorSet.textColor,
+            inactiveBgColor: ColorSet.backgroundColor,
+            inactiveFgColor: ColorSet.textColor,
+            totalSwitches: 2,
+            onToggle: (index) {
+              planToChange = index!;
+              (index == 0)
+                  ? SettingsData.isSettingWorkout()
+                  : SettingsData.isSettingMeditation();
+              key = "${SettingsData.habitType}Time";
+              exerciseTime = SettingsData.userData[key];
+              setState(() {});
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            "你要將${SettingsData.habitTypeZH}時長更改為幾分鐘呢呢？",
+            style: const TextStyle(color: ColorSet.textColor, fontSize: 18),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: _getDurationBtnList(),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 18),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                backgroundColor: (planToChange == 0)
+                    ? ColorSet.backgroundColor
+                    : ColorSet.backgroundColor,
+                shadowColor: ColorSet.borderColor,
+                //elevation: 0,
+                minimumSize: const Size.fromHeight(50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                num original = SettingsData.userData[key];
+                num modified = exerciseTime;
+                if (modified != original) {
+                  SettingsData.userData[key] = modified;
+                  await UserDB.update({key: modified});
+                }
+
+                if (!mounted) return;
+                InformDialog()
+                    .get(context, "完成更改:)", "${SettingsData.habitTypeZH}時長已更新！")
+                    .show();
+              },
+              child: const Text(
+                "確定",
+                style: TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
         ],
       ),
-      actions: [
-        OutlinedButton(
-            child: const Text(
-              "取消",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorSet.exerciseColor,
-            ),
-            onPressed: () async {
-              num original = SettingsData.userData[key];
-              num modified = exerciseTime;
-              if (modified != original) {
-                SettingsData.userData[key] = modified;
-                await UserDB.update({key: modified});
-              }
-
-              if (!mounted) return;
-              Navigator.pop(context);
-              MotionToast(
-                icon: Icons.done_all_rounded,
-                primaryColor: const Color(0xffffa493),
-                description: Text(
-                  "${SettingsData.habitTypeZH}時長已更新",
-                  style: const TextStyle(
-                    color: ColorSet.textColor,
-                    fontSize: 16,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                  ),
-                ),
-                position: MotionToastPosition.bottom,
-                animationType: AnimationType.fromBottom,
-                animationCurve: Curves.bounceIn,
-                //displaySideBar: false,
-              ).show(context);
-            },
-            child: const Text(
-              "確定",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            )),
-      ],
     );
   }
 }
 
-class ChangeDayDialog extends StatefulWidget {
-  const ChangeDayDialog({super.key});
+class ChangeDayBottomSheet extends StatefulWidget {
+  const ChangeDayBottomSheet({super.key});
 
   @override
-  ChangeDayDialogState createState() => ChangeDayDialogState();
+  ChangeDayBottomSheetState createState() => ChangeDayBottomSheetState();
 }
 
-class ChangeDayDialogState extends State<ChangeDayDialog> {
+class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
   List weekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
   List selectedDays = [];
   List selectedNames = [];
+
+  int planToChange = 0; // 0 = 運動, 1 = 冥想
+
   String key = "${SettingsData.habitType}Days";
+
+  final ScrollController _controller = ScrollController();
 
   @override
   initState() {
@@ -410,18 +560,22 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
   }
 
   List<Widget> _getDayBtnList() {
-    List<OutlinedButton> btnList = [];
+    List<Widget> btnList = [];
 
     for (int i = 0; i < 7; i++) {
       btnList.add(
         OutlinedButton(
           style: OutlinedButton.styleFrom(
-            shape: const CircleBorder(),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
             side: const BorderSide(
-              color: ColorSet.textColor,
+              color: ColorSet.borderColor,
             ),
             backgroundColor: (selectedNames.contains(weekdayNameList[i]))
-                ? ColorSet.exerciseColor
+                ? (planToChange == 0)
+                    ? ColorSet.exerciseColor
+                    : ColorSet.meditationColor
                 : ColorSet.backgroundColor,
           ),
           onPressed: () {
@@ -447,101 +601,168 @@ class ChangeDayDialogState extends State<ChangeDayDialog> {
           ),
         ),
       );
+      if (i != 6) {
+        btnList.add(const SizedBox(
+          width: 10,
+        ));
+      }
     }
     return btnList;
   }
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: ColorSet.backgroundColor,
-      title: Text(
-        "每週${SettingsData.habitTypeZH}日",
-        style: const TextStyle(
-          color: ColorSet.textColor,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Column(
+    return Container(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+            title: Text(
+              "更改每週${SettingsData.habitTypeZH}日",
+              style: const TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
+            ),
+            trailing: Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: ColorSet.iconColor,
+                ),
+                tooltip: "關閉",
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+          ToggleSwitch(
+            minWidth: MediaQuery.of(context).size.width,
+            //minHeight: 35,
+            initialLabelIndex: planToChange,
+            cornerRadius: 10.0,
+            radiusStyle: true,
+            labels: const ['運動', '冥想'],
+            icons: const [
+              Icons.fitness_center_outlined,
+              Icons.self_improvement_outlined
+            ],
+            fontSize: 18,
+            iconSize: 20,
+            activeBgColors: const [
+              [ColorSet.exerciseColor],
+              [ColorSet.meditationColor]
+            ],
+            activeFgColor: ColorSet.textColor,
+            inactiveBgColor: ColorSet.backgroundColor,
+            inactiveFgColor: ColorSet.textColor,
+            totalSwitches: 2,
+            onToggle: (index) {
+              planToChange = index!;
+              (index == 0)
+                  ? SettingsData.isSettingWorkout()
+                  : SettingsData.isSettingMeditation();
+
+              key = "${SettingsData.habitType}Days";
+              selectedDays = SettingsData.userData[key];
+              selectedNames = [
+                for (int i = 0; i < 7; i++)
+                  if (selectedDays[i] == 1) weekdayNameList[i]
+              ];
+              setState(() {});
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            "你要將每週${SettingsData.habitTypeZH}日更改為哪幾天呢？",
+            style: const TextStyle(color: ColorSet.textColor, fontSize: 18),
+          ),
+          const SizedBox(height: 10),
           SizedBox(
-            height: MediaQuery.of(context).size.width * 0.1,
-            width: double.maxFinite,
-            child: ListView(
-                scrollDirection: Axis.horizontal, children: _getDayBtnList()),
+              height: MediaQuery.of(context).size.width * 0.1,
+              width: MediaQuery.of(context).size.width * 0.85,
+              child: Scrollbar(
+                controller: _controller,
+                thumbVisibility: true,
+                child: ListView(
+                    controller: _controller,
+                    scrollDirection: Axis.horizontal,
+                    children: _getDayBtnList()),
+              )),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 18),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                backgroundColor: (planToChange == 0)
+                    ? ColorSet.backgroundColor
+                    : ColorSet.backgroundColor,
+                shadowColor: ColorSet.borderColor,
+                //elevation: 0,
+                minimumSize: const Size.fromHeight(50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                List original = SettingsData.userData[key];
+                List modified = selectedDays;
+                if (modified != original) {
+                  SettingsData.userData[key] = modified;
+                  await UserDB.update({key: modified.join("")});
+                }
+
+                if (!mounted) return;
+                InformDialog()
+                    .get(context, "完成更改:)", "週${SettingsData.habitTypeZH}日已更新！")
+                    .show();
+              },
+              child: const Text(
+                "確定",
+                style: TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
         ],
       ),
-      actions: [
-        OutlinedButton(
-            child: const Text(
-              "取消",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorSet.exerciseColor,
-            ),
-            onPressed: () async {
-              List original = SettingsData.userData[key];
-              List modified = selectedDays;
-              if (modified != original) {
-                SettingsData.userData[key] = modified;
-                await UserDB.update({key: modified.join("")});
-              }
-
-              if (!mounted) return;
-              Navigator.pop(context);
-              MotionToast(
-                icon: Icons.done_all_rounded,
-                primaryColor: const Color(0xffffa493),
-                description: Text(
-                  "週${SettingsData.habitTypeZH}日已更新",
-                  style: const TextStyle(
-                    color: ColorSet.textColor,
-                    fontSize: 16,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                  ),
-                ),
-                position: MotionToastPosition.bottom,
-                animationType: AnimationType.fromBottom,
-                animationCurve: Curves.bounceIn,
-                //displaySideBar: false,
-              ).show(context);
-            },
-            child: const Text(
-              "確定",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            )),
-      ],
     );
   }
 }
 
-class ChangeStartTimeDialog extends StatefulWidget {
-  const ChangeStartTimeDialog({super.key});
+class ChangeStartTimeBottomSheet extends StatefulWidget {
+  const ChangeStartTimeBottomSheet({super.key});
 
   @override
-  ChangeStartTimeDialogState createState() => ChangeStartTimeDialogState();
+  ChangeStartTimeBottomSheetState createState() =>
+      ChangeStartTimeBottomSheetState();
 }
 
-class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
+class ChangeStartTimeBottomSheetState
+    extends State<ChangeStartTimeBottomSheet> {
   List weekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
   List selectedDays = []; // the index of the weekdays
   Map forecast = {};
+
+  int planToChange = 0; // 0 = 運動, 1 = 冥想
+
   String key = "${SettingsData.habitType}Clock";
+
+  final ScrollController _controller = ScrollController();
 
   @override
   initState() {
@@ -593,16 +814,31 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
             backgroundColor: ColorSet.backgroundColor,
             foregroundColor: ColorSet.textColor,
             side: const BorderSide(color: ColorSet.borderColor),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: [
               const SizedBox(width: 20),
-              Text(weekday),
+              Text(
+                weekday,
+                style: const TextStyle(
+                    color: ColorSet.textColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: [Text(selectedTime)],
+                  children: [
+                    Text(
+                      selectedTime,
+                      style: const TextStyle(
+                          color: ColorSet.textColor, fontSize: 16),
+                    )
+                  ],
                 ),
               ),
               const SizedBox(width: 20),
@@ -616,76 +852,131 @@ class ChangeStartTimeDialogState extends State<ChangeStartTimeDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: ColorSet.backgroundColor,
-      title: Text(
-        "${SettingsData.habitTypeZH}通知時間",
-        style: const TextStyle(
-          color: ColorSet.textColor,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Column(
+    return Container(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.1,
-            width: double.maxFinite,
-            child: ListView(
-                scrollDirection: Axis.vertical, children: _getTimeBtnList()),
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+            title: Text(
+              "更改${SettingsData.habitTypeZH}通知時間",
+              style: const TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
+            ),
+            trailing: Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: ColorSet.iconColor,
+                ),
+                tooltip: "關閉",
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+          ToggleSwitch(
+            minWidth: MediaQuery.of(context).size.width,
+            //minHeight: 35,
+            initialLabelIndex: planToChange,
+            cornerRadius: 10.0,
+            radiusStyle: true,
+            labels: const ['運動', '冥想'],
+            icons: const [
+              Icons.fitness_center_outlined,
+              Icons.self_improvement_outlined
+            ],
+            fontSize: 18,
+            iconSize: 20,
+            activeBgColors: const [
+              [ColorSet.exerciseColor],
+              [ColorSet.meditationColor]
+            ],
+            activeFgColor: ColorSet.textColor,
+            inactiveBgColor: ColorSet.backgroundColor,
+            inactiveFgColor: ColorSet.textColor,
+            totalSwitches: 2,
+            onToggle: (index) {
+              planToChange = index!;
+              (index == 0)
+                  ? SettingsData.isSettingWorkout()
+                  : SettingsData.isSettingMeditation();
+
+              key = "${SettingsData.habitType}Clock";
+              selectedDays = [
+                for (int i = 0; i < 7; i++)
+                  if (SettingsData.userData["${SettingsData.habitType}Days"]
+                          [i] ==
+                      1)
+                    i
+              ];
+              forecast = SettingsData.timeForecast[key];
+              setState(() {});
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              height: MediaQuery.of(context).size.height * 0.25,
+              width: double.maxFinite,
+              child: Scrollbar(
+                controller: _controller,
+                thumbVisibility: true,
+                child: ListView(
+                    controller: _controller,
+                    scrollDirection: Axis.vertical,
+                    children: _getTimeBtnList()),
+              )),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 18),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                backgroundColor: (planToChange == 0)
+                    ? ColorSet.backgroundColor
+                    : ColorSet.backgroundColor,
+                shadowColor: ColorSet.borderColor,
+                //elevation: 0,
+                minimumSize: const Size.fromHeight(50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                SettingsData.timeForecast[key] = forecast;
+                ClockDB.update(
+                    SettingsData.habitType, Map<String, String>.from(forecast));
+
+                if (!mounted) return;
+                InformDialog()
+                    .get(context, "完成更改:)",
+                        "${SettingsData.habitTypeZH}通知時間已更新！")
+                    .show();
+              },
+              child: const Text(
+                "確定",
+                style: TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
         ],
       ),
-      actions: [
-        OutlinedButton(
-            child: const Text(
-              "取消",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorSet.exerciseColor,
-            ),
-            onPressed: () async {
-              SettingsData.timeForecast[key] = forecast;
-              ClockDB.update(
-                  SettingsData.habitType, Map<String, String>.from(forecast));
-
-              if (!mounted) return;
-              Navigator.pop(context);
-              MotionToast(
-                icon: Icons.done_all_rounded,
-                primaryColor: const Color(0xffffa493),
-                description: Text(
-                  "${SettingsData.habitTypeZH}通知時間已更新",
-                  style: const TextStyle(
-                    color: ColorSet.textColor,
-                    fontSize: 16,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                  ),
-                ),
-                position: MotionToastPosition.bottom,
-                animationType: AnimationType.fromBottom,
-                animationCurve: Curves.bounceIn,
-                //displaySideBar: false,
-              ).show(context);
-            },
-            child: const Text(
-              "確定",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            )),
-      ],
     );
   }
 }

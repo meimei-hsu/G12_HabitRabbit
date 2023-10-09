@@ -1206,6 +1206,7 @@ class StatisticPageState extends State<StatisticPage> {
                         selectedDate: selectedDate,
                         maximumDate: DateTime.now(),
                         options: const DatePickerOptions(
+                            isLoop: false,
                             backgroundColor: ColorSet.backgroundColor),
                         scrollViewOptions: const DatePickerScrollViewOptions(
                             year: ScrollViewDetailOptions(

@@ -327,24 +327,6 @@ class DoExercisePageState extends State<DoExercisePage> {
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              /*Container(
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.only(left: 10),
-                height: 60,
-                width: MediaQuery.of(context).size.width,
-                color: const Color(0xfffaf0ca),
-                child: Text(
-                  constructTime(totalTime),
-                  //'$seconds',
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                      color: Color(0xff4b4370),
-                      fontSize: 32,
-                      letterSpacing: 0,
-                      fontWeight: FontWeight.bold,
-                      height: 1),
-                ),
-              ),*/
               const SizedBox(height: 10),
               Container(
                 decoration: const BoxDecoration(
@@ -392,6 +374,21 @@ class DoExercisePageState extends State<DoExercisePage> {
                           _getVideoList(widget.arguments['exerciseItem'])),
                     ),
                   )),
+              const SizedBox(height: 10),
+              Container(
+                alignment: Alignment.center,
+                height: 60,
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  constructTime(totalTime),
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    color: ColorSet.textColor,
+                    fontSize: 48,
+                    letterSpacing: 2,
+                    fontWeight: FontWeight.bold,),
+                ),
+              ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -126,7 +126,12 @@ class HomepageState extends State<Homepage> {
     setState(() {});
   }
 
-  Color selectedColor = ColorSet.buttonColor;
+  Color selectedColor = (DateTime(HomeData.selectedDay!.year,
+              HomeData.selectedDay!.month, HomeData.selectedDay!.day) ==
+          DateTime(
+              HomeData.today.year, HomeData.today.month, HomeData.today.day))
+      ? ColorSet.buttonColor
+      : ColorSet.backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -408,9 +413,10 @@ class HomepageState extends State<Homepage> {
                 const SizedBox(height: 5),
                 IconButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, "/questionnaire", arguments: {"part": 0});
+                      Navigator.pushNamed(context, "/questionnaire",
+                          arguments: {"part": 0});
                     },
-                    icon: Icon(Icons.accessibility_outlined, size:40))
+                    icon: Icon(Icons.accessibility_outlined, size: 40))
               ],
             ),
     ));
@@ -443,7 +449,8 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
 
     for (int i = 1; i <= 4; i++) {
       int choice = 15 * i;
-      btnList.add(OutlinedButton(
+      btnList.add(
+          OutlinedButton(
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
