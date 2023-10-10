@@ -22,6 +22,7 @@ class Data {
   // general database records:
   static Map? profile; // whole user profile from UserDB
   static Map? game; // user's gamification data from GamificationDB
+  static Map? community; // gamification table with all user
   static Map? contract; // user's contract data from ContractDB
   static Map<String, SplayTreeMap>? plans; // user's every plan record
   static Map<String, SplayTreeMap>? durations; // user's every duration record
@@ -72,7 +73,8 @@ class Data {
     // set GamificationPage to true
     updatingUI[1] = true;
     // fetch gamification data
-    game = await GamificationDB.getGamification();
+    community = await GamificationDB.getAll();
+    game = community![user!.uid];
   }
 
   static Future<void> fetchContract() async {

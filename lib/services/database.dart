@@ -440,10 +440,40 @@ class GamificationDB {
         "friends" // String
       ];
 
+  // Select whole table of gamification
+  static Future<Map?> getAll() async {
+    var snapshot = await DB.selectAll(db);
+    return (snapshot != null) ? Map.from(snapshot as Map) : null;
+  }
+
   // Select milestone from userID
   static Future<Map?> getGamification() async {
     var snapshot = await DB.select(db, uid);
     return (snapshot != null) ? Map.from(snapshot as Map) : null;
+  }
+
+  static Map? getFriendInfo(String friendID) {
+    String? wholeID;
+    Data.community?.forEach((key, value) {
+      if (key.substring(0, 8) == friendID) {
+        wholeID = key;
+      }
+    });
+    return Data.community?[wholeID];
+  }
+
+  static getChart(String category) {
+    Map levels = {};
+
+    Data.community?.forEach((key, value) {
+      // TODO: 重名情況待解決
+      String catVal = value[category];
+      if (category == "characterLevel") catVal = catVal[catVal.length - 1];
+      levels[value["userName"]] = catVal;
+    });
+
+    levels = Map.fromEntries(
+        levels.entries.toList()..sort((e1, e2) => e1.value.compareTo(e2.value)));
   }
 
   static Future<bool> insert(Map userInfo, String character) async {
