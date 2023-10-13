@@ -73,8 +73,8 @@ class Data {
     // set GamificationPage to true
     updatingUI[1] = true;
     // fetch gamification data
-    community = await GamificationDB.getAll();
-    game = community![user!.uid];
+    game = await GamificationDB.getGamification();
+    // game = community![user!.uid];
   }
 
   static Future<void> fetchContract() async {
