@@ -436,6 +436,20 @@ class DoMeditationPageState extends State<DoMeditationPage> {
   bool ifStart = false;
   var period = const Duration(seconds: 1);
 
+  /* 計時器時間設定 */
+  // 時間格式化，根據總秒數轉換為對應的 hh:mm:ss 格式
+  String constructTime(int seconds) {
+    //int hour = seconds ~/ 3600;
+    int minute = seconds % 3600 ~/ 60;
+    int second = seconds % 60;
+    return "${formatTime(minute)}:${formatTime(second)}";
+  }
+
+  // 時間格式化，將 0~9 的時間轉換為 00~09
+  String formatTime(int timeNum) {
+    return timeNum < 10 ? "0$timeNum" : timeNum.toString();
+  }
+
   Future<bool> checkExit() async {
     bool canExit = false;
 
@@ -562,24 +576,6 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              /*Container(
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.only(left: 10),
-                height: 60,
-                width: MediaQuery.of(context).size.width,
-                color: const Color(0xfffaf0ca),
-                child: Text(
-                  constructTime(totalTime),
-                  //'$seconds',
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                      color: Color(0xff4b4370),
-                      fontSize: 32,
-                      letterSpacing: 0,
-                      fontWeight: FontWeight.bold,
-                      height: 1),
-                ),
-              ),*/
               const SizedBox(height: 10),
               Container(
                 decoration: const BoxDecoration(
@@ -625,6 +621,21 @@ class DoMeditationPageState extends State<DoMeditationPage> {
                       child: Image.asset("assets/videos/v3.gif"),
                     ),
                   )),
+              const SizedBox(height: 10),
+              Container(
+                alignment: Alignment.center,
+                height: 60,
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  constructTime(totalTime),
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    color: ColorSet.textColor,
+                    fontSize: 48,
+                    letterSpacing: 2,
+                    fontWeight: FontWeight.bold,),
+                ),
+              ),
               const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

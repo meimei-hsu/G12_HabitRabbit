@@ -91,7 +91,6 @@ class SettingsPageState extends State<SettingsPage> {
                 // FIXME: cannot change background color of SettingsItem
                 SettingsItem(
                   onTap: () {
-                    //SettingsData.isSettingWorkout();
                     showModalBottomSheet(
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
@@ -162,10 +161,18 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    SettingsData.isSettingWorkout();
-                    showDialog<double>(
+                    showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              topLeft: Radius.circular(20)),
+                        ),
+                        backgroundColor: ColorSet.bottomBarColor,
                         context: context,
-                        builder: (context) => const ChangeLikingDialog());
+                        builder: (context) {
+                          SettingsData.isSettingWorkout();
+                          return const ChangeLikingBottomSheet();
+                        });
                   },
                   icons: CupertinoIcons.heart_circle,
                   iconStyle: iconStyle,
@@ -176,10 +183,18 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    SettingsData.isSettingWorkout();
-                    showDialog<double>(
+                    showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              topLeft: Radius.circular(20)),
+                        ),
+                        backgroundColor: ColorSet.bottomBarColor,
                         context: context,
-                        builder: (context) => const ChangeGoalDialog());
+                        builder: (context) {
+                          SettingsData.isSettingWorkout();
+                          return const ChangeGoalDialog();
+                        });
                   },
                   icons: Icons.gps_fixed,
                   iconStyle: iconStyle,
@@ -191,7 +206,7 @@ class SettingsPageState extends State<SettingsPage> {
               ],
             ),
             // TODO: Combine to habits group
-           /*SettingsGroup(
+            /*SettingsGroup(
               settingsGroupTitle: "冥想",
               settingsGroupTitleStyle: const TextStyle(
                 color: ColorSet.textColor,
@@ -476,7 +491,7 @@ class ChangeDurationBottomSheetState extends State<ChangeDurationBottomSheet> {
             height: 10,
           ),
           Text(
-            "你要將${SettingsData.habitTypeZH}時長更改為幾分鐘呢呢？",
+            "你要將${SettingsData.habitTypeZH}時長更改為幾分鐘呢？",
             style: const TextStyle(color: ColorSet.textColor, fontSize: 18),
           ),
           const SizedBox(height: 10),
@@ -981,19 +996,23 @@ class ChangeStartTimeBottomSheetState
   }
 }
 
-class ChangeLikingDialog extends StatefulWidget {
-  const ChangeLikingDialog({super.key});
+class ChangeLikingBottomSheet extends StatefulWidget {
+  const ChangeLikingBottomSheet({super.key});
 
   @override
-  ChangeLikingDialogState createState() => ChangeLikingDialogState();
+  ChangeLikingBottomSheetState createState() => ChangeLikingBottomSheetState();
 }
 
-class ChangeLikingDialogState extends State<ChangeLikingDialog> {
+class ChangeLikingBottomSheetState extends State<ChangeLikingBottomSheet> {
   Map<String, num> likings = {};
   List<String> categories = [];
   List<String> keys = [];
   Map<String, IconData> icons = {};
   String dropdownValue = "";
+
+  int planToChange = 0; // 0 = 運動, 1 = 冥想
+
+  final ScrollController _controller = ScrollController();
 
   @override
   initState() {
@@ -1022,24 +1041,31 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
   Widget _getSlider(int i) {
     var currentValue = likings[keys[i]]! / 20;
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Slider(
-        value: currentValue,
-        min: 0,
-        max: 5,
-        divisions: 50,
-        onChanged: (value) {
-          setState(() {
-            likings[keys[i]] = value * 20;
-          });
-        },
+      Expanded(
+        child: Slider(
+          value: currentValue,
+          min: 0,
+          max: 5,
+          divisions: 50,
+          activeColor: (planToChange == 0)
+              ? ColorSet.exerciseColor
+              : ColorSet.meditationColor,
+          inactiveColor: (planToChange == 0)
+              ? ColorSet.backgroundColor
+              : ColorSet.backgroundColor,
+          onChanged: (value) {
+            setState(() {
+              likings[keys[i]] = value * 20;
+            });
+          },
+        ),
       ),
       Text(
         currentValue.toStringAsFixed(1),
-        textAlign: TextAlign.right,
         style: const TextStyle(
             color: ColorSet.textColor,
-            fontSize: 15,
-            fontWeight: FontWeight.normal,
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
             height: 1),
       ),
     ]);
@@ -1047,23 +1073,98 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: ColorSet.backgroundColor,
-      title: Text(
-        "${SettingsData.habitTypeZH}偏好(0~5分)",
-        style: const TextStyle(
-          color: ColorSet.textColor,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Column(
+    return Container(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+            title: Text(
+              "更改${SettingsData.habitTypeZH}偏好",
+              style: const TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
+            ),
+            trailing: Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: ColorSet.iconColor,
+                ),
+                tooltip: "關閉",
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+          ToggleSwitch(
+            minWidth: MediaQuery.of(context).size.width,
+            //minHeight: 35,
+            initialLabelIndex: planToChange,
+            cornerRadius: 10.0,
+            radiusStyle: true,
+            labels: const ['運動', '冥想'],
+            icons: const [
+              Icons.fitness_center_outlined,
+              Icons.self_improvement_outlined
+            ],
+            fontSize: 18,
+            iconSize: 20,
+            activeBgColors: const [
+              [ColorSet.exerciseColor],
+              [ColorSet.meditationColor]
+            ],
+            activeFgColor: ColorSet.textColor,
+            inactiveBgColor: ColorSet.backgroundColor,
+            inactiveFgColor: ColorSet.textColor,
+            totalSwitches: 2,
+            onToggle: (index) {
+              planToChange = index!;
+              (index == 0)
+                  ? SettingsData.isSettingWorkout()
+                  : SettingsData.isSettingMeditation();
+
+              if (SettingsData.habitType == "workout") {
+                categories = ["肌力運動", "有氧運動", "瑜珈運動"];
+                keys = ["strengthLiking", "cardioLiking", "yogaLiking"];
+                icons = {
+                  "肌力運動": Icons.fitness_center,
+                  "有氧運動": Icons.directions_run,
+                  "瑜珈運動": Icons.self_improvement
+                };
+              } else if (SettingsData.habitType == "meditation") {
+                categories = ["正念冥想", "工作冥想", "慈心冥想"];
+                keys = ["mindfulnessLiking", "workLiking", "kindnessLiking"];
+                icons = {
+                  "正念冥想": Icons.spa_outlined,
+                  "工作冥想": Icons.business_center_outlined,
+                  "慈心冥想": Icons.volunteer_activism_outlined
+                };
+              }
+              likings = {
+                for (var item in keys) item: SettingsData.userData[item]
+              };
+              dropdownValue = categories.first;
+              setState(() {});
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
           DropdownButton<String>(
             value: dropdownValue,
-            icon: const Icon(Icons.arrow_drop_down_outlined),
+            icon: const Icon(
+              Icons.arrow_drop_down_outlined,
+              color: ColorSet.iconColor,
+            ),
+            iconSize: 28,
             elevation: 16,
-            style: const TextStyle(color: ColorSet.iconColor),
             underline: Container(
               height: 0,
               color: Colors.transparent,
@@ -1079,9 +1180,18 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
                 value: value,
                 child: Row(
                   children: [
-                    Icon(icons[value]),
-                    const SizedBox(width: 5),
-                    Text(value),
+                    Icon(
+                      icons[value],
+                      color: ColorSet.iconColor,
+                    ),
+                    const SizedBox(width: 15),
+                    Text(
+                      value,
+                      style: const TextStyle(
+                          color: ColorSet.textColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600),
+                    ),
                   ],
                 ),
               );
@@ -1089,67 +1199,58 @@ class ChangeLikingDialogState extends State<ChangeLikingDialog> {
           ),
           const SizedBox(height: 10),
           SizedBox(
-            height: MediaQuery.of(context).size.width * 0.03,
-            width: double.maxFinite,
+            height: MediaQuery.of(context).size.width * 0.05,
+            width: MediaQuery.of(context).size.width * 0.8,
             child: _getSlider(categories.indexOf(dropdownValue)),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 18),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                backgroundColor: (planToChange == 0)
+                    ? ColorSet.backgroundColor
+                    : ColorSet.backgroundColor,
+                shadowColor: ColorSet.borderColor,
+                //elevation: 0,
+                minimumSize: const Size.fromHeight(50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                // FIXME: 無法修改喜愛程度
+                // error: Unhandled Exception: Invalid argument (key): Key not in map.: Instance(length:3) of '_GrowableList'
+                Map original = {
+                  for (var item in keys) item: SettingsData.userData[item]
+                };
+                Map<String, Object> modified = likings;
+                if (modified != original) {
+                  SettingsData.userData
+                      .update(keys, (value) => modified[value]);
+                  await UserDB.update(modified);
+                }
+
+                if (!mounted) return;
+                InformDialog()
+                    .get(context, "完成更改:)", "${SettingsData.habitTypeZH}偏好已更新！")
+                    .show();
+              },
+              child: const Text(
+                "確定",
+                style: TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
         ],
       ),
-      actions: [
-        OutlinedButton(
-            child: const Text(
-              "取消",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorSet.exerciseColor,
-            ),
-            onPressed: () async {
-              Map original = {
-                for (var item in keys) item: SettingsData.userData[item]
-              };
-              Map<String, Object> modified = likings;
-              if (modified != original) {
-                SettingsData.userData.update(keys, (value) => modified[value]);
-                await UserDB.update(modified);
-              }
-
-              if (!mounted) return;
-              Navigator.pop(context);
-              MotionToast(
-                icon: Icons.done_all_rounded,
-                primaryColor: const Color(0xffffa493),
-                description: Text(
-                  "${SettingsData.habitTypeZH}偏好已更新",
-                  style: const TextStyle(
-                    color: ColorSet.textColor,
-                    fontSize: 16,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                  ),
-                ),
-                position: MotionToastPosition.bottom,
-                animationType: AnimationType.fromBottom,
-                animationCurve: Curves.bounceIn,
-                //displaySideBar: false,
-              ).show(context);
-            },
-            child: const Text(
-              "確定",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            )),
-      ],
     );
   }
 }

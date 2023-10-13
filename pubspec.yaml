@@ -76,6 +76,7 @@ dependencies:
   carousel_slider: ^4.2.1
   collection: ^1.17.0
   fl_chart: ^0.35.0
+  speech_balloon: ^0.0.4
 
 dev_dependencies:
   flutter_test:

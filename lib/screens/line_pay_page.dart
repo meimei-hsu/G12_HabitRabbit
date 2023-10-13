@@ -609,7 +609,7 @@ class CompanyDescriptionItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(20), // Image border
               child: SizedBox.fromSize(
                 size: const Size.fromRadius(48), // Image radius
-                child: Image.asset('assets/images/Logo.jpg'),
+                child: Image.asset('assets/images/Logo.png'),
               ),
             ),
           ),
