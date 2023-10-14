@@ -193,7 +193,7 @@ class SettingsPageState extends State<SettingsPage> {
                         context: context,
                         builder: (context) {
                           SettingsData.isSettingWorkout();
-                          return const ChangeGoalDialog();
+                          return const ChangeGoalBottomSheet();
                         });
                   },
                   icons: Icons.gps_fixed,
@@ -205,88 +205,6 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
               ],
             ),
-            // TODO: Combine to habits group
-            /*SettingsGroup(
-              settingsGroupTitle: "冥想",
-              settingsGroupTitleStyle: const TextStyle(
-                color: ColorSet.textColor,
-                fontSize: 24,
-                letterSpacing: 5,
-                fontWeight: FontWeight.bold,
-              ),
-              items: [
-                SettingsItem(
-                  onTap: () {
-                    SettingsData.isSettingMeditation();
-                    showDialog<double>(
-                        context: context,
-                        builder: (context) => const ChangeDurationDialog());
-                  },
-                  icons: CupertinoIcons.timer,
-                  iconStyle: iconStyle,
-                  title: '冥想時長',
-                  titleStyle: titleStyle,
-                  subtitle: "更改每次冥想計畫的長度",
-                  subtitleStyle: subtitleStyle,
-                ),
-                SettingsItem(
-                  onTap: () {
-                    SettingsData.isSettingMeditation();
-                    showDialog<double>(
-                        context: context,
-                        builder: (context) => const ChangeDayDialog());
-                  },
-                  icons: Icons.calendar_today_outlined,
-                  iconStyle: iconStyle,
-                  title: '週冥想日',
-                  titleStyle: titleStyle,
-                  subtitle: "更改每週可以冥想的日子",
-                  subtitleStyle: subtitleStyle,
-                ),
-                SettingsItem(
-                  onTap: () {
-                    SettingsData.isSettingMeditation();
-                    showDialog<double>(
-                        context: context,
-                        builder: (context) => const ChangeStartTimeDialog());
-                  },
-                  icons: Icons.notifications_none,
-                  iconStyle: iconStyle,
-                  title: '冥想通知',
-                  titleStyle: titleStyle,
-                  subtitle: "更改每天開始冥想的時間",
-                  subtitleStyle: subtitleStyle,
-                ),
-                SettingsItem(
-                  onTap: () {
-                    SettingsData.isSettingMeditation();
-                    showDialog<double>(
-                        context: context,
-                        builder: (context) => const ChangeLikingDialog());
-                  },
-                  icons: CupertinoIcons.heart_circle,
-                  iconStyle: iconStyle,
-                  title: '冥想偏好',
-                  titleStyle: titleStyle,
-                  subtitle: "更改每類冥想的喜愛程度",
-                  subtitleStyle: subtitleStyle,
-                ),
-                SettingsItem(
-                  onTap: () {
-                    SettingsData.isSettingMeditation();
-                    showDialog<double>(
-                        context: context,
-                        builder: (context) => const ChangeGoalDialog());
-                  },
-                  icons: Icons.gps_fixed,
-                  iconStyle: iconStyle,
-                  title: '冥想目標',
-                  titleStyle: titleStyle,
-                  subtitle: "更改冥想的目標與動機",
-                  subtitleStyle: subtitleStyle,
-                ),
-              ],
-            ),*/
             SettingsGroup(
               settingsGroupTitle: "個人",
               settingsGroupTitleStyle: const TextStyle(
@@ -298,10 +216,23 @@ class SettingsPageState extends State<SettingsPage> {
               items: [
                 SettingsItem(
                   onTap: () async {
-                    SettingsData.isSettingDisplayName();
+                    /*SettingsData.isSettingDisplayName();
                     await showDialog<double>(
                         context: context,
-                        builder: (context) => const ChangeProfileDialog());
+                        builder: (context) => const ChangeProfileBottomSheet());*/
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              topLeft: Radius.circular(20)),
+                        ),
+                        backgroundColor: ColorSet.bottomBarColor,
+                        context: context,
+                        builder: (context) {
+                          SettingsData.isSettingDisplayName();
+                          return const ChangeProfileBottomSheet();
+                        });
                     setState(() {
                       Data.user = FirebaseAuth.instance.currentUser!;
                     });
@@ -313,10 +244,23 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    SettingsData.isSettingPassword();
+                    /*SettingsData.isSettingPassword();
                     showDialog<double>(
                         context: context,
-                        builder: (context) => const ChangeProfileDialog());
+                        builder: (context) => const ChangeProfileBottomSheet());*/
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              topLeft: Radius.circular(20)),
+                        ),
+                        backgroundColor: ColorSet.bottomBarColor,
+                        context: context,
+                        builder: (context) {
+                          SettingsData.isSettingPassword();
+                          return const ChangeProfileBottomSheet();
+                        });
                     setState(() {
                       Data.user = FirebaseAuth.instance.currentUser!;
                     });
@@ -339,9 +283,15 @@ class SettingsPageState extends State<SettingsPage> {
               items: [
                 SettingsItem(
                   onTap: () async {
-                    await FirebaseAuth.instance.signOut();
-                    if (!mounted) return;
-                    Navigator.popAndPushNamed(context, '/register');
+                    btnOkOnPress() async {
+                      await FirebaseAuth.instance.signOut();
+                      if (!mounted) return;
+                      Navigator.popAndPushNamed(context, '/register');
+                    }
+
+                    ConfirmDialog()
+                        .get(context, '確定登出嗎？', "確定登出嗎？", btnOkOnPress)
+                        .show();
                   },
                   icons: Icons.exit_to_app_rounded,
                   title: "登出帳號",
@@ -352,7 +302,8 @@ class SettingsPageState extends State<SettingsPage> {
                   icons: CupertinoIcons.delete_solid,
                   title: "刪除帳號",
                   titleStyle: const TextStyle(
-                    color: Colors.red,
+                    color: Colors.deepOrangeAccent,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1012,11 +963,16 @@ class ChangeLikingBottomSheetState extends State<ChangeLikingBottomSheet> {
 
   int planToChange = 0; // 0 = 運動, 1 = 冥想
 
-  final ScrollController _controller = ScrollController();
-
   @override
   initState() {
     super.initState();
+
+    setKeysList();
+    likings = {for (var item in keys) item: SettingsData.userData[item]};
+    dropdownValue = categories.first;
+  }
+
+  void setKeysList() {
     if (SettingsData.habitType == "workout") {
       categories = ["肌力運動", "有氧運動", "瑜珈運動"];
       keys = ["strengthLiking", "cardioLiking", "yogaLiking"];
@@ -1034,8 +990,6 @@ class ChangeLikingBottomSheetState extends State<ChangeLikingBottomSheet> {
         "慈心冥想": Icons.volunteer_activism_outlined
       };
     }
-    likings = {for (var item in keys) item: SettingsData.userData[item]};
-    dropdownValue = categories.first;
   }
 
   Widget _getSlider(int i) {
@@ -1130,23 +1084,7 @@ class ChangeLikingBottomSheetState extends State<ChangeLikingBottomSheet> {
                   ? SettingsData.isSettingWorkout()
                   : SettingsData.isSettingMeditation();
 
-              if (SettingsData.habitType == "workout") {
-                categories = ["肌力運動", "有氧運動", "瑜珈運動"];
-                keys = ["strengthLiking", "cardioLiking", "yogaLiking"];
-                icons = {
-                  "肌力運動": Icons.fitness_center,
-                  "有氧運動": Icons.directions_run,
-                  "瑜珈運動": Icons.self_improvement
-                };
-              } else if (SettingsData.habitType == "meditation") {
-                categories = ["正念冥想", "工作冥想", "慈心冥想"];
-                keys = ["mindfulnessLiking", "workLiking", "kindnessLiking"];
-                icons = {
-                  "正念冥想": Icons.spa_outlined,
-                  "工作冥想": Icons.business_center_outlined,
-                  "慈心冥想": Icons.volunteer_activism_outlined
-                };
-              }
+              setKeysList();
               likings = {
                 for (var item in keys) item: SettingsData.userData[item]
               };
@@ -1255,22 +1193,28 @@ class ChangeLikingBottomSheetState extends State<ChangeLikingBottomSheet> {
   }
 }
 
-class ChangeGoalDialog extends StatefulWidget {
-  const ChangeGoalDialog({super.key});
+class ChangeGoalBottomSheet extends StatefulWidget {
+  const ChangeGoalBottomSheet({super.key});
 
   @override
-  ChangeGoalDialogState createState() => ChangeGoalDialogState();
+  ChangeGoalBottomSheetState createState() => ChangeGoalBottomSheetState();
 }
 
-class ChangeGoalDialogState extends State<ChangeGoalDialog> {
+class ChangeGoalBottomSheetState extends State<ChangeGoalBottomSheet> {
   List selectableItems = [];
   List goal = [];
   String key = "${SettingsData.habitType}Goals";
+
+  int planToChange = 0; // 0 = 運動, 1 = 冥想
 
   @override
   initState() {
     super.initState();
     goal = SettingsData.userData[key];
+    setSelectableItem();
+  }
+
+  void setSelectableItem() {
     if (SettingsData.habitType == "workout") {
       selectableItems = [
         "減脂減重",
@@ -1301,95 +1245,153 @@ class ChangeGoalDialogState extends State<ChangeGoalDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        "${SettingsData.habitTypeZH}目標",
-        style: const TextStyle(
-          color: ColorSet.textColor,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Column(
+    return Container(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          MultiSelectChipField(
-            showHeader: false,
-            decoration: const BoxDecoration(),
-            // icon: const Icon(Icons.check),
-            items: selectableItems.map((e) => MultiSelectItem(e, e)).toList(),
-            scroll: false,
-            initialValue: goal,
-            onTap: (values) {
-              goal = values;
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+            title: Text(
+              "更改${SettingsData.habitTypeZH}目標",
+              style: const TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
+            ),
+            trailing: Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: ColorSet.iconColor,
+                ),
+                tooltip: "關閉",
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+          ToggleSwitch(
+            minWidth: MediaQuery.of(context).size.width,
+            //minHeight: 35,
+            initialLabelIndex: planToChange,
+            cornerRadius: 10.0,
+            radiusStyle: true,
+            labels: const ['運動', '冥想'],
+            icons: const [
+              Icons.fitness_center_outlined,
+              Icons.self_improvement_outlined
+            ],
+            fontSize: 18,
+            iconSize: 20,
+            activeBgColors: const [
+              [ColorSet.exerciseColor],
+              [ColorSet.meditationColor]
+            ],
+            activeFgColor: ColorSet.textColor,
+            inactiveBgColor: ColorSet.backgroundColor,
+            inactiveFgColor: ColorSet.textColor,
+            totalSwitches: 2,
+            onToggle: (index) {
+              planToChange = index!;
+              (index == 0)
+                  ? SettingsData.isSettingWorkout()
+                  : SettingsData.isSettingMeditation();
+
+              key = "${SettingsData.habitType}Goals";
+              goal = SettingsData.userData[key];
+              setSelectableItem();
+
+              setState(() {});
             },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            padding: const EdgeInsets.only(right: 5, left: 5),
+            child: MultiSelectChipField(
+              showHeader: false,
+              decoration: const BoxDecoration(),
+              chipShape: RoundedRectangleBorder(
+                side: const BorderSide(color: ColorSet.borderColor),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              chipColor: ColorSet.backgroundColor,
+              textStyle: const TextStyle(color: ColorSet.textColor),
+              selectedChipColor: (planToChange == 0)
+                  ? ColorSet.exerciseColor
+                  : ColorSet.meditationColor,
+              selectedTextStyle: const TextStyle(color: ColorSet.textColor),
+              // icon: const Icon(Icons.check),
+              items: selectableItems.map((e) => MultiSelectItem(e, e)).toList(),
+              scroll: false,
+              initialValue: goal,
+              onTap: (values) {
+                goal = values;
+              },
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 18),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                backgroundColor: (planToChange == 0)
+                    ? ColorSet.backgroundColor
+                    : ColorSet.backgroundColor,
+                shadowColor: ColorSet.borderColor,
+                //elevation: 0,
+                minimumSize: const Size.fromHeight(50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                List original = SettingsData.userData[key];
+                List modified = goal;
+                if (modified != original) {
+                  SettingsData.userData[key] = modified;
+                  await UserDB.update({key: modified.join(", ")});
+                }
+
+                if (!mounted) return;
+                InformDialog()
+                    .get(context, "完成更改:)", "${SettingsData.habitTypeZH}目標已更新！")
+                    .show();
+              },
+              child: const Text(
+                "確定",
+                style: TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
         ],
       ),
-      actions: [
-        OutlinedButton(
-            child: const Text(
-              "取消",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorSet.exerciseColor,
-            ),
-            onPressed: () async {
-              List original = SettingsData.userData[key];
-              List modified = goal;
-              if (modified != original) {
-                SettingsData.userData[key] = modified;
-                await UserDB.update({key: modified.join(", ")});
-              }
-
-              if (!mounted) return;
-              Navigator.pop(context);
-              MotionToast(
-                icon: Icons.done_all_rounded,
-                primaryColor: const Color(0xffffa493),
-                description: Text(
-                  "${SettingsData.habitTypeZH}時長已更新",
-                  style: const TextStyle(
-                    color: ColorSet.textColor,
-                    fontSize: 16,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                  ),
-                ),
-                position: MotionToastPosition.bottom,
-                animationType: AnimationType.fromBottom,
-                animationCurve: Curves.bounceIn,
-                //displaySideBar: false,
-              ).show(context);
-            },
-            child: const Text(
-              "確定",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            )),
-      ],
     );
   }
 }
 
-class ChangeProfileDialog extends StatefulWidget {
-  const ChangeProfileDialog({super.key});
+class ChangeProfileBottomSheet extends StatefulWidget {
+  const ChangeProfileBottomSheet({super.key});
 
   @override
-  ChangeProfileDialogState createState() => ChangeProfileDialogState();
+  ChangeProfileBottomSheetState createState() =>
+      ChangeProfileBottomSheetState();
 }
 
-class ChangeProfileDialogState extends State<ChangeProfileDialog> {
+class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
   TextEditingController controller = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   bool isPasswordVisible = false;
@@ -1430,29 +1432,43 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: const BorderSide(
-              color: ColorSet.textColor,
+              color: ColorSet.borderColor,
+              width: 3,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(
+              color: ColorSet.errorColor,
               width: 3,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: const BorderSide(
-              color: Color(0xfff6cdb7),
+              color: ColorSet.errorColor,
+              width: 3,
+            ),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: const BorderSide(
+              color: ColorSet.errorColor,
               width: 3,
             ),
           ),
           labelStyle: const TextStyle(color: ColorSet.textColor),
-          hintStyle: const TextStyle(color: Colors.grey),
+          hintStyle: const TextStyle(color: ColorSet.hintColor),
           errorStyle: const TextStyle(
               height: 1,
-              color: Color(0xfff6cdb7),
+              color: ColorSet.errorColor,
               fontWeight: FontWeight.bold,
               fontSize: 16),
           errorMaxLines: 1,
           filled: true,
           fillColor: ColorSet.backgroundColor,
         ),
-        cursorColor: const Color(0xfff6cdb7),
+        cursorColor: ColorSet.errorColor,
         style: const TextStyle(fontSize: 18, color: ColorSet.textColor),
         keyboardType: TextInputType.text,
         obscureText:
@@ -1461,107 +1477,123 @@ class ChangeProfileDialogState extends State<ChangeProfileDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        SettingsData.profileType,
-        style: const TextStyle(
-          color: ColorSet.textColor,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          (SettingsData.profileType == "密碼")
-              ? SizedBox(
-                  height: MediaQuery.of(context).size.width * 0.4,
-                  width: double.maxFinite,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.2,
-                        width: double.maxFinite,
-                        child: _getTextFormField(
-                            controller: controller, hintText: "目前密碼"),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.2,
-                        width: double.maxFinite,
-                        child: _getTextFormField(
-                            controller: newPasswordController, hintText: "新密碼"),
-                      ),
-                    ],
-                  ),
-                )
-              : SizedBox(
-                  height: MediaQuery.of(context).size.width * 0.1,
-                  width: double.maxFinite,
-                  child: _getTextFormField(controller: controller),
-                ),
-        ],
-      ),
-      actions: [
-        OutlinedButton(
-            child: const Text(
-              "取消",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: ColorSet.exerciseColor,
-            ),
-            onPressed: () async {
-              if (SettingsData.profileType == "密碼") {
-                AuthCredential credential = EmailAuthProvider.credential(
-                  email: Data.user!.email!,
-                  password: controller.text,
-                );
-                Data.user!
-                    .reauthenticateWithCredential(credential)
-                    .then((userCredential) {
-                  return Data.user!.updatePassword(newPasswordController.text);
-                });
-              } else if (SettingsData.profileType == "暱稱") {
-                await Data.user!.updateDisplayName(controller.text);
-                await UserDB.update({"userName": controller.text});
-              }
-
-              if (!mounted) return;
-              Navigator.pop(context);
-              MotionToast(
-                icon: Icons.done_all_rounded,
-                primaryColor: const Color(0xffffa493),
-                description: Text(
-                  "${SettingsData.profileType}已更新",
+    return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Container(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+                title: Text(
+                  "更改${SettingsData.profileType}",
                   style: const TextStyle(
-                    color: ColorSet.textColor,
-                    fontSize: 16,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
+                      color: ColorSet.textColor,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold),
+                ),
+                trailing: Container(
+                  padding: const EdgeInsets.only(right: 20, left: 20),
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    icon: const Icon(
+                      Icons.close_rounded,
+                      color: ColorSet.iconColor,
+                    ),
+                    tooltip: "關閉",
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
-                position: MotionToastPosition.bottom,
-                animationType: AnimationType.fromBottom,
-                animationCurve: Curves.bounceIn,
-                //displaySideBar: false,
-              ).show(context);
-            },
-            child: const Text(
-              "確定",
-              style: TextStyle(
-                color: ColorSet.textColor,
-                fontWeight: FontWeight.bold,
               ),
-            )),
-      ],
-    );
+              const SizedBox(
+                height: 10,
+              ),
+              (SettingsData.profileType == "密碼")
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.2,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: _getTextFormField(
+                              controller: controller, hintText: "目前密碼"),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.2,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: _getTextFormField(
+                              controller: newPasswordController,
+                              hintText: "新密碼"),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    )
+                  : SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.2,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: _getTextFormField(controller: controller),
+                    ),
+              const SizedBox(
+                height: 5,
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 20, right: 18),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.only(right: 10, left: 10),
+                    backgroundColor: ColorSet.backgroundColor,
+                    shadowColor: ColorSet.borderColor,
+                    //elevation: 0,
+                    minimumSize: const Size.fromHeight(50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () async {
+                    if (SettingsData.profileType == "密碼") {
+                      AuthCredential credential = EmailAuthProvider.credential(
+                        email: Data.user!.email!,
+                        password: controller.text,
+                      );
+                      Data.user!
+                          .reauthenticateWithCredential(credential)
+                          .then((userCredential) {
+                        return Data.user!
+                            .updatePassword(newPasswordController.text);
+                      });
+                    } else if (SettingsData.profileType == "暱稱") {
+                      await Data.user!.updateDisplayName(controller.text);
+                      await UserDB.update({"userName": controller.text});
+                      // FIXME: 介面上顯示的名稱好像沒有馬上跟著更新
+                    }
+
+                    if (!mounted) return;
+                    InformDialog()
+                        .get(context, "完成更改:)",
+                            "${SettingsData.profileType}已更新！")
+                        .show();
+                  },
+                  child: const Text(
+                    "確定",
+                    style: TextStyle(
+                      color: ColorSet.textColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }
