@@ -70,8 +70,9 @@ class Data {
   }
 
   static Future<void> fetchGame() async {
-    // set GamificationPage to true
+    // set GamificationPage and CommunityPage to true
     updatingUI[1] = true;
+    updatingUI[3] = true;
     // fetch gamification data
     community = await GamificationDB.getAll();
     game = community![user!.uid];
@@ -656,5 +657,46 @@ class GameData {
     }
 
     Data.updatingUI[1] = false;
+  }
+}
+
+class CommData {
+  static String socialCode = "";
+  static int level = 0;
+  static List friends = [];
+  static String currentFriend = ""; // the friend that user is checking status
+
+  static Future<void> fetch() async {
+    print("Refreshing CommunityPage...");
+    if (Data.updatingDB) {
+      await Data.fetchGame();
+      Data.updatingDB = false;
+    }
+
+    if (Data.game != null) {
+      socialCode = Data.user!.uid.substring(0, 7);
+      level = Data.game?["level"];
+      friends = Data.game?["friends"].split(", ");
+    }
+
+    Data.updatingUI[3] = false;
+  }
+}
+
+class FriendData {
+  static String userName = "", socialCode = "", character = "";
+  static int level = 0, characterLevel = 0, workoutGem = 0, meditationGem = 0;
+  static int workoutCumulativeTime = 0, meditationCumulativeTime = 0;
+  static int workoutCumulativeDays = 0, medicationCumulativeDays = 0;
+
+  static Future<void> fetch() async {
+    Map info = Data.community?[CommData.currentFriend];
+    userName = info["userName"];
+    socialCode = CommData.currentFriend.substring(0, 7);
+    character = info["character"];
+    level = info["level"];
+    characterLevel = int.parse(character[character.length - 1]);
+    workoutGem = info["workoutGem"];
+    meditationGem = info["meditationGem"];
   }
 }

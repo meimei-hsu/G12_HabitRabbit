@@ -452,16 +452,6 @@ class GamificationDB {
     return (snapshot != null) ? Map.from(snapshot as Map) : null;
   }
 
-  static Map? getFriendInfo(String friendID) {
-    String? wholeID;
-    Data.community?.forEach((key, value) {
-      if (key.substring(0, 8) == friendID) {
-        wholeID = key;
-      }
-    });
-    return Data.community?[wholeID];
-  }
-
   static getChart(String category) {
     Map levels = {};
 
@@ -474,6 +464,16 @@ class GamificationDB {
 
     levels = Map.fromEntries(
         levels.entries.toList()..sort((e1, e2) => e1.value.compareTo(e2.value)));
+  }
+
+  static String? convertSocialCode(String friendCode) {
+    if (Data.community != null) {
+      for (MapEntry entry in Data.community!.entries) {
+        // check if friendCode fits the first 7 characters of the userIDs
+        if (entry.key.substring(0, 7) == friendCode) return entry.key;
+      }
+    }
+    return null;
   }
 
   static Future<bool> insert(Map userInfo, String character) async {
@@ -496,9 +496,9 @@ class GamificationDB {
   static Future<bool> update(Map data) async =>
       await DB.update("$db/$uid", data);
 
-  static Future<bool> updateFriends(String newFriends) async {
+  static Future<bool> updateFriend(String newFriend) async {
     String? friends = Data.game?["friends"];
-    friends = (friends != null) ? "$newFriends, $friends" : newFriends;
+    friends = (friends != null) ? "$newFriend, $friends" : newFriend;
     return await DB.update("$db/$uid", {"friends": friends});
   }
 

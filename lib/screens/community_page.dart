@@ -8,6 +8,8 @@ import 'package:g12/screens/friend_status_page.dart';
 import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/page_data.dart';
 
+import '../services/database.dart';
+
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key, required arguments});
 
@@ -38,8 +40,14 @@ class CommunityPageState extends State<CommunityPage>
     _controller.dispose();
   }
 
+  void refresh() async {
+    if (Data.updatingDB || Data.updatingUI[3]) await CommData.fetch();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    refresh();
     return SafeArea(
       child: Scaffold(
         backgroundColor: ColorSet.backgroundColor,
@@ -164,14 +172,6 @@ class FriendListPageState extends State<FriendListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> entries = <String>[
-      //TODO: 從資料庫填資料
-      'Andy',
-      'Bethany',
-      'Chloe',
-      'Daniel',
-    ];
-
     return Column(
       children: [
         Padding(
@@ -180,14 +180,13 @@ class FriendListPageState extends State<FriendListPage> {
             SizedBox(
               width: 80,
               height: 80,
-              child: Image.asset('assets/images/Rabbit_2.png'),
+              child: Image.asset(Data.characterImageURL),
             ),
             const SizedBox(width: 15),
-            const Text(
-              '\n社交碼：UGO317RQDS'
-              '\n等級：12',
-              // TODO:讀取使用者的真實情況
-              style: TextStyle(
+            Text(
+              '\n社交碼：${CommData.socialCode}'
+              '\n等級：${CommData.level}',
+              style: const TextStyle(
                 color: ColorSet.textColor,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -230,8 +229,13 @@ class FriendListPageState extends State<FriendListPage> {
                 onPressed: isTextFieldEmpty
                     ? null
                     : () {
-                        _showCustomDialog(context, "");
-                        // TODO: 去後端找資訊出來
+                        String? fullID =
+                            GamificationDB.convertSocialCode(searchText);
+                        if (fullID != null) {
+                          _showCustomDialog(context, fullID);
+                        } else {
+                          // TODO: alertDialog
+                        }
                       },
               ),
             ],
@@ -249,7 +253,7 @@ class FriendListPageState extends State<FriendListPage> {
           ),
         ),
         Expanded(
-          child: entries.isEmpty
+          child: CommData.friends.isEmpty
               ? const Text(
                   '\n您尚未加入任何好友，'
                   '\n趕快輸入朋友的社交碼開啟社交功能吧!',
@@ -262,8 +266,10 @@ class FriendListPageState extends State<FriendListPage> {
               : ListView.separated(
                   padding:
                       const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
-                  itemCount: entries.length,
+                  itemCount: CommData.friends.length,
                   itemBuilder: (BuildContext context, int index) {
+                    String friendID = CommData.friends[index];
+                    Map info = Data.community?[friendID];
                     return Container(
                       height: 70,
                       decoration: BoxDecoration(
@@ -275,18 +281,18 @@ class FriendListPageState extends State<FriendListPage> {
                       ),
                       child: Row(
                         children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 16.0),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16.0),
                             child: CircleAvatar(
                               radius: 25,
                               backgroundColor: ColorSet.backgroundColor,
                               backgroundImage:
-                                  AssetImage('assets/images/Dog_1.png'),
+                                  AssetImage('assets/images/${info["character"]}.png'),
                             ),
                           ),
                           const SizedBox(width: 15),
                           Text(
-                            entries[index],
+                            info["userName"],
                             style: const TextStyle(
                               color: ColorSet.textColor,
                               fontSize: 16,
@@ -296,6 +302,8 @@ class FriendListPageState extends State<FriendListPage> {
                           Expanded(child: Container()),
                           InkWell(
                             onTap: () {
+                              CommData.currentFriend = friendID;
+                              FriendData.fetch();
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -324,7 +332,8 @@ class FriendListPageState extends State<FriendListPage> {
     );
   }
 
-  void _showCustomDialog(BuildContext context, String receivedString) {
+  void _showCustomDialog(BuildContext context, String userID) {
+    Map info = Data.community?[userID];
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -338,15 +347,16 @@ class FriendListPageState extends State<FriendListPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   backgroundColor: ColorSet.backgroundColor,
                   radius: 45,
-                  backgroundImage: AssetImage('assets/images/Fox_1.png'),
+                  backgroundImage:
+                      AssetImage('assets/images/${info["character"]}.png'),
                 ),
                 const SizedBox(height: 15),
-                const Text(
-                  "Frank",
-                  style: TextStyle(
+                Text(
+                  info["userName"],
+                  style: const TextStyle(
                     color: ColorSet.textColor,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -399,16 +409,16 @@ class FriendListPageState extends State<FriendListPage> {
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Padding(
+                    children: [
+                      const Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Icon(Icons.emoji_events),
                       ),
                       Expanded(
                         child: Text(
-                          "等級 \n10",
+                          "等級 \n${info["level"]}",
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: ColorSet.textColor,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -421,6 +431,7 @@ class FriendListPageState extends State<FriendListPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
+                    GamificationDB.updateFriend(userID);
                     Navigator.of(context).pop();
                     //TODO: 把朋友加進資料庫並顯示在 listView
                   },

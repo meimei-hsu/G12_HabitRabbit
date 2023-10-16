@@ -3,6 +3,8 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'package:g12/screens/page_material.dart';
 
+import '../services/page_data.dart';
+
 class FriendStatusPage extends StatefulWidget {
   const FriendStatusPage({super.key});
 
@@ -36,14 +38,13 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                     SizedBox(
                       width: 100,
                       height: 100,
-                      child: Image.asset('assets/images/Dog_1.png'),
+                      child: Image.asset('assets/images/${FriendData.character}.png'),
                     ),
                     const SizedBox(width: 15),
-                    const Text(
-                      'Andy'
-                      '\n社交碼：AUG23LR6U1',
-                      // TODO:讀取使用者的真實情況
-                      style: TextStyle(
+                    Text(
+                      "${FriendData.userName}"
+                      "\n社交碼：${FriendData.socialCode}",
+                      style: const TextStyle(
                         color: ColorSet.textColor,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -94,10 +95,10 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                   series: <CircularSeries<ChartData, String>>[
                                     RadialBarSeries<ChartData, String>(
                                       dataSource: [
-                                        ChartData('個人等級', 20),
-                                        ChartData('角色等級', 40),
-                                        ChartData('運動寶物', 14),
-                                        ChartData('冥想寶物', 15),
+                                        ChartData('個人等級', FriendData.level),
+                                        ChartData('角色等級', FriendData.characterLevel),
+                                        ChartData('運動寶物', FriendData.workoutGem),
+                                        ChartData('冥想寶物', FriendData.meditationGem),
                                       ],
                                       xValueMapper: (ChartData data, _) =>
                                           data.x,
