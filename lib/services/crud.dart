@@ -24,7 +24,7 @@ class DB {
     final ref = FirebaseDatabase.instance.ref();
     final snapshot = await ref.child(path).get();
     if (snapshot.hasChild(id)) {
-      print('$path/${snapshot.child(id).key}: ${snapshot.child(id).value}');
+      print('(select) $path/${snapshot.child(id).key}: ${snapshot.child(id).value}');
       return snapshot.child(id).value;
     }
     return null;
@@ -48,6 +48,7 @@ class DB {
   static Future<bool> update(String path, Map data) async {
     final DatabaseReference ref = FirebaseDatabase.instance.ref(path);
     try {
+      print("(update) $path: $data");
       await ref.update(Map<String, Object>.from(data));
       Data.updatingDB = true;
       return true;

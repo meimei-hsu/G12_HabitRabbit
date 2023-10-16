@@ -323,12 +323,12 @@ class UserDB {
     data["userName"] = Data.user!.displayName;
 
     // Insert user into database
-    return await DB.insert("$db/$uid/", data);
+    return await DB.insert("$db/$uid", data);
   }
 
   // Update data {columnName: value} from userID
   static Future<bool> update(Map data) async {
-    return await DB.update("$db/$uid/", data);
+    return await DB.update("$db/$uid", data);
   }
 
   // Update plan variables by user's feedback [滿意度, 疲憊度]
@@ -443,7 +443,7 @@ class GamificationDB {
   // Select whole table of gamification
   static Future<Map?> getAll() async {
     var snapshot = await DB.selectAll(db);
-    return (snapshot != null) ? Map.from(snapshot as Map) : null;
+    return snapshot?.value as Map?;
   }
 
   // Select milestone from userID
@@ -489,24 +489,24 @@ class GamificationDB {
       character,
       ""
     ];
-    return await DB.insert("$db/$uid/", Map.fromIterables(columns, values));
+    return await DB.insert("$db/$uid", Map.fromIterables(columns, values));
   }
 
   // Update data {columnName: value} from userID
   static Future<bool> update(Map data) async =>
-      await DB.update("$db/$uid/", data);
+      await DB.update("$db/$uid", data);
 
   static Future<bool> updateFriends(String newFriends) async {
     String? friends = Data.game?["friends"];
     friends = (friends != null) ? "$newFriends, $friends" : newFriends;
-    return await DB.update("$db/$uid/", {"friends": friends});
+    return await DB.update("$db/$uid", {"friends": friends});
   }
 
   static Future<bool> updateCharacterLevel() async {
     String? character = Data.game?["character"];
     int level = int.parse(character![character.length - 1]);
     character = character.replaceAll("$level", "${level + 1}");
-    return await DB.update("$db/$uid/", {"character": character});
+    return await DB.update("$db/$uid", {"character": character});
   }
 
   // Update fragment or gem whenever user completes a plan
@@ -524,7 +524,7 @@ class GamificationDB {
         return await update(table) && await ContractDB.updateGem(habit);
       } else {
         // 當 fragment 前後兩個數字不同，第一個數字加一
-        return await DB.update("$db/$uid/",
+        return await DB.update("$db/$uid",
             {"${habit}Fragment": "${++fragment[0]}, ${fragment[1]}"});
       }
     }
@@ -539,8 +539,8 @@ class GamificationDB {
       int mDays =
           List<int>.from(table["meditationDays"].split("").map(int.parse)).sum;
 
-      return await DB.update("$db/$uid/", {"workoutFragment": "0, $wDays"}) &&
-          await DB.update("$db/$uid/", {"meditationFragment": "0, $mDays"});
+      return await DB.update("$db/$uid", {"workoutFragment": "0, $wDays"}) &&
+          await DB.update("$db/$uid", {"meditationFragment": "0, $mDays"});
     }
     return false;
   }

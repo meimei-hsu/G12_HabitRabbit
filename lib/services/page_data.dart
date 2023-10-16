@@ -73,8 +73,8 @@ class Data {
     // set GamificationPage to true
     updatingUI[1] = true;
     // fetch gamification data
-    game = await GamificationDB.getGamification();
-    // game = community![user!.uid];
+    community = await GamificationDB.getAll();
+    game = community![user!.uid];
   }
 
   static Future<void> fetchContract() async {
@@ -103,8 +103,9 @@ class Data {
   }
 
   static Future<void> fetchPlansAndDurations() async {
-    // set HomePage and StatisticPage to true
+    // set HomePage, GamificationPage and StatisticPage to true
     updatingUI[0] = true;
+    updatingUI[1] = true;
     updatingUI[2] = true;
     // fetch user's habit plans and execution records
     await fetchPlans();
@@ -241,6 +242,7 @@ class HomeData {
     if (Data.updatingDB) {
       await Data.fetchPlansAndDurations();
       await Data.fetchProfile();
+      await Data.fetchGame();
       Data.updatingDB = false;
     }
 
@@ -516,6 +518,7 @@ class StatData {
         consecutiveExerciseDaysList
             .add([startDate, endDate, continuousExerciseDays]);
       }
+      continuousExerciseDays = 0;
     }
 
     var meditationDuration = Data.durations?["meditation"];
@@ -546,6 +549,7 @@ class StatData {
         consecutiveMeditationDaysList
             .add([startDate, endDate, continuousMeditationDays]);
       }
+      continuousMeditationDays = 0;
     }
   }
 

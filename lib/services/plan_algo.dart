@@ -11,10 +11,10 @@ class PlanAlgo {
   static execute() async {
     // Check if user has no plan within two weeks
     Map<String, bool> check = {
-      "noWorkoutThisWeek": false,
-      "noWorkoutNextWeek": false,
-      "noMeditationThisWeek": false,
-      "noMeditationNextWeek": false,
+      "workoutThisWeek": false,
+      "workoutNextWeek": false,
+      "meditationThisWeek": false,
+      "meditationNextWeek": false,
     };
     List twoWeeks = Calendar.bothWeeks();
     for (String habit in Data.habitTypes) {
@@ -24,17 +24,17 @@ class PlanAlgo {
       plans.removeWhere((key, value) => value == null);
 
       List b = plans.keys.map((date) => twoWeeks.indexOf(date) ~/ 7).toList();
-      if (!b.contains(0)) check["no${habit}ThisWeek"] = true;
-      if (!b.contains(1)) check["no${habit}NextWeek"] = true;
+      if (b.contains(0)) check["${habit}ThisWeek"] = true;
+      if (b.contains(1)) check["${habit}NextWeek"] = true;
     }
 
     // Check condition before generating new plans.
     bool? thisWeek;
-    if (check["noWorkoutNextWeek"]!) {
+    if (check["workoutNextWeek"]! == false) {
       thisWeek = false;
       print("Generate next week's workout plan.");
     }
-    if (check["noWorkoutThisWeek"]!) {
+    if (check["workoutThisWeek"]! == false) {
       thisWeek = true;
       print("Generate this week's workout plan.");
     }
@@ -57,11 +57,11 @@ class PlanAlgo {
 
     // Check condition before generating new plans
     thisWeek = null;
-    if (check["noMeditationNextWeek"]!) {
+    if (check["meditationNextWeek"]! == false) {
       thisWeek = false;
       print("Generate next week's meditation plan.");
     }
-    if (check["noMeditationThisWeek"]!) {
+    if (check["meditationThisWeek"]! == false) {
       thisWeek = true;
       print("Generate this week's meditation plan.");
     }
@@ -83,7 +83,7 @@ class PlanAlgo {
     }
 
     // Reset GamificationDB's workoutFragment/meditationFragment to zero since a new week has come
-    if (check.containsValue(true)) await GamificationDB.resetFragment();
+    if (check.containsValue(false)) await GamificationDB.resetFragment();
   }
 
   // Regenerate the plan for a day in the current week

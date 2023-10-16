@@ -1238,9 +1238,9 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
         children: [
           ListTile(
             contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
-            title: Text(
+            title: const Text(
               "建立新的承諾合約",
-              style: const TextStyle(
+              style: TextStyle(
                   color: ColorSet.textColor,
                   fontSize: 24,
                   fontWeight: FontWeight.bold),

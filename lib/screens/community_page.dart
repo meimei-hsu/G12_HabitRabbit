@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import 'package:g12/screens/friend_status_page.dart';
@@ -73,10 +72,10 @@ class CommunityPageState extends State<CommunityPage>
                         controller: _controller,
                         indicatorColor: ColorSet.borderColor,
                         indicatorWeight: 3,
-                        tabs:  const [
+                        tabs: [
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.group,
                                   color: ColorSet.iconColor,
@@ -93,7 +92,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.emoji_events,
                                   color: ColorSet.iconColor, // 设置图标颜色
@@ -110,7 +109,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.sports_kabaddi,
                                   color: ColorSet.iconColor,
@@ -398,9 +397,9 @@ class FriendListPageState extends State<FriendListPage> {
                       width: 1.0,
                     ),
                   ),
-                  child:  const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                    children: const [
                       Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Icon(Icons.emoji_events),
@@ -594,12 +593,16 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getPersonalRankList().length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     final int rank = index + 1;
-                                    final String userName = getPersonalRankList()[index];
-                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final String userName =
+                                        getPersonalRankList()[index];
+                                    final bool isCurrentUser =
+                                        (userName == user?.displayName);
                                     final Color containerColor = isCurrentUser
                                         ? ColorSet.friendColor
                                         : ColorSet.backgroundColor;
@@ -664,8 +667,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     final int rank = index + 1;
-                                    final String userName = getPersonalRankList()[index];
-                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final String userName =
+                                        getPersonalRankList()[index];
+                                    final bool isCurrentUser =
+                                        (userName == user?.displayName);
                                     final Color containerColor = isCurrentUser
                                         ? ColorSet.usersColor
                                         : ColorSet.backgroundColor;
@@ -769,12 +774,16 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getRoleRankList().length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     final int rank = index + 1;
-                                    final String userName = getRoleRankList()[index];
-                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final String userName =
+                                        getRoleRankList()[index];
+                                    final bool isCurrentUser =
+                                        (userName == user?.displayName);
                                     final Color containerColor = isCurrentUser
                                         ? ColorSet.friendColor
                                         : ColorSet.backgroundColor;
@@ -839,8 +848,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     final int rank = index + 1;
-                                    final String userName = getRoleRankList()[index];
-                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final String userName =
+                                        getRoleRankList()[index];
+                                    final bool isCurrentUser =
+                                        (userName == user?.displayName);
                                     final Color containerColor = isCurrentUser
                                         ? ColorSet.usersColor
                                         : ColorSet.backgroundColor;
@@ -943,12 +954,16 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getExerciseRankList().length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     final int rank = index + 1;
-                                    final String userName = getExerciseRankList()[index];
-                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final String userName =
+                                        getExerciseRankList()[index];
+                                    final bool isCurrentUser =
+                                        (userName == user?.displayName);
                                     final Color containerColor = isCurrentUser
                                         ? ColorSet.friendColor
                                         : ColorSet.backgroundColor;
@@ -960,7 +975,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                         border: Border.all(
                                             color: ColorSet.borderColor,
                                             width: 2),
-                                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(20)),
                                       ),
                                       child: Row(children: [
                                         const SizedBox(width: 15),
@@ -1004,12 +1020,16 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 child: ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 40.0, top: 10.0, right: 40.0),
                                   itemCount: getExerciseRankList().length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     final int rank = index + 1;
-                                    final String userName = getExerciseRankList()[index];
-                                    final bool isCurrentUser = (userName == user?.displayName);
+                                    final String userName =
+                                        getExerciseRankList()[index];
+                                    final bool isCurrentUser =
+                                        (userName == user?.displayName);
                                     final Color containerColor = isCurrentUser
                                         ? ColorSet.usersColor
                                         : ColorSet.backgroundColor;
@@ -1116,8 +1136,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 itemCount: getMeditationRankList().length,
                                 itemBuilder: (BuildContext context, int index) {
                                   final int rank = index + 1;
-                                  final String userName = getMeditationRankList()[index];
-                                  final bool isCurrentUser = (userName == user?.displayName);
+                                  final String userName =
+                                      getMeditationRankList()[index];
+                                  final bool isCurrentUser =
+                                      (userName == user?.displayName);
                                   final Color containerColor = isCurrentUser
                                       ? ColorSet.friendColor
                                       : ColorSet.backgroundColor;
@@ -1181,8 +1203,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                 itemCount: getMeditationRankList().length,
                                 itemBuilder: (BuildContext context, int index) {
                                   final int rank = index + 1;
-                                  final String userName = getMeditationRankList()[index];
-                                  final bool isCurrentUser = (userName == user?.displayName);
+                                  final String userName =
+                                      getMeditationRankList()[index];
+                                  final bool isCurrentUser =
+                                      (userName == user?.displayName);
                                   final Color containerColor = isCurrentUser
                                       ? ColorSet.usersColor
                                       : ColorSet.backgroundColor;
@@ -1252,8 +1276,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -1274,8 +1298,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -1296,8 +1320,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -1318,8 +1342,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -1340,8 +1364,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -1365,8 +1389,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -1387,8 +1411,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -1409,8 +1433,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -1431,8 +1455,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -1453,8 +1477,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -1550,8 +1574,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child:  const Row(
-                            children: [
+                          child: Row(
+                            children: const [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -1599,8 +1623,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child:  const Row(
-                            children: [
+                          child: Row(
+                            children: const [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(

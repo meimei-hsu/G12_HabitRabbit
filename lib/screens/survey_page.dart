@@ -1,8 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:flutter/material.dart';
 import 'package:datepicker_cupertino/datepicker_cupertino.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'dart:async';
@@ -500,7 +498,8 @@ class TitlePageState extends State<TitlePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
+        appBar:
+            AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
         body: Padding(
           padding: const EdgeInsets.fromLTRB(36, 48, 36, 48),
           child: Container(
@@ -532,7 +531,8 @@ class TitlePageState extends State<TitlePage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 100, left: 150),
-                  child: Image.asset("assets/images/Rabbit_2.png",
+                  child: Image.asset(
+                    "assets/images/Rabbit_2.png",
                     width: 180,
                     height: 200,
                   ),
@@ -1231,9 +1231,9 @@ class PartThreePageState extends State<PartThreePage>
                                 return Transform.translate(
                                   offset:
                                       Offset(controller.value * -50, 0), // X軸位移
-                                  child: const Row(
+                                  child: Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    children: [
+                                    children: const [
                                       Icon(
                                         FontAwesomeIcons.angleDoubleLeft,
                                         size: 40,
@@ -1256,9 +1256,9 @@ class PartThreePageState extends State<PartThreePage>
                                 return Transform.translate(
                                   offset:
                                       Offset(controller.value * 50, 0), // X軸位移
-                                  child: const Row(
+                                  child: Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    children: [
+                                    children: const [
                                       Text('是 Yes'),
                                       SizedBox(width: 6),
                                       Icon(

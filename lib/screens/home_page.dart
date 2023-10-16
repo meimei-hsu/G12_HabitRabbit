@@ -416,7 +416,7 @@ class HomepageState extends State<Homepage> {
                       Navigator.pushNamed(context, "/questionnaire",
                           arguments: {"part": 0});
                     },
-                    icon: Icon(Icons.accessibility_outlined, size: 40))
+                    icon: const Icon(Icons.accessibility_outlined, size: 40))
               ],
             ),
     ));
@@ -449,8 +449,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
 
     for (int i = 1; i <= 4; i++) {
       int choice = 15 * i;
-      btnList.add(
-          OutlinedButton(
+      btnList.add(OutlinedButton(
         style: OutlinedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),

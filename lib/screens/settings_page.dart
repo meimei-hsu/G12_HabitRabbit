@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:babstrap_settings_screen/babstrap_settings_screen.dart';
 import 'package:g12/screens/page_material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:motion_toast/motion_toast.dart';
-import 'package:motion_toast/resources/arrays.dart';
 
 import 'package:g12/services/database.dart';
 import 'package:toggle_switch/toggle_switch.dart';
