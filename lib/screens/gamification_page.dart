@@ -39,10 +39,10 @@ class GamificationPageState extends State<GamificationPage> {
           backgroundColor: ColorSet.backgroundColor,
           automaticallyImplyLeading: false,
         ),
-        body: SafeArea(
+        body: const SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const <Widget>[
+            children: <Widget>[
               Padding(
                 padding:
                     EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 20),
@@ -151,7 +151,9 @@ class CharacterWidget extends StatelessWidget {
                   child: FloatingActionButton(
                     backgroundColor: ColorSet.backgroundColor,
                     tooltip: "資訊",
-                    onPressed: () {},
+                    onPressed: () {
+                      _showInfoDialog(context);
+                    },
                     child: const Icon(Icons.info_outline,
                         color: ColorSet.iconColor),
                   ),
@@ -285,6 +287,24 @@ void _showQuizDialog(BuildContext context) {
       return const Padding(
         padding: EdgeInsets.all(8.0),
         child: QuizDialog(arguments: null),
+      );
+    },
+  );
+}
+
+void _showInfoDialog(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+          topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+    ),
+    //backgroundColor: ColorSet.bottomBarColor,
+    builder: (BuildContext context) {
+      return const Padding(
+        padding: EdgeInsets.all(8.0),
+        child: InfoDialog(arguments: null),
       );
     },
   );
@@ -571,6 +591,67 @@ class GrowDialogState extends State<GrowDialog> {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class InfoDialog extends StatefulWidget {
+  const InfoDialog({super.key, required arguments});
+
+  @override
+  InfoDialogState createState() => InfoDialogState();
+}
+
+class InfoDialogState extends State<InfoDialog> {
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    return Material(
+      color: ColorSet.bottomBarColor,
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+              title: const Text(
+                "疑難雜症區",
+                style: TextStyle(
+                    color: ColorSet.textColor,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(
+                    Icons.close_rounded,
+                    color: ColorSet.iconColor,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(height: 10.0),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Container(
+                height: 120,
+                width: 0.9 * screenWidth,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                  border: Border.all(color: ColorSet.textColor, width: 1),
+                  color: ColorSet.backgroundColor,
+                ),
+                //TODO: INFO Text
               ),
             ),
           ],

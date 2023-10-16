@@ -73,10 +73,10 @@ class CommunityPageState extends State<CommunityPage>
                         controller: _controller,
                         indicatorColor: ColorSet.borderColor,
                         indicatorWeight: 3,
-                        tabs:  [
+                        tabs:  const [
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.group,
                                   color: ColorSet.iconColor,
@@ -93,7 +93,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.emoji_events,
                                   color: ColorSet.iconColor, // 设置图标颜色
@@ -110,7 +110,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.sports_kabaddi,
                                   color: ColorSet.iconColor,
@@ -398,9 +398,9 @@ class FriendListPageState extends State<FriendListPage> {
                       width: 1.0,
                     ),
                   ),
-                  child:  Row(
+                  child:  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Icon(Icons.emoji_events),
@@ -1252,8 +1252,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
-      children: const [
+    child:  const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -1274,8 +1274,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
-      children: const [
+    child:  const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -1296,8 +1296,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
-      children: const [
+    child:  const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -1318,8 +1318,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
-      children: const [
+    child:  const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -1340,8 +1340,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
-      children: const [
+    child:  const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -1365,8 +1365,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
-      children: const [
+    child:  const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -1387,8 +1387,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
-      children: const [
+    child:  const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -1409,8 +1409,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
-      children: const [
+    child:  const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -1431,8 +1431,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
-      children: const [
+    child:  const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -1453,8 +1453,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
-      children: const [
+    child:  const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -1529,17 +1529,29 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                       Column(children: [
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const TeamCompetitionPage()),
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Coming Soon"),
+                                  content: const Text("此功能即將推出。敬請期待！"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("關閉"),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child:  Row(
-                            children: const [
+                          child:  const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -1566,17 +1578,29 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                         const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const TeamCompetitionPage()),
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Coming Soon"),
+                                  content: const Text("此功能即將推出。敬請期待！"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("關閉"),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child:  Row(
-                            children: const [
+                          child:  const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -1637,7 +1661,6 @@ class TeamChallengePageState extends State<TeamChallengePage> {
         ElevatedButton(
           onPressed: () {
             bool showTextField = false;
-
             showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -1699,11 +1722,22 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const TeamWorkPage(),
-                                      ),
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text("Coming Soon"),
+                                          content: const Text("此功能即將推出。敬請期待！"),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text("關閉"),
+                                            ),
+                                          ],
+                                        );
+                                      },
                                     );
                                   },
                                   icon: const Icon(Icons.check),
@@ -1713,10 +1747,22 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           const SizedBox(height: 10),
                           ElevatedButton(
                             onPressed: () {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => const TeamWorkPage(),
-                                ),
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text("Coming Soon"),
+                                    content: const Text("此功能即將推出。敬請期待！"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text("關閉"),
+                                      ),
+                                    ],
+                                  );
+                                },
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -1729,7 +1775,7 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                                 fontSize: 14.0,
                               ),
                             ),
-                          ),
+                          )
                         ],
                       ),
                     );
@@ -1752,7 +1798,7 @@ class TeamChallengePageState extends State<TeamChallengePage> {
 }
 
 //競爭賽樣貌
-class TeamCompetitionPage extends StatefulWidget {
+/*class TeamCompetitionPage extends StatefulWidget {
   const TeamCompetitionPage({super.key});
 
   @override
@@ -1866,10 +1912,10 @@ class TeamBClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) {
     return true;
   }
-}
+}*/
 
 //合作賽樣貌
-class TeamWorkPage extends StatefulWidget {
+/*class TeamWorkPage extends StatefulWidget {
   const TeamWorkPage({super.key});
 
   @override
@@ -1992,4 +2038,4 @@ class TeamWorkPageState extends State<TeamWorkPage> {
       ),
     );
   }
-}
+}*/
