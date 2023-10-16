@@ -416,7 +416,20 @@ class HomepageState extends State<Homepage> {
                       Navigator.pushNamed(context, "/questionnaire",
                           arguments: {"part": 0});
                     },
-                    icon: const Icon(Icons.accessibility_outlined, size: 40))
+                    icon: const Icon(Icons.accessibility_outlined, size: 40)),
+                IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/contract/initial",
+                          arguments: {});
+                    },
+                    icon: Icon(Icons.monetization_on_outlined, size: 40)),
+                IconButton(
+                    onPressed: () {
+                      InformDialog()
+                          .get(context, ":(", "溯及既往 打咩！")
+                          .show();
+                    },
+                    icon: Icon(Icons.notifications_none_outlined, size: 40))
               ],
             ),
     ));

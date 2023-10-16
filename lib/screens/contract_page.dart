@@ -83,12 +83,12 @@ class FirstContractPageState extends State<FirstContractPage> {
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               SpeechBalloon(
-                  color: ColorSet.bottomBarColor,
+                  color: ColorSet.backgroundColor,
                   width: MediaQuery.of(context).size.width * 0.9,
                   height: MediaQuery.of(context).size.height * 0.4,
                   nipLocation: NipLocation.bottom,
                   nipHeight: 30,
-                  borderColor: ColorSet.buttonColor,
+                  borderColor: ColorSet.borderColor,
                   borderRadius: 20,
                   borderWidth: 8,
                   child: Center(
@@ -130,7 +130,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 style: ElevatedButton.styleFrom(
                                   padding: const EdgeInsets.only(
                                       right: 10, left: 10),
-                                  backgroundColor: ColorSet.backgroundColor,
+                                  backgroundColor: ColorSet.bottomBarColor,
                                   shadowColor: Colors.transparent,
                                   elevation: 0,
                                   minimumSize: const Size.fromHeight(40),
@@ -153,8 +153,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                               Expanded(
                                   child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.only(
-                                      right: 10, left: 10),
+                                  padding: const EdgeInsets.only(left: 10),
                                   backgroundColor: ColorSet.buttonColor,
                                   shadowColor: Colors.transparent,
                                   elevation: 0,
@@ -396,7 +395,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                               style: ElevatedButton.styleFrom(
                                 padding:
                                     const EdgeInsets.only(right: 10, left: 10),
-                                backgroundColor: ColorSet.backgroundColor,
+                                backgroundColor: ColorSet.bottomBarColor,
                                 shadowColor: Colors.transparent,
                                 elevation: 0,
                                 minimumSize: const Size.fromHeight(40),
@@ -831,12 +830,12 @@ class SecondContractPageState extends State<SecondContractPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SpeechBalloon(
-                color: ColorSet.bottomBarColor,
+                color: ColorSet.backgroundColor,
                 width: MediaQuery.of(context).size.width * 0.9,
                 height: MediaQuery.of(context).size.height * 0.4,
                 nipLocation: NipLocation.bottom,
                 nipHeight: 30,
-                borderColor: ColorSet.buttonColor,
+                borderColor: ColorSet.borderColor,
                 borderRadius: 20,
                 borderWidth: 8,
                 child: Center(
@@ -877,7 +876,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                                 style: ElevatedButton.styleFrom(
                                   padding: const EdgeInsets.only(
                                       right: 10, left: 10),
-                                  backgroundColor: ColorSet.backgroundColor,
+                                  backgroundColor: ColorSet.bottomBarColor,
                                   shadowColor: Colors.transparent,
                                   elevation: 0,
                                   minimumSize: const Size.fromHeight(40),
