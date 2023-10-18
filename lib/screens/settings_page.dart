@@ -67,14 +67,29 @@ class SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.only(right: 20, left: 20),
         child: ListView(
           children: [
-            // user card
-            SimpleUserCard(
-              userName: Data.user!.displayName!,
-              userProfilePic: AssetImage(Data.characterImageURL),
-              textStyle: const TextStyle(
-                color: ColorSet.textColor,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+            Container(
+              margin: const EdgeInsets.only(top:10, bottom:10, right: 5, left: 5),
+              decoration: const BoxDecoration(
+                color: ColorSet.bottomBarColor,
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 30,),
+                  Image.asset(
+                    Data.characterImageURL,
+                    height: MediaQuery.of(context).size.height / 5,
+                    width: MediaQuery.of(context).size.width / 2.5,
+                  ),
+                  const SizedBox(height: 15,),
+                  Text(Data.user!.displayName!, style: const TextStyle(
+                    color: ColorSet.textColor,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),),
+                  const SizedBox(height: 30,),
+                ],
               ),
             ),
             SettingsGroup(
