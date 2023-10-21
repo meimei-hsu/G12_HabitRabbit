@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -479,817 +478,147 @@ class LeaderboardPage extends StatefulWidget {
 }
 
 class LeaderboardPageState extends State<LeaderboardPage> {
-  User? user = FirebaseAuth.instance.currentUser;
-  int personalRank = 0;
-  int roleRank = 0;
-  int exerciseRank = 0;
-  int meditationRank = 0;
+  List<int> toggles = [0, 0, 0, 0];
 
-  //TODO: 抓前十名的資料
-  final List<String> friendPersonalRank = <String>[
-    'Andy',
-    'Bethany',
-    'Daniel',
-    'Mary',
-    'Chloe'
-  ];
-  final List<String> wholePersonalRank = <String>[
-    'Andy',
-    'Frank',
-    'Bethany',
-    'John',
-    'Daniel',
-    'Kevin',
-    'Angel',
-    'Mary',
-    'Chloe'
-  ];
-  final List<String> friendRoleRank = <String>[
-    'Chloe',
-    'Andy',
-    'Mary',
-    'Daniel',
-    'Bethany'
-  ];
-  final List<String> wholeRoleRank = <String>[
-    'Chloe',
-    'Andy',
-    'Frank',
-    'Mary',
-    'Daniel',
-    'Kevin',
-    'Angel',
-    'Bethany',
-    'John'
-  ];
-  final List<String> friendExerciseRank = <String>['Mary'];
-  final List<String> wholeExerciseRank = <String>['Mary', 'Kevin', 'Angel'];
-  final List<String> friendMeditationRank = <String>['Mary'];
-  final List<String> wholeMeditationRank = <String>['Mary', 'Kevin', 'Angel'];
-
-  //個人排名
-  List<String> getPersonalRankList() {
-    if (personalRank == 0) {
-      return friendPersonalRank;
-    } else {
-      return wholePersonalRank;
+  Map getChart(int index) {
+    Map chart = Map.from(CommData.charts[index]);
+    if (toggles[index] == 0) {
+      chart.removeWhere((key, value) =>
+          !CommData.friends.contains(key) && key != Data.user?.uid);
     }
-  }
-
-  //角色排名
-  List<String> getRoleRankList() {
-    if (roleRank == 0) {
-      return friendRoleRank;
-    } else {
-      return wholeRoleRank;
-    }
-  }
-
-  //運動寶物數量排名
-  List<String> getExerciseRankList() {
-    if (exerciseRank == 0) {
-      return friendExerciseRank;
-    } else {
-      return wholeExerciseRank;
-    }
-  }
-
-  //冥想寶物數量排名
-  List<String> getMeditationRankList() {
-    if (meditationRank == 0) {
-      return friendMeditationRank;
-    } else {
-      return wholeMeditationRank;
-    }
+    return chart;
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        child: Padding(
-      padding: const EdgeInsets.only(top: 30),
-      child: ListView(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 30),
+        child: ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          children: [
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Container(
-                  padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
-                  margin: const EdgeInsets.only(right: 20, left: 20),
-                  decoration: BoxDecoration(
-                    color: ColorSet.backgroundColor,
-                    border: Border.all(color: ColorSet.borderColor, width: 4),
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: const Text(
-                          "個人等級\n排行榜",
-                          style: TextStyle(
-                            color: ColorSet.textColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
-                          ),
-                        ),
-                        trailing: ToggleSwitch(
-                          minHeight: 35,
-                          initialLabelIndex: personalRank,
-                          cornerRadius: 10.0,
-                          radiusStyle: true,
-                          labels: const ['好友', '全用戶'],
-                          activeBgColors: const [
-                            [ColorSet.friendColor],
-                            [ColorSet.usersColor]
-                          ],
-                          activeFgColor: ColorSet.textColor,
-                          inactiveBgColor: ColorSet.bottomBarColor,
-                          inactiveFgColor: ColorSet.textColor,
-                          totalSwitches: 2,
-                          onToggle: (index) {
-                            personalRank = index!;
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                      Column(children: [
-                        (personalRank == 0)
-                            ? SizedBox(
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
-                                  itemCount: getPersonalRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final int rank = index + 1;
-                                    final String userName =
-                                        getPersonalRankList()[index];
-                                    final bool isCurrentUser =
-                                        (userName == user?.displayName);
-                                    final Color containerColor = isCurrentUser
-                                        ? ColorSet.friendColor
-                                        : ColorSet.backgroundColor;
-
-                                    return Container(
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: containerColor,
-                                        border: Border.all(
-                                            color: ColorSet.borderColor,
-                                            width: 2),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20)),
-                                      ),
-                                      child: Row(children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundColor:
-                                                ColorSet.backgroundColor,
-                                            backgroundImage: AssetImage(
-                                                'assets/images/Dog_1.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          userName,
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                    );
-                                  },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const SizedBox(
-                                      height: 5,
-                                    );
-                                  },
-                                ),
-                              )
-                            : SizedBox(
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
-                                  itemCount: getPersonalRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final int rank = index + 1;
-                                    final String userName =
-                                        getPersonalRankList()[index];
-                                    final bool isCurrentUser =
-                                        (userName == user?.displayName);
-                                    final Color containerColor = isCurrentUser
-                                        ? ColorSet.usersColor
-                                        : ColorSet.backgroundColor;
-
-                                    return Container(
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: containerColor,
-                                        border: Border.all(
-                                            color: ColorSet.borderColor,
-                                            width: 2),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20)),
-                                      ),
-                                      child: Row(children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundColor:
-                                                ColorSet.backgroundColor,
-                                            backgroundImage: AssetImage(
-                                                'assets/images/Dog_1.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          getPersonalRankList()[index],
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                    );
-                                  },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const SizedBox(
-                                      height: 5,
-                                    );
-                                  },
-                                ),
-                              )
-                      ]),
-                    ],
-                  )),
-              const SizedBox(height: 15),
-              Container(
-                  padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
-                  margin: const EdgeInsets.only(right: 20, left: 20),
-                  decoration: BoxDecoration(
-                    color: ColorSet.backgroundColor,
-                    border: Border.all(color: ColorSet.borderColor, width: 4),
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: const Text(
-                          "角色等級\n排行榜",
-                          style: TextStyle(
-                            color: ColorSet.textColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
-                          ),
-                        ),
-                        trailing: ToggleSwitch(
-                          minHeight: 35,
-                          initialLabelIndex: roleRank,
-                          cornerRadius: 10.0,
-                          radiusStyle: true,
-                          labels: const ['好友', '全用戶'],
-                          activeBgColors: const [
-                            [ColorSet.friendColor],
-                            [ColorSet.usersColor]
-                          ],
-                          activeFgColor: ColorSet.textColor,
-                          inactiveBgColor: ColorSet.bottomBarColor,
-                          inactiveFgColor: ColorSet.textColor,
-                          totalSwitches: 2,
-                          onToggle: (index) {
-                            roleRank = index!;
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                      Column(children: [
-                        (roleRank == 0)
-                            ? SizedBox(
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
-                                  itemCount: getRoleRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final int rank = index + 1;
-                                    final String userName =
-                                        getRoleRankList()[index];
-                                    final bool isCurrentUser =
-                                        (userName == user?.displayName);
-                                    final Color containerColor = isCurrentUser
-                                        ? ColorSet.friendColor
-                                        : ColorSet.backgroundColor;
-
-                                    return Container(
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: containerColor,
-                                        border: Border.all(
-                                            color: ColorSet.borderColor,
-                                            width: 2),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20)),
-                                      ),
-                                      child: Row(children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundColor:
-                                                ColorSet.backgroundColor,
-                                            backgroundImage: AssetImage(
-                                                'assets/images/Dog_1.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          getRoleRankList()[index],
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                    );
-                                  },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const SizedBox(
-                                      height: 5,
-                                    );
-                                  },
-                                ),
-                              )
-                            : SizedBox(
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
-                                  itemCount: getRoleRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final int rank = index + 1;
-                                    final String userName =
-                                        getRoleRankList()[index];
-                                    final bool isCurrentUser =
-                                        (userName == user?.displayName);
-                                    final Color containerColor = isCurrentUser
-                                        ? ColorSet.usersColor
-                                        : ColorSet.backgroundColor;
-
-                                    return Container(
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: containerColor,
-                                        border: Border.all(
-                                            color: ColorSet.borderColor,
-                                            width: 2),
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      child: Row(children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundColor:
-                                                ColorSet.backgroundColor,
-                                            backgroundImage: AssetImage(
-                                                'assets/images/Dog_1.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          getRoleRankList()[index],
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                    );
-                                  },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const SizedBox(
-                                      height: 5,
-                                    );
-                                  },
-                                ),
-                              )
-                      ]),
-                    ],
-                  )),
-              const SizedBox(height: 15),
-              Container(
-                  padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
-                  margin: const EdgeInsets.only(right: 20, left: 20),
-                  decoration: BoxDecoration(
-                    color: ColorSet.backgroundColor,
-                    border: Border.all(color: ColorSet.borderColor, width: 4),
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: const Text(
-                          "運動寶物\n排行榜",
-                          style: TextStyle(
-                            color: ColorSet.textColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
-                          ),
-                        ),
-                        trailing: ToggleSwitch(
-                          minHeight: 35,
-                          initialLabelIndex: exerciseRank,
-                          cornerRadius: 10.0,
-                          radiusStyle: true,
-                          labels: const ['好友', '全用戶'],
-                          activeBgColors: const [
-                            [ColorSet.friendColor],
-                            [ColorSet.usersColor]
-                          ],
-                          activeFgColor: ColorSet.textColor,
-                          inactiveBgColor: ColorSet.bottomBarColor,
-                          inactiveFgColor: ColorSet.textColor,
-                          totalSwitches: 2,
-                          onToggle: (index) {
-                            exerciseRank = index!;
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                      Column(children: [
-                        (exerciseRank == 0)
-                            ? SizedBox(
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
-                                  itemCount: getExerciseRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final int rank = index + 1;
-                                    final String userName =
-                                        getExerciseRankList()[index];
-                                    final bool isCurrentUser =
-                                        (userName == user?.displayName);
-                                    final Color containerColor = isCurrentUser
-                                        ? ColorSet.friendColor
-                                        : ColorSet.backgroundColor;
-
-                                    return Container(
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: containerColor,
-                                        border: Border.all(
-                                            color: ColorSet.borderColor,
-                                            width: 2),
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20)),
-                                      ),
-                                      child: Row(children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundColor:
-                                                ColorSet.backgroundColor,
-                                            backgroundImage: AssetImage(
-                                                'assets/images/Dog_1.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          getExerciseRankList()[index],
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                    );
-                                  },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const SizedBox(height: 5);
-                                  },
-                                ),
-                              )
-                            : SizedBox(
-                                child: ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  padding: const EdgeInsets.only(
-                                      left: 40.0, top: 10.0, right: 40.0),
-                                  itemCount: getExerciseRankList().length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    final int rank = index + 1;
-                                    final String userName =
-                                        getExerciseRankList()[index];
-                                    final bool isCurrentUser =
-                                        (userName == user?.displayName);
-                                    final Color containerColor = isCurrentUser
-                                        ? ColorSet.usersColor
-                                        : ColorSet.backgroundColor;
-
-                                    return Container(
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: containerColor,
-                                        border: Border.all(
-                                            color: ColorSet.borderColor,
-                                            width: 2),
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      child: Row(children: [
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          '$rank',
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 16.0),
-                                          child: CircleAvatar(
-                                            radius: 15,
-                                            backgroundColor:
-                                                ColorSet.backgroundColor,
-                                            backgroundImage: AssetImage(
-                                                'assets/images/Dog_1.png'),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 15),
-                                        Text(
-                                          getExerciseRankList()[index],
-                                          style: const TextStyle(
-                                            color: ColorSet.textColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ]),
-                                    );
-                                  },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const SizedBox(
-                                      height: 5,
-                                    );
-                                  },
-                                ),
-                              )
-                      ]),
-                    ],
-                  )),
-              const SizedBox(height: 15),
-              Container(
-                  padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
-                  margin: const EdgeInsets.only(right: 20, left: 20),
-                  decoration: BoxDecoration(
-                    color: ColorSet.backgroundColor,
-                    border: Border.all(color: ColorSet.borderColor, width: 4),
-                    borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  ),
-                  child: Column(children: [
-                    ListTile(
-                      title: const Text(
-                        "冥想寶物\n排行榜",
-                        style: TextStyle(
-                          color: ColorSet.textColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      trailing: ToggleSwitch(
-                        minHeight: 35,
-                        initialLabelIndex: meditationRank,
-                        cornerRadius: 10.0,
-                        radiusStyle: true,
-                        labels: const ['好友', '全用戶'],
-                        activeBgColors: const [
-                          [ColorSet.friendColor],
-                          [ColorSet.usersColor]
-                        ],
-                        activeFgColor: ColorSet.textColor,
-                        inactiveBgColor: ColorSet.bottomBarColor,
-                        inactiveFgColor: ColorSet.textColor,
-                        totalSwitches: 2,
-                        onToggle: (index) {
-                          meditationRank = index!;
-                          setState(() {});
-                        },
+          itemCount: 4,
+          itemBuilder: (BuildContext context, int ordinalNum) {
+            Map chart = getChart(ordinalNum);
+            List titles = ["個人等級", "角色等級", "運動寶物", "冥想寶物"];
+            return Container(
+              padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+              margin: const EdgeInsets.only(right: 20, left: 20),
+              decoration: BoxDecoration(
+                color: ColorSet.backgroundColor,
+                border: Border.all(color: ColorSet.borderColor, width: 4),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+              ),
+              child: Column(
+                children: [
+                  ListTile(
+                    title: Text(
+                      "${titles[ordinalNum]}\n排行榜",
+                      style: const TextStyle(
+                        color: ColorSet.textColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
                       ),
                     ),
-                    Column(children: [
-                      (meditationRank == 0)
-                          ? SizedBox(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(
-                                    left: 40.0, top: 10.0, right: 40.0),
-                                itemCount: getMeditationRankList().length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final int rank = index + 1;
-                                  final String userName =
-                                      getMeditationRankList()[index];
-                                  final bool isCurrentUser =
-                                      (userName == user?.displayName);
-                                  final Color containerColor = isCurrentUser
-                                      ? ColorSet.friendColor
-                                      : ColorSet.backgroundColor;
+                    trailing: ToggleSwitch(
+                      minHeight: 35,
+                      initialLabelIndex: 0,
+                      cornerRadius: 10.0,
+                      radiusStyle: true,
+                      labels: const ['好友', '全用戶'],
+                      activeBgColors: const [
+                        [ColorSet.friendColor],
+                        [ColorSet.usersColor]
+                      ],
+                      activeFgColor: ColorSet.textColor,
+                      inactiveBgColor: ColorSet.bottomBarColor,
+                      inactiveFgColor: ColorSet.textColor,
+                      totalSwitches: 2,
+                      onToggle: (index) {
+                        toggles[ordinalNum] = index!;
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  Column(children: [
+                    SizedBox(
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.only(
+                            left: 40.0, top: 10.0, right: 40.0),
+                        itemCount: chart.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (toggles[ordinalNum] == 0) {
+                            chart.removeWhere((key, value) =>
+                                !CommData.friends.contains(key) &&
+                                key != Data.user?.uid);
+                          }
+                          final String uid = chart.keys.toList()[index];
+                          final bool isCurrentUser =
+                              (chart[uid][2] == Data.user?.displayName);
+                          final Color containerColor = isCurrentUser
+                              ? (toggles[ordinalNum] == 0)
+                                  ? ColorSet.friendColor
+                                  : ColorSet.usersColor
+                              : ColorSet.backgroundColor;
 
-                                  return Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: containerColor,
-                                      border: Border.all(
-                                          color: ColorSet.borderColor,
-                                          width: 2),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(20)),
-                                    ),
-                                    child: Row(children: [
-                                      const SizedBox(width: 15),
-                                      Text(
-                                        '$rank',
-                                        style: const TextStyle(
-                                          color: ColorSet.textColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(left: 16.0),
-                                        child: CircleAvatar(
-                                          radius: 15,
-                                          backgroundColor:
-                                              ColorSet.backgroundColor,
-                                          backgroundImage: AssetImage(
-                                              'assets/images/Dog_1.png'),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 15),
-                                      Text(
-                                        getMeditationRankList()[index],
-                                        style: const TextStyle(
-                                          color: ColorSet.textColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ]),
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return const SizedBox(
-                                    height: 5,
-                                  );
-                                },
+                          return Container(
+                            height: 30,
+                            decoration: BoxDecoration(
+                              color: containerColor,
+                              border: Border.all(
+                                  color: ColorSet.borderColor, width: 2),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20)),
+                            ),
+                            child: Row(children: [
+                              const SizedBox(width: 15),
+                              Text(
+                                '${chart[uid][0]}'.padLeft(2, "  "),
+                                style: const TextStyle(
+                                  color: ColorSet.textColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            )
-                          : SizedBox(
-                              child: ListView.separated(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: const EdgeInsets.only(
-                                    left: 40.0, top: 10.0, right: 40.0),
-                                itemCount: getMeditationRankList().length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  final int rank = index + 1;
-                                  final String userName =
-                                      getMeditationRankList()[index];
-                                  final bool isCurrentUser =
-                                      (userName == user?.displayName);
-                                  final Color containerColor = isCurrentUser
-                                      ? ColorSet.usersColor
-                                      : ColorSet.backgroundColor;
-
-                                  return Container(
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: containerColor,
-                                      border: Border.all(
-                                          color: ColorSet.borderColor,
-                                          width: 2),
-                                      borderRadius: BorderRadius.circular(50),
-                                    ),
-                                    child: Row(children: [
-                                      const SizedBox(width: 15),
-                                      Text(
-                                        '$rank',
-                                        style: const TextStyle(
-                                          color: ColorSet.textColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.only(left: 16.0),
-                                        child: CircleAvatar(
-                                          radius: 15,
-                                          backgroundColor:
-                                              ColorSet.backgroundColor,
-                                          backgroundImage: AssetImage(
-                                              'assets/images/Dog_1.png'),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 15),
-                                      Text(
-                                        getMeditationRankList()[index],
-                                        style: const TextStyle(
-                                          color: ColorSet.textColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ]),
-                                  );
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return const SizedBox(
-                                    height: 5,
-                                  );
-                                },
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16.0),
+                                child: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: ColorSet.backgroundColor,
+                                  backgroundImage: AssetImage(chart[uid][1] ??
+                                      'assets/images/Dog_1.png'),
+                                ),
                               ),
-                            )
-                    ]),
-                  ])),
-            ]),
-          ]),
-    ));
+                              const SizedBox(width: 15),
+                              Text(
+                                chart[uid][2],
+                                style: const TextStyle(
+                                  color: ColorSet.textColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ]),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const SizedBox(height: 5);
+                        },
+                      ),
+                    )
+                  ]),
+                ],
+              ),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return const SizedBox(height: 15);
+          },
+        ),
+      ),
+    );
   }
 }
 

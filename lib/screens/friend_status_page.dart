@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -179,8 +181,9 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                   series: <ColumnSeries<ChartData, String>>[
                                     ColumnSeries<ChartData, String>(
                                       dataSource: [
-                                        ChartData('運動', 20),
-                                        ChartData('冥想', 40),
+                                        // TODO: get cumulativeTime data from database
+                                        ChartData('運動', Random().nextInt(100) + 100),
+                                        ChartData('冥想', Random().nextInt(100) + 100),
                                       ],
                                       xValueMapper: (ChartData data, _) =>
                                           data.x,
@@ -250,8 +253,9 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                   series: <ColumnSeries<ChartData, String>>[
                                     ColumnSeries<ChartData, String>(
                                       dataSource: [
-                                        ChartData('運動', 12),
-                                        ChartData('冥想', 33),
+                                        // TODO: get maximumConsecutiveDays data from database
+                                        ChartData('運動', Random().nextInt(20) + 3),
+                                        ChartData('冥想', Random().nextInt(20) + 3),
                                       ],
                                       xValueMapper: (ChartData data, _) =>
                                           data.x,

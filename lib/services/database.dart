@@ -452,18 +452,37 @@ class GamificationDB {
     return (snapshot != null) ? Map.from(snapshot as Map) : null;
   }
 
-  static getChart(String category) {
-    Map levels = {};
+  static Map getChart(String category) {
+    Map chart = {Data.user?.uid: Data.game?[category]};
 
     Data.community?.forEach((key, value) {
-      // TODO: 重名情況待解決
-      String catVal = value[category];
-      if (category == "characterLevel") catVal = catVal[catVal.length - 1];
-      levels[value["userName"]] = catVal;
+      dynamic catVal = value[category];
+      // select the last character as character's level
+      if (category == "character") {
+        catVal = int.parse(catVal[catVal.length - 1]);
+      }
+      chart[key] = catVal;
     });
 
-    levels = Map.fromEntries(
-        levels.entries.toList()..sort((e1, e2) => e1.value.compareTo(e2.value)));
+    // Sort the chart by descending order
+    chart = Map.fromEntries(
+        chart.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value)));
+    // Set the values to user's corresponding rank
+    List keys = chart.keys.toList();
+    List values = chart.values.toList();
+    for (int i = 0; i < chart.length; i++) {
+      // Set the rank as the previous if their values are same, else rank++
+      int rank = (i == 0) ? 1 : chart[keys[i - 1]][0];
+      if (i != 0 && (values[i - 1] != values[i])) rank++;
+      // Set the value to the following format: ["rank", "photoUrl", "userName"]
+      String uid = keys[i];
+      chart[uid] = [
+        rank,
+        "assets/images/${Data.community?[uid]["character"]}.png",
+        Data.community?[uid]["userName"]
+      ];
+    }
+    return chart;
   }
 
   static String? convertSocialCode(String friendCode) {

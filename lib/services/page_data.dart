@@ -672,6 +672,7 @@ class CommData {
   static int level = 0;
   static List friends = [];
   static String currentFriend = ""; // the friend that user is checking status
+  static List<Map> charts = [];
 
   static Future<void> fetch() async {
     print("Refreshing CommunityPage...");
@@ -684,6 +685,13 @@ class CommData {
       socialCode = Data.user!.uid.substring(0, 7);
       level = Data.game?["level"];
       friends = Data.game?["friends"].split(", ");
+
+      charts = [
+        GamificationDB.getChart("level"),
+        GamificationDB.getChart("character"),
+        GamificationDB.getChart("workoutGem"),
+        GamificationDB.getChart("meditationGem")
+      ];
     }
 
     Data.updatingUI[3] = false;
@@ -696,7 +704,7 @@ class FriendData {
   static int workoutCumulativeTime = 0, meditationCumulativeTime = 0;
   static int workoutCumulativeDays = 0, medicationCumulativeDays = 0;
 
-  static Future<void> fetch() async {
+  static fetch() {
     Map info = Data.community?[CommData.currentFriend];
     userName = info["userName"];
     socialCode = CommData.currentFriend.substring(0, 7);
