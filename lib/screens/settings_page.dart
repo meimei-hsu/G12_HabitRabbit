@@ -819,7 +819,6 @@ class ChangeDayAndNotificationTimeBottomSheetState
                 ),
               ),
               onPressed: () async {
-                // FIXME: 好像沒更新到？APP restart 後會回到原本的設定（好像改 UI 前就這樣了）
                 List originalList = SettingsData.userData[dayKey];
                 List modifiedList = daySelectedDays;
                 if (modifiedList != originalList) {
@@ -840,6 +839,7 @@ class ChangeDayAndNotificationTimeBottomSheetState
                     .get(context, "完成更改:)",
                         "週${SettingsData.habitTypeZH}日與通知時間已更新！")
                     .show();
+                // FIXME: should close the bottom sheet after pressing "確定"
               },
               child: const Text(
                 "確定",

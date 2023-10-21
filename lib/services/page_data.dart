@@ -49,6 +49,7 @@ class Data {
       await StatData.fetch();
       await GameData.fetch();
       await SettingsData.fetch();
+      await CommData.fetch();
       // execute plan algorithm
       await PlanAlgo.execute();
     }

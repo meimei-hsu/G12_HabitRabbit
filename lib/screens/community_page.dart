@@ -229,12 +229,25 @@ class FriendListPageState extends State<FriendListPage> {
                 onPressed: isTextFieldEmpty
                     ? null
                     : () {
+                        searchText = searchText.trim();
                         String? fullID =
                             GamificationDB.convertSocialCode(searchText);
-                        if (fullID != null) {
-                          _showCustomDialog(context, fullID);
+                        if (fullID == null) {
+                          InformDialog()
+                              .get(context, "警告！", "找不到該名用戶TT")
+                              .show();
                         } else {
-                          // TODO: alertDialog
+                          if (searchText == CommData.socialCode) {
+                            InformDialog()
+                                .get(context, "警告！", "不能新增自己為朋友喔")
+                                .show();
+                          } else if (CommData.friends.contains(fullID)) {
+                            InformDialog()
+                                .get(context, "警告！", "已經加入這位朋友了")
+                                .show();
+                          } else {
+                            _showCustomDialog(context, fullID);
+                          }
                         }
                       },
               ),
@@ -286,8 +299,8 @@ class FriendListPageState extends State<FriendListPage> {
                             child: CircleAvatar(
                               radius: 25,
                               backgroundColor: ColorSet.backgroundColor,
-                              backgroundImage:
-                                  AssetImage('assets/images/${info["character"]}.png'),
+                              backgroundImage: AssetImage(
+                                  'assets/images/${info["character"]}.png'),
                             ),
                           ),
                           const SizedBox(width: 15),
@@ -431,9 +444,10 @@ class FriendListPageState extends State<FriendListPage> {
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
+                    CommData.friends.add(userID);
                     GamificationDB.updateFriend(userID);
                     Navigator.of(context).pop();
-                    //TODO: 把朋友加進資料庫並顯示在 listView
+                    setState(() {});
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: ColorSet.backgroundColor,
