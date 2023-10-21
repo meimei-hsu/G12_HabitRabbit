@@ -62,7 +62,7 @@ class InformDialog {
             fontSize: 18,
             fontWeight: FontWeight.bold),
         btnOkOnPress: () {
-          (btnOkOnPress != null) ? btnOkOnPress() : Navigator.pop(context);
+          (btnOkOnPress != null) ? btnOkOnPress() : null;
         });
   }
 }

@@ -365,44 +365,53 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            onPressed: (isToday && workoutProgress! < 100)
-                                ? () {
-                                    int currentIndex =
-                                        widget.arguments['currentIndex'];
-                                    List items = workoutPlan!.split(", ");
-                                    for (int i = 0; i < items.length; i++) {
-                                      if (i <= 2) {
-                                        items[i] = "暖身：${items[i]}";
-                                      } else if (i >= items.length - 2) {
-                                        items[i] = "伸展：${items[i]}";
-                                      } else {
-                                        items[i] = "運動：${items[i]}";
-                                      }
-                                    }
+                            onPressed: (isToday)
+                                ? (workoutProgress! < 100)
+                                    ? () {
+                                        int currentIndex =
+                                            widget.arguments['currentIndex'];
+                                        List items = workoutPlan!.split(", ");
+                                        for (int i = 0; i < items.length; i++) {
+                                          if (i <= 2) {
+                                            items[i] = "暖身：${items[i]}";
+                                          } else if (i >= items.length - 2) {
+                                            items[i] = "伸展：${items[i]}";
+                                          } else {
+                                            items[i] = "運動：${items[i]}";
+                                          }
+                                        }
 
-                                    ClockDB.update("workout", {
-                                      Calendar.dateToString(DateTime.now()):
-                                          Calendar.timeToString(TimeOfDay.now())
-                                    });
-                                    ClockDB.updateForecast("workout");
-
-                                    Navigator.pushNamed(context, '/countdown',
-                                        arguments: {
-                                          'type': 'exercise',
-                                          'totalExerciseItemLength':
-                                              items.length,
-                                          'exerciseTime': items
-                                                  .sublist(currentIndex)
-                                                  .length *
-                                              6, // should be 60s
-                                          'exerciseItem':
-                                              items.sublist(currentIndex),
-                                          'currentIndex': currentIndex
+                                        ClockDB.update("workout", {
+                                          Calendar.dateToString(DateTime.now()):
+                                              Calendar.timeToString(
+                                                  TimeOfDay.now())
                                         });
-                                  }
+                                        ClockDB.updateForecast("workout");
+
+                                        Navigator.pushNamed(
+                                            context, '/countdown',
+                                            arguments: {
+                                              'type': 'exercise',
+                                              'totalExerciseItemLength':
+                                                  items.length,
+                                              'exerciseTime': items
+                                                      .sublist(currentIndex)
+                                                      .length *
+                                                  6, // should be 60s
+                                              'exerciseItem':
+                                                  items.sublist(currentIndex),
+                                              'currentIndex': currentIndex
+                                            });
+                                      }
+                                    : () {
+                                        InformDialog()
+                                            .get(
+                                                context, "Good:)", "已完成今日冥想計畫！")
+                                            .show();
+                                      }
                                 : () {
                                     InformDialog()
-                                        .get(context, "錯誤:(", "無法做非今日的運動計畫噢！")
+                                        .get(context, "錯誤:(", "無法做非今日的冥想計畫噢！")
                                         .show();
                                   },
                             label: const Text(
@@ -735,22 +744,35 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            onPressed: (isToday && meditationProgress! < 100)
-                                ? () {
-                                    ClockDB.update("meditation", {
-                                      Calendar.dateToString(DateTime.now()):
-                                          Calendar.timeToString(TimeOfDay.now())
-                                    });
-                                    ClockDB.updateForecast("meditation");
-
-                                    Navigator.pushNamed(context, '/countdown',
-                                        arguments: {
-                                          'type': 'meditation',
-                                          'meditationPlan': meditationPlan,
-                                          'meditationTime': meditationTime,
+                            onPressed: (isToday)
+                                ? (meditationProgress! < 100)
+                                    ? () {
+                                        ClockDB.update("meditation", {
+                                          Calendar.dateToString(DateTime.now()):
+                                              Calendar.timeToString(
+                                                  TimeOfDay.now())
                                         });
-                                  }
-                                : null,
+                                        ClockDB.updateForecast("meditation");
+
+                                        Navigator.pushNamed(
+                                            context, '/countdown',
+                                            arguments: {
+                                              'type': 'meditation',
+                                              'meditationPlan': meditationPlan,
+                                              'meditationTime': meditationTime,
+                                            });
+                                      }
+                                    : () {
+                                        InformDialog()
+                                            .get(
+                                                context, "Good:)", "已完成今日冥想計畫！")
+                                            .show();
+                                      }
+                                : () {
+                                    InformDialog()
+                                        .get(context, "錯誤:(", "無法做非今日的冥想計畫噢！")
+                                        .show();
+                                  },
                             label: const Text(
                               "開始冥想",
                               style: TextStyle(

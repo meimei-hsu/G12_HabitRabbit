@@ -392,7 +392,13 @@ class HomepageState extends State<Homepage> {
                             } else {
                               // 運動有、冥想有 --> 運動完成度、冥想完成度
                               // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
-                              (HomeData.isBefore) ? null : null;
+                              (HomeData.isBefore)
+                                  ? InformDialog()
+                                      .get(context, ":)", "要繼續努力養成習慣噢！")
+                                      .show()
+                                  : InformDialog()
+                                      .get(context, ":)", "要記得完成計畫噢！")
+                                      .show();
                             }
                           }, // Image tapped
                           child: Image.asset(
@@ -425,9 +431,7 @@ class HomepageState extends State<Homepage> {
                     icon: Icon(Icons.monetization_on_outlined, size: 40)),
                 IconButton(
                     onPressed: () {
-                      InformDialog()
-                          .get(context, ":(", "溯及既往 打咩！")
-                          .show();
+                      InformDialog().get(context, ":(", "溯及既往 打咩！").show();
                     },
                     icon: Icon(Icons.notifications_none_outlined, size: 40))
               ],
