@@ -491,10 +491,12 @@ class ChangeDayAndNotificationTimeBottomSheet extends StatefulWidget {
   const ChangeDayAndNotificationTimeBottomSheet({super.key});
 
   @override
-  ChangeDayAndNotificationTimeBottomSheetState createState() => ChangeDayAndNotificationTimeBottomSheetState();
+  ChangeDayAndNotificationTimeBottomSheetState createState() =>
+      ChangeDayAndNotificationTimeBottomSheetState();
 }
 
-class ChangeDayAndNotificationTimeBottomSheetState extends State<ChangeDayAndNotificationTimeBottomSheet> {
+class ChangeDayAndNotificationTimeBottomSheetState
+    extends State<ChangeDayAndNotificationTimeBottomSheet> {
   int planToChange = 0; // 0 = 運動, 1 = 冥想
 
   // Day
@@ -517,7 +519,7 @@ class ChangeDayAndNotificationTimeBottomSheetState extends State<ChangeDayAndNot
   @override
   initState() {
     super.initState();
-    daySelectedDays = SettingsData.userData[dayKey];
+    daySelectedDays = List.from(SettingsData.userData[dayKey]);
     daySelectedNames = [
       for (int i = 0; i < 7; i++)
         if (daySelectedDays[i] == 1) dayWeekdayNameList[i]
@@ -527,7 +529,7 @@ class ChangeDayAndNotificationTimeBottomSheetState extends State<ChangeDayAndNot
       for (int i = 0; i < 7; i++)
         if (SettingsData.userData[dayKey][i] == 1) i
     ];
-    forecast = SettingsData.timeForecast[notificationKey];
+    forecast = Map.from(SettingsData.timeForecast[notificationKey]);
   }
 
   List<Widget> _getDayBtnList() {
@@ -771,9 +773,7 @@ class ChangeDayAndNotificationTimeBottomSheetState extends State<ChangeDayAndNot
                       )),
                 ],
               )),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Container(
               padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
               margin: const EdgeInsets.only(right: 15, left: 15),
@@ -784,7 +784,8 @@ class ChangeDayAndNotificationTimeBottomSheetState extends State<ChangeDayAndNot
               child: Column(children: [
                 Text(
                   "${SettingsData.habitTypeZH}日的通知時間？",
-                  style: const TextStyle(color: ColorSet.textColor, fontSize: 18),
+                  style:
+                      const TextStyle(color: ColorSet.textColor, fontSize: 18),
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
@@ -799,7 +800,6 @@ class ChangeDayAndNotificationTimeBottomSheetState extends State<ChangeDayAndNot
                           children: _getTimeBtnList()),
                     )),
               ])),
-
           const SizedBox(
             height: 10,
           ),
@@ -820,20 +820,25 @@ class ChangeDayAndNotificationTimeBottomSheetState extends State<ChangeDayAndNot
               ),
               onPressed: () async {
                 // FIXME: 好像沒更新到？APP restart 後會回到原本的設定（好像改 UI 前就這樣了）
-                List original = SettingsData.userData[dayKey];
-                List modified = daySelectedDays;
-                if (modified != original) {
-                  SettingsData.userData[dayKey] = modified;
-                  await UserDB.update({dayKey: modified.join("")});
+                List originalList = SettingsData.userData[dayKey];
+                List modifiedList = daySelectedDays;
+                if (modifiedList != originalList) {
+                  SettingsData.userData[dayKey] = modifiedList;
+                  await UserDB.update({dayKey: modifiedList.join("")});
                 }
 
-                SettingsData.timeForecast[notificationKey] = forecast;
-                ClockDB.update(
-                    SettingsData.habitType, Map<String, String>.from(forecast));
+                Map originalMap = SettingsData.timeForecast[notificationKey];
+                Map modifiedMap = forecast;
+                if (SettingsData.timeForecast[notificationKey] != originalMap) {
+                  SettingsData.timeForecast[notificationKey] = modifiedMap;
+                  ClockDB.update(SettingsData.habitType,
+                      Map<String, String>.from(modifiedMap));
+                }
 
                 if (!mounted) return;
                 InformDialog()
-                    .get(context, "完成更改:)", "週${SettingsData.habitTypeZH}日與通知時間已更新！")
+                    .get(context, "完成更改:)",
+                        "週${SettingsData.habitTypeZH}日與通知時間已更新！")
                     .show();
               },
               child: const Text(

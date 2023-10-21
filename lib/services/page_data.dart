@@ -427,13 +427,15 @@ class StatData {
       Data.updatingDB = false;
     }
 
-    setWeightData();
-    if (!isAddingWeight) {
-      // no need to fetch other data when only weight is updated
-      setPlanCompletionData();
-      setConsecutiveDaysData();
-      setCumulativeTimeData();
-      setMonthSuccessData();
+    if (Data.durations != null && Data.weights != null) {
+      setWeightData();
+      if (!isAddingWeight) {
+        // no need to fetch other data when only weight is updated
+        setPlanCompletionData();
+        setConsecutiveDaysData();
+        setCumulativeTimeData();
+        setMonthSuccessData();
+      }
     }
 
     Data.updatingUI[0] = false;
@@ -617,17 +619,21 @@ class StatData {
     meditationMonthDaysList =
         Calculator.getMonthTotalDays(Data.durations?["meditation"]) ?? [];
 
-    List<double> exerciseDays = [];
+    List<double> exerciseDays = [0];
     for (int i = 0; i < exerciseMonthDaysList.length; i++) {
       exerciseDays.add(exerciseMonthDaysList[i][2].toDouble());
     }
-    maxExerciseDays = exerciseDays.reduce(max) + 10;
+    if (exerciseDays.isNotEmpty) {
+      maxExerciseDays = exerciseDays.reduce(max) + 10;
+    }
 
-    List<double> meditationDays = [];
+    List<double> meditationDays = [0];
     for (int i = 0; i < meditationMonthDaysList.length; i++) {
       meditationDays.add(meditationMonthDaysList[i][2].toDouble());
     }
-    maxMeditationDays = meditationDays.reduce(max) + 10;
+    if (meditationDays.isNotEmpty) {
+      maxMeditationDays = meditationDays.reduce(max) + 10;
+    }
   }
 }
 
