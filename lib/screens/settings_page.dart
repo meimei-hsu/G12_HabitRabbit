@@ -68,7 +68,8 @@ class SettingsPageState extends State<SettingsPage> {
         child: ListView(
           children: [
             Container(
-              margin: const EdgeInsets.only(top:10, bottom:10, right: 5, left: 5),
+              margin:
+                  const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 5),
               decoration: const BoxDecoration(
                 color: ColorSet.bottomBarColor,
                 borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -76,19 +77,28 @@ class SettingsPageState extends State<SettingsPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 30,),
+                  const SizedBox(
+                    height: 30,
+                  ),
                   Image.asset(
                     Data.characterImageURL,
                     height: MediaQuery.of(context).size.height / 5,
                     width: MediaQuery.of(context).size.width / 2.5,
                   ),
-                  const SizedBox(height: 15,),
-                  Text(Data.user!.displayName!, style: const TextStyle(
-                    color: ColorSet.textColor,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),),
-                  const SizedBox(height: 30,),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    Data.user!.displayName!,
+                    style: const TextStyle(
+                      color: ColorSet.textColor,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
                 ],
               ),
             ),
@@ -127,6 +137,7 @@ class SettingsPageState extends State<SettingsPage> {
                 SettingsItem(
                   onTap: () {
                     showModalBottomSheet(
+                        isScrollControlled: true,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
                               topRight: Radius.circular(20),
@@ -136,38 +147,12 @@ class SettingsPageState extends State<SettingsPage> {
                         context: context,
                         builder: (context) {
                           SettingsData.isSettingWorkout();
-                          return const ChangeDayBottomSheet();
+                          return const ChangeDayAndNotificationTimeBottomSheet();
                         });
                   },
                   icons: Icons.calendar_today_outlined,
                   iconStyle: iconStyle,
-                  title: '更改計畫日',
-                  titleStyle: titleStyle,
-                  //subtitle: "更改每週可以運動的日子",
-                  //subtitleStyle: subtitleStyle,
-                ),
-                SettingsItem(
-                  onTap: () {
-                    showModalBottomSheet(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(20),
-                              topLeft: Radius.circular(20)),
-                        ),
-                        backgroundColor: ColorSet.bottomBarColor,
-                        context: context,
-                        builder: (context) {
-                          SettingsData.isSettingWorkout();
-                          return const ChangeStartTimeBottomSheet();
-                        });
-                    /*SettingsData.isSettingWorkout();
-                    showDialog<double>(
-                        context: context,
-                        builder: (context) => const ChangeStartTimeDialog());*/
-                  },
-                  icons: Icons.notifications_none,
-                  iconStyle: iconStyle,
-                  title: '更改通知時間',
+                  title: '更改計畫日與通知時間',
                   titleStyle: titleStyle,
                   //subtitle: "更改每天開始運動的時間",
                   //subtitleStyle: subtitleStyle,
@@ -229,10 +214,6 @@ class SettingsPageState extends State<SettingsPage> {
               items: [
                 SettingsItem(
                   onTap: () async {
-                    /*SettingsData.isSettingDisplayName();
-                    await showDialog<double>(
-                        context: context,
-                        builder: (context) => const ChangeProfileBottomSheet());*/
                     showModalBottomSheet(
                         isScrollControlled: true,
                         shape: const RoundedRectangleBorder(
@@ -257,10 +238,6 @@ class SettingsPageState extends State<SettingsPage> {
                 ),
                 SettingsItem(
                   onTap: () {
-                    /*SettingsData.isSettingPassword();
-                    showDialog<double>(
-                        context: context,
-                        builder: (context) => const ChangeProfileBottomSheet());*/
                     showModalBottomSheet(
                         isScrollControlled: true,
                         shape: const RoundedRectangleBorder(
@@ -510,32 +487,47 @@ class ChangeDurationBottomSheetState extends State<ChangeDurationBottomSheet> {
   }
 }
 
-class ChangeDayBottomSheet extends StatefulWidget {
-  const ChangeDayBottomSheet({super.key});
+class ChangeDayAndNotificationTimeBottomSheet extends StatefulWidget {
+  const ChangeDayAndNotificationTimeBottomSheet({super.key});
 
   @override
-  ChangeDayBottomSheetState createState() => ChangeDayBottomSheetState();
+  ChangeDayAndNotificationTimeBottomSheetState createState() => ChangeDayAndNotificationTimeBottomSheetState();
 }
 
-class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
-  List weekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
-  List selectedDays = [];
-  List selectedNames = [];
-
+class ChangeDayAndNotificationTimeBottomSheetState extends State<ChangeDayAndNotificationTimeBottomSheet> {
   int planToChange = 0; // 0 = 運動, 1 = 冥想
 
-  String key = "${SettingsData.habitType}Days";
+  // Day
+  List dayWeekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
+  List daySelectedDays = [];
+  List daySelectedNames = [];
 
-  final ScrollController _controller = ScrollController();
+  String dayKey = "${SettingsData.habitType}Days";
+
+  // Notification
+  List notificationWeekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
+  List notificationSelectedDays = []; // the index of the weekdays
+  Map forecast = {};
+
+  String notificationKey = "${SettingsData.habitType}Clock";
+
+  final ScrollController _dayController = ScrollController();
+  final ScrollController _notificationController = ScrollController();
 
   @override
   initState() {
     super.initState();
-    selectedDays = SettingsData.userData[key];
-    selectedNames = [
+    daySelectedDays = SettingsData.userData[dayKey];
+    daySelectedNames = [
       for (int i = 0; i < 7; i++)
-        if (selectedDays[i] == 1) weekdayNameList[i]
+        if (daySelectedDays[i] == 1) dayWeekdayNameList[i]
     ];
+
+    notificationSelectedDays = [
+      for (int i = 0; i < 7; i++)
+        if (SettingsData.userData[dayKey][i] == 1) i
+    ];
+    forecast = SettingsData.timeForecast[notificationKey];
   }
 
   List<Widget> _getDayBtnList() {
@@ -551,28 +543,35 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
             side: const BorderSide(
               color: ColorSet.borderColor,
             ),
-            backgroundColor: (selectedNames.contains(weekdayNameList[i]))
+            backgroundColor: (daySelectedNames.contains(dayWeekdayNameList[i]))
                 ? (planToChange == 0)
                     ? ColorSet.exerciseColor
                     : ColorSet.meditationColor
                 : ColorSet.backgroundColor,
           ),
           onPressed: () {
-            String choice = weekdayNameList[i];
-            if (selectedNames.contains(choice)) {
+            String choice = dayWeekdayNameList[i];
+            if (daySelectedNames.contains(choice)) {
               setState(() {
-                selectedNames.remove(choice);
-                selectedDays[i] = 0;
+                daySelectedNames.remove(choice);
+                daySelectedDays[i] = 0;
               });
             } else {
               setState(() {
-                selectedNames.add(choice);
-                selectedDays[i] = 1;
+                daySelectedNames.add(choice);
+                daySelectedDays[i] = 1;
               });
             }
+
+            notificationKey = "${SettingsData.habitType}Clock";
+            notificationSelectedDays = [
+              for (int i = 0; i < 7; i++)
+                if (daySelectedDays[i] == 1) i
+            ];
+            forecast = SettingsData.timeForecast[notificationKey];
           },
           child: Text(
-            weekdayNameList[i],
+            dayWeekdayNameList[i],
             style: const TextStyle(
               color: ColorSet.textColor,
               fontWeight: FontWeight.bold,
@@ -589,175 +588,11 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
     return btnList;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
-            title: Text(
-              "更改每週${SettingsData.habitTypeZH}日",
-              style: const TextStyle(
-                  color: ColorSet.textColor,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold),
-            ),
-            trailing: Container(
-              padding: const EdgeInsets.only(right: 20, left: 20),
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                icon: const Icon(
-                  Icons.close_rounded,
-                  color: ColorSet.iconColor,
-                ),
-                tooltip: "關閉",
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-          ),
-          ToggleSwitch(
-            minWidth: MediaQuery.of(context).size.width,
-            //minHeight: 35,
-            initialLabelIndex: planToChange,
-            cornerRadius: 10.0,
-            radiusStyle: true,
-            labels: const ['運動', '冥想'],
-            icons: const [
-              Icons.fitness_center_outlined,
-              Icons.self_improvement_outlined
-            ],
-            fontSize: 18,
-            iconSize: 20,
-            activeBgColors: const [
-              [ColorSet.exerciseColor],
-              [ColorSet.meditationColor]
-            ],
-            activeFgColor: ColorSet.textColor,
-            inactiveBgColor: ColorSet.backgroundColor,
-            inactiveFgColor: ColorSet.textColor,
-            totalSwitches: 2,
-            onToggle: (index) {
-              planToChange = index!;
-              (index == 0)
-                  ? SettingsData.isSettingWorkout()
-                  : SettingsData.isSettingMeditation();
-
-              key = "${SettingsData.habitType}Days";
-              selectedDays = SettingsData.userData[key];
-              selectedNames = [
-                for (int i = 0; i < 7; i++)
-                  if (selectedDays[i] == 1) weekdayNameList[i]
-              ];
-              setState(() {});
-            },
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            "你要將每週${SettingsData.habitTypeZH}日更改為哪幾天呢？",
-            style: const TextStyle(color: ColorSet.textColor, fontSize: 18),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-              height: MediaQuery.of(context).size.width * 0.1,
-              width: MediaQuery.of(context).size.width * 0.85,
-              child: Scrollbar(
-                controller: _controller,
-                thumbVisibility: true,
-                child: ListView(
-                    controller: _controller,
-                    scrollDirection: Axis.horizontal,
-                    children: _getDayBtnList()),
-              )),
-          const SizedBox(
-            height: 10,
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 20, right: 18),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.only(right: 10, left: 10),
-                backgroundColor: (planToChange == 0)
-                    ? ColorSet.backgroundColor
-                    : ColorSet.backgroundColor,
-                shadowColor: ColorSet.borderColor,
-                //elevation: 0,
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () async {
-                List original = SettingsData.userData[key];
-                List modified = selectedDays;
-                if (modified != original) {
-                  SettingsData.userData[key] = modified;
-                  await UserDB.update({key: modified.join("")});
-                }
-
-                if (!mounted) return;
-                InformDialog()
-                    .get(context, "完成更改:)", "週${SettingsData.habitTypeZH}日已更新！")
-                    .show();
-              },
-              child: const Text(
-                "確定",
-                style: TextStyle(
-                  color: ColorSet.textColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ChangeStartTimeBottomSheet extends StatefulWidget {
-  const ChangeStartTimeBottomSheet({super.key});
-
-  @override
-  ChangeStartTimeBottomSheetState createState() =>
-      ChangeStartTimeBottomSheetState();
-}
-
-class ChangeStartTimeBottomSheetState
-    extends State<ChangeStartTimeBottomSheet> {
-  List weekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
-  List selectedDays = []; // the index of the weekdays
-  Map forecast = {};
-
-  int planToChange = 0; // 0 = 運動, 1 = 冥想
-
-  String key = "${SettingsData.habitType}Clock";
-
-  final ScrollController _controller = ScrollController();
-
-  @override
-  initState() {
-    super.initState();
-    selectedDays = [
-      for (int i = 0; i < 7; i++)
-        if (SettingsData.userData["${SettingsData.habitType}Days"][i] == 1) i
-    ];
-    forecast = SettingsData.timeForecast[key];
-  }
-
   List<Widget> _getTimeBtnList() {
     List<OutlinedButton> btnList = [];
 
-    for (int index in selectedDays) {
-      String weekday = "星期${weekdayNameList[index]}";
+    for (int index in notificationSelectedDays) {
+      String weekday = "星期${notificationWeekdayNameList[index]}";
       String selectedTime =
           forecast["forecast_$index"] ?? Calendar.timeToString(TimeOfDay.now());
       btnList.add(
@@ -831,7 +666,7 @@ class ChangeStartTimeBottomSheetState
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -839,7 +674,7 @@ class ChangeStartTimeBottomSheetState
           ListTile(
             contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
             title: Text(
-              "更改${SettingsData.habitTypeZH}通知時間",
+              "更改每週${SettingsData.habitTypeZH}日與通知時間",
               style: const TextStyle(
                   color: ColorSet.textColor,
                   fontSize: 24,
@@ -888,33 +723,83 @@ class ChangeStartTimeBottomSheetState
                   ? SettingsData.isSettingWorkout()
                   : SettingsData.isSettingMeditation();
 
-              key = "${SettingsData.habitType}Clock";
-              selectedDays = [
+              dayKey = "${SettingsData.habitType}Days";
+              daySelectedDays = SettingsData.userData[dayKey];
+              daySelectedNames = [
                 for (int i = 0; i < 7; i++)
-                  if (SettingsData.userData["${SettingsData.habitType}Days"]
-                          [i] ==
-                      1)
-                    i
+                  if (daySelectedDays[i] == 1) dayWeekdayNameList[i]
               ];
-              forecast = SettingsData.timeForecast[key];
+
+              notificationKey = "${SettingsData.habitType}Clock";
+              notificationSelectedDays = [
+                for (int i = 0; i < 7; i++)
+                  if (daySelectedDays[i] == 1) i
+              ];
+              forecast = SettingsData.timeForecast[notificationKey];
+
               setState(() {});
             },
           ),
           const SizedBox(
+            height: 20,
+          ),
+          Container(
+              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+              margin: const EdgeInsets.only(right: 15, left: 15),
+              decoration: BoxDecoration(
+                border: Border.all(color: ColorSet.borderColor, width: 3),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    "你要將每週${SettingsData.habitTypeZH}日更改為哪幾天呢？",
+                    style: const TextStyle(
+                        color: ColorSet.textColor, fontSize: 18),
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.1,
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      child: Scrollbar(
+                        controller: _dayController,
+                        thumbVisibility: true,
+                        child: ListView(
+                            controller: _dayController,
+                            scrollDirection: Axis.horizontal,
+                            children: _getDayBtnList()),
+                      )),
+                ],
+              )),
+          const SizedBox(
             height: 10,
           ),
           Container(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              height: MediaQuery.of(context).size.height * 0.25,
-              width: double.maxFinite,
-              child: Scrollbar(
-                controller: _controller,
-                thumbVisibility: true,
-                child: ListView(
-                    controller: _controller,
-                    scrollDirection: Axis.vertical,
-                    children: _getTimeBtnList()),
-              )),
+              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+              margin: const EdgeInsets.only(right: 15, left: 15),
+              decoration: BoxDecoration(
+                border: Border.all(color: ColorSet.borderColor, width: 3),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+              ),
+              child: Column(children: [
+                Text(
+                  "${SettingsData.habitTypeZH}日的通知時間？",
+                  style: const TextStyle(color: ColorSet.textColor, fontSize: 18),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    width: MediaQuery.of(context).size.width * 0.85,
+                    child: Scrollbar(
+                      controller: _notificationController,
+                      thumbVisibility: true,
+                      child: ListView(
+                          controller: _notificationController,
+                          scrollDirection: Axis.vertical,
+                          children: _getTimeBtnList()),
+                    )),
+              ])),
+
           const SizedBox(
             height: 10,
           ),
@@ -934,14 +819,21 @@ class ChangeStartTimeBottomSheetState
                 ),
               ),
               onPressed: () async {
-                SettingsData.timeForecast[key] = forecast;
+                // FIXME: 好像沒更新到？APP restart 後會回到原本的設定（好像改 UI 前就這樣了）
+                List original = SettingsData.userData[dayKey];
+                List modified = daySelectedDays;
+                if (modified != original) {
+                  SettingsData.userData[dayKey] = modified;
+                  await UserDB.update({dayKey: modified.join("")});
+                }
+
+                SettingsData.timeForecast[notificationKey] = forecast;
                 ClockDB.update(
                     SettingsData.habitType, Map<String, String>.from(forecast));
 
                 if (!mounted) return;
                 InformDialog()
-                    .get(context, "完成更改:)",
-                        "${SettingsData.habitTypeZH}通知時間已更新！")
+                    .get(context, "完成更改:)", "週${SettingsData.habitTypeZH}日與通知時間已更新！")
                     .show();
               },
               child: const Text(

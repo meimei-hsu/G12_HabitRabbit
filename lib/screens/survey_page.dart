@@ -754,6 +754,11 @@ class PartOnePageState extends State<PartOnePage> {
                             fontSize: 15,
                           ),
                         ),
+                        style: const TextStyle(
+                          color: ColorSet.textColor,
+                          fontSize: 15,
+                        ),
+                        cursorColor: ColorSet.borderColor,
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         keyboardType: TextInputType.number,
@@ -793,6 +798,11 @@ class PartOnePageState extends State<PartOnePage> {
                             fontSize: 15,
                           ),
                         ),
+                        style: const TextStyle(
+                          color: ColorSet.textColor,
+                          fontSize: 15,
+                        ),
+                        cursorColor: ColorSet.borderColor,
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         keyboardType: TextInputType.number,
@@ -828,6 +838,7 @@ class PartOnePageState extends State<PartOnePage> {
                       icon: const Icon(
                         Icons.arrow_circle_right_outlined,
                         size: 50,
+                        color: ColorSet.iconColor,
                       )),
                 )
               : Container(),
@@ -914,7 +925,8 @@ class PartTwoPageState extends State<PartTwoPage> {
                     }
                   }
                 },
-                icon: const Icon(Icons.arrow_circle_right_outlined, size: 50),
+                icon: const Icon(Icons.arrow_circle_right_outlined, size: 50,
+                  color: ColorSet.iconColor,),
               ),
             ),
           ],
@@ -1215,7 +1227,7 @@ class PartThreePageState extends State<PartThreePage>
                               _swipeItems[index].content,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold),
+                                  fontSize: 30, fontWeight: FontWeight.bold, color: ColorSet.textColor),
                             ),
                           ],
                         ),
@@ -1400,7 +1412,7 @@ class ResultPageState extends State<ResultPage> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                imageWidget,
+                //imageWidget,
                 const SizedBox(height: 20),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
