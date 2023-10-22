@@ -660,8 +660,6 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                 ),
               ),
               onPressed: () async {
-                // FIXME: 新增運動計畫有錯誤：Null check operator used on a null value
-                // FIXME: 新增冥想計畫有錯誤：NoSuchMethodError: The method '[]' was called on null.
                 DateTime selectedDay = widget.arguments['selectedDay'];
                 (planToAdd == 0)
                     ? await PlanAlgo.generateWorkout(selectedDay, exerciseTime)

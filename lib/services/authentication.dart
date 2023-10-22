@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-// TODO: 驗證錯誤訊息改為中文
 class FireAuth {
   // For registering a new user
   static Future<User?> register({
@@ -23,9 +22,9 @@ class FireAuth {
       user = auth.currentUser;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        return Future.error('The password provided is too weak.');
+        return Future.error('密碼強度不足');
       } else if (e.code == 'email-already-in-use') {
-        return Future.error('The account already exists for that email.');
+        return Future.error('該帳戶已存在');
       }
     } catch (e) {
       return Future.error(e);
@@ -51,10 +50,10 @@ class FireAuth {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         // print('No user found for that email.');
-        return Future.error('No user found for that email.');
+        return Future.error('找不到該用戶');
       } else if (e.code == 'wrong-password') {
         // print('Wrong password provided.');
-        return Future.error('Wrong password provided.');
+        return Future.error('密碼錯誤');
       }
     } catch (e) {
       return Future.error(e);

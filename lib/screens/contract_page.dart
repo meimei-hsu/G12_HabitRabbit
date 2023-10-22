@@ -807,6 +807,7 @@ class SecondContractPageState extends State<SecondContractPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: ColorSet.backgroundColor,
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text(
             '承諾合約',
@@ -1435,6 +1436,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
     return btnList;
   }
 
+  // TODO: 合約金額由點選方式改成輸入方式
   List<Widget> _getMoneyBtnList() {
     List moneyList = [100, 150, 200, 250, 300];
     List<Widget> btnList = [];

@@ -399,7 +399,7 @@ class QuizDialogState extends State<QuizDialog> {
                       border: Border.all(color: ColorSet.textColor, width: 1),
                       color: ColorSet.backgroundColor,
                     ),
-                    // TODO:根據使用者的成功與否增加寶物數量
+                    // TODO:寶物photoURL
                     child: Wrap(
                       spacing: 5,
                       runSpacing: 10,

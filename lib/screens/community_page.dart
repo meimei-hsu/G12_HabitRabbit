@@ -321,7 +321,6 @@ class FriendListPageState extends State<FriendListPage> {
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           const FriendStatusPage()));
-                              // TODO: 看到朋友的部分畫面
                             },
                             child: const Padding(
                               padding: EdgeInsets.only(right: 16.0),
@@ -1364,7 +1363,6 @@ class TeamWorkPageState extends State<TeamWorkPage> {
                       width: 250,
                       animation: true,
                       lineHeight: 20.0,
-                      //TODO: 根據完成度改變 percent
                       percent: 0.7,
                       center: const Text(
                         "70%",
@@ -1394,7 +1392,6 @@ class TeamWorkPageState extends State<TeamWorkPage> {
                       width: 250,
                       animation: true,
                       lineHeight: 20.0,
-                      //TODO: 根據完成度改變 percent
                       percent: 0.7,
                       center: const Text(
                         "70%",

@@ -51,6 +51,7 @@ class InformDialog {
           fontSize: 16,
         ),
         title: title,
+        // FIXME: 標題顏色有點淺
         titleTextStyle: const TextStyle(
             color: ColorSet.buttonColor,
             fontSize: 20,
