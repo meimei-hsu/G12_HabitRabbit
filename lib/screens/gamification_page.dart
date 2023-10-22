@@ -39,10 +39,10 @@ class GamificationPageState extends State<GamificationPage> {
           backgroundColor: ColorSet.backgroundColor,
           automaticallyImplyLeading: false,
         ),
-        body: SafeArea(
+        body: const SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const <Widget>[
+            children: <Widget>[
               Padding(
                 padding:
                     EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 20),
@@ -644,14 +644,48 @@ class InfoDialogState extends State<InfoDialog> {
             Padding(
               padding: const EdgeInsets.all(20),
               child: Container(
-                height: 120,
+                height: 280,
                 width: 0.9 * screenWidth,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
                   border: Border.all(color: ColorSet.textColor, width: 1),
                   color: ColorSet.backgroundColor,
                 ),
-                //TODO: INFO Text
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: RichText(
+                      text: const TextSpan(
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: ColorSet.textColor,
+                        ),
+                        children: [
+                          TextSpan(text: '每次運動與冥想結束後，您將會分別獲取角色的運動寶物與冥想寶物，寶物是讓角色晉級的關鍵，每個角色將可以進化六次。\n\n'),
+                          TextSpan(
+                            text: '點選',
+                          ),
+                          WidgetSpan(
+                            child: Icon(Icons.list_alt),
+                          ),
+                          TextSpan(text: '可查看獲取的寶物數量。\n'),
+                          TextSpan(
+                            text: '點選',
+                          ),
+                          WidgetSpan(
+                            child: Icon(Icons.style),
+                          ),
+                          TextSpan(text: '可查看角色狀態。\n'),
+                          TextSpan(
+                            text: '點選',
+                          ),
+                          WidgetSpan(
+                            child: Icon(Icons.request_quote_outlined),
+                          ),
+                          TextSpan(text: '可查看合約及建立新合約。\n'),
+                        ],
+                      ),
+                    ),
+                  )
               ),
             ),
           ],
