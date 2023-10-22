@@ -432,6 +432,8 @@ class GamificationDB {
 
   // Define the columns of the milestone table
   static get columns => [
+        "level",
+        "userName",
         "workoutGem", // num
         "meditationGem", // num
         "workoutFragment", // String
@@ -496,11 +498,17 @@ class GamificationDB {
   }
 
   static Future<bool> insert(Map userInfo, String character) async {
-    int workoutDays =
-        userInfo["workoutDays"].map(int.parse).fold(0, (p, c) => c + p);
-    int meditationDays =
-        userInfo["meditationDays"].map(int.parse).fold(0, (p, c) => c + p);
+    int workoutDays = userInfo["workoutDays"]
+        .split("")
+        .map(int.parse)
+        .fold(0, (p, c) => c + p);
+    int meditationDays = userInfo["meditationDays"]
+        .split("")
+        .map(int.parse)
+        .fold(0, (p, c) => c + p);
     List values = [
+      1,
+      userInfo["userName"],
       0,
       0,
       "0, $workoutDays",

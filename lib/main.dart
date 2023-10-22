@@ -14,8 +14,9 @@ import 'package:g12/screens/gamification_page.dart';
 import 'package:g12/screens/routes.dart';
 import 'package:g12/screens/statistic_page.dart';
 import 'package:g12/screens/settings_page.dart';
-
 import 'package:g12/screens/page_material.dart';
+
+bool autoSignIn = false;
 
 class AppEntryPoint extends StatelessWidget {
   const AppEntryPoint({super.key});
@@ -23,7 +24,7 @@ class AppEntryPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String initialRoute = "";
-    if (FirebaseAuth.instance.currentUser == null) {
+    if (!autoSignIn) {
       initialRoute = "/register";
     } else {
       initialRoute = "/";
@@ -144,6 +145,6 @@ void main() async {
   );
   // configure firebase: https://stackoverflow.com/questions/70320263/the-term-flutterfire-is-not-recognized-as-the-name-of-a-cmdlet-function-scri
   await Firebase.initializeApp();
-  if (FirebaseAuth.instance.currentUser != null) await Data.init();
+  if (FirebaseAuth.instance.currentUser != null) autoSignIn = await Data.init();
   initializeDateFormatting().then((_) => runApp(const AppEntryPoint()));
 }

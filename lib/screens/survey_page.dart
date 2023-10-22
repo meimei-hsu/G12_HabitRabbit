@@ -498,6 +498,7 @@ class TitlePageState extends State<TitlePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar:
             AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
         body: Padding(
@@ -1412,7 +1413,7 @@ class ResultPageState extends State<ResultPage> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                //imageWidget,
+                imageWidget,
                 const SizedBox(height: 20),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(

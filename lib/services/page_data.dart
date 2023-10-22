@@ -31,7 +31,7 @@ class Data {
   static Map? predClocks; // user's every clock record
   static Map? habits;
 
-  static Future<void> init() async {
+  static Future<bool> init() async {
     print("initializing data");
     user = FirebaseAuth.instance.currentUser;
     if (Data.user != null) {
@@ -44,6 +44,10 @@ class Data {
       await fetchContract();
       await fetchWeights();
       await fetchClocks();
+      if (profile == null || game == null) {
+        await FirebaseAuth.instance.signOut();
+        return false;
+      }
       // update UI
       await HomeData.fetch();
       await StatData.fetch();
@@ -52,7 +56,9 @@ class Data {
       await CommData.fetch();
       // execute plan algorithm
       await PlanAlgo.execute();
+      return true;
     }
+    return false;
   }
 
   static Future<void> fetchCharacter() async {
@@ -76,7 +82,7 @@ class Data {
     updatingUI[3] = true;
     // fetch gamification data
     community = await GamificationDB.getAll();
-    game = community![user!.uid];
+    game = community?[user!.uid];
   }
 
   static Future<void> fetchContract() async {
