@@ -83,6 +83,7 @@ class Data {
     // fetch gamification data
     community = await GamificationDB.getAll();
     game = community?[user!.uid];
+    if (game?["friends"] == "") game?["friends"] = null;
   }
 
   static Future<void> fetchContract() async {
@@ -690,7 +691,7 @@ class CommData {
     if (Data.game != null) {
       socialCode = Data.user!.uid.substring(0, 7);
       level = Data.game?["level"];
-      friends = Data.game?["friends"].split(", ");
+      friends = Data.game?["friends"]?.split(", ") ?? [];
 
       charts = [
         GamificationDB.getChart("level"),

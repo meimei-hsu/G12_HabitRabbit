@@ -225,30 +225,26 @@ class FriendListPageState extends State<FriendListPage> {
               ),
               IconButton(
                 icon: const Icon(Icons.search),
-                onPressed: isTextFieldEmpty
-                    ? null
-                    : () {
-                        searchText = searchText.trim();
-                        String? fullID =
-                            GamificationDB.convertSocialCode(searchText);
-                        if (fullID == null) {
-                          InformDialog()
-                              .get(context, "警告！", "找不到該名用戶TT")
-                              .show();
-                        } else {
-                          if (searchText == CommData.socialCode) {
-                            InformDialog()
-                                .get(context, "警告！", "不能新增自己為朋友喔")
-                                .show();
-                          } else if (CommData.friends.contains(fullID)) {
-                            InformDialog()
-                                .get(context, "警告！", "已經加入這位朋友了")
-                                .show();
-                          } else {
-                            _showCustomDialog(context, fullID);
-                          }
-                        }
-                      },
+                onPressed: () {
+                  searchText = searchText.trim();
+                  String? fullID = GamificationDB.convertSocialCode(searchText);
+                  if (searchText.isEmpty) {
+                    InformDialog()
+                        .get(context, "提示",
+                            "社交碼清單：\n${Data.community?.keys.map((e) => e.substring(0, 7)).toList()}")
+                        .show();
+                  } else {
+                    if (fullID == null) {
+                      InformDialog().get(context, "警告！", "找不到該名用戶TT").show();
+                    } else if (searchText == CommData.socialCode) {
+                      InformDialog().get(context, "警告！", "不能新增自己為朋友喔").show();
+                    } else if (CommData.friends.contains(fullID)) {
+                      InformDialog().get(context, "警告！", "已經加入這位朋友了").show();
+                    } else {
+                      _showCustomDialog(context, fullID);
+                    }
+                  }
+                },
               ),
             ],
           ),
@@ -281,58 +277,60 @@ class FriendListPageState extends State<FriendListPage> {
                   itemCount: CommData.friends.length,
                   itemBuilder: (BuildContext context, int index) {
                     String friendID = CommData.friends[index];
-                    Map info = Data.community?[friendID];
-                    return Container(
-                      height: 70,
-                      decoration: BoxDecoration(
-                        color: ColorSet.backgroundColor,
-                        border:
-                            Border.all(color: ColorSet.borderColor, width: 2),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(50)),
-                      ),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 16.0),
-                            child: CircleAvatar(
-                              radius: 25,
-                              backgroundColor: ColorSet.backgroundColor,
-                              backgroundImage: AssetImage(
-                                  'assets/images/${info["character"]}.png'),
+                    Map? info = Data.community?[friendID];
+                    return (info == null)
+                        ? Container()
+                        : Container(
+                            height: 70,
+                            decoration: BoxDecoration(
+                              color: ColorSet.backgroundColor,
+                              border: Border.all(
+                                  color: ColorSet.borderColor, width: 2),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(50)),
                             ),
-                          ),
-                          const SizedBox(width: 15),
-                          Text(
-                            info["userName"],
-                            style: const TextStyle(
-                              color: ColorSet.textColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  child: CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: ColorSet.backgroundColor,
+                                    backgroundImage: AssetImage(
+                                        'assets/images/${info["character"]}.png'),
+                                  ),
+                                ),
+                                const SizedBox(width: 15),
+                                Text(
+                                  info["userName"],
+                                  style: const TextStyle(
+                                    color: ColorSet.textColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Expanded(child: Container()),
+                                InkWell(
+                                  onTap: () {
+                                    CommData.currentFriend = friendID;
+                                    FriendData.fetch();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const FriendStatusPage()));
+                                  },
+                                  child: const Padding(
+                                    padding: EdgeInsets.only(right: 16.0),
+                                    child: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: ColorSet.iconColor,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Expanded(child: Container()),
-                          InkWell(
-                            onTap: () {
-                              CommData.currentFriend = friendID;
-                              FriendData.fetch();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const FriendStatusPage()));
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.only(right: 16.0),
-                              child: Icon(
-                                Icons.arrow_forward_ios,
-                                color: ColorSet.iconColor,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                          );
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return const SizedBox(height: 12);
