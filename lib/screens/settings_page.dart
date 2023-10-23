@@ -1336,7 +1336,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                 )
               : IconButton(
                   onPressed: controller.clear,
-                  icon: const Icon(Icons.clear),
+                  icon: const Icon(Icons.clear, color: ColorSet.iconColor,),
                 ),
           labelText: (SettingsData.profileType == "密碼")
               ? hintText

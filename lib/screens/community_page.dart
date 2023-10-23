@@ -79,10 +79,10 @@ class CommunityPageState extends State<CommunityPage>
                         controller: _controller,
                         indicatorColor: ColorSet.borderColor,
                         indicatorWeight: 3,
-                        tabs: [
+                        tabs: const [
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.group,
                                   color: ColorSet.iconColor,
@@ -99,7 +99,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.emoji_events,
                                   color: ColorSet.iconColor, // 设置图标颜色
@@ -116,7 +116,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.sports_kabaddi,
                                   color: ColorSet.iconColor,
@@ -173,14 +173,14 @@ class FriendListPageState extends State<FriendListPage> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 32.0, top: 16.0, right: 16.0),
+          padding: const EdgeInsets.only(left: 25.0, top: 16.0, right: 20.0),
           child: Row(children: [
             SizedBox(
               width: 80,
               height: 80,
               child: Image.asset(Data.characterImageURL),
             ),
-            const SizedBox(width: 15),
+            const SizedBox(width: 20),
             Text(
               '\n社交碼：${CommData.socialCode}'
               '\n等級：${CommData.level}',
@@ -194,69 +194,83 @@ class FriendListPageState extends State<FriendListPage> {
           ]),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 30.0, top: 10, right: 15.0),
+          padding: const EdgeInsets.only(left: 20.0, top: 10, right: 20.0),
           child: Row(
             children: [
               Expanded(
                 child: TextField(
                   controller: _controller,
-                  // TODO: change border color
                   decoration: InputDecoration(
                     hintText: '快輸社交碼 加入新朋友！',
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 15, horizontal: 20),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(50),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: const BorderSide(
+                        color: ColorSet.borderColor,
+                        width: 3,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: const BorderSide(
+                        color: ColorSet.errorColor,
+                        width: 3,
+                      ),
                     ),
                     suffixIcon: IconButton(
-                      onPressed: _controller.clear,
-                      icon: const Icon(Icons.clear),
+                      icon: const Icon(Icons.search),
+                      color: ColorSet.iconColor,
+                      iconSize: 20,
+                      onPressed: () {
+                        String searchText = _controller.text.trim();
+                        String? fullID = GamificationDB.convertSocialCode(searchText);
+                        if (searchText.isEmpty) {
+                          HintDialog()
+                              .get(context, "提示",
+                              "社交碼清單：\n${Data.community?.keys.map((e) => e.substring(0, 7)).toList()}")
+                              .show();
+                        } else {
+                          if (fullID == null) {
+                            InformDialog().get(context, "警告！", "找不到該名用戶TT").show();
+                          } else if (searchText == CommData.socialCode) {
+                            InformDialog().get(context, "警告！", "不能新增自己為朋友喔").show();
+                          } else if (CommData.friends.contains(fullID)) {
+                            InformDialog().get(context, "警告！", "已經加入這位朋友了").show();
+                          } else {
+                            _showCustomDialog(context, fullID);
+                          }
+                        }
+                      },
                     ),
                   ),
+                  cursorColor: ColorSet.errorColor,
                   style: const TextStyle(
                     color: ColorSet.textColor,
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     height: 1,
                   ),
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  String searchText = _controller.text.trim();
-                  String? fullID = GamificationDB.convertSocialCode(searchText);
-                  if (searchText.isEmpty) {
-                    HintDialog()
-                        .get(context, "提示",
-                            "社交碼清單：\n${Data.community?.keys.map((e) => e.substring(0, 7)).toList()}")
-                        .show();
-                  } else {
-                    if (fullID == null) {
-                      InformDialog().get(context, "警告！", "找不到該名用戶TT").show();
-                    } else if (searchText == CommData.socialCode) {
-                      InformDialog().get(context, "警告！", "不能新增自己為朋友喔").show();
-                    } else if (CommData.friends.contains(fullID)) {
-                      InformDialog().get(context, "警告！", "已經加入這位朋友了").show();
-                    } else {
-                      _showCustomDialog(context, fullID);
-                    }
-                  }
-                },
-              ),
             ],
           ),
         ),
-        const Padding(
-          padding: EdgeInsets.only(top: 20.0, right: 220.0),
-          child: Text(
-            '朋友列表',
-            style: TextStyle(
-              color: ColorSet.textColor,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+        Container(
+          padding: const EdgeInsets.only(top: 20.0, left: 25.0),
+          child: const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '朋友列表',
+                style: TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          )
         ),
         Expanded(
           child: CommData.friends.isEmpty
@@ -271,7 +285,7 @@ class FriendListPageState extends State<FriendListPage> {
                 )
               : ListView.separated(
                   padding:
-                      const EdgeInsets.only(left: 40.0, top: 10.0, right: 40.0),
+                      const EdgeInsets.only(left: 30.0, top: 10.0, right: 30.0),
                   itemCount: CommData.friends.length,
                   itemBuilder: (BuildContext context, int index) {
                     String friendID = CommData.friends[index];
@@ -517,11 +531,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                     ),
                     trailing: ToggleSwitch(
                       minHeight: 35,
-                      initialLabelIndex: 0,
+                      initialLabelIndex: toggles[ordinalNum],
                       cornerRadius: 10.0,
                       radiusStyle: true,
                       labels: const ['好友', '全用戶'],
-                      // FIXME: the toggle didn't switch color after a tap
                       activeBgColors: const [
                         [ColorSet.friendColor],
                         [ColorSet.usersColor]
@@ -626,8 +639,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -648,8 +661,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -670,8 +683,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -692,8 +705,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -714,8 +727,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -739,8 +752,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -761,8 +774,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -783,8 +796,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -805,8 +818,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -827,8 +840,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -872,6 +885,7 @@ class TeamChallengePageState extends State<TeamChallengePage> {
           items: competitionList,
           carouselController: _competitionController,
           options: CarouselOptions(
+            height: MediaQuery.of(context).size.height * 0.3,
             enlargeCenterPage: true,
             aspectRatio: 2.0,
             onPageChanged: (index, reason) {
@@ -924,8 +938,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: Row(
-                            children: const [
+                          child: const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -973,8 +987,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: Row(
-                            children: const [
+                          child: const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -1024,6 +1038,7 @@ class TeamChallengePageState extends State<TeamChallengePage> {
           items: teamworkList,
           carouselController: _teamworkController,
           options: CarouselOptions(
+            height: MediaQuery.of(context).size.height * 0.26,
             enlargeCenterPage: true,
             aspectRatio: 2.0,
             onPageChanged: (index, reason) {

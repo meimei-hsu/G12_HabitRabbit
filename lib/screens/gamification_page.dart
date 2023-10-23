@@ -300,7 +300,7 @@ void _showInfoDialog(BuildContext context) {
       borderRadius: BorderRadius.only(
           topRight: Radius.circular(20), topLeft: Radius.circular(20)),
     ),
-    //backgroundColor: ColorSet.bottomBarColor,
+    backgroundColor: ColorSet.bottomBarColor,
     builder: (BuildContext context) {
       return const Padding(
         padding: EdgeInsets.all(8.0),
@@ -665,21 +665,21 @@ class InfoDialogState extends State<InfoDialog> {
                             text: '點選',
                           ),
                           WidgetSpan(
-                            child: Icon(Icons.list_alt),
+                            child: Icon(Icons.list_alt, color: ColorSet.iconColor, size: 30,),
                           ),
                           TextSpan(text: '可查看獲取的寶物數量。\n'),
                           TextSpan(
                             text: '點選',
                           ),
                           WidgetSpan(
-                            child: Icon(Icons.style),
+                            child: Icon(Icons.style, color: ColorSet.iconColor, size: 30,),
                           ),
                           TextSpan(text: '可查看角色狀態。\n'),
                           TextSpan(
                             text: '點選',
                           ),
                           WidgetSpan(
-                            child: Icon(Icons.request_quote_outlined),
+                            child: Icon(Icons.request_quote_outlined, color: ColorSet.iconColor, size: 30,),
                           ),
                           TextSpan(text: '可查看合約及建立新合約。\n'),
                         ],
