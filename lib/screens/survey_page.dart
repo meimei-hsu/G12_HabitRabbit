@@ -65,8 +65,8 @@ final questions_2 = [
       Option(text: "預防疾病", data: "預防疾病"),
       Option(text: "改善膚況", data: "改善膚況"),
       Option(text: "增強體力", data: "增強體力"),
-      Option(text: "提升大腦功能", data: "提升大腦功能"),
-      Option(text: "提升睡眠品質", data: "提升睡眠品質"),
+      Option(text: "提升大腦", data: "提升大腦"),
+      Option(text: "改善睡眠", data: "改善睡眠"),
     ],
   ),
   Question(

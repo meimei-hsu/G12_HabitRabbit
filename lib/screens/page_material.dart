@@ -68,6 +68,62 @@ class InformDialog {
   }
 }
 
+class HintDialog {
+  AwesomeDialog get(BuildContext context, String title, String selectableText,
+      {Function? btnOkOnPress}) {
+    return AwesomeDialog(
+        context: context,
+        dialogType: DialogType.noHeader,
+        width: MediaQuery.of(context).size.width * 0.9,
+        customHeader: Image.asset(
+          height: 75,
+          width: 75,
+          'assets/images/Carrot.png',
+        ),
+        dialogBorderRadius: const BorderRadius.all(
+          Radius.circular(20),
+        ),
+        buttonsBorderRadius: const BorderRadius.all(
+          Radius.circular(100),
+        ),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        dialogBackgroundColor: ColorSet.backgroundColor,
+        dismissOnTouchOutside: true,
+        dismissOnBackKeyPress: true,
+        headerAnimationLoop: false,
+        animType: AnimType.bottomSlide,
+        body: Center(
+          child: Column(
+            children: [
+              Text(
+                title,
+                // FIXME: 標題顏色有點淺
+                style: const TextStyle(
+                    color: ColorSet.buttonColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              SelectableText(
+                selectableText,
+                style: const TextStyle(color: ColorSet.textColor, fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+        btnOkText: '好',
+        btnOkColor: ColorSet.buttonColor,
+        buttonsTextStyle: const TextStyle(
+            color: ColorSet.textColor,
+            fontSize: 18,
+            fontWeight: FontWeight.bold),
+        btnOkOnPress: () {
+          (btnOkOnPress != null) ? btnOkOnPress() : null;
+        });
+  }
+}
+
 class ConfirmDialog {
   AwesomeDialog get(
       BuildContext context, String title, String desc, Function btnOkOnPress,
@@ -101,14 +157,14 @@ class ConfirmDialog {
         btnOkText: (options != null) ? options[0] : '確定',
         btnOkColor: ColorSet.buttonColor,
         buttonsTextStyle: const TextStyle(
-            color:  ColorSet.textColor,
+            color: ColorSet.textColor,
             fontSize: 18,
             fontWeight: FontWeight.bold),
         btnOkOnPress: () {
           btnOkOnPress();
         },
         btnCancelText: (options != null) ? options[1] : '取消',
-        btnCancelColor:  ColorSet.backgroundColor,
+        btnCancelColor: ColorSet.backgroundColor,
         btnCancelOnPress: () {
           (btnCancelOnPress != null) ? btnCancelOnPress() : null;
         });

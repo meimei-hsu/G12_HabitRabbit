@@ -166,8 +166,7 @@ class FriendListPage extends StatefulWidget {
 }
 
 class FriendListPageState extends State<FriendListPage> {
-  String searchText = "";
-  bool isTextFieldEmpty = true;
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -200,6 +199,7 @@ class FriendListPageState extends State<FriendListPage> {
             children: [
               Expanded(
                 child: TextField(
+                  controller: _controller,
                   // TODO: change border color
                   decoration: InputDecoration(
                     hintText: '快輸社交碼 加入新朋友！',
@@ -208,6 +208,10 @@ class FriendListPageState extends State<FriendListPage> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(50),
                     ),
+                    suffixIcon: IconButton(
+                      onPressed: _controller.clear,
+                      icon: const Icon(Icons.clear),
+                    ),
                   ),
                   style: const TextStyle(
                     color: ColorSet.textColor,
@@ -215,21 +219,15 @@ class FriendListPageState extends State<FriendListPage> {
                     fontWeight: FontWeight.bold,
                     height: 1,
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                      isTextFieldEmpty = value.isEmpty;
-                      searchText = value;
-                    });
-                  },
                 ),
               ),
               IconButton(
                 icon: const Icon(Icons.search),
                 onPressed: () {
-                  searchText = searchText.trim();
+                  String searchText = _controller.text.trim();
                   String? fullID = GamificationDB.convertSocialCode(searchText);
                   if (searchText.isEmpty) {
-                    InformDialog()
+                    HintDialog()
                         .get(context, "提示",
                             "社交碼清單：\n${Data.community?.keys.map((e) => e.substring(0, 7)).toList()}")
                         .show();
@@ -392,7 +390,7 @@ class FriendListPageState extends State<FriendListPage> {
                       ),
                       Expanded(
                         child: Text(
-                          "社交碼 \n$searchText",
+                          "社交碼 \n${_controller.text}",
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: ColorSet.textColor,
@@ -523,6 +521,7 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                       cornerRadius: 10.0,
                       radiusStyle: true,
                       labels: const ['好友', '全用戶'],
+                      // FIXME: the toggle didn't switch color after a tap
                       activeBgColors: const [
                         [ColorSet.friendColor],
                         [ColorSet.usersColor]

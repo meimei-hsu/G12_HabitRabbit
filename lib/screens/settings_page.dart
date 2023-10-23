@@ -1133,8 +1133,8 @@ class ChangeGoalBottomSheetState extends State<ChangeGoalBottomSheet> {
         "預防疾病",
         "改善膚況",
         "增強體力",
-        "提升大腦功能",
-        "提升睡眠品質"
+        "提升大腦",
+        "改善睡眠"
       ];
     } else if (SettingsData.habitType == "meditation") {
       selectableItems = [
@@ -1334,7 +1334,10 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                     });
                   },
                 )
-              : null,
+              : IconButton(
+                  onPressed: controller.clear,
+                  icon: const Icon(Icons.clear),
+                ),
           labelText: (SettingsData.profileType == "密碼")
               ? hintText
               : SettingsData.profileType,
