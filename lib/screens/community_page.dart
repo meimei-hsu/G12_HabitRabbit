@@ -79,10 +79,10 @@ class CommunityPageState extends State<CommunityPage>
                         controller: _controller,
                         indicatorColor: ColorSet.borderColor,
                         indicatorWeight: 3,
-                        tabs: const [
+                        tabs:  [
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.group,
                                   color: ColorSet.iconColor,
@@ -99,7 +99,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.emoji_events,
                                   color: ColorSet.iconColor, // 设置图标颜色
@@ -116,7 +116,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.sports_kabaddi,
                                   color: ColorSet.iconColor,
@@ -258,9 +258,9 @@ class FriendListPageState extends State<FriendListPage> {
         ),
         Container(
           padding: const EdgeInsets.only(top: 20.0, left: 25.0),
-          child: const Row(
+          child:  Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: const [
               Text(
                 '朋友列表',
                 style: TextStyle(
@@ -639,8 +639,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child:  Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -661,8 +661,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child:  Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -683,8 +683,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -705,8 +705,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -727,8 +727,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -752,8 +752,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -774,8 +774,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -796,8 +796,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -818,8 +818,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -840,8 +840,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -938,8 +938,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: const Row(
-                            children: [
+                          child: Row(
+                            children: const [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -987,8 +987,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: const Row(
-                            children: [
+                          child: Row(
+                            children: const [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(

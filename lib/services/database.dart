@@ -763,6 +763,9 @@ class PlanDB {
   static Future<bool> delete(String habit, String date) async =>
       await JournalDB.delete(uid, date, "$habit$table") &&
       await DurationDB.delete(habit, date);
+
+  static Future<bool> deleteAll() async =>
+      await DB.delete("journal", uid);
 }
 
 class Calculator {

@@ -46,6 +46,7 @@ class Data {
       await fetchClocks();
       if (profile == null || game == null) {
         await FirebaseAuth.instance.signOut();
+        await user?.delete();
         return false;
       }
       // update UI
@@ -331,7 +332,7 @@ class SettingsData {
   static Map timeForecast = {};
   static String habitType = ""; // e.g. workout, meditation
   static String habitTypeZH = ""; // habitType in Chinese
-  static String profileType =
+  static String functionCode =
       ""; // the type of profile data that user is modifying
 
   static Future<void> fetch() async {
@@ -368,15 +369,15 @@ class SettingsData {
   }
 
   static void isSettingDisplayName() {
-    profileType = "暱稱";
-  }
-
-  static void isSettingPhotoURL() {
-    profileType = "照片";
+    functionCode = "更改暱稱";
   }
 
   static void isSettingPassword() {
-    profileType = "密碼";
+    functionCode = "更改密碼";
+  }
+
+  static void isDeletingAccount() {
+    functionCode = "刪除帳號";
   }
 }
 

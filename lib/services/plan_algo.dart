@@ -45,12 +45,12 @@ class PlanAlgo {
         await PlanData.fetch(habit: "workout", thisWeek: true);
         var skd = await WorkoutAlgorithm.arrangeSchedule();
         var plan = await WorkoutAlgorithm.arrangePlan(skd);
-        await PlanDB.update("workout", plan);
+        if (plan.isNotEmpty) await PlanDB.update("workout", plan);
       }
       await PlanData.fetch(habit: "workout", thisWeek: false);
       var skd = await WorkoutAlgorithm.arrangeSchedule();
       var plan = await WorkoutAlgorithm.arrangePlan(skd);
-      await PlanDB.update("workout", plan);
+      if (plan.isNotEmpty) await PlanDB.update("workout", plan);
     } else {
       print("Not the time to generate a workout plan.");
     }
@@ -72,12 +72,12 @@ class PlanAlgo {
         await PlanData.fetch(habit: "meditation", thisWeek: true);
         var skd = await MeditationAlgorithm.arrangeSchedule();
         var plan = await MeditationAlgorithm.arrangePlan(skd);
-        await PlanDB.update("meditation", plan);
+        if (plan.isNotEmpty) await PlanDB.update("meditation", plan);
       }
       await PlanData.fetch(habit: "meditation", thisWeek: false);
       var skd = await MeditationAlgorithm.arrangeSchedule();
       var plan = await MeditationAlgorithm.arrangePlan(skd);
-      await PlanDB.update("meditation", plan);
+      if (plan.isNotEmpty) await PlanDB.update("meditation", plan);
     } else {
       print("Not the time to generate a meditation plan.");
     }

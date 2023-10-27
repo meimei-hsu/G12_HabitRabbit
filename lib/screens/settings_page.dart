@@ -227,9 +227,6 @@ class SettingsPageState extends State<SettingsPage> {
                           SettingsData.isSettingDisplayName();
                           return const ChangeProfileBottomSheet();
                         });
-                    setState(() {
-                      Data.user = FirebaseAuth.instance.currentUser!;
-                    });
                   },
                   icons: CupertinoIcons.textformat_alt,
                   iconStyle: iconStyle,
@@ -251,9 +248,7 @@ class SettingsPageState extends State<SettingsPage> {
                           SettingsData.isSettingPassword();
                           return const ChangeProfileBottomSheet();
                         });
-                    setState(() {
-                      Data.user = FirebaseAuth.instance.currentUser!;
-                    });
+                    setState(() {});
                   },
                   icons: Icons.password_outlined,
                   iconStyle: iconStyle,
@@ -288,7 +283,21 @@ class SettingsPageState extends State<SettingsPage> {
                   titleStyle: titleStyle,
                 ),
                 SettingsItem(
-                  onTap: () {},
+                  onTap: () {
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              topLeft: Radius.circular(20)),
+                        ),
+                        backgroundColor: ColorSet.bottomBarColor,
+                        context: context,
+                        builder: (context) {
+                          SettingsData.isDeletingAccount();
+                          return const ChangeProfileBottomSheet();
+                        });
+                  },
                   icons: CupertinoIcons.delete_solid,
                   title: "刪除帳號",
                   titleStyle: const TextStyle(
@@ -1309,9 +1318,9 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
   Widget _getTextFormField({required controller, hintText = ""}) =>
       TextFormField(
         controller: controller,
-        validator: (SettingsData.profileType == "密碼")
-            ? Validator.validatePassword
-            : null,
+        validator: (SettingsData.functionCode == "更改暱稱")
+            ? null
+            : Validator.validatePassword,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           isDense: true,
@@ -1319,8 +1328,9 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
             Icons.abc_rounded,
             color: ColorSet.iconColor,
           ),
-          suffixIcon: (SettingsData.profileType == "密碼")
-              ? IconButton(
+          suffixIcon: (SettingsData.functionCode == "更改暱稱")
+              ? null
+              : IconButton(
                   icon: Icon(
                     // Based on passwordVisible state choose the icon
                     isPasswordVisible
@@ -1333,14 +1343,8 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                       isPasswordVisible = !isPasswordVisible;
                     });
                   },
-                )
-              : IconButton(
-                  onPressed: controller.clear,
-                  icon: const Icon(Icons.clear, color: ColorSet.iconColor,),
                 ),
-          labelText: (SettingsData.profileType == "密碼")
-              ? hintText
-              : SettingsData.profileType,
+          labelText: (SettingsData.functionCode == "更改暱稱") ? "暱稱" : hintText,
           hintText: hintText,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
@@ -1385,7 +1389,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
         style: const TextStyle(fontSize: 18, color: ColorSet.textColor),
         keyboardType: TextInputType.text,
         obscureText:
-            (SettingsData.profileType == "密碼") ? !isPasswordVisible : false,
+            (SettingsData.functionCode == "更改暱稱") ? false : !isPasswordVisible,
       );
 
   @override
@@ -1400,7 +1404,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
               ListTile(
                 contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
                 title: Text(
-                  "更改${SettingsData.profileType}",
+                  SettingsData.functionCode,
                   style: const TextStyle(
                       color: ColorSet.textColor,
                       fontSize: 24,
@@ -1425,7 +1429,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
               const SizedBox(
                 height: 10,
               ),
-              (SettingsData.profileType == "密碼")
+              (SettingsData.functionCode == "更改密碼")
                   ? Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -1453,7 +1457,11 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                   : SizedBox(
                       height: MediaQuery.of(context).size.width * 0.2,
                       width: MediaQuery.of(context).size.width * 0.9,
-                      child: _getTextFormField(controller: controller),
+                      child: _getTextFormField(
+                          controller: controller,
+                          hintText: (SettingsData.functionCode == "更改暱稱")
+                              ? Data.user?.displayName
+                              : "密碼驗證"),
                     ),
               const SizedBox(
                 height: 5,
@@ -1472,7 +1480,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                     ),
                   ),
                   onPressed: () async {
-                    if (SettingsData.profileType == "密碼") {
+                    if (SettingsData.functionCode == "更改密碼") {
                       AuthCredential credential = EmailAuthProvider.credential(
                         email: Data.user!.email!,
                         password: controller.text,
@@ -1483,16 +1491,34 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                         return Data.user!
                             .updatePassword(newPasswordController.text);
                       });
-                    } else if (SettingsData.profileType == "暱稱") {
+                    } else if (SettingsData.functionCode == "更改暱稱") {
                       await Data.user!.updateDisplayName(controller.text);
                       await UserDB.update({"userName": controller.text});
+                      await GamificationDB.update(
+                          {"userName": controller.text});
                       // FIXME: 介面上顯示的名稱好像沒有馬上跟著更新
+                    } else if (SettingsData.functionCode == "刪除帳號") {
+                      AuthCredential credential = EmailAuthProvider.credential(
+                        email: Data.user!.email!,
+                        password: controller.text,
+                      );
+                      Data.user!
+                          .reauthenticateWithCredential(credential)
+                          .then((userCredential) async {
+                        await UserDB.delete();
+                        await ContractDB.delete();
+                        await GamificationDB.delete();
+                        await PlanDB.deleteAll();
+                        await Data.user?.delete();
+                        if (!mounted) return;
+                        Navigator.popAndPushNamed(context, '/register');
+                      });
                     }
 
                     if (!mounted) return;
                     InformDialog()
                         .get(context, "完成更改:)",
-                            "${SettingsData.profileType}已更新！")
+                            "${SettingsData.functionCode}已完成！")
                         .show();
                   },
                   child: const Text(

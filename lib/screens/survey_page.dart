@@ -926,8 +926,11 @@ class PartTwoPageState extends State<PartTwoPage> {
                     }
                   }
                 },
-                icon: const Icon(Icons.arrow_circle_right_outlined, size: 50,
-                  color: ColorSet.iconColor,),
+                icon: const Icon(
+                  Icons.arrow_circle_right_outlined,
+                  size: 50,
+                  color: ColorSet.iconColor,
+                ),
               ),
             ),
           ],
@@ -1092,7 +1095,7 @@ class PartTwoPageState extends State<PartTwoPage> {
         // Get the liking of the three workout types
         for (Option option in answer) {
           // Set the liking to 60 if is selected, else 40
-          userInfo[option.data] += 20;
+          if (option.data.isNotEmpty) userInfo[option.data] += 20;
         }
       } else if (i == 4 || i == 5 || i == 6) {
         // Get the ability of the three workout types
@@ -1228,7 +1231,9 @@ class PartThreePageState extends State<PartThreePage>
                               _swipeItems[index].content,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold, color: ColorSet.textColor),
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                  color: ColorSet.textColor),
                             ),
                           ],
                         ),
