@@ -53,30 +53,12 @@ class HomepageState extends State<Homepage> {
             onTap: (id) async {
               // Exercise
               if (id == "1") {
-                Navigator.pushNamed(context, '/detail/exercise', arguments: {
-                  'user': Data.user,
-                  'day': HomeData.selectedDay,
-                  'isToday': HomeData.isToday,
-                  'isBefore': HomeData.isBefore,
-                  'isAfter': HomeData.isAfter,
-                  'percentage': HomeData.workoutProgress,
-                  'currentIndex': HomeData.currentIndex,
-                  'workoutPlan': HomeData.workoutPlan
-                });
+                Navigator.pushNamed(context, '/detail/exercise');
               }
 
               // Meditation
               if (id == "2") {
-                Navigator.pushNamed(context, '/detail/meditation', arguments: {
-                  'user': Data.user,
-                  'day': HomeData.selectedDay,
-                  'isToday': HomeData.isToday,
-                  'isBefore': HomeData.isBefore,
-                  'isAfter': HomeData.isAfter,
-                  'percentage': HomeData.meditationProgress,
-                  'meditationTime': Data.profile!["meditationTime"],
-                  'meditationPlan': HomeData.meditationPlan
-                });
+                Navigator.pushNamed(context, '/detail/meditation');
               }
             },
           )

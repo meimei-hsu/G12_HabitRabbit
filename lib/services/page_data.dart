@@ -223,6 +223,7 @@ class HomeData {
   static Map workoutPlanList = {};
   static Map workoutProgressList = {};
   static String? workoutPlan;
+  static String? workoutType;
   static int? workoutProgress;
   static int currentIndex = 0;
   static int workoutDuration = 0;
@@ -231,6 +232,7 @@ class HomeData {
   static Map meditationPlanList = {};
   static Map meditationProgressList = {};
   static String? meditationPlan;
+  static String? meditationType;
   static int? meditationProgress;
   static int meditationDuration = 0;
 
@@ -316,8 +318,10 @@ class HomeData {
     String selectedDate = Calendar.dateToString(selectedDay!);
     String today = Calendar.today;
     workoutPlan = workoutPlanList[selectedDate];
+    workoutType = PlanDB.toPlanType("workout", date: selectedDate, zh: true);
     workoutProgress = workoutProgressList[selectedDate];
     meditationPlan = meditationPlanList[selectedDate];
+    meditationType = PlanDB.toPlanType("meditation", date: selectedDate, zh: true);
     meditationProgress = meditationProgressList[selectedDate];
     isBefore = selectedDate.compareTo(today) == -1;
     isAfter = selectedDate.compareTo(today) == 1;
@@ -577,7 +581,8 @@ class StatData {
             (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
         if (completionStatus == 2) {
-          var type = PlanDB.toPlanType("workout", exerciseDate) ?? "unknown";
+          var type =
+              PlanDB.toPlanType("workout", date: exerciseDate) ?? "unknown";
           if (exerciseTypeCountMap.containsKey(type)) {
             exerciseTypeCountMap[type] = exerciseTypeCountMap[type]! + 1;
 
@@ -603,8 +608,8 @@ class StatData {
             (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
 
         if (completionStatus == 2) {
-          var type =
-              PlanDB.toPlanType("meditation", meditationDate) ?? "unknown";
+          var type = PlanDB.toPlanType("meditation", date: meditationDate) ??
+              "unknown";
           if (meditationTypeCountMap.containsKey(type)) {
             meditationTypeCountMap[type] = meditationTypeCountMap[type]! + 1;
 

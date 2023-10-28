@@ -9,26 +9,16 @@ import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/database.dart';
 import 'package:g12/services/plan_algo.dart';
 
-class ExerciseDetailPage extends StatefulWidget {
-  final Map arguments;
+import '../services/page_data.dart';
 
-  const ExerciseDetailPage({super.key, required this.arguments});
+class ExerciseDetailPage extends StatefulWidget {
+  const ExerciseDetailPage({super.key});
 
   @override
   ExerciseDetailPageState createState() => ExerciseDetailPageState();
 }
 
 class ExerciseDetailPageState extends State<ExerciseDetailPage> {
-  DateTime? day = DateTime.now();
-  bool isBefore = false;
-  bool isAfter = false;
-  bool isToday = true;
-
-  String? workoutPlan;
-  int? workoutProgress;
-
-  bool isFetchingData = false;
-
   List<Widget> _getSportList(List content) {
     int length = content.length;
 
@@ -91,19 +81,6 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    day = widget.arguments["day"];
-    isBefore = widget.arguments["isBefore"];
-    isAfter = widget.arguments["isAfter"];
-    isToday = widget.arguments["isToday"];
-
-    workoutPlan = widget.arguments["workoutPlan"];
-    workoutProgress = widget.arguments["percentage"];
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: ColorSet.backgroundColor,
@@ -126,7 +103,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                 fontWeight: FontWeight.bold,
                 height: 1),
           ),
-          actions: (workoutProgress! < 100 && !isBefore)
+          actions: (HomeData.workoutProgress! < 100 && !HomeData.isBefore)
               ? [
                   PopupMenuButton(
                     constraints: BoxConstraints(
@@ -199,11 +176,13 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                     ],
                     onSelected: (value) async {
                       if (value == 1) {
-                        if (!isAfter && day?.weekday == 6) {
+                        if (!HomeData.isAfter &&
+                            HomeData.selectedDay?.weekday == 6) {
                           InformDialog()
                               .get(context, "無法修改:(", "今天已經星期六囉~\n無法再將計畫換到別天了！")
                               .show();
-                        } else if (isAfter && day?.weekday == 6) {
+                        } else if (HomeData.isAfter &&
+                            HomeData.selectedDay?.weekday == 6) {
                           InformDialog()
                               .get(context, "無法修改:(", "星期六的計畫無法換到別天噢！")
                               .show();
@@ -218,26 +197,26 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                               context: context,
                               builder: (context) {
                                 return ChangeDayBottomSheet(arguments: {
-                                  "day": day,
-                                  "isToday": isToday,
+                                  "day": HomeData.selectedDay,
+                                  "isToday": HomeData.isToday,
                                   "type": 0
                                 });
                               });
                         }
                       } else if (value == 2) {
                         btnOkOnPress() {
-                          PlanAlgo.regenerateWorkout(day!);
+                          PlanAlgo.regenerateWorkout(HomeData.selectedDay!);
                           setState(() {
-                            isFetchingData = true;
+                            HomeData.isFetchingData = true;
                           });
                           Timer(const Duration(seconds: 5), () async {
                             setState(() {
-                              isFetchingData = false;
+                              HomeData.isFetchingData = false;
                             });
                             if (!mounted) return;
                             InformDialog()
                                 .get(context, "完成重新生成:)",
-                                    "${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的運動計畫\n已經重新生成囉！")
+                                    "${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的運動計畫\n已經重新生成囉！")
                                 .show();
                           });
                         }
@@ -246,13 +225,13 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             .get(
                                 context,
                                 "你確定嗎？",
-                                "確定要重新生成\n${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的運動計畫嗎？",
+                                "確定要重新生成\n${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的運動計畫嗎？",
                                 btnOkOnPress)
                             .show();
                       } else {
                         btnOkOnPress() async {
-                          await PlanDB.delete(
-                              "workout", Calendar.dateToString(day!));
+                          await PlanDB.delete("workout",
+                              Calendar.dateToString(HomeData.selectedDay!));
                           if (!mounted) return;
                           Navigator.pushNamed(context, "/");
                         }
@@ -261,7 +240,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             .get(
                                 context,
                                 "你確定嗎？",
-                                "確定要刪除\n${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的運動計畫嗎？",
+                                "確定要刪除\n${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的運動計畫嗎？",
                                 btnOkOnPress)
                             .show();
                       }
@@ -270,7 +249,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                 ]
               : [],
         ),
-        body: (isFetchingData)
+        body: (HomeData.isFetchingData)
             ? Center(
                 child: Container(
                     padding:
@@ -318,10 +297,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                           borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20))),
-                      child: ExercisePlanDetailItem(
-                        percentage: workoutProgress!,
-                        workoutPlan: workoutPlan!.split(", "),
-                      ),
+                      child: const ExercisePlanDetailItem(),
                     ),
                     const Divider(
                       color: ColorSet.borderColor,
@@ -337,7 +313,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                               .copyWith(dividerColor: Colors.transparent),
                           child: ListView(
                             children: _getSportList(
-                                PlanDB.toWorkoutList(workoutPlan!)),
+                                PlanDB.toWorkoutList(HomeData.workoutPlan!)),
                           ),
                         ),
                       ),
@@ -354,10 +330,10 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             icon: const Icon(Icons.play_arrow_rounded,
                                 color: ColorSet.iconColor),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  (isToday && workoutProgress! < 100)
-                                      ? ColorSet.exerciseColor
-                                      : ColorSet.chartLineColor,
+                              backgroundColor: (HomeData.isToday &&
+                                      HomeData.workoutProgress! < 100)
+                                  ? ColorSet.exerciseColor
+                                  : ColorSet.chartLineColor,
                               shadowColor: ColorSet.backgroundColor,
                               elevation: 0,
                               minimumSize: const Size(0, 45),
@@ -365,12 +341,13 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            onPressed: (isToday)
-                                ? (workoutProgress! < 100)
-                                    ? () {
+                            onPressed: (HomeData.isToday)
+                                ? (HomeData.workoutProgress! < 100)
+                                    ? () async {
                                         int currentIndex =
-                                            widget.arguments['currentIndex'];
-                                        List items = workoutPlan!.split(", ");
+                                            HomeData.currentIndex;
+                                        List items =
+                                            HomeData.workoutPlan!.split(", ");
                                         for (int i = 0; i < items.length; i++) {
                                           if (i <= 2) {
                                             items[i] = "暖身：${items[i]}";
@@ -381,13 +358,13 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                           }
                                         }
 
-                                        ClockDB.update("workout", {
-                                          Calendar.dateToString(DateTime.now()):
-                                              Calendar.timeToString(
-                                                  TimeOfDay.now())
-                                        });
-                                        ClockDB.updateForecast("workout");
+                                        if (await ClockDB.getFromDate(
+                                                "workout", DateTime.now()) ==
+                                            null) {
+                                          ClockDB.updateForecast("workout");
+                                        }
 
+                                        if (!mounted) return;
                                         Navigator.pushNamed(
                                             context, '/countdown',
                                             arguments: {
@@ -435,38 +412,23 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
 }
 
 class MeditationDetailPage extends StatefulWidget {
-  final Map arguments;
-
-  const MeditationDetailPage({super.key, required this.arguments});
+  const MeditationDetailPage({super.key});
 
   @override
   MeditationDetailPageState createState() => MeditationDetailPageState();
 }
 
 class MeditationDetailPageState extends State<MeditationDetailPage> {
-  DateTime? day = DateTime.now();
-  bool isBefore = false;
-  bool isAfter = false;
-  bool isToday = true;
-
-  String? meditationPlan;
-  int? meditationTime;
-  int? meditationProgress;
-
-  bool isFetchingData = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    day = widget.arguments["day"];
-    isBefore = widget.arguments["isBefore"];
-    isAfter = widget.arguments["isAfter"];
-    isToday = widget.arguments["isToday"];
-
-    meditationPlan = widget.arguments["meditationPlan"];
-    meditationTime = widget.arguments["meditationTime"];
-    meditationProgress = widget.arguments["percentage"];
+  String getDescription() {
+    switch (HomeData.meditationType) {
+      case "正念冥想":
+        return "正念冥想益處包括對生活滿意度增加、降低焦慮、提升創意思考、學習成績提升、增加免疫力、提升睡眠品質等。";
+      case "工作冥想":
+        return "工作冥想益處包括生產力增加、增添自信、具備人生目標、提升專注力等。";
+      case "慈心冥想":
+        return "慈心冥想益處包括保持正向積極、維持友好關係、減緩焦慮、增強自我激勵等。";
+    }
+    return "";
   }
 
   @override
@@ -492,7 +454,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                 fontWeight: FontWeight.bold,
                 height: 1),
           ),
-          actions: (meditationProgress! < 100 && !isBefore)
+          actions: (HomeData.meditationProgress! < 100 && !HomeData.isBefore)
               ? [
                   PopupMenuButton(
                     constraints: BoxConstraints(
@@ -565,11 +527,13 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                     ],
                     onSelected: (value) async {
                       if (value == 1) {
-                        if (!isAfter && day?.weekday == 6) {
+                        if (!HomeData.isAfter &&
+                            HomeData.selectedDay?.weekday == 6) {
                           InformDialog()
                               .get(context, "無法修改:(", "今天已經星期六囉~\n無法再將計畫換到別天了！")
                               .show();
-                        } else if (isAfter && day?.weekday == 6) {
+                        } else if (HomeData.isAfter &&
+                            HomeData.selectedDay?.weekday == 6) {
                           InformDialog()
                               .get(context, "無法修改:(", "星期六的計畫無法換到別天噢！")
                               .show();
@@ -584,26 +548,26 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                               context: context,
                               builder: (context) {
                                 return ChangeDayBottomSheet(arguments: {
-                                  "day": day,
-                                  "isToday": isToday,
+                                  "day": HomeData.selectedDay,
+                                  "isToday": HomeData.isToday,
                                   "type": 1
                                 });
                               });
                         }
                       } else if (value == 2) {
                         btnOkOnPress() {
-                          PlanAlgo.regenerateMeditation(day!);
+                          PlanAlgo.regenerateMeditation(HomeData.selectedDay!);
                           setState(() {
-                            isFetchingData = true;
+                            HomeData.isFetchingData = true;
                           });
                           Timer(const Duration(seconds: 5), () async {
                             setState(() {
-                              isFetchingData = false;
+                              HomeData.isFetchingData = false;
                             });
                             if (!mounted) return;
                             InformDialog()
                                 .get(context, "完成重新生成:)",
-                                    "${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的冥想計畫\n已經重新生成囉！")
+                                    "${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的冥想計畫\n已經重新生成囉！")
                                 .show();
                           });
                         }
@@ -612,13 +576,13 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             .get(
                                 context,
                                 "你確定嗎？",
-                                "確定要重新生成\n${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的冥想計畫嗎？",
+                                "確定要重新生成\n${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的冥想計畫嗎？",
                                 btnOkOnPress)
                             .show();
                       } else {
                         btnOkOnPress() async {
-                          await PlanDB.delete(
-                              "meditation", Calendar.dateToString(day!));
+                          await PlanDB.delete("meditation",
+                              Calendar.dateToString(HomeData.selectedDay!));
                           if (!mounted) return;
                           Navigator.pushNamed(context, "/");
                         }
@@ -627,7 +591,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             .get(
                                 context,
                                 "你確定嗎？",
-                                "確定要刪除\n${(isToday) ? "今天" : " ${day?.month} / ${day?.day} "}的冥想計畫嗎？",
+                                "確定要刪除\n${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的冥想計畫嗎？",
                                 btnOkOnPress)
                             .show();
                       }
@@ -636,7 +600,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                 ]
               : [],
         ),
-        body: (isFetchingData)
+        body: (HomeData.isFetchingData)
             ? Center(
                 child: Container(
                     padding:
@@ -684,11 +648,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20))),
-                      child: MeditationPlanDetailItem(
-                        percentage: meditationProgress!,
-                        meditationPlan: meditationPlan!,
-                        meditationTime: meditationTime!,
-                      ),
+                      child: const MeditationPlanDetailItem(),
                     ),
                     const Divider(
                       color: ColorSet.borderColor,
@@ -706,16 +666,13 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                                 .copyWith(dividerColor: Colors.transparent),
                             child: Column(
                               children: [
+                                // FIXME: 冥想Detail畫面看起來有點空
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Image.asset("assets/videos/v3.gif"),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                const Text(
-                                  "感覺這裡可以說明一下這個冥想項目能幹嘛，e.g. 放鬆什麼或是能助眠、能集中注意力之類的",
-                                  style: TextStyle(fontSize: 16),
+                                Text(
+                                  getDescription(),
+                                  style: const TextStyle(fontSize: 16),
                                 )
                               ],
                             )),
@@ -733,10 +690,10 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                             icon: const Icon(Icons.play_arrow_rounded,
                                 color: ColorSet.iconColor),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  (isToday && meditationProgress! < 100)
-                                      ? ColorSet.meditationColor
-                                      : ColorSet.chartLineColor,
+                              backgroundColor: (HomeData.isToday &&
+                                      HomeData.meditationProgress! < 100)
+                                  ? ColorSet.meditationColor
+                                  : ColorSet.chartLineColor,
                               shadowColor: ColorSet.backgroundColor,
                               elevation: 0,
                               minimumSize: const Size(0, 45),
@@ -744,22 +701,24 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            onPressed: (isToday)
-                                ? (meditationProgress! < 100)
-                                    ? () {
-                                        ClockDB.update("meditation", {
-                                          Calendar.dateToString(DateTime.now()):
-                                              Calendar.timeToString(
-                                                  TimeOfDay.now())
-                                        });
-                                        ClockDB.updateForecast("meditation");
+                            onPressed: (HomeData.isToday)
+                                ? (HomeData.meditationProgress! < 100)
+                                    ? () async {
+                                        if (await ClockDB.getFromDate(
+                                                "meditation", DateTime.now()) ==
+                                            null) {
+                                          ClockDB.updateForecast("meditation");
+                                        }
 
+                                        if (!mounted) return;
                                         Navigator.pushNamed(
                                             context, '/countdown',
                                             arguments: {
                                               'type': 'meditation',
-                                              'meditationPlan': meditationPlan,
-                                              'meditationTime': meditationTime,
+                                              'meditationPlan':
+                                                  HomeData.meditationPlan,
+                                              'meditationTime':
+                                                  HomeData.meditationDuration,
                                             });
                                       }
                                     : () {
@@ -795,14 +754,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
 
 // Exercise Plan Detail
 class ExercisePlanDetailItem extends StatelessWidget {
-  const ExercisePlanDetailItem({
-    super.key,
-    required this.percentage,
-    required this.workoutPlan,
-  });
-
-  final int percentage;
-  final List workoutPlan;
+  const ExercisePlanDetailItem({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -828,9 +780,9 @@ class ExercisePlanDetailItem extends StatelessWidget {
                     radius: 50.0,
                     lineWidth: 10.0,
                     animation: true,
-                    percent: percentage.toDouble() / 100,
+                    percent: HomeData.workoutProgress!.toDouble() / 100,
                     center: Text(
-                      "$percentage %",
+                      "${HomeData.workoutProgress!} %",
                       style: const TextStyle(
                           color: ColorSet.textColor,
                           fontWeight: FontWeight.bold,
@@ -853,7 +805,7 @@ class ExercisePlanDetailItem extends StatelessWidget {
                             color: ColorSet.iconColor,
                           ),
                           title: Text(
-                            "${workoutPlan.length * 6} 秒運動",
+                            "${HomeData.workoutDuration} 分鐘",
                             style: const TextStyle(
                                 color: ColorSet.textColor,
                                 fontWeight: FontWeight.bold,
@@ -868,7 +820,7 @@ class ExercisePlanDetailItem extends StatelessWidget {
                             color: ColorSet.iconColor,
                           ),
                           title: Text(
-                            "${workoutPlan.length} 個項目",
+                            HomeData.workoutType!,
                             style: const TextStyle(
                                 color: ColorSet.textColor,
                                 fontWeight: FontWeight.bold,
@@ -891,16 +843,7 @@ class ExercisePlanDetailItem extends StatelessWidget {
 
 // Meditation Plan Detail
 class MeditationPlanDetailItem extends StatelessWidget {
-  const MeditationPlanDetailItem({
-    super.key,
-    required this.percentage,
-    required this.meditationPlan,
-    required this.meditationTime,
-  });
-
-  final int percentage;
-  final String meditationPlan;
-  final int meditationTime;
+  const MeditationPlanDetailItem({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -926,9 +869,9 @@ class MeditationPlanDetailItem extends StatelessWidget {
                     radius: 50.0,
                     lineWidth: 10.0,
                     animation: true,
-                    percent: percentage.toDouble() / 100,
+                    percent: HomeData.meditationProgress!.toDouble() / 100,
                     center: Text(
-                      "$percentage %",
+                      "${HomeData.meditationProgress!} %",
                       style: const TextStyle(
                           color: ColorSet.textColor,
                           fontWeight: FontWeight.bold,
@@ -951,7 +894,7 @@ class MeditationPlanDetailItem extends StatelessWidget {
                             color: ColorSet.iconColor,
                           ),
                           title: Text(
-                            "$meditationTime 分冥想",
+                            "${HomeData.meditationDuration} 分鐘",
                             style: const TextStyle(
                                 color: ColorSet.textColor,
                                 fontWeight: FontWeight.bold,
@@ -966,7 +909,7 @@ class MeditationPlanDetailItem extends StatelessWidget {
                             color: ColorSet.iconColor,
                           ),
                           title: Text(
-                            meditationPlan, // TODO: 名稱對應中文
+                            HomeData.meditationType!, // TODO: 名稱對應中文
                             style: const TextStyle(
                                 color: ColorSet.textColor,
                                 fontWeight: FontWeight.bold,

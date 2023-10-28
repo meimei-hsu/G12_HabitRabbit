@@ -485,6 +485,8 @@ class DoMeditationPageState extends State<DoMeditationPage> {
     }
 
     btnYesOnPress() {
+      DurationDB.update("meditation",
+          {Calendar.today: (HomeData.meditationDuration * _progress).round()});
       canExit = true;
       NotificationService().scheduleNotification(
           title: '該開始冥想了!',

@@ -93,7 +93,7 @@ class PlanAlgo {
 
     var date = Calendar.dateToString(dateTime);
     var plan = HomeData.workoutPlanList[date];
-    var workoutType = PlanDB.toPlanType("workout", date);
+    var workoutType = PlanDB.toPlanType("workout", date: date);
     var timeSpan = plan.split(", ").length;
     if (workoutType != null) {
       plan = await WorkoutAlgorithm.arrangeWorkout(workoutType, timeSpan);
@@ -106,7 +106,7 @@ class PlanAlgo {
         habit: "meditation", thisWeek: Calendar.isThisWeek(dateTime));
 
     var date = Calendar.dateToString(dateTime);
-    var meditationType = PlanDB.toPlanType("meditation", date);
+    var meditationType = PlanDB.toPlanType("meditation", date: date);
     if (meditationType != null) {
       var plan = await MeditationAlgorithm.arrangeMeditation(meditationType);
       await PlanDB.update("meditation", {date: plan});
@@ -161,7 +161,7 @@ class PlanAlgo {
           if (zero == 3) {
             // adjust the difficulty of next day and the day after
             for (i = 1; i <= 2; i++) {
-              String? type = PlanDB.toPlanType("workout", dates[today]);
+              String? type = PlanDB.toPlanType("workout", date: dates[today]);
               if (type != null) {
                 var plan = (i == 1)
                     ? await WorkoutAlgorithm.getFiveMinWorkout(type)
@@ -181,7 +181,8 @@ class PlanAlgo {
 
               // adjust the difficulty of next day and the day after
               for (i = 1; i <= 2; i++) {
-                String? type = PlanDB.toPlanType("workout", dates[today + i]);
+                String? type =
+                    PlanDB.toPlanType("workout", date: dates[today + i]);
                 if (type != null) {
                   String plan = "";
                   switch (planLong) {

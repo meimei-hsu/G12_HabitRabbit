@@ -704,33 +704,34 @@ class PlanDB {
   static Future<String?> getFromDate(String habit, DateTime date) async =>
       await JournalDB.getFromDate(uid, date, "$habit$table");
 
-  static String? toPlanType(String habit, [String? planDate]) {
-    planDate = planDate ?? Calendar.today;
-    String? plan = Data.plans?[habit]?[planDate];
+  static String? toPlanType(String habit,
+      {String? date, String? plan, bool zh = false}) {
+    date = date ?? Calendar.today;
+    String? planStr = plan ?? Data.plans?[habit]?[date];
     if (habit == "workout") {
       // The third element of the plan is the first workout after the warmup,
       // and its first character's index (which indicates the workout type) is 18.
-      switch (plan?[18]) {
+      switch (planStr?[18]) {
         case '1':
-          return "strength";
+          return (zh) ? "肌力運動" : "strength";
         case '2':
-          return "cardio";
+          return (zh) ? "有氧運動" : "cardio";
         case '3':
-          return "yoga";
+          return (zh) ? "瑜珈運動" : "yoga";
         default:
           return null;
       }
     } else if (habit == "meditation") {
       // the first character indicates the meditation type
-      switch (plan?[0]) {
+      switch (planStr?[0]) {
         case '1':
-          return "mindfulness";
+          return (zh) ? "正念冥想" : "mindfulness";
         case '2':
-          return "work";
+          return (zh) ? "工作冥想" : "work";
         case '3':
-          return "kindness";
+          return (zh) ? "慈心冥想" : "kindness";
         case '4':
-          return "sleep";
+          return (zh) ? "睡眠冥想" : "sleep";
         default:
           return null;
       }
@@ -765,8 +766,7 @@ class PlanDB {
       await JournalDB.delete(uid, date, "$habit$table") &&
       await DurationDB.delete(habit, date);
 
-  static Future<bool> deleteAll() async =>
-      await DB.delete("journal", uid);
+  static Future<bool> deleteAll() async => await DB.delete("journal", uid);
 }
 
 class Calculator {
@@ -782,11 +782,21 @@ class Calculator {
     // convert the time data from String to int (e.g. "09:00" -> 540)
     num y = convertToMinutes(actualTime),
         yHat = convertToMinutes(predictedTime);
+    // if the difference between both time is less than 12 hrs,
+    // then add 24 hrs to the smaller variable
+    if ((y - yHat).abs() > 720) {
+      if (y > yHat) {
+        yHat += 1440;
+      } else {
+        y += 1440;
+      }
+    }
     // make prediction by exponential smoothing method
-    num pred = y + alpha * (y - yHat);
+    num pred = alpha * y + (1 - alpha) * yHat;
     // return result
-    String hh = "${pred ~/ 60}".padLeft(2, "0");
+    String hh = "${pred ~/ 60 % 24}".padLeft(2, "0"); // 24小時制
     String mm = "${(pred % 60).round()}".padLeft(2, "0");
+    print("debug: f($y,$yHat) = $pred -> $hh:$mm");
     return "$hh:$mm";
   }
 
@@ -1100,9 +1110,9 @@ class ClockDB {
   // Update the forecast data {"forecast": "09:00"} from table {table/userID/clock/forecast}
   static Future<bool> updateForecast(String habit) async {
     DateTime today = DateTime.now();
-    String? actualTime = await getFromDate(habit, today);
+    String? actualTime = Calendar.timeToString(TimeOfDay.now());
     String? predictedTime = await getPrediction(habit, today.weekday % 7);
-    if (actualTime != null && predictedTime != null) {
+    if (predictedTime != null) {
       // Forecast notification time
       String forecast = Calculator.forecastStartTime(actualTime, predictedTime);
 
@@ -1116,10 +1126,15 @@ class ClockDB {
             nextWeekDay.month, nextWeekDay.day, duration[0], duration[1]),
       );
 
-      // Update to ClockDB
-      return update(habit, {"forecast_${today.weekday % 7}": forecast});
+      // Update forecast and actual start time to ClockDB
+      return update(habit, {
+        "forecast_${today.weekday % 7}": forecast,
+        Calendar.dateToString(today): actualTime
+      });
+    } else {
+      // Update actual start time to ClockDB
+      return update(habit, {Calendar.dateToString(today): actualTime});
     }
-    return false;
   }
 
   // Delete start time data {table/userID/clock/date}

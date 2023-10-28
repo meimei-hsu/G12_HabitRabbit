@@ -28,10 +28,8 @@ final routes = {
   '/meditation': (context, {arguments}) =>
       DoMeditationPage(arguments: arguments),
   /* HabitDetailPage */
-  '/detail/exercise': (context, {arguments}) =>
-      ExerciseDetailPage(arguments: arguments),
-  '/detail/meditation': (context, {arguments}) =>
-      MeditationDetailPage(arguments: arguments),
+  '/detail/exercise': (context, {arguments}) => const ExerciseDetailPage(),
+  '/detail/meditation': (context, {arguments}) => const MeditationDetailPage(),
   /* ContractPage */
   '/contract/initial': (context, {arguments}) =>
       FirstContractPage(arguments: arguments),
