@@ -41,7 +41,9 @@ class CommunityPageState extends State<CommunityPage>
 
   void refresh() async {
     if (Data.updatingDB || Data.updatingUI[3]) await CommData.fetch();
-    setState(() {});
+    setState(() {
+      _tabViews[1] = const LeaderboardPage();
+    });
   }
 
   @override
@@ -79,7 +81,7 @@ class CommunityPageState extends State<CommunityPage>
                         controller: _controller,
                         indicatorColor: ColorSet.borderColor,
                         indicatorWeight: 3,
-                        tabs:  [
+                        tabs: [
                           Tab(
                             icon: Column(
                               children: const [
@@ -224,19 +226,26 @@ class FriendListPageState extends State<FriendListPage> {
                       iconSize: 20,
                       onPressed: () {
                         String searchText = _controller.text.trim();
-                        String? fullID = GamificationDB.convertSocialCode(searchText);
+                        String? fullID =
+                            GamificationDB.convertSocialCode(searchText);
                         if (searchText.isEmpty) {
                           HintDialog()
                               .get(context, "提示",
-                              "社交碼清單：\n${Data.community?.keys.map((e) => e.substring(0, 7)).toList()}")
+                                  "社交碼清單：\n${Data.community?.keys.map((e) => e.substring(0, 7)).toList()}")
                               .show();
                         } else {
                           if (fullID == null) {
-                            InformDialog().get(context, "警告！", "找不到該名用戶TT").show();
+                            InformDialog()
+                                .get(context, "警告！", "找不到該名用戶TT")
+                                .show();
                           } else if (searchText == CommData.socialCode) {
-                            InformDialog().get(context, "警告！", "不能新增自己為朋友喔").show();
+                            InformDialog()
+                                .get(context, "警告！", "不能新增自己為朋友喔")
+                                .show();
                           } else if (CommData.friends.contains(fullID)) {
-                            InformDialog().get(context, "警告！", "已經加入這位朋友了").show();
+                            InformDialog()
+                                .get(context, "警告！", "已經加入這位朋友了")
+                                .show();
                           } else {
                             _showCustomDialog(context, fullID);
                           }
@@ -257,21 +266,20 @@ class FriendListPageState extends State<FriendListPage> {
           ),
         ),
         Container(
-          padding: const EdgeInsets.only(top: 20.0, left: 25.0),
-          child:  Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                '朋友列表',
-                style: TextStyle(
-                  color: ColorSet.textColor,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+            padding: const EdgeInsets.only(top: 20.0, left: 25.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  '朋友列表',
+                  style: TextStyle(
+                    color: ColorSet.textColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
-          )
-        ),
+              ],
+            )),
         Expanded(
           child: CommData.friends.isEmpty
               ? const Text(
@@ -490,12 +498,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
   List<int> toggles = [0, 0, 0, 0];
 
   Map getChart(int index) {
-    Map chart = Map.from(CommData.charts[index]);
-    if (toggles[index] == 0) {
-      chart.removeWhere((key, value) =>
-          !CommData.friends.contains(key) && key != Data.user?.uid);
-    }
-    return chart;
+    if (toggles[index] == 0) index += 3;
+    return Map.from(CommData.globalCharts[index]);
   }
 
   @override
@@ -506,10 +510,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
         child: ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: 4,
+          itemCount: 3,
           itemBuilder: (BuildContext context, int ordinalNum) {
             Map chart = getChart(ordinalNum);
-            List titles = ["個人等級", "角色等級", "運動寶物", "冥想寶物"];
+            List titles = ["個人等級", "運動寶物", "冥想寶物"];
             return Container(
               padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
               margin: const EdgeInsets.only(right: 20, left: 20),
@@ -639,7 +643,7 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
+    child: Column(
       children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
@@ -661,7 +665,7 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child:  Column(
+    child: Column(
       children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),

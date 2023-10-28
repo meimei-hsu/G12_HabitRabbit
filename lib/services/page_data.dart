@@ -70,8 +70,9 @@ class Data {
   }
 
   static Future<void> fetchProfile() async {
-    // set HomePage and SettingsPage to true
+    // set HomePage, CommunityPage and SettingsPage to true
     updatingUI[2] = true;
+    updatingUI[3] = true;
     updatingUI[4] = true;
     // fetch user profile
     profile = await UserDB.getUser();
@@ -680,7 +681,7 @@ class CommData {
   static int level = 0;
   static List friends = [];
   static String currentFriend = ""; // the friend that user is checking status
-  static List<Map> charts = [];
+  static List<Map> globalCharts = [], friendCharts = [];
 
   static Future<void> fetch() async {
     print("Refreshing CommunityPage...");
@@ -694,11 +695,13 @@ class CommData {
       level = Data.game?["level"];
       friends = Data.game?["friends"]?.split(", ") ?? [];
 
-      charts = [
-        GamificationDB.getChart("level"),
-        GamificationDB.getChart("character"),
-        GamificationDB.getChart("workoutGem"),
-        GamificationDB.getChart("meditationGem")
+      globalCharts = [
+        GamificationDB.getChart("level", isGlobal: true),
+        GamificationDB.getChart("workoutGem", isGlobal: true),
+        GamificationDB.getChart("meditationGem", isGlobal: true),
+        GamificationDB.getChart("level", isGlobal: false),
+        GamificationDB.getChart("workoutGem", isGlobal: false),
+        GamificationDB.getChart("meditationGem", isGlobal: false),
       ];
     }
 
@@ -708,7 +711,7 @@ class CommData {
 
 class FriendData {
   static String userName = "", socialCode = "", character = "";
-  static int level = 0, characterLevel = 0, workoutGem = 0, meditationGem = 0;
+  static int level = 0, workoutGem = 0, meditationGem = 0;
   static int workoutCumulativeTime = 0, meditationCumulativeTime = 0;
   static int workoutCumulativeDays = 0, medicationCumulativeDays = 0;
 
@@ -718,7 +721,6 @@ class FriendData {
     socialCode = CommData.currentFriend.substring(0, 7);
     character = info["character"];
     level = info["level"];
-    characterLevel = int.parse(character[character.length - 1]);
     workoutGem = info["workoutGem"];
     meditationGem = info["meditationGem"];
   }

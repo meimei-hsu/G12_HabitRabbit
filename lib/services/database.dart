@@ -454,10 +454,11 @@ class GamificationDB {
     return (snapshot != null) ? Map.from(snapshot as Map) : null;
   }
 
-  static Map getChart(String category) {
+  static Map getChart(String category, {bool isGlobal = true}) {
     Map chart = {Data.user?.uid: Data.game?[category]};
 
     Data.community?.forEach((key, value) {
+      if (!isGlobal && !CommData.friends.contains(key)) return;
       dynamic catVal = value[category];
       // select the last character as character's level
       if (category == "character") {

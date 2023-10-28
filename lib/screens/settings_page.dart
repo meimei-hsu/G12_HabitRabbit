@@ -1079,15 +1079,14 @@ class ChangeLikingBottomSheetState extends State<ChangeLikingBottomSheet> {
                 ),
               ),
               onPressed: () async {
-                // FIXME: 無法修改喜愛程度
-                // error: Unhandled Exception: Invalid argument (key): Key not in map.: Instance(length:3) of '_GrowableList'
                 Map original = {
                   for (var item in keys) item: SettingsData.userData[item]
                 };
                 Map<String, Object> modified = likings;
                 if (modified != original) {
-                  SettingsData.userData
-                      .update(keys, (value) => modified[value]);
+                  for (var key in keys) {
+                    SettingsData.userData[key] = modified[key];
+                  }
                   await UserDB.update(modified);
                 }
 
@@ -1480,46 +1479,50 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                     ),
                   ),
                   onPressed: () async {
-                    if (SettingsData.functionCode == "更改密碼") {
+                    if (SettingsData.functionCode == "更改暱稱") {
+                      String userName = controller.text;
+                      await Data.user!.updateDisplayName(userName);
+                      await UserDB.update({"userName": userName});
+                      await GamificationDB.update({"userName": userName});
+                      Data.user = FirebaseAuth.instance.currentUser;
+                      if (!mounted) return;
+                      // FIXME: Navigator.pop(context) -> Null check operator used on a null value
+                      // Navigator.pushNamed(context, "/settings");
+                      // 如果用push而不是pop，則按返回見的時候，會回到這個更改密碼bottomSheet，不合理
+                      InformDialog()
+                          .get(context, "完成更改:)",
+                          "${SettingsData.functionCode}已完成！")
+                          .show();
+                    } else {
                       AuthCredential credential = EmailAuthProvider.credential(
                         email: Data.user!.email!,
                         password: controller.text,
                       );
-                      Data.user!
-                          .reauthenticateWithCredential(credential)
-                          .then((userCredential) {
-                        return Data.user!
-                            .updatePassword(newPasswordController.text);
-                      });
-                    } else if (SettingsData.functionCode == "更改暱稱") {
-                      await Data.user!.updateDisplayName(controller.text);
-                      await UserDB.update({"userName": controller.text});
-                      await GamificationDB.update(
-                          {"userName": controller.text});
-                      // FIXME: 介面上顯示的名稱好像沒有馬上跟著更新
-                    } else if (SettingsData.functionCode == "刪除帳號") {
-                      AuthCredential credential = EmailAuthProvider.credential(
-                        email: Data.user!.email!,
-                        password: controller.text,
-                      );
-                      Data.user!
-                          .reauthenticateWithCredential(credential)
-                          .then((userCredential) async {
-                        await UserDB.delete();
-                        await ContractDB.delete();
-                        await GamificationDB.delete();
-                        await PlanDB.deleteAll();
-                        await Data.user?.delete();
+                      try {
+                        Data.user!.reauthenticateWithCredential(credential);
+                        if (SettingsData.functionCode == "更改密碼") {
+                          await Data.user!
+                              .updatePassword(newPasswordController.text);
+                          if (!mounted) return;
+                          InformDialog()
+                              .get(context, "完成更改:)",
+                              "${SettingsData.functionCode}已完成！")
+                              .show();
+                        } else {
+                          await UserDB.delete();
+                          await ContractDB.delete();
+                          await GamificationDB.delete();
+                          await PlanDB.deleteAll();
+                          await Data.user?.delete();
+                          if (!mounted) return;
+                          Navigator.popAndPushNamed(context, '/register');
+                        }
+                      } catch (e) {
                         if (!mounted) return;
-                        Navigator.popAndPushNamed(context, '/register');
-                      });
+                        debugPrint(e.toString());
+                        InformDialog().get(context, "錯誤！", "密碼錯誤QQ").show();
+                      }
                     }
-
-                    if (!mounted) return;
-                    InformDialog()
-                        .get(context, "完成更改:)",
-                            "${SettingsData.functionCode}已完成！")
-                        .show();
                   },
                   child: const Text(
                     "確定",

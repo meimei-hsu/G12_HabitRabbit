@@ -816,7 +816,7 @@ class PartOnePageState extends State<PartOnePage> {
                           });
 
                           setState(() {
-                            userInfo['weight'] = value;
+                            userInfo["weight"] = value;
                             isComplete = checkCompletion();
                           });
                         },
@@ -1429,6 +1429,9 @@ class ResultPageState extends State<ResultPage> {
                   ),
                   onPressed: () async {
                     await UserDB.insert(userInfo);
+                    await WeightDB.update({
+                      Calendar.dateToString(DateTime.now()): userInfo["weight"]
+                    });
                     await GamificationDB.insert(userInfo, character);
                     await Data.init();
                     await PlanAlgo.execute();

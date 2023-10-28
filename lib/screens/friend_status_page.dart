@@ -98,7 +98,6 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                     RadialBarSeries<ChartData, String>(
                                       dataSource: [
                                         ChartData('個人等級', FriendData.level),
-                                        ChartData('角色等級', FriendData.characterLevel),
                                         ChartData('運動寶物', FriendData.workoutGem),
                                         ChartData('冥想寶物', FriendData.meditationGem),
                                       ],
