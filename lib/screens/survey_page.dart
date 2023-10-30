@@ -34,7 +34,7 @@ Map userInfo = {
 // List of questions in part two
 final questions_2 = [
   Question(
-    text: "運動時間 (複選)",
+    text: "計畫時間 (複選)",
     isMultiChoice: true,
     options: [
       Option(text: "星期一", data: 1),
@@ -47,36 +47,12 @@ final questions_2 = [
     ],
   ),
   Question(
-    text: "運動時長",
+    text: "計畫時長",
     options: [
       Option(text: "15分鐘", data: 15),
       Option(text: "30分鐘", data: 30),
       Option(text: "40分鐘", data: 45),
       Option(text: "60分鐘", data: 60),
-    ],
-  ),
-  Question(
-    text: "運動原因與目標 (複選)",
-    isMultiChoice: true,
-    options: [
-      Option(text: "減脂減重", data: "減脂減重"),
-      Option(text: "塑型增肌", data: "塑型增肌"),
-      Option(text: "紓解壓力", data: "紓解壓力"),
-      Option(text: "預防疾病", data: "預防疾病"),
-      Option(text: "改善膚況", data: "改善膚況"),
-      Option(text: "增強體力", data: "增強體力"),
-      Option(text: "提升大腦", data: "提升大腦"),
-      Option(text: "改善睡眠", data: "改善睡眠"),
-    ],
-  ),
-  Question(
-    text: "運動偏好 (複選)",
-    isMultiChoice: true,
-    options: [
-      Option(text: "肌耐力訓練", data: "strengthLiking", description: "輕量舉重、伏地挺身"),
-      Option(text: "心肺耐力訓練", data: "cardioLiking", description: "慢跑、飛輪、跳繩、游泳"),
-      Option(text: "柔軟度訓練", data: "yogaLiking", description: "瑜珈、皮拉提斯"),
-      Option(text: "我沒有任何偏好", data: "", description: "想嘗試以上三種運動"),
     ],
   ),
   Question(
@@ -116,25 +92,27 @@ final questions_2 = [
     ],
   ),
   Question(
-    text: "冥想時間 (複選)",
+    text: "運動偏好 (複選)",
     isMultiChoice: true,
     options: [
-      Option(text: "星期一", data: 1),
-      Option(text: "星期二", data: 2),
-      Option(text: "星期三", data: 3),
-      Option(text: "星期四", data: 4),
-      Option(text: "星期五", data: 5),
-      Option(text: "星期六", data: 6),
-      Option(text: "星期日", data: 0),
+      Option(text: "肌耐力訓練", data: "strengthLiking", description: "輕量舉重、伏地挺身"),
+      Option(text: "心肺耐力訓練", data: "cardioLiking", description: "慢跑、飛輪、跳繩、游泳"),
+      Option(text: "柔軟度訓練", data: "yogaLiking", description: "瑜珈、皮拉提斯"),
+      Option(text: "我沒有任何偏好", data: "", description: "想嘗試以上三種運動"),
     ],
   ),
   Question(
-    text: "冥想時長",
+    text: "運動原因與目標 (複選)",
+    isMultiChoice: true,
     options: [
-      Option(text: "15分鐘", data: 15),
-      Option(text: "30分鐘", data: 30),
-      Option(text: "40分鐘", data: 45),
-      Option(text: "60分鐘", data: 60),
+      Option(text: "減脂減重", data: "減脂減重"),
+      Option(text: "塑型增肌", data: "塑型增肌"),
+      Option(text: "紓解壓力", data: "紓解壓力"),
+      Option(text: "預防疾病", data: "預防疾病"),
+      Option(text: "改善膚況", data: "改善膚況"),
+      Option(text: "增強體力", data: "增強體力"),
+      Option(text: "提升大腦", data: "提升大腦"),
+      Option(text: "改善睡眠", data: "改善睡眠"),
     ],
   ),
   Question(
@@ -221,8 +199,8 @@ class OptionsWidget extends StatelessWidget {
     List<Widget> options =
         question.options.map((option) => buildOption(context, option)).toList();
 
-    if (index != 9) {
-      // Q1 ~ Q9
+    if (index != 7) {
+      // Q1 ~ Q7
       List<Widget> optionList = [options.first, const SizedBox(height: 8)];
       for (int i = 1; i < options.length - 1; i++) {
         final child = options[i];
@@ -233,7 +211,7 @@ class OptionsWidget extends StatelessWidget {
       return ListView(
           physics: const BouncingScrollPhysics(), children: optionList);
     } else {
-      // Q10
+      // Q8
       return GridView.count(
         crossAxisCount: 2,
         // number of columns
@@ -275,8 +253,8 @@ class OptionsWidget extends StatelessWidget {
   Widget buildSelection(Option option) {
     final color = getForeground(option);
 
-    if (index != 9) {
-      // Q1 ~ Q9
+    if (index != 7) {
+      // Q1 ~ Q7
       return SizedBox(
         height: 50,
         child: Row(children: [
@@ -288,7 +266,7 @@ class OptionsWidget extends StatelessWidget {
         ]),
       );
     } else {
-      // Q10
+      // Q8
       return SizedBox(
         height: 50,
         child: Center(
@@ -422,7 +400,7 @@ class QuestionsWidget extends StatelessWidget {
   Widget build(BuildContext context) => PageView.builder(
         onPageChanged: onChangedPage,
         controller: controller,
-        itemCount: 10,
+        itemCount: 8,
         itemBuilder: (context, index) {
           final question = questions_2[index];
 
@@ -476,7 +454,7 @@ class TitlePageState extends State<TitlePage> {
   void initState() {
     super.initState();
 
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 1), () {
       switch (widget.arguments['part']) {
         case 0:
           Navigator.pushReplacement(context,
@@ -1062,19 +1040,19 @@ class PartTwoPageState extends State<PartTwoPage> {
     final List keys = [
       "workoutDays",
       "workoutTime",
-      "workoutGoals",
-      "",
       "strengthAbility",
       "cardioAbility",
       "yogaAbility",
+      "",
+      "workoutGoals",
+      "meditationGoals",
       "meditationDays",
       "meditationTime",
-      "meditationGoals",
     ];
 
     for (int i = 0; i < questions_2.length; i++) {
       List answer = questions_2[i].selectedOptions;
-      if (i == 0 || i == 7) {
+      if (i == 0) {
         // Get workoutDays || meditationDays
         List days = [for (int j = 0; j < 7; j++) 0];
         for (Option option in answer) {
@@ -1082,25 +1060,27 @@ class PartTwoPageState extends State<PartTwoPage> {
           days[option.data] = 1;
         }
         userInfo[keys[i]] = days.join('');
-      } else if (i == 1 || i == 8) {
+        userInfo[keys[i + 8]] = days.join('');
+      } else if (i == 1) {
         // Get workoutTime || meditationTime
         userInfo[keys[i]] = answer.first.data;
-      } else if (i == 2) {
-        // Get workoutGoals
-        // Joint all the answers into a string with ", "
-        userInfo[keys[i]] =
-            List.generate(answer.length, (index) => answer[index].data)
-                .join(", ");
-      } else if (i == 3) {
+        userInfo[keys[i + 8]] = answer.first.data;
+      } else if (i == 2 || i == 3 || i == 4) {
+        // Get the ability of the three workout types
+        userInfo[keys[i]] = answer.first.data;
+      } else if (i == 5) {
         // Get the liking of the three workout types
         for (Option option in answer) {
           // Set the liking to 60 if is selected, else 40
           if (option.data.isNotEmpty) userInfo[option.data] += 20;
         }
-      } else if (i == 4 || i == 5 || i == 6) {
-        // Get the ability of the three workout types
-        userInfo[keys[i]] = answer.first.data;
-      } else if (i == 9) {
+      } else if (i == 6) {
+        // Get workoutGoals
+        // Joint all the answers into a string with ", "
+        userInfo[keys[i]] =
+            List.generate(answer.length, (index) => answer[index].data)
+                .join(", ");
+      } else if (i == 7) {
         // Get meditationGoals
         // Joint all the answers into a string with ", "
         List reasons =
@@ -1124,6 +1104,7 @@ class PartTwoPageState extends State<PartTwoPage> {
         }
       }
     }
+    print("Debug: $userInfo");
   }
 }
 
@@ -1237,59 +1218,56 @@ class PartThreePageState extends State<PartThreePage>
                             ),
                           ],
                         ),
-                        if (index == 0) // 只在第一頁顯示
-                          ...[
-                          Positioned(
-                            left: 15,
-                            top: 400,
-                            child: AnimatedBuilder(
-                              animation: controller,
-                              builder: (context, child) {
-                                controller.forward(); // 啟動動畫
-                                return Transform.translate(
-                                  offset:
-                                      Offset(controller.value * -50, 0), // X軸位移
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: const [
-                                      Icon(
-                                        FontAwesomeIcons.angleDoubleLeft,
-                                        size: 40,
-                                      ),
-                                      SizedBox(width: 6),
-                                      Text('否 NO'),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
+                        Positioned(
+                          left: 15,
+                          top: 400,
+                          child: AnimatedBuilder(
+                            animation: controller,
+                            builder: (context, child) {
+                              controller.forward(); // 啟動動畫
+                              return Transform.translate(
+                                offset:
+                                    Offset(controller.value * -50, 0), // X軸位移
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: const [
+                                    Icon(
+                                      FontAwesomeIcons.angleDoubleLeft,
+                                      size: 40,
+                                    ),
+                                    SizedBox(width: 6),
+                                    Text('否 NO'),
+                                  ],
+                                ),
+                              );
+                            },
                           ),
-                          Positioned(
-                            right: 15,
-                            top: 400,
-                            child: AnimatedBuilder(
-                              animation: controller,
-                              builder: (context, child) {
-                                controller.forward(); // 啟動動畫
-                                return Transform.translate(
-                                  offset:
-                                      Offset(controller.value * 50, 0), // X軸位移
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: const [
-                                      Text('是 Yes'),
-                                      SizedBox(width: 6),
-                                      Icon(
-                                        FontAwesomeIcons.angleDoubleRight,
-                                        size: 40,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
+                        ),
+                        Positioned(
+                          right: 15,
+                          top: 400,
+                          child: AnimatedBuilder(
+                            animation: controller,
+                            builder: (context, child) {
+                              controller.forward(); // 啟動動畫
+                              return Transform.translate(
+                                offset:
+                                    Offset(controller.value * 50, 0), // X軸位移
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: const [
+                                    Text('是 Yes'),
+                                    SizedBox(width: 6),
+                                    Icon(
+                                      FontAwesomeIcons.angleDoubleRight,
+                                      size: 40,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           ),
-                        ],
+                        ),
                       ],
                     ),
                   );

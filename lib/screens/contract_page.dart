@@ -860,7 +860,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                           '\n選擇方案為  ${contractData["content"]}'
                           '\n投入金額為  ${contractData["money"]}  元'
                           '\n\n若未達成設定目標，立契約人同意將投入金額全數捐出；'
-                          '若達成設定目標則由系統將全數金額退還。',
+                          '若達成設定目標則將退還全數金額。',
                           style: const TextStyle(
                             fontSize: 15.0,
                             color: ColorSet.textColor,
