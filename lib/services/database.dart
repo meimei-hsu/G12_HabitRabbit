@@ -598,7 +598,7 @@ class HabitDB {
     if (habit == "workout") {
       retVal = {
         "strength": [[], [], [], [], []],
-        "cardio": [[], []],
+        "cardio": [[], [], []],
         "yoga": [[], [], [], [], []],
         "warmUp": [],
         "coolDown": []
@@ -607,7 +607,7 @@ class HabitDB {
 
       // Get the list of workoutID from the given type and difficulty
       for (int type = 1; type <= 3; type++) {
-        for (int diff = 1; diff <= ((type == 2) ? 2 : 5); diff++) {
+        for (int diff = 1; diff <= ((type == 2) ? 3 : 5); diff++) {
           retVal[keys[type - 1]][diff - 1] = List.from(
               ids.where((item) => item[0] == "$type" && item[1] == "$diff"));
         }
