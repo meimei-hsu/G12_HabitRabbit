@@ -229,8 +229,7 @@ class FriendListPageState extends State<FriendListPage> {
                         String? fullID =
                             GamificationDB.convertSocialCode(searchText);
                         if (searchText.isEmpty) {
-                          HintDialog()
-                              .get(context, "提示",
+                          HintDialog().get(context, "提示",
                                   "社交碼清單：\n${Data.community?.keys.map((e) => e.substring(0, 7)).toList()}")
                               .show();
                         } else {

@@ -28,6 +28,15 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                 color: ColorSet.iconColor),
             onPressed: () => Navigator.of(context).pop(),
           ),
+          title: Text(
+            '${FriendData.userName} 的資訊',
+            style: const TextStyle(
+                color: ColorSet.textColor,
+                fontSize: 28,
+                letterSpacing: 2,
+                fontWeight: FontWeight.bold,
+                height: 1),
+          ),
           //automaticallyImplyLeading: false,
         ),
         body: SingleChildScrollView(
@@ -65,15 +74,12 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            padding:
-                                const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+                            padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                             margin: const EdgeInsets.only(right: 20, left: 20),
                             decoration: BoxDecoration(
                               color: ColorSet.backgroundColor,
-                              border: Border.all(
-                                  color: ColorSet.borderColor, width: 4),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
+                              border: Border.all(color: ColorSet.borderColor, width: 4),
+                              borderRadius: const BorderRadius.all(Radius.circular(20)),
                             ),
                             child: Column(children: [
                               const ListTile(
@@ -101,20 +107,16 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                         ChartData('運動寶物', FriendData.workoutGem),
                                         ChartData('冥想寶物', FriendData.meditationGem),
                                       ],
-                                      xValueMapper: (ChartData data, _) =>
-                                          data.x,
-                                      yValueMapper: (ChartData data, _) =>
-                                          data.y,
+                                      xValueMapper: (ChartData data, _) => data.x,
+                                      yValueMapper: (ChartData data, _) => data.y,
                                       cornerStyle: CornerStyle.bothCurve,
                                       pointColorMapper: (ChartData data, _) {
                                         if (data.x == "個人等級") {
                                           return const Color(0xff5661FC);
-                                        } else if (data.x == "角色等級") {
-                                          return const Color(0xffA1A7FC);
                                         } else if (data.x == "運動寶物") {
-                                          return const Color(0xffd4d6fc);
+                                          return const Color(0xffA1A7FC);
                                         } else if (data.x == "冥想寶物") {
-                                          return const Color(0xffEDEEFC);
+                                          return const Color(0xffd4d6fc);
                                         } else {
                                           return Colors.grey;
                                         }
@@ -184,10 +186,8 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                         ChartData('運動', Random().nextInt(100) + 100),
                                         ChartData('冥想', Random().nextInt(100) + 100),
                                       ],
-                                      xValueMapper: (ChartData data, _) =>
-                                          data.x,
-                                      yValueMapper: (ChartData data, _) =>
-                                          data.y,
+                                      xValueMapper: (ChartData data, _) => data.x,
+                                      yValueMapper: (ChartData data, _) => data.y,
                                       width: 0.3,
                                       color: ColorSet.meditationColor,
                                       borderRadius: const BorderRadius.only(
@@ -203,15 +203,12 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                             height: 15,
                           ),
                           Container(
-                            padding:
-                                const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+                            padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                             margin: const EdgeInsets.only(right: 20, left: 20),
                             decoration: BoxDecoration(
                               color: ColorSet.backgroundColor,
-                              border: Border.all(
-                                  color: ColorSet.borderColor, width: 4),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
+                              border: Border.all(color: ColorSet.borderColor, width: 4),
+                              borderRadius: const BorderRadius.all(Radius.circular(20)),
                             ),
                             child: Column(children: [
                               const ListTile(
@@ -245,7 +242,7 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                   ),
                                   primaryYAxis: NumericAxis(
                                     axisLine: const AxisLine(width: 0),
-                                    labelStyle: const TextStyle(fontSize: 0),
+                                    labelStyle: const TextStyle(fontSize: 10, color: ColorSet.textColor),
                                     majorTickLines:
                                         const MajorTickLines(size: 0),
                                   ),
@@ -256,10 +253,8 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                         ChartData('運動', Random().nextInt(20) + 3),
                                         ChartData('冥想', Random().nextInt(20) + 3),
                                       ],
-                                      xValueMapper: (ChartData data, _) =>
-                                          data.x,
-                                      yValueMapper: (ChartData data, _) =>
-                                          data.y,
+                                      xValueMapper: (ChartData data, _) => data.x,
+                                      yValueMapper: (ChartData data, _) => data.y,
                                       width: 0.3,
                                       color: ColorSet.meditationColor,
                                       borderRadius: const BorderRadius.only(
