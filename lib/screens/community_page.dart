@@ -81,10 +81,10 @@ class CommunityPageState extends State<CommunityPage>
                         controller: _controller,
                         indicatorColor: ColorSet.borderColor,
                         indicatorWeight: 3,
-                        tabs: [
+                        tabs: const [
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.group,
                                   color: ColorSet.iconColor,
@@ -101,7 +101,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.emoji_events,
                                   color: ColorSet.iconColor, // 设置图标颜色
@@ -118,7 +118,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.sports_kabaddi,
                                   color: ColorSet.iconColor,
@@ -236,15 +236,15 @@ class FriendListPageState extends State<FriendListPage> {
                         } else {
                           if (fullID == null) {
                             InformDialog()
-                                .get(context, "警告！", "找不到該名用戶TT")
+                                .get(context, "警告！", "找不到該名用戶T^T")
                                 .show();
                           } else if (searchText == CommData.socialCode) {
                             InformDialog()
-                                .get(context, "警告！", "不能新增自己為朋友喔")
+                                .get(context, "警告！", "不能新增自己為朋友喔T^T")
                                 .show();
                           } else if (CommData.friends.contains(fullID)) {
                             InformDialog()
-                                .get(context, "警告！", "已經加入這位朋友了")
+                                .get(context, "警告！", "朋友已在清單內:) \n 快去認識新朋友吧~")
                                 .show();
                           } else {
                             _showCustomDialog(context, fullID);
@@ -267,9 +267,9 @@ class FriendListPageState extends State<FriendListPage> {
         ),
         Container(
             padding: const EdgeInsets.only(top: 20.0, left: 25.0),
-            child: Row(
+            child: const Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   '朋友列表',
                   style: TextStyle(
@@ -283,8 +283,8 @@ class FriendListPageState extends State<FriendListPage> {
         Expanded(
           child: CommData.friends.isEmpty
               ? const Text(
-                  '\n您尚未加入任何好友，'
-                  '\n趕快輸入朋友的社交碼開啟社交功能吧!',
+                  '\n尚未加入任何好友T^T'
+                  '\n趕快輸入朋友的社交碼開啟社交功能吧！',
                   style: TextStyle(
                     color: ColorSet.textColor,
                     fontSize: 16,
@@ -643,8 +643,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -665,8 +665,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -687,8 +687,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -709,8 +709,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -731,8 +731,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -756,8 +756,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -778,8 +778,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -800,8 +800,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -822,8 +822,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -844,8 +844,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -904,6 +904,33 @@ class TeamChallengePageState extends State<TeamChallengePage> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
+                  //title: Text("團隊合挑戰"),
+                  content: SizedBox(
+                    width: 100.0,
+                    height: 100.0,
+                    child: Image.asset("assets/images/coming_soon.png"),
+                  ),
+                );
+              },
+            );
+            Future.delayed(const Duration(seconds: 3), () {
+              Navigator.of(context).pop();
+            });
+          },
+          child: const Text(
+            '確定加入',
+            style: TextStyle(
+              color: ColorSet.textColor,
+              fontSize: 14.0,
+            ),
+          ),
+        ),
+        /*ElevatedButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
                     backgroundColor: ColorSet.backgroundColor,
                     title: const Text('團隊競爭賽',
                         style: TextStyle(
@@ -942,8 +969,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: Row(
-                            children: const [
+                          child: const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -991,8 +1018,8 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: ColorSet.backgroundColor,
                           ),
-                          child: Row(
-                            children: const [
+                          child: const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
@@ -1029,7 +1056,7 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                 color: ColorSet.textColor,
                 fontSize: 14.0,
               )),
-        ),
+        ),*/
         const SizedBox(height: 20),
         const Text('團隊合作賽',
             style: TextStyle(
@@ -1052,6 +1079,33 @@ class TeamChallengePageState extends State<TeamChallengePage> {
         ),
         const SizedBox(height: 10),
         ElevatedButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  //title: Text("團隊合作賽"),
+                  content: SizedBox(
+                    width: 100.0,
+                    height: 100.0,
+                    child: Image.asset("assets/images/coming_soon.png"),
+                  ),
+                );
+              },
+            );
+            Future.delayed(const Duration(seconds: 3), () {
+              Navigator.of(context).pop();
+            });
+          },
+          child: const Text(
+            '確定加入',
+            style: TextStyle(
+              color: ColorSet.textColor,
+              fontSize: 14.0,
+            ),
+          ),
+        ),
+        /*ElevatedButton(
           onPressed: () {
             bool showTextField = false;
             showDialog(
@@ -1184,7 +1238,7 @@ class TeamChallengePageState extends State<TeamChallengePage> {
               fontSize: 14.0,
             ),
           ),
-        ),
+        ),*/
       ]),
     );
   }

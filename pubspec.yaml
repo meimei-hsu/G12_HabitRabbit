@@ -155,6 +155,9 @@ flutter:
    # 冥寶、運寶
     - assets/images/Carrot.png
     - assets/images/BowTie.png
+
+
+    - assets/images/coming_soon.png
     # To add assets to your application, add an assets section, like this:
     # assets:
     #   - images/a_dot_burr.jpeg

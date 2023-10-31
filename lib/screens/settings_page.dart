@@ -275,7 +275,7 @@ class SettingsPageState extends State<SettingsPage> {
                     }
 
                     ConfirmDialog()
-                        .get(context, '確定登出嗎？', "確定登出嗎？", btnOkOnPress)
+                        .get(context, ':)警告', "確定登出嗎？", btnOkOnPress)
                         .show();
                   },
                   icons: Icons.exit_to_app_rounded,
@@ -845,7 +845,7 @@ class ChangeDayAndNotificationTimeBottomSheetState
 
                 if (!mounted) return;
                 InformDialog()
-                    .get(context, "完成更改:)",
+                    .get(context, "提示:)",
                         "週${SettingsData.habitTypeZH}日與通知時間已更新！")
                     .show();
                 // FIXME: should close the bottom sheet after pressing "確定"
@@ -1092,7 +1092,7 @@ class ChangeLikingBottomSheetState extends State<ChangeLikingBottomSheet> {
 
                 if (!mounted) return;
                 InformDialog()
-                    .get(context, "完成更改:)", "${SettingsData.habitTypeZH}偏好已更新！")
+                    .get(context, "提示:)", "${SettingsData.habitTypeZH}偏好已更新！")
                     .show();
               },
               child: const Text(
@@ -1282,7 +1282,7 @@ class ChangeGoalBottomSheetState extends State<ChangeGoalBottomSheet> {
 
                 if (!mounted) return;
                 InformDialog()
-                    .get(context, "完成更改:)", "${SettingsData.habitTypeZH}目標已更新！")
+                    .get(context, "提示:)", "${SettingsData.habitTypeZH}目標已更新！")
                     .show();
               },
               child: const Text(
@@ -1490,7 +1490,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                       // Navigator.pushNamed(context, "/settings");
                       // 如果用push而不是pop，則按返回見的時候，會回到這個更改密碼bottomSheet，不合理
                       InformDialog()
-                          .get(context, "完成更改:)",
+                          .get(context, "提示:)",
                           "${SettingsData.functionCode}已完成！")
                           .show();
                     } else {
@@ -1505,7 +1505,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                               .updatePassword(newPasswordController.text);
                           if (!mounted) return;
                           InformDialog()
-                              .get(context, "完成更改:)",
+                              .get(context, "提示:)",
                               "${SettingsData.functionCode}已完成！")
                               .show();
                         } else {
@@ -1520,7 +1520,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                       } catch (e) {
                         if (!mounted) return;
                         debugPrint(e.toString());
-                        InformDialog().get(context, "錯誤！", "密碼錯誤QQ").show();
+                        InformDialog().get(context, "警告:(", "密碼錯誤QQ").show();
                       }
                     }
                   },

@@ -34,10 +34,10 @@ class FirstContractPageState extends State<FirstContractPage> {
   final DateTime startDay = DateTime.now();
   final List<String> dialogs = [
     '承諾合約協助您養成習慣',
-    '您可以在此於約定期間依照自身狀況選擇方案。'
-        '一旦開始執行，契約內容將不能取消或進行更改直到方案完成'
-        '若未達成設定目標，立契約人同意將投入金額全數捐出；'
-        '若達成設定目標則由系統將全數金額退還。',
+    '您可以在此約定期間根據自己的情況選擇不同的選項。'
+        '一旦契約開始執行，將無法取消或更改內容，直到完成您設定的目標。'
+        '\n如未能成功實現目標，您將同意把投入的資金全部捐出；'
+        '如您成功實現了目標，Habit Rabbit 將退還您全部的資金。',
     '是否確認投入合約？',
     '請點選您想要投入類型：',
     '請點選您想要投入方案：',
@@ -922,11 +922,9 @@ class SecondContractPageState extends State<SecondContractPage> {
                                         });
                                   }
 
-                                  ConfirmDialog()
-                                      .get(
-                                          context,
-                                          '確定要執行嗎？',
-                                          "一旦執行動作後就無法進行修改或刪除。您確定要繼續嗎？",
+                                  ConfirmDialog().get(context,
+                                          '提示:)',
+                                          "確定後無法進行修改或刪除，請深思熟慮",
                                           btnOkOnPress)
                                       .show();
                                 },
@@ -1531,7 +1529,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
     }
 
     ConfirmDialog()
-        .get(context, "確認執行動作", "一旦執行動作後就無法進行修改或刪除。您確定要繼續嗎？", btnOkOnPress)
+        .get(context, "提示", "確定後無法進行修改或刪除，請深思熟慮", btnOkOnPress)
         .show();
   }
 }

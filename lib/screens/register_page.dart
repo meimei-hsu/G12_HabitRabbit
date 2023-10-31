@@ -109,14 +109,14 @@ class LoginFormState extends State<LoginForm> {
                       child: Column(
                         children: [
                           // TODO: 標題內容 or 藝術字
-                          const Text("一起",
+                          const Text("Habit Rabbit",
                               style: TextStyle(
                                   color: ColorSet.textColor,
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
                                   height: 1)),
                           const SizedBox(height: 5),
-                          const Text("養成習慣吧！",
+                          const Text("習慣兔，你的專屬習慣tool！",
                               style: TextStyle(
                                   color: ColorSet.textColor,
                                   fontSize: 25,

@@ -34,7 +34,7 @@ Map userInfo = {
 // List of questions in part two
 final questions_2 = [
   Question(
-    text: "計畫時間 (複選)",
+    text: "請選擇習慣養成的偏好時間",
     isMultiChoice: true,
     options: [
       Option(text: "星期一", data: 1),
@@ -47,7 +47,7 @@ final questions_2 = [
     ],
   ),
   Question(
-    text: "計畫時長",
+    text: "請選擇習慣養成的偏好時長",
     options: [
       Option(text: "15分鐘", data: 15),
       Option(text: "30分鐘", data: 30),
@@ -56,7 +56,7 @@ final questions_2 = [
     ],
   ),
   Question(
-    text: "肌耐力能力",
+    text: "自評個人的肌耐力強度",
     options: [
       Option(
           text: "LV.1 低強度",
@@ -69,7 +69,7 @@ final questions_2 = [
     ],
   ),
   Question(
-    text: "心肺耐力能力",
+    text: "自評個人的心肺肌力強度",
     options: [
       Option(
           text: "LV.1 低強度",
@@ -84,7 +84,7 @@ final questions_2 = [
     ],
   ),
   Question(
-    text: "柔軟度能力",
+    text: "自評個人的柔軟強度",
     options: [
       Option(text: "LV.1 低強度", data: 40, description: "只能做簡單伸展動作，不一定保持姿勢正確性"),
       Option(text: "LV.2 中強度", data: 60, description: "完成基本伸展動作，保持姿勢正確但未達高水平"),
@@ -111,25 +111,25 @@ final questions_2 = [
       Option(text: "預防疾病", data: "預防疾病"),
       Option(text: "改善膚況", data: "改善膚況"),
       Option(text: "增強體力", data: "增強體力"),
-      Option(text: "提升大腦", data: "提升大腦"),
+      Option(text: "激活大腦", data: "激活大腦"),
       Option(text: "改善睡眠", data: "改善睡眠"),
     ],
   ),
   Question(
-    text: "想提升或改善的面向\n(複選)",
+    text: "冥想原因與目標(複選)",
     isMultiChoice: true,
     options: [
-      Option(text: "壓力", data: "mindfulnessLiking"),
-      Option(text: "憂慮", data: "mindfulnessLiking"),
-      Option(text: "效率", data: "workLiking"),
-      Option(text: "動機", data: "workLiking"),
-      Option(text: "平靜", data: "mindfulnessLiking"),
-      Option(text: "自愛", data: "kindnessLiking"),
-      Option(text: "感激", data: "kindnessLiking"),
-      Option(text: "人際", data: "kindnessLiking"),
-      Option(text: "專注力", data: "workLiking"),
-      Option(text: "創造力", data: "workLiking"),
-      Option(text: "覺察力", data: "mindfulnessLiking"),
+      Option(text: "舒緩壓力", data: "mindfulnessLiking"),
+      Option(text: "減緩憂慮", data: "mindfulnessLiking"),
+      Option(text: "提升效率", data: "workLiking"),
+      Option(text: "增強動機", data: "workLiking"),
+      Option(text: "內心平靜", data: "mindfulnessLiking"),
+      Option(text: "提升自信", data: "kindnessLiking"),
+      Option(text: "關懷感激", data: "kindnessLiking"),
+      Option(text: "拓展人際", data: "kindnessLiking"),
+      Option(text: "高專注力", data: "workLiking"),
+      Option(text: "高創造力", data: "workLiking"),
+      Option(text: "高覺察力", data: "mindfulnessLiking"),
       Option(text: "情緒健康", data: "kindnessLiking"),
     ],
   ),
@@ -448,7 +448,7 @@ class TitlePage extends StatefulWidget {
 }
 
 class TitlePageState extends State<TitlePage> {
-  List title = ['Part I\n基本資料', 'Part II\n習慣養成', 'Part III\n個人性格'];
+  List title = ['第一部分\n基本資料', '第二部分\n習慣養成', '第三部分\n個人性格'];
 
   @override
   void initState() {

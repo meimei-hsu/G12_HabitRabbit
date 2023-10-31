@@ -78,27 +78,27 @@ class HomepageState extends State<Homepage> {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
       dialogText = (HomeData.isBefore)
-          ? "運動計畫完成了 ${HomeData.workoutProgress} %\n沒有冥想計畫"
+          ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n目前尚未安排任何冥想計畫，點選我新增"
           : (HomeData.isToday)
-              ? "運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
-              : "有運動計畫\n記得要來完成噢~\n點我新增冥想計畫！";
+              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
+              : "今日有運動計畫\n記得要來完成噢~\n點選我新增冥想計畫！";
     } else if (HomeData.workoutPlan == null &&
         HomeData.meditationPlan != null) {
       // 運動沒有、冥想有 --> 冥想完成度、新增運動
       // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
       dialogText = (HomeData.isBefore)
-          ? "冥想計畫完成了 ${HomeData.meditationProgress} %\n沒有運動計畫"
+          ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n目前尚未安排任何運動計畫，點選我新增"
           : (HomeData.isToday)
-              ? "冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有運動計畫，點我新增！"
-              : "有冥想計畫\n記得要來完成噢~\n點我新增運動計畫！";
+              ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "有夠讚！\n" : "讓我們一起加油~\n"}今日尚未安排運動計畫，點選我新增"
+              : "今日有冥想計畫\n記得要來完成噢~\n點選我新增運動計畫！";
     } else {
       // 運動有、冥想有 --> 運動完成度、冥想完成度
       // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
       dialogText = (HomeData.isBefore)
-          ? "運動計畫完成了 ${HomeData.workoutProgress} %\n冥想計畫完成了 ${HomeData.meditationProgress} %"
+          ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n今日冥想計畫已完成 ${HomeData.meditationProgress} %"
           : (HomeData.isToday)
-              ? "運動計畫已完成 ${HomeData.workoutProgress} %\n冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n很棒噢~~" : "\n繼續加油加油~~"}"
-              : "有運動和冥想計畫\n記得要來完成噢~";
+              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n今日冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n有夠讚！" : "\n讓我們一起加油~"}"
+              : "今日有運動和冥想計畫\n記得要來完成噢~";
     }
     return dialogText;
   }
@@ -352,7 +352,7 @@ class HomepageState extends State<Homepage> {
                               // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
                               (HomeData.isBefore)
                                   ? InformDialog()
-                                      .get(context, ":(", "溯及既往 打咩！")
+                                      .get(context, "警告:(", "溯及既往 打咩！")
                                       .show()
                                   : showModalBottomSheet(
                                       shape: const RoundedRectangleBorder(
@@ -376,10 +376,10 @@ class HomepageState extends State<Homepage> {
                               // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
                               (HomeData.isBefore)
                                   ? InformDialog()
-                                      .get(context, ":)", "要繼續努力養成習慣噢！")
+                                      .get(context, "提示:)", "要繼續努力養成習慣噢！")
                                       .show()
                                   : InformDialog()
-                                      .get(context, ":)", "要記得完成計畫噢！")
+                                      .get(context, "提示:)", "要記得完成計畫噢！")
                                       .show();
                             }
                           }, // Image tapped
@@ -413,7 +413,7 @@ class HomepageState extends State<Homepage> {
                     icon: const Icon(Icons.monetization_on_outlined, size: 40)),
                 IconButton(
                     onPressed: () {
-                      InformDialog().get(context, ":(", "溯及既往 打咩！").show();
+                      InformDialog().get(context, "警告:(", "溯及既往 打咩！").show();
                     },
                     icon: const Icon(Icons.notifications_none_outlined, size: 40))
               ],
@@ -600,12 +600,12 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
           ),
           (planToAdd == 0)
               ? Text(
-                  "你要在$time新增幾分鐘的運動計畫呢？",
+                  "請選擇$time想新增的時間(分鐘)？",
                   style:
                       const TextStyle(color: ColorSet.textColor, fontSize: 18),
                 )
               : Text(
-                  "你要在$time新增什麼類型的冥想計畫呢？",
+                  "想在$time新增什麼類型的冥想計畫呢？",
                   style:
                       const TextStyle(color: ColorSet.textColor, fontSize: 18),
                 ),

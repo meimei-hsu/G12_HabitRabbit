@@ -105,7 +105,7 @@ class CharacterWidget extends StatelessWidget {
                   height: 40,
                   child: FloatingActionButton(
                     backgroundColor: ColorSet.backgroundColor,
-                    tooltip: "寶物蒐集概況",
+                    tooltip: "寶物蒐集數量",
                     onPressed: () {
                       _showQuizDialog(context);
                     },
@@ -119,7 +119,7 @@ class CharacterWidget extends StatelessWidget {
                   height: 40,
                   child: FloatingActionButton(
                     backgroundColor: ColorSet.backgroundColor,
-                    tooltip: "角色進化圖",
+                    tooltip: "人格角色進化",
                     onPressed: () {
                       _showGrowDialog(context);
                     },
@@ -172,7 +172,7 @@ class CharacterWidget extends StatelessWidget {
                 Container(
                     padding: const EdgeInsets.only(left: 10),
                     child: const Text(
-                      '本周運動達成率：',
+                      '本周運動習慣已達成：',
                       style: TextStyle(
                         color: ColorSet.textColor,
                         fontSize: 16,
@@ -199,7 +199,7 @@ class CharacterWidget extends StatelessWidget {
                 Container(
                     padding: const EdgeInsets.only(left: 10),
                     child: const Text(
-                      '本周冥想達成率：',
+                      '本周冥想習慣已達成：',
                       style: TextStyle(
                         color: ColorSet.textColor,
                         fontSize: 16,
@@ -226,7 +226,7 @@ class CharacterWidget extends StatelessWidget {
                 Container(
                     padding: const EdgeInsets.only(left: 10),
                     child: const Text(
-                      '全部完成率：',
+                      '距離所有習慣養成：',
                       style: TextStyle(
                         color: ColorSet.textColor,
                         fontSize: 16,
@@ -357,7 +357,7 @@ class QuizDialogState extends State<QuizDialog> {
             ListTile(
               contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
               title: const Text(
-                "寶物蒐集概況",
+                "寶物蒐集數量",
                 style: TextStyle(
                     color: ColorSet.textColor,
                     fontSize: 24,
@@ -473,7 +473,7 @@ class GrowDialogState extends State<GrowDialog> {
             ListTile(
               contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
               title: const Text(
-                "角色進化圖",
+                "人格角色進化",
                 style: TextStyle(
                     color: ColorSet.textColor,
                     fontSize: 24,
@@ -660,7 +660,7 @@ class InfoDialogState extends State<InfoDialog> {
                           color: ColorSet.textColor,
                         ),
                         children: [
-                          TextSpan(text: '每次運動與冥想結束後，您將會分別獲取角色的運動寶物與冥想寶物，寶物是讓角色晉級的關鍵，每個角色將可以進化六次。\n\n'),
+                          TextSpan(text: '每次運動與冥想結束後，您將會分別獲取角色的運動寶物與冥想寶物，寶物是讓角色晉級的關鍵。\n\n'),
                           TextSpan(
                             text: '點選',
                           ),
