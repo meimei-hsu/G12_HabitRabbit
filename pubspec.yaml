@@ -107,10 +107,15 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/videos/videoTest.mp4
     - assets/videos/v1.gif
     - assets/videos/v2.gif
     - assets/videos/v3.gif
+    - assets/videos/深蹲.gif
+    - assets/videos/側弓箭步.gif
+    - assets/videos/上斜伏地挺身.gif
+    - assets/videos/反向捲腹.gif
+    - assets/videos/臀橋.gif
+    - assets/videos/休息.gif
     - assets/images/testPic.gif
     - assets/images/Logo.png
     - assets/images/lazy.png
@@ -152,10 +157,30 @@ flutter:
     - assets/images/Sloth_2.png
     - assets/images/Mouse_1.png
     - assets/images/Mouse_2.png
+    #- assets/images/Cat_1.png
+    #- assets/images/Cat_2.png
+    - assets/images/Pig_1.png
+    - assets/images/Pig_2.png
 
    # 冥寶、運寶
     - assets/images/Carrot.png
     - assets/images/BowTie.png
+    - assets/images/Dog_workoutGem.png
+    - assets/images/Dog_meditationGem.png
+    - assets/images/Fox_workoutGem.png
+    - assets/images/Fox_meditationGem.png
+    - assets/images/Lion_workoutGem.png
+    - assets/images/Lion_meditationGem.png
+    - assets/images/Sheep_workoutGem.png
+    - assets/images/Sheep_meditationGem.png
+    - assets/images/Sloth_workoutGem.png
+    - assets/images/Sloth_meditationGem.png
+    - assets/images/Mouse_workoutGem.png
+    - assets/images/Mouse_meditationGem.png
+    - assets/images/Cat_workoutGem.png
+    - assets/images/Cat_meditationGem.png
+    - assets/images/Pig_workoutGem.png
+    - assets/images/Pig_meditationGem.png
 
 
     - assets/images/coming_soon.png

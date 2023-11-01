@@ -23,7 +23,7 @@ class VideoPageState extends State<VideoPage> {
               children: [
                 //TODO: Change to video name
                 Image.asset(
-                  "assets/images/testPic.gif",
+                  "assets/videos/${widget.arguments['item']}.gif",
                   width: double.infinity,
                   fit: BoxFit.fitWidth,
                 ),

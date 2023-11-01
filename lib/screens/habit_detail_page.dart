@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -20,49 +21,49 @@ class ExerciseDetailPage extends StatefulWidget {
 
 class ExerciseDetailPageState extends State<ExerciseDetailPage> {
   List<Widget> _getSportList(List content) {
+    List<Widget> expansionTitleList = []; // return value
+    Random rand = Random();
+    List videos = ["深蹲", "上斜伏地挺身", "反向捲腹", "臀橋", "側弓箭步"];
+    if (HomeData.isToday) {
+      // Demo用5分鐘影片
+      content = [
+        videos.sublist(0, 1),
+        videos.sublist(1, 4),
+        videos.sublist(4, 5),
+      ];
+    }
     int length = content.length;
 
     // Generate the titles
-    List title = [for (int i = 1; i <= length - 2; i++) "Round $i"];
-    title.insert(0, "Warm up");
-    title.insert(length - 1, "Cool down");
+    List title = [for (int i = 1; i <= length - 2; i++) "第 $i 回合"];
+    title.insert(0, "熱身運動");
+    title.insert(length - 1, "緩和運動");
 
-    List<Widget> expansionTitleList = [];
+    // Generate item list
     for (int i = 0; i < length; i++) {
-      List<ListTile> itemList = [
-        for (int j = 0; j < content[i].length; j++)
-          ListTile(
-            contentPadding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
-            title: Text(
-              '${content[i][j]}',
-              style: const TextStyle(color: ColorSet.textColor, fontSize: 20),
-            ),
-            leading: ClipRRect(
-                borderRadius: BorderRadius.circular(7.5),
-                //TODO: Change to video name
-                child: Image.asset("assets/images/testPic.gif")),
-            onTap: () {
-              Navigator.pushNamed(context, '/video',
-                  arguments: {'item': content[i][j]});
-            },
-            visualDensity: const VisualDensity(vertical: 2),
-          )
-      ];
-
-      /*
-      Radius r = const Radius.circular(20);
-      BorderRadius? borderRadius;
-
-      if (i == 0) {
-        //borderRadius = BorderRadius.only(topLeft: r, topRight: r);
-        borderRadius = null;
-      } else if (i == length - 1) {
-        borderRadius = BorderRadius.only(bottomLeft: r, bottomRight: r);
-      } else {
-        borderRadius = null;
+      List<ListTile> itemList = [];
+      for (int j = 0; j < content[i].length; j++) {
+        String vidName =
+            (HomeData.isToday) ? content[i][j] : videos[rand.nextInt(5)];
+        itemList.add(ListTile(
+          contentPadding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
+          title: Text(
+            '${content[i][j]}',
+            style: const TextStyle(color: ColorSet.textColor, fontSize: 20),
+          ),
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(7.5),
+            child: Image.asset("assets/videos/$vidName.gif"),
+          ),
+          onTap: () {
+            Navigator.pushNamed(context, '/video',
+                arguments: {'item': vidName});
+          },
+          visualDensity: const VisualDensity(vertical: 2),
+        ));
       }
-      */
 
+      // Combine titles and items
       expansionTitleList.add(ExpansionTile(
         iconColor: ColorSet.buttonColor,
         collapsedIconColor: ColorSet.iconColor,

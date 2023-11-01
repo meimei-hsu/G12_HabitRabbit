@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+import '../services/page_data.dart';
+
 class ColorSet {
   static const Color backgroundColor = Color(0xFFFDFDFD);
   static const Color bottomBarColor = Color(0xFFF4F4F6);
@@ -176,11 +178,11 @@ class CongratsDialog {
                     ),
                     const SizedBox(height: 10),
                     Image.asset(
-                      height: 150,
-                      width: 150,
-                      // TODO: changeGemPhoto
-                      'assets/images/Carrot.png',
-                    ),
+                        height: 150,
+                        width: 150,
+                        (habit == "workout")
+                            ? Data.workoutGemImageUrl
+                            : Data.meditationGemImageUrl),
                   ],
                 ),
               ),

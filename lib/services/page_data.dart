@@ -18,6 +18,8 @@ class Data {
   static User? user = FirebaseAuth.instance.currentUser;
   static String characterImageURL = "";
   static String characterName = "";
+  static String workoutGemImageUrl = "";
+  static String meditationGemImageUrl = "";
 
   // general database records:
   static Map? profile; // whole user profile from UserDB
@@ -67,6 +69,8 @@ class Data {
     String character = game?["character"] ?? "Rabbit_2";
     characterImageURL = "assets/images/$character.png";
     characterName = character.substring(0, character.length - 2);
+    workoutGemImageUrl = "assets/images/${characterName}_workoutGem.png";
+    meditationGemImageUrl = "assets/images/${characterName}_meditationGem.png";
   }
 
   static Future<void> fetchProfile() async {
@@ -321,7 +325,8 @@ class HomeData {
     workoutType = PlanDB.toPlanType("workout", date: selectedDate, zh: true);
     workoutProgress = workoutProgressList[selectedDate];
     meditationPlan = meditationPlanList[selectedDate];
-    meditationType = PlanDB.toPlanType("meditation", date: selectedDate, zh: true);
+    meditationType =
+        PlanDB.toPlanType("meditation", date: selectedDate, zh: true);
     meditationProgress = meditationProgressList[selectedDate];
     isBefore = selectedDate.compareTo(today) == -1;
     isAfter = selectedDate.compareTo(today) == 1;

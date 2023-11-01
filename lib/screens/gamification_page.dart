@@ -408,8 +408,7 @@ class QuizDialogState extends State<QuizDialog> {
                           Image.asset(
                             height: 35,
                             width: 35,
-                            // TODO: changeGemPhoto
-                            'assets/images/Carrot.png',
+                            Data.workoutGemImageUrl
                           ),
                       ],
                     ),
@@ -440,8 +439,7 @@ class QuizDialogState extends State<QuizDialog> {
                           Image.asset(
                             height: 35,
                             width: 35,
-                            // TODO: changeGemPhoto
-                            'assets/images/BowTie.png',
+                            Data.meditationGemImageUrl
                           ),
                       ],
                     ),
