@@ -185,8 +185,10 @@ class Calendar {
   static List<String> daysPassed() =>
       (todayWeekday != 7) ? getWeekFrom(firstDay, todayWeekday) : [];
   // Get the days of week that are yet to come
-  static List<String> daysComing() =>
-      (todayWeekday != 6) ? getWeekFrom(DateTime.now(), 7 - todayWeekday) : [];
+  static List<String> daysComing() => (todayWeekday != 6)
+      ? getWeekFrom(
+          DateTime.now().add(const Duration(days: 1)), 14 - todayWeekday % 7)
+      : [];
   // Get the days of week from the first day
   static List<String> thisWeek() => getWeekFrom(firstDay, 7);
   // Get the days of week from the eighth day
@@ -212,6 +214,7 @@ class UserDB {
         "userName",
         "gender",
         "birthday",
+        "age",
         "neuroticism",
         "conscientiousness",
         "openness",
@@ -319,8 +322,13 @@ class UserDB {
     data["workLiking"] -= data["conscientiousness"] * mMul;
     data["kindnessLiking"] -= data["agreeableness"] * mMul;
 
-    // Add userName column
+    // Calculate user's age
+    String birthday = data["birthday"];
+    int age = DateTime.now().difference(DateTime.parse(birthday)).inDays ~/ 365;
+
+    // Add userName and age column
     data["userName"] = Data.user!.displayName;
+    data["age"] = age;
 
     // Insert user into database
     return await DB.insert("$db/$uid", data);

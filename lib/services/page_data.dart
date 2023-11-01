@@ -392,6 +392,14 @@ class SettingsData {
 }
 
 class StatData {
+  // 五小格
+  static double bmi = 0.0;
+  static String bmiStandard = "標準";
+  static double maxWorkoutConsecutiveDays = 0.0;
+  static double maxMeditationConsecutiveDays = 0.0;
+  static double workoutAccumulatedTime = 0.0;
+  static double meditationAccumulatedTime = 0.0;
+
   // 體重
   static List<double> weightDataList = [0.0];
   static Map<String, double> weightDataMap = {};
@@ -407,8 +415,8 @@ class StatData {
   //連續完成天數
   static List consecutiveExerciseDaysList = [];
   static List consecutiveMeditationDaysList = [];
-  static double continuousExerciseDays = 0;
-  static double continuousMeditationDays = 0;
+  static double continuousExerciseDays = 0.0;
+  static double continuousMeditationDays = 0.0;
 
   //累積時長
   static Map<String, int> exerciseTypeCountMap = {
@@ -430,8 +438,8 @@ class StatData {
   // 每月成功天數
   static List exerciseMonthDaysList = [];
   static List meditationMonthDaysList = [];
-  static double maxExerciseDays = 0;
-  static double maxMeditationDays = 0;
+  static double maxExerciseDays = 0.0;
+  static double maxMeditationDays = 0.0;
 
   static int planProgress = 0;
   static int consecutiveDays = 0;
@@ -447,7 +455,6 @@ class StatData {
     }
 
     if (Data.durations != null && Data.weights != null) {
-      setWeightData();
       if (!isAddingWeight) {
         // no need to fetch other data when only weight is updated
         setPlanCompletionData();
@@ -455,9 +462,45 @@ class StatData {
         setCumulativeTimeData();
         setMonthSuccessData();
       }
+      setWeightData();
+      setTopInfoData();
     }
 
     Data.updatingUI[0] = false;
+  }
+
+  static setTopInfoData() {
+    num height = Data.profile!["height"] / 100;
+    int age = Data.profile!["age"];
+    List cv = [];
+    if (Data.profile!["gender"] == "男") {
+      if (age < 40) cv = [10, 21, 26];
+      if (age >= 40 && age < 60) cv = [11, 22, 27];
+      if (age >= 60) cv = [13, 24, 29];
+    } else {
+      if (age < 40) cv = [20, 24, 39];
+      if (age >= 40 && age < 60) cv = [21, 25, 40];
+      if (age >= 60) cv = [22, 26, 41];
+    }
+    bmi = Data.weights!.values.last / pow(height, 2);
+    if (bmi <= cv[0]) bmiStandard = "消瘦";
+    if (bmi > cv[0] && bmi <= cv[1]) bmiStandard = "標準";
+    if (bmi > cv[1] && bmi <= cv[2]) bmiStandard = "微胖";
+    if (bmi > cv[2] && bmi <= cv[3]) bmiStandard = "肥胖";
+
+    maxWorkoutConsecutiveDays = List<double>.generate(
+        consecutiveExerciseDaysList.length,
+        (index) => consecutiveExerciseDaysList[index][2]).reduce(max);
+    maxMeditationConsecutiveDays = List<double>.generate(
+        consecutiveMeditationDaysList.length,
+        (index) => consecutiveExerciseDaysList[index][2]).reduce(max);
+
+    Data.durations?["workout"]?.forEach((key, value) {
+      workoutAccumulatedTime += int.parse(value.split(", ")[0]);
+    });
+    Data.durations?["meditation"]?.forEach((key, value) {
+      meditationAccumulatedTime += int.parse(value.split(", ")[0]);
+    });
   }
 
   // 體重圖表
@@ -498,6 +541,8 @@ class StatData {
         exerciseCompletionRateMap[exerciseDate] =
             (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
       }
+      exerciseCompletionRateMap.removeWhere((key, value) =>
+          Calendar.daysComing().contains(Calendar.dateToString(key)));
     }
 
     var meditationDuration = Data.durations?["meditation"];
@@ -507,6 +552,8 @@ class StatData {
         meditationCompletionRateMap[meditationDate] =
             (Calculator.calcProgress(entry.value).round() == 100) ? 2 : 1;
       }
+      meditationCompletionRateMap.removeWhere((key, value) =>
+          Calendar.daysComing().contains(Calendar.dateToString(key)));
     }
   }
 
@@ -534,7 +581,6 @@ class StatData {
           }
           continuousExerciseDays = 0;
         }
-        exerciseCompletionRateMap[exercise] = completionStatus;
       }
       if (continuousExerciseDays >= 2) {
         consecutiveExerciseDaysList
@@ -565,7 +611,6 @@ class StatData {
           }
           continuousMeditationDays = 0;
         }
-        meditationCompletionRateMap[meditation] = completionStatus;
       }
       if (continuousMeditationDays >= 2) {
         consecutiveMeditationDaysList

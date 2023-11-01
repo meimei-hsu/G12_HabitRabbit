@@ -601,7 +601,7 @@ class PartOnePageState extends State<PartOnePage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 20),
                     child: Text(
-                      '性別',
+                      '生理性別',
                       style: getQuestionStyle(),
                     ),
                   ),
@@ -646,25 +646,6 @@ class PartOnePageState extends State<PartOnePage> {
                             "女",
                             style: TextStyle(
                               color: getForegroundColor("gender", "女"),
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 25),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: getBackgroundColor("gender", "其他"),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              userInfo['gender'] = "其他";
-                              isComplete = checkCompletion();
-                            });
-                          },
-                          child: Text(
-                            "其他",
-                            style: TextStyle(
-                              color: getForegroundColor("gender", "其他"),
                               fontSize: 18,
                             ),
                           ),
@@ -743,7 +724,7 @@ class PartOnePageState extends State<PartOnePage> {
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
                           setState(() {
-                            userInfo['height'] = value;
+                            userInfo['height'] = int.parse(value);
                             isComplete = checkCompletion();
                           });
                         },
@@ -794,7 +775,7 @@ class PartOnePageState extends State<PartOnePage> {
                           });
 
                           setState(() {
-                            userInfo["weight"] = value;
+                            userInfo["weight"] = int.parse(value);
                             isComplete = checkCompletion();
                           });
                         },
