@@ -415,7 +415,8 @@ class HomepageState extends State<Homepage> {
                     onPressed: () {
                       InformDialog().get(context, "警告:(", "溯及既往 打咩！").show();
                     },
-                    icon: const Icon(Icons.notifications_none_outlined, size: 40))
+                    icon:
+                        const Icon(Icons.notifications_none_outlined, size: 40))
               ],
             ),
     ));

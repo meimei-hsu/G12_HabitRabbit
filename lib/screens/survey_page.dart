@@ -1104,7 +1104,6 @@ class PartTwoPageState extends State<PartTwoPage> {
         }
       }
     }
-    print("Debug: $userInfo");
   }
 }
 

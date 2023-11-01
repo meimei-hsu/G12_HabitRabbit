@@ -286,7 +286,7 @@ void _showQuizDialog(BuildContext context) {
     builder: (BuildContext context) {
       return const Padding(
         padding: EdgeInsets.all(8.0),
-        child: QuizDialog(arguments: null),
+        child: QuizDialog(),
       );
     },
   );
@@ -339,7 +339,7 @@ class CharacterCardBackgroundClipper extends CustomClipper<Path> {
 }
 
 class QuizDialog extends StatefulWidget {
-  const QuizDialog({super.key, required arguments});
+  const QuizDialog({super.key});
 
   @override
   QuizDialogState createState() => QuizDialogState();
@@ -408,6 +408,7 @@ class QuizDialogState extends State<QuizDialog> {
                           Image.asset(
                             height: 35,
                             width: 35,
+                            // TODO: changeGemPhoto
                             'assets/images/Carrot.png',
                           ),
                       ],
@@ -439,6 +440,7 @@ class QuizDialogState extends State<QuizDialog> {
                           Image.asset(
                             height: 35,
                             width: 35,
+                            // TODO: changeGemPhoto
                             'assets/images/BowTie.png',
                           ),
                       ],

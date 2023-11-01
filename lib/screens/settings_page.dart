@@ -833,6 +833,7 @@ class ChangeDayAndNotificationTimeBottomSheetState
                 if (modifiedList != originalList) {
                   SettingsData.userData[dayKey] = modifiedList;
                   await UserDB.update({dayKey: modifiedList.join("")});
+                  // TODO: update to GamificationDB
                 }
 
                 Map originalMap = SettingsData.timeForecast[notificationKey];
@@ -1491,7 +1492,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                       // 如果用push而不是pop，則按返回見的時候，會回到這個更改密碼bottomSheet，不合理
                       InformDialog()
                           .get(context, "提示:)",
-                          "${SettingsData.functionCode}已完成！")
+                              "${SettingsData.functionCode}已完成！")
                           .show();
                     } else {
                       AuthCredential credential = EmailAuthProvider.credential(
@@ -1506,7 +1507,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                           if (!mounted) return;
                           InformDialog()
                               .get(context, "提示:)",
-                              "${SettingsData.functionCode}已完成！")
+                                  "${SettingsData.functionCode}已完成！")
                               .show();
                         } else {
                           await UserDB.delete();

@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -121,6 +124,83 @@ class HintDialog {
         btnOkOnPress: () {
           (btnOkOnPress != null) ? btnOkOnPress() : null;
         });
+  }
+}
+
+class CongratsDialog {
+  static void show(BuildContext context,
+      {required String habit, required Widget widgetAfterDismiss}) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final ConfettiController controller =
+            ConfettiController(duration: const Duration(seconds: 3))
+              ..play(); // start the animation
+        Future.delayed(const Duration(seconds: 4), () {
+          Navigator.pop(context);
+          showModalBottomSheet(
+              isDismissible: false,
+              isScrollControlled: true,
+              enableDrag: false,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20)),
+              ),
+              backgroundColor: ColorSet.bottomBarColor,
+              context: context,
+              builder: (context) => widgetAfterDismiss);
+        });
+        return Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: Column(
+                  children: [
+                    const Text(
+                      "你做到了！",
+                      style: TextStyle(
+                          color: ColorSet.buttonColor,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      "恭喜獲得${(habit == "workout") ? "運動" : "冥想"}寶物，你的小倉鼠很愛你呦~",
+                      style: const TextStyle(
+                          color: ColorSet.buttonColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Image.asset(
+                      height: 150,
+                      width: 150,
+                      // TODO: changeGemPhoto
+                      'assets/images/Carrot.png',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: ConfettiWidget(
+                confettiController: controller,
+                blastDirection: pi / 2,
+                maxBlastForce: 5,
+                minBlastForce: 1,
+                emissionFrequency: 0.02,
+                numberOfParticles: 10,
+                gravity: 0, // particles will pop-up
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 

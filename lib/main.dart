@@ -63,7 +63,7 @@ class BottomNavigationControllerState
     const StatisticPage(),
     const GamificationPage(),
     const Homepage(),
-    const CommunityPage(arguments: {}),
+    const CommunityPage(),
     const SettingsPage(),
   ];
 

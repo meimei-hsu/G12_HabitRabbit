@@ -188,28 +188,15 @@ class DoExercisePageState extends State<DoExercisePage> {
         DurationDB.update(
             "workout", {Calendar.today: HomeData.workoutDuration});
         GamificationDB.updateFragment("workout");
-        //_showFeedbackDialog();
-        showModalBottomSheet(
-            isDismissible: false,
-            isScrollControlled: true,
-            enableDrag: false,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-            ),
-            backgroundColor: ColorSet.bottomBarColor,
-            context: context,
-            builder: (context) {
-              return Wrap(children: const [
-                FeedbackBottomSheet(
-                  arguments: {"type": 0},
-                )
-              ]);
-            });
         timer.cancel();
+        CongratsDialog.show(context,
+            habit: "workout",
+            widgetAfterDismiss: Wrap(children: const [
+              FeedbackBottomSheet(
+                arguments: {"type": 0},
+              )
+            ]));
         dispose();
-        //ifStart = true;
-        //Navigator.pushNamed(context, '/exercise');
       } else if (ifStart == false) {
         // TODO: .gif 暫停播放(偏難)
         timer.cancel();
@@ -386,7 +373,8 @@ class DoExercisePageState extends State<DoExercisePage> {
                     color: ColorSet.textColor,
                     fontSize: 48,
                     letterSpacing: 2,
-                    fontWeight: FontWeight.bold,),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
@@ -525,28 +513,15 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         DurationDB.update(
             "meditation", {Calendar.today: HomeData.meditationDuration});
         GamificationDB.updateFragment("meditation");
-        //_showFeedbackDialog();
-        showModalBottomSheet(
-            isDismissible: false,
-            isScrollControlled: true,
-            enableDrag: false,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-            ),
-            backgroundColor: ColorSet.bottomBarColor,
-            context: context,
-            builder: (context) {
-              return Wrap(children: const [
-                FeedbackBottomSheet(
-                  arguments: {"type": 1},
-                )
-              ]);
-            });
         timer.cancel();
+        CongratsDialog.show(context,
+            habit: "meditation",
+            widgetAfterDismiss: Wrap(children: const [
+              FeedbackBottomSheet(
+                arguments: {"type": 1},
+              )
+            ]));
         dispose();
-        //ifStart = true;
-        //Navigator.pushNamed(context, '/exercise');
       } else if (ifStart == false) {
         // TODO: .gif 暫停播放(偏難)
         timer.cancel();
@@ -635,7 +610,8 @@ class DoMeditationPageState extends State<DoMeditationPage> {
                     color: ColorSet.textColor,
                     fontSize: 48,
                     letterSpacing: 2,
-                    fontWeight: FontWeight.bold,),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),

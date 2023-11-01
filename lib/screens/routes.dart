@@ -21,7 +21,7 @@ final routes = {
   '/countdown': (context, {arguments}) => CountdownPage(arguments: arguments),
   '/settings': (context, {arguments}) => const SettingsPage(),
   '/milestone': (context, {arguments}) => const GamificationPage(),
-  '/community': (context, {arguments}) => CommunityPage(arguments: arguments),
+  '/community': (context, {arguments}) => const CommunityPage(),
   '/video': (context, {arguments}) => VideoPage(arguments: arguments),
   /* ExercisePage */
   '/exercise': (context, {arguments}) => DoExercisePage(arguments: arguments),
