@@ -109,6 +109,12 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                       ],
                                       xValueMapper: (ChartData data, _) => data.x,
                                       yValueMapper: (ChartData data, _) => data.y,
+                                      dataLabelSettings: const DataLabelSettings(
+                                          isVisible: true,
+                                          textStyle: TextStyle(
+                                              color: ColorSet.textColor,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold)),
                                       cornerStyle: CornerStyle.bothCurve,
                                       pointColorMapper: (ChartData data, _) {
                                         if (data.x == "個人等級") {
@@ -188,6 +194,12 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                       ],
                                       xValueMapper: (ChartData data, _) => data.x,
                                       yValueMapper: (ChartData data, _) => data.y,
+                                      dataLabelSettings: const DataLabelSettings(
+                                          isVisible: true,
+                                          textStyle: TextStyle(
+                                              color: ColorSet.textColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold)),
                                       width: 0.3,
                                       color: ColorSet.meditationColor,
                                       borderRadius: const BorderRadius.only(
@@ -255,6 +267,12 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                       ],
                                       xValueMapper: (ChartData data, _) => data.x,
                                       yValueMapper: (ChartData data, _) => data.y,
+                                      dataLabelSettings: const DataLabelSettings(
+                                          isVisible: true,
+                                          textStyle: TextStyle(
+                                              color: ColorSet.textColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold)),
                                       width: 0.3,
                                       color: ColorSet.meditationColor,
                                       borderRadius: const BorderRadius.only(
