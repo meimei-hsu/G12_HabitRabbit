@@ -152,10 +152,10 @@ class DoExercisePageState extends State<DoExercisePage> {
       DurationDB.update("workout", {Calendar.today: currentIndex});
       canExit = true;
       NotificationService().scheduleNotification(
-          title: '該開始運動了!',
-          body: '加油',
+          title: '該開始運動了！',
+          body: '就快完成了，加油！',
           scheduledNotificationDateTime:
-              DateTime.now().add(const Duration(seconds: 30)));
+              DateTime.now().add(const Duration(seconds: 5)));
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
     }
@@ -477,10 +477,10 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           {Calendar.today: (HomeData.meditationDuration * _progress).round()});
       canExit = true;
       NotificationService().scheduleNotification(
-          title: '該開始冥想了!',
-          body: '加油',
+          title: '該開始冥想了！',
+          body: '就快完成了，加油！',
           scheduledNotificationDateTime:
-              DateTime.now().add(const Duration(seconds: 30)));
+              DateTime.now().add(const Duration(seconds: 3)));
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
     }

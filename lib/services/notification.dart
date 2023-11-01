@@ -11,7 +11,7 @@ class NotificationService {
   Future<void> initNotification() async {
     // TODO: change notification icon
     AndroidInitializationSettings initializationSettingsAndroid =
-        const AndroidInitializationSettings('flutter_logo');
+        const AndroidInitializationSettings('ic_launcher');
 
     var initializationSettingsIOS = DarwinInitializationSettings(
         requestAlertPermission: true,
@@ -30,7 +30,7 @@ class NotificationService {
   notificationDetails() {
     return const NotificationDetails(
         android: AndroidNotificationDetails('channelId', 'channelName',
-            icon: 'flutter_logo', importance: Importance.max),
+            icon: 'ic_launcher', importance: Importance.max),
         iOS: DarwinNotificationDetails());
   }
 

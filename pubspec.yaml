@@ -78,6 +78,7 @@ dependencies:
   fl_chart: ^0.35.0
   speech_balloon: ^0.0.4
   confetti: ^0.7.0
+  permission_handler: ^11.0.1
 
 dev_dependencies:
   flutter_test:
@@ -92,7 +93,7 @@ dev_dependencies:
 flutter_icons:
   android: false
   ios: true
-  image_path: "assets/images/Logo.png"
+  image_path: "assets/images/AppIcon.png"
   # https://www.flutterbeads.com/change-app-launcher-icon-flutter/
 
 # For information on the generic Dart part of this file, see the
