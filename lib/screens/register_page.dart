@@ -87,11 +87,10 @@ class LoginFormState extends State<LoginForm> {
               child: Image.asset(
                 "assets/images/Logo.png",
                 width: double.infinity,
-                //fit: BoxFit.fitWidth,
               ),
             ),
             Expanded(
-                flex: 2,
+                flex: 3,
                 child: SingleChildScrollView(
                   //physics: const NeverScrollableScrollPhysics(),
                   // Disable scrolling
@@ -99,7 +98,7 @@ class LoginFormState extends State<LoginForm> {
                     key: loginFormKey,
                     child: Container(
                       padding: const EdgeInsets.only(
-                          right: 20, left: 20, top: 50, bottom: 110),
+                          right: 20, left: 20, top: 50, bottom: 50),
                       decoration: BoxDecoration(
                           color: ColorSet.backgroundColor,
                           border: Border.all(color: ColorSet.backgroundColor),
@@ -108,7 +107,6 @@ class LoginFormState extends State<LoginForm> {
                               topRight: Radius.circular(30))),
                       child: Column(
                         children: [
-                          // TODO: 標題內容 or 藝術字
                           const Text("Habit Rabbit",
                               style: TextStyle(
                                   color: ColorSet.textColor,
@@ -116,11 +114,11 @@ class LoginFormState extends State<LoginForm> {
                                   fontWeight: FontWeight.bold,
                                   height: 1)),
                           const SizedBox(height: 5),
-                          const Text("習慣兔，你的專屬習慣tool！",
+                          const Text("習慣兔，你的專屬習慣 tool！",
                               style: TextStyle(
                                   color: ColorSet.textColor,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
                                   height: 1)),
                           const SizedBox(height: 30),
                           TextFormField(
@@ -355,11 +353,10 @@ class SignupFormState extends State<SignupForm> {
                 child: Image.asset(
                   "assets/images/Logo.png",
                   width: double.infinity,
-                  //fit: BoxFit.fitWidth,
                 ),
               ),
               Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: SingleChildScrollView(
                       //physics: const NeverScrollableScrollPhysics(),
                       // Disable scrolling
@@ -367,7 +364,7 @@ class SignupFormState extends State<SignupForm> {
                           key: signupFormKey,
                           child: Container(
                               padding: const EdgeInsets.only(
-                                  right: 20, left: 20, top: 50, bottom: 70),
+                                  right: 20, left: 20, top: 50, bottom: 50),
                               decoration: BoxDecoration(
                                   color: ColorSet.backgroundColor,
                                   border: Border.all(
@@ -377,19 +374,18 @@ class SignupFormState extends State<SignupForm> {
                                       topRight: Radius.circular(30))),
                               child: Column(
                                 children: [
-                                  // TODO: 標題內容 or 藝術字
-                                  const Text("一起",
+                                  const Text("Habit Rabbit",
                                       style: TextStyle(
                                           color: ColorSet.textColor,
                                           fontSize: 25,
                                           fontWeight: FontWeight.bold,
                                           height: 1)),
                                   const SizedBox(height: 5),
-                                  const Text("養成習慣吧！",
+                                  const Text("習慣兔，你的專屬習慣 tool！",
                                       style: TextStyle(
                                           color: ColorSet.textColor,
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
                                           height: 1)),
                                   const SizedBox(height: 30),
                                   TextFormField(
