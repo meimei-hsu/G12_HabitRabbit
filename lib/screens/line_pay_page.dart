@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
 import 'package:onscreen_num_keyboard/onscreen_num_keyboard.dart';
 
+import '../services/page_data.dart';
+
 // Define global variables for LinePayPage
 String userName = "", money = "";
 
@@ -74,11 +76,11 @@ class PayPageState extends State<PayPage> {
             child: Column(
               children: <Widget>[
                 ListTile(
-                  leading: const CircleAvatar(
+                  leading: CircleAvatar(
                     radius: 48, // Image radius
                     // TODO: 頭貼上有個藍色認證勾勾?
-                    backgroundImage: NetworkImage(
-                        "https://pokoloruj.com.pl/static/gallery/gwiazdy-pop/yr3ylitu.png"),
+                    backgroundImage: AssetImage(
+                        Data.characterImageURL),
                   ),
                   trailing: const Icon(Icons.info_outline_rounded),
                   title: Text("$userName 正在付款。"),
@@ -305,7 +307,7 @@ class PasswordPageState extends State<PasswordPage> {
                   obscureText: true,
                   obscureCharacter: "🔴",
                   textStyle: const TextStyle(color: Color(0xFF23B91A)),
-                  // FIXME: didn't change color, but it's enable when setting obscureText==true
+                  // FIXME: didn't change color, but it's enable when setting obscureText==false
                   borderColor: const Color(0xFFA0A9B8),
                   keyboardType: TextInputType.number,
                   controller: pinCodeController,

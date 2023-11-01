@@ -644,134 +644,6 @@ class DoMeditationPageState extends State<DoMeditationPage> {
   }
 }
 
-// TODO: delete after testing FeedbackBottomSheet
-// 運動回饋
-class FeedbackDialog extends StatefulWidget {
-  const FeedbackDialog({super.key});
-
-  @override
-  FeedbackDialogState createState() => FeedbackDialogState();
-}
-
-class FeedbackDialogState extends State<FeedbackDialog> {
-  double _currentValue1 = 1;
-  double _currentValue2 = 1;
-  List<int> feedbackData = [];
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('每日運動回饋',
-          style: TextStyle(
-            backgroundColor: Colors.yellow,
-            color: ColorSet.textColor,
-          )),
-      content: Column(mainAxisSize: MainAxisSize.min, children: [
-        Container(
-          padding: const EdgeInsets.only(top: 1),
-          child: const Text(
-            '運動是否滿意?',
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                //backgroundColor: Colors.yellow,
-                color: ColorSet.textColor,
-                fontSize: 25,
-                letterSpacing: 0,
-                fontWeight: FontWeight.bold,
-                height: 1),
-          ),
-        ),
-        Slider(
-          value: _currentValue1,
-          min: 1,
-          max: 5,
-          divisions: 4,
-          label: _currentValue1.round().toString(),
-          onChanged: (value) {
-            setState(() {
-              _currentValue1 = value;
-            });
-          },
-        ),
-        const Text(
-          '1                                    5',
-          textAlign: TextAlign.left,
-          style: TextStyle(
-              //backgroundColor: Colors.yellow,
-              color: ColorSet.textColor,
-              fontSize: 20,
-              letterSpacing: 0,
-              fontWeight: FontWeight.bold,
-              height: 1),
-        ),
-        Container(
-          padding: const EdgeInsets.only(top: 25),
-          child: const Text(
-            '運動是否疲憊?',
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                //backgroundColor: Colors.yellow,
-                color: ColorSet.textColor,
-                fontSize: 25,
-                letterSpacing: 0,
-                fontWeight: FontWeight.bold,
-                height: 1),
-          ),
-        ),
-        Slider(
-          value: _currentValue2,
-          min: 1,
-          max: 5,
-          divisions: 4,
-          label: _currentValue2.round().toString(),
-          onChanged: (value) {
-            setState(() {
-              _currentValue2 = value;
-            });
-          },
-        ),
-        const Text(
-          '1                                    5',
-          textAlign: TextAlign.left,
-          style: TextStyle(
-              //backgroundColor: Colors.yellow,
-              color: ColorSet.textColor,
-              fontSize: 20,
-              letterSpacing:
-                  0 /*percentages not used in flutter. defaulting to zero*/,
-              fontWeight: FontWeight.bold,
-              height: 1),
-        ),
-      ]),
-      actions: [
-        ElevatedButton(
-            child: const Text("Submit"),
-            onPressed: () async {
-              feedbackData.add(_currentValue1.toInt());
-              feedbackData.add(_currentValue2.toInt());
-              debugPrint("FeedbackData: $feedbackData");
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/', (Route<dynamic> route) => false);
-              var type = PlanDB.toPlanType("workout");
-              if (type != null) {
-                UserDB.updateWorkoutFeedback(type, feedbackData);
-              }
-              await PlanAlgo.execute();
-              //MilestoneDB.step();
-              //var profile = await UserDB.getPlanVariables(userID);
-              // Map<String, dynamic> _likings = {}, _abilities = {};
-              // _likings = profile[2];
-              // _abilities = profile[3];
-
-              /* if (FeedbackData[0] == 1) {
-                UserDB.update(userID, {"strengthAbility": 69});
-              }*/
-            }),
-      ],
-    );
-  }
-}
-
 // 運動回饋
 class FeedbackBottomSheet extends StatefulWidget {
   final Map arguments;
@@ -828,21 +700,12 @@ class FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
           const SizedBox(
             height: 10,
           ),
-          // TODO: 試一下再放個東西的感覺，說不定可以放張 hooray 的圖(?
-          TextLiquidFill(
-            text: 'Well Done!',
-            waveColor: ColorSet.backgroundColor,
-            boxBackgroundColor: ColorSet.buttonColor,
-            textStyle: const TextStyle(
-              fontSize: 50.0,
-              fontWeight: FontWeight.bold,
-            ),
-            boxHeight: 80.0,
+          Image.asset(
+            "assets/images/Rabbit_shining.png",
+            width: MediaQuery.of(context).size.width * 0.6,
           ),
-          const Divider(
-            thickness: 1.5,
-            indent: 20,
-            endIndent: 20,
+          const SizedBox(
+            height: 10,
           ),
           Text(
             "是否滿意今天的${(type == 0) ? "運動" : "冥想"}計劃呢？",

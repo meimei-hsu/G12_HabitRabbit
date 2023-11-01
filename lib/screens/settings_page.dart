@@ -111,7 +111,6 @@ class SettingsPageState extends State<SettingsPage> {
                 fontWeight: FontWeight.bold,
               ),
               items: [
-                // FIXME: cannot change background color of SettingsItem
                 SettingsItem(
                   onTap: () {
                     showModalBottomSheet(
@@ -279,6 +278,7 @@ class SettingsPageState extends State<SettingsPage> {
                         .show();
                   },
                   icons: Icons.exit_to_app_rounded,
+                  iconStyle: iconStyle,
                   title: "登出帳號",
                   titleStyle: titleStyle,
                 ),
@@ -299,6 +299,7 @@ class SettingsPageState extends State<SettingsPage> {
                         });
                   },
                   icons: CupertinoIcons.delete_solid,
+                  iconStyle: iconStyle,
                   title: "刪除帳號",
                   titleStyle: const TextStyle(
                     color: Colors.deepOrangeAccent,

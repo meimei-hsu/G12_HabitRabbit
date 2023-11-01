@@ -10,6 +10,10 @@ import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/plan_algo.dart';
 import 'package:g12/services/page_data.dart';
 
+// TODO: Delete after page testing
+import 'package:firebase_auth/firebase_auth.dart';
+import 'exercise_page.dart';
+
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
@@ -19,50 +23,49 @@ class Homepage extends StatefulWidget {
 
 class HomepageState extends State<Homepage> {
   Widget getBannerCarousel() {
-    const String banner1 = "assets/images/Exercise_1.jpg";
-    const String banner2 = "assets/images/Meditation_1.jpg";
+    const String exercise = "assets/images/Exercise_1.jpg";
+    const String meditation = "assets/images/Meditation_1.jpg";
+    const String rest = "assets/images/Rest.PNG";
 
     List<BannerModel> listBanners;
 
     if (HomeData.workoutPlan == null && HomeData.meditationPlan == null) {
-      listBanners = [];
+      listBanners = [BannerModel(imagePath: rest, id: "3")];
     } else if (HomeData.workoutPlan != null &&
         HomeData.meditationPlan == null) {
-      listBanners = [BannerModel(imagePath: banner1, id: "1")];
+      listBanners = [BannerModel(imagePath: exercise, id: "1")];
     } else if (HomeData.workoutPlan == null &&
         HomeData.meditationPlan != null) {
-      listBanners = [BannerModel(imagePath: banner2, id: "2")];
+      listBanners = [BannerModel(imagePath: meditation, id: "2")];
     } else {
       listBanners = [
-        BannerModel(imagePath: banner1, id: "1"),
-        BannerModel(imagePath: banner2, id: "2"),
+        BannerModel(imagePath: exercise, id: "1"),
+        BannerModel(imagePath: meditation, id: "2"),
       ];
     }
 
-    return (listBanners != [])
-        ? BannerCarousel(
-            height: 300,
-            margin: const EdgeInsets.only(left: 0, right: 0),
-            viewportFraction: 0.9,
-            spaceBetween: 5,
-            borderRadius: 10,
-            activeColor: const Color(0xff4b3d70),
-            disableColor: const Color(0xfff6cdb7),
-            showIndicator: false,
-            banners: listBanners,
-            onTap: (id) async {
-              // Exercise
-              if (id == "1") {
-                Navigator.pushNamed(context, '/detail/exercise');
-              }
+    return BannerCarousel(
+      height: 300,
+      margin: const EdgeInsets.only(left: 0, right: 0),
+      viewportFraction: 0.9,
+      spaceBetween: 5,
+      borderRadius: 10,
+      activeColor: const Color(0xff4b3d70),
+      disableColor: const Color(0xfff6cdb7),
+      showIndicator: false,
+      banners: listBanners,
+      onTap: (id) async {
+        // Exercise
+        if (id == "1") {
+          Navigator.pushNamed(context, '/detail/exercise');
+        }
 
-              // Meditation
-              if (id == "2") {
-                Navigator.pushNamed(context, '/detail/meditation');
-              }
-            },
-          )
-        : Container();
+        // Meditation
+        if (id == "2") {
+          Navigator.pushNamed(context, '/detail/meditation');
+        }
+      },
+    );
   }
 
   String getDialogText() {
@@ -394,29 +397,59 @@ class HomepageState extends State<Homepage> {
                   ),
                 ),
                 const SizedBox(height: 50),
-                (HomeData.workoutPlan != null ||
-                        HomeData.meditationPlan != null)
-                    ? Expanded(child: getBannerCarousel())
-                    : Container(),
+                Expanded(child: getBannerCarousel()),
                 const SizedBox(height: 5),
-                IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, "/questionnaire",
-                          arguments: {"part": 0});
-                    },
-                    icon: const Icon(Icons.accessibility_outlined, size: 40)),
-                IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, "/contract/initial",
-                          arguments: {});
-                    },
-                    icon: const Icon(Icons.monetization_on_outlined, size: 40)),
-                IconButton(
-                    onPressed: () {
-                      InformDialog().get(context, "警告:(", "溯及既往 打咩！").show();
-                    },
-                    icon:
-                        const Icon(Icons.notifications_none_outlined, size: 40))
+                Row(children: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/questionnaire",
+                            arguments: {"part": 0});
+                      },
+                      icon: const Icon(Icons.sticky_note_2_outlined, size: 40)),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/contract/initial",
+                            arguments: {});
+                      },
+                      icon:
+                          const Icon(Icons.monetization_on_outlined, size: 40)),
+                  IconButton(
+                      onPressed: () {
+                        InformDialog().get(context, "警告:(", "溯及既往 打咩！").show();
+                      },
+                      icon: const Icon(Icons.notifications_none_outlined,
+                          size: 40)),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/pay', arguments: {
+                          'user': FirebaseAuth.instance.currentUser,
+                          'money': "100",
+                        });
+                      },
+                      icon: const Icon(Icons.credit_card_outlined, size: 40)),
+                  IconButton(
+                      onPressed: () {
+                        showModalBottomSheet(
+                            isDismissible: false,
+                            isScrollControlled: true,
+                            enableDrag: false,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(20),
+                                  topLeft: Radius.circular(20)),
+                            ),
+                            backgroundColor: ColorSet.bottomBarColor,
+                            context: context,
+                            builder: (context) {
+                              return const Wrap(children: [
+                                FeedbackBottomSheet(
+                                  arguments: {"type": 0},
+                                )
+                              ]);
+                            });
+                      },
+                      icon: const Icon(Icons.accessibility_outlined, size: 40)),
+                ])
               ],
             ),
     ));
@@ -480,7 +513,7 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
   }
 
   List<Widget> _getMeditationTypeBtnList() {
-    List meditationTypeList = ["正念禪", "工作禪", "慈心禪"];
+    List meditationTypeList = ["正念冥想", "工作冥想", "慈心冥想"];
     List<OutlinedButton> btnList = [];
 
     for (final type in meditationTypeList) {

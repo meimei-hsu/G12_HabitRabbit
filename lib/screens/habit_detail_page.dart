@@ -284,11 +284,10 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                       padding: const EdgeInsets.only(right: 20, left: 20),
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(7.5),
-                          child:
-                              Image.asset("assets/images/personality_SGF.png")),
-                    ),
-                    const SizedBox(
-                      height: 10,
+                          child: Image.asset(
+                            "assets/images/Exercise_2.jpg",
+                            width: MediaQuery.of(context).size.width * 0.8,
+                          )),
                     ),
                     Container(
                       margin: const EdgeInsets.only(right: 20, left: 20),
