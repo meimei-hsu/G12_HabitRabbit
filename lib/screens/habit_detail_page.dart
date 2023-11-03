@@ -634,11 +634,10 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                       padding: const EdgeInsets.only(right: 20, left: 20),
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(7.5),
-                          child:
-                              Image.asset("assets/images/personality_NGC.png")),
-                    ),
-                    const SizedBox(
-                      height: 10,
+                          child: Image.asset(
+                            "assets/images/Meditation_2.png",
+                            width: MediaQuery.of(context).size.width * 0.8,
+                          )),
                     ),
                     Container(
                       margin: const EdgeInsets.only(right: 20, left: 20),

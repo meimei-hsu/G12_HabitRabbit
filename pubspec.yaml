@@ -143,13 +143,14 @@ flutter:
     - assets/images/Exercise_1.jpg
     - assets/images/Exercise_2.jpg
     - assets/images/Meditation_1.jpg
-    #- assets/images/Meditation_2.jpg
+    - assets/images/Meditation_2.png
     - assets/images/Rest.PNG
 
    # 兔子
     - assets/images/Rabbit_1.png
     - assets/images/Rabbit_2.png
     - assets/images/Rabbit_shining.png
+    - assets/images/Contract.gif
 
    # 八種人格角色
     - assets/images/Dog_1.png

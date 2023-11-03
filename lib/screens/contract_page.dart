@@ -445,35 +445,20 @@ class FirstContractPageState extends State<FirstContractPage> {
                     ),
                   ))),
               const SizedBox(
-                height: 10,
-              ),
-              const SizedBox(
-                height: 20,
+                height: 50,
               ),
               Container(
-                padding: const EdgeInsets.only(right: 20.0),
+                padding: const EdgeInsets.only(left:20.0, right: 20.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/images/Rabbit_2.png',
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      width: MediaQuery.of(context).size.width * 0.5,
+                      'assets/images/Contract.gif',
+                      width: MediaQuery.of(context).size.width * 0.85,
                     ),
                   ],
                 ),
               ),
-
-              //),
-              /*Positioned(
-              bottom: 0,
-              left: MediaQuery.of(context).size.width * 0.2,
-              child: Image.asset(
-                'assets/images/Rabbit_2.png',
-                height: 150,
-                width: MediaQuery.of(context).size.width * 0.5,
-              ),
-            ),*/
             ]),
           )),
     );
