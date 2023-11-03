@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:banner_carousel/banner_carousel.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -22,6 +23,25 @@ class Homepage extends StatefulWidget {
 }
 
 class HomepageState extends State<Homepage> {
+  GlobalKey calendarKey = GlobalKey();
+  GlobalKey rabbitKey = GlobalKey();
+  GlobalKey bubbleKey = GlobalKey();
+  GlobalKey bannerKey = GlobalKey();
+
+  // TODO: 判斷是否為第一次登入
+  bool isFirstTime = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (isFirstTime) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => ShowCaseWidget.of(context)
+            .startShowCase([calendarKey, bubbleKey, rabbitKey, bannerKey]),
+      );
+    }
+  }
+
   Widget getBannerCarousel() {
     const String exercise = "assets/images/Exercise_1.jpg";
     const String meditation = "assets/images/Meditation_1.jpg";
@@ -64,6 +84,8 @@ class HomepageState extends State<Homepage> {
         if (id == "2") {
           Navigator.pushNamed(context, '/detail/meditation');
         }
+
+        // TODO: 加上點休息圖的回饋
       },
     );
   }
@@ -155,137 +177,146 @@ class HomepageState extends State<Homepage> {
                 const SizedBox(
                   height: 10,
                 ),
-                Container(
-                  color: ColorSet.backgroundColor, //日曆背景
-                  child: TableCalendar(
-                    firstDay: HomeData.firstDay,
-                    lastDay: HomeData.lastDay,
-                    focusedDay: HomeData.focusedDay,
-                    //startingDayOfWeek: StartingDayOfWeek.monday,
-                    //locale: 'zh_CN',
-                    calendarFormat: CalendarFormat.week,
-                    daysOfWeekHeight: 24,
-                    daysOfWeekStyle: const DaysOfWeekStyle(
-                      weekdayStyle: TextStyle(
-                        color: ColorSet.textColor,
-                        fontSize: 16,
-                      ),
-                      weekendStyle: TextStyle(
-                        color: ColorSet.textColor,
-                        fontSize: 16,
-                      ),
-                    ),
-                    calendarStyle: CalendarStyle(
-                      tablePadding: const EdgeInsets.only(
-                          right: 10, left: 10, top: 10, bottom: 10),
-                      todayDecoration: BoxDecoration(
-                        color: ColorSet.buttonColor, //今天顏色
-                        border: Border.all(color: ColorSet.borderColor),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      todayTextStyle: const TextStyle(
-                        color: ColorSet.textColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      ),
-                      selectedDecoration: BoxDecoration(
-                        color: selectedColor, //點到的天數顏色
-                        border: Border.all(color: ColorSet.borderColor),
-                        borderRadius: BorderRadius.circular(10.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: ColorSet.borderColor.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 8,
-                            offset: const Offset(
-                                0, 5), // changes position of shadow
+                Showcase(
+                    key: calendarKey,
+                    description: 'TEST1',
+                    child: Container(
+                      color: ColorSet.backgroundColor, //日曆背景
+                      child: TableCalendar(
+                        firstDay: HomeData.firstDay,
+                        lastDay: HomeData.lastDay,
+                        focusedDay: HomeData.focusedDay,
+                        //startingDayOfWeek: StartingDayOfWeek.monday,
+                        //locale: 'zh_CN',
+                        calendarFormat: CalendarFormat.week,
+                        daysOfWeekHeight: 24,
+                        daysOfWeekStyle: const DaysOfWeekStyle(
+                          weekdayStyle: TextStyle(
+                            color: ColorSet.textColor,
+                            fontSize: 16,
                           ),
-                        ],
-                      ),
-                      selectedTextStyle: const TextStyle(
-                        color: ColorSet.textColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      ),
-                      defaultDecoration: BoxDecoration(
-                        //color: const Color(0xfffdeed9),
-                        border: Border.all(color: ColorSet.borderColor),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      defaultTextStyle: const TextStyle(
-                        color: ColorSet.textColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      ),
-                      weekendDecoration: BoxDecoration(
-                        //color: const Color(0xfffdeed9),
-                        border: Border.all(color: ColorSet.borderColor),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      weekendTextStyle: const TextStyle(
-                        color: ColorSet.textColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      ),
-                      outsideDecoration: BoxDecoration(
-                        //color: const Color(0xfffdeed9),
-                        border: Border.all(color: ColorSet.borderColor),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      outsideTextStyle: const TextStyle(
-                        color: ColorSet.textColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                      ),
-                    ),
-                    headerVisible: false,
-                    selectedDayPredicate: (day) {
-                      return isSameDay(HomeData.selectedDay, day);
-                    },
-                    onDaySelected: (selectedDay, focusedDay) {
-                      // 選中的日期變成橘色
-                      if (!isSameDay(HomeData.selectedDay, selectedDay)) {
-                        setState(() {
-                          HomeData.selectedDay = selectedDay;
-                        });
-                        HomeData.setSelectedDay();
-                        setState(() {});
-                      }
+                          weekendStyle: TextStyle(
+                            color: ColorSet.textColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                        calendarStyle: CalendarStyle(
+                          tablePadding: const EdgeInsets.only(
+                              right: 10, left: 10, top: 10, bottom: 10),
+                          todayDecoration: BoxDecoration(
+                            color: ColorSet.buttonColor, //今天顏色
+                            border: Border.all(color: ColorSet.borderColor),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          todayTextStyle: const TextStyle(
+                            color: ColorSet.textColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                          selectedDecoration: BoxDecoration(
+                            color: selectedColor, //點到的天數顏色
+                            border: Border.all(color: ColorSet.borderColor),
+                            borderRadius: BorderRadius.circular(10.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: ColorSet.borderColor.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 8,
+                                offset: const Offset(
+                                    0, 5), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          selectedTextStyle: const TextStyle(
+                            color: ColorSet.textColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                          defaultDecoration: BoxDecoration(
+                            //color: const Color(0xfffdeed9),
+                            border: Border.all(color: ColorSet.borderColor),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          defaultTextStyle: const TextStyle(
+                            color: ColorSet.textColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                          weekendDecoration: BoxDecoration(
+                            //color: const Color(0xfffdeed9),
+                            border: Border.all(color: ColorSet.borderColor),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          weekendTextStyle: const TextStyle(
+                            color: ColorSet.textColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                          outsideDecoration: BoxDecoration(
+                            //color: const Color(0xfffdeed9),
+                            border: Border.all(color: ColorSet.borderColor),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          outsideTextStyle: const TextStyle(
+                            color: ColorSet.textColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                        ),
+                        headerVisible: false,
+                        selectedDayPredicate: (day) {
+                          return isSameDay(HomeData.selectedDay, day);
+                        },
+                        onDaySelected: (selectedDay, focusedDay) {
+                          // 選中的日期變成橘色
+                          if (!isSameDay(HomeData.selectedDay, selectedDay)) {
+                            setState(() {
+                              HomeData.selectedDay = selectedDay;
+                            });
+                            HomeData.setSelectedDay();
+                            setState(() {});
+                          }
 
-                      DateTime today = DateTime(HomeData.today.year,
-                          HomeData.today.month, HomeData.today.day);
-                      DateTime sDay = DateTime(
-                          selectedDay.year, selectedDay.month, selectedDay.day);
-                      setState(() {
-                        selectedColor = (sDay == today)
-                            ? ColorSet.buttonColor
-                            : ColorSet.backgroundColor;
-                      });
-                    },
-                    onPageChanged: (focusedDay) {
-                      // 選第2頁的日期時不會跳回第一頁
-                      HomeData.focusedDay = focusedDay;
-                    },
-                  ),
-                ),
+                          DateTime today = DateTime(HomeData.today.year,
+                              HomeData.today.month, HomeData.today.day);
+                          DateTime sDay = DateTime(selectedDay.year,
+                              selectedDay.month, selectedDay.day);
+                          setState(() {
+                            selectedColor = (sDay == today)
+                                ? ColorSet.buttonColor
+                                : ColorSet.backgroundColor;
+                          });
+                        },
+                        onPageChanged: (focusedDay) {
+                          // 選第2頁的日期時不會跳回第一頁
+                          HomeData.focusedDay = focusedDay;
+                        },
+                      ),
+                    )),
                 const SizedBox(height: 20),
                 Container(
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      BubbleSpecialThree(
-                        text:
-                            'Hello ${Data.user!.displayName}～\n${getDialogText()}',
-                        color: ColorSet.buttonColor,
-                        tail: true,
-                        textStyle: const TextStyle(
-                          color: ColorSet.textColor,
-                          fontSize: 18,
-                          //fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Showcase(
+                          key: bubbleKey,
+                          description: 'TEST2',
+                          child: BubbleSpecialThree(
+                            text:
+                                'Hello ${Data.user!.displayName}～\n${getDialogText()}',
+                            color: ColorSet.buttonColor,
+                            tail: true,
+                            textStyle: const TextStyle(
+                              color: ColorSet.textColor,
+                              fontSize: 18,
+                              //fontWeight: FontWeight.bold,
+                            ),
+                          )),
                       Expanded(
+                          child: Showcase(
+                        key: rabbitKey,
+                        description: 'TEST3',
                         child: GestureDetector(
                           onTap: () {
                             debugPrint("workoutPlan: ${HomeData.workoutPlan}");
@@ -392,12 +423,15 @@ class HomepageState extends State<Homepage> {
                             height: 150,
                           ),
                         ),
-                      ),
+                      )),
                     ],
                   ),
                 ),
                 const SizedBox(height: 50),
-                Expanded(child: getBannerCarousel()),
+                Showcase(
+                        key: bannerKey,
+                        description: 'TEST4',
+                        child: getBannerCarousel()),
                 const SizedBox(height: 5),
                 Row(children: [
                   IconButton(
@@ -441,7 +475,7 @@ class HomepageState extends State<Homepage> {
                             backgroundColor: ColorSet.bottomBarColor,
                             context: context,
                             builder: (context) {
-                              return Wrap(children: const [
+                              return const Wrap(children: [
                                 FeedbackBottomSheet(
                                   arguments: {"type": 0},
                                 )
@@ -449,6 +483,12 @@ class HomepageState extends State<Homepage> {
                             });
                       },
                       icon: const Icon(Icons.accessibility_outlined, size: 40)),
+                  IconButton(
+                      onPressed: () {
+                        ShowCaseWidget.of(context).startShowCase(
+                            [calendarKey, bubbleKey, rabbitKey, bannerKey]);
+                      },
+                      icon: const Icon(Icons.question_mark_outlined, size: 40)),
                 ])
               ],
             ),

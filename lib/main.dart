@@ -16,6 +16,7 @@ import 'package:g12/screens/statistic_page.dart';
 import 'package:g12/screens/settings_page.dart';
 import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/page_data.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 
 bool autoSignIn = false;
@@ -72,7 +73,11 @@ class BottomNavigationControllerState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: pages[_currentIndex],
+        body: ShowCaseWidget(
+          builder: Builder(
+              builder : (context)=> pages[_currentIndex]
+          ),
+        ),
         bottomNavigationBar: SnakeNavigationBar.color(
           behaviour: SnakeBarBehaviour.pinned,
           snakeShape: SnakeShape.circle,

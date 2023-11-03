@@ -79,6 +79,7 @@ dependencies:
   speech_balloon: ^0.0.4
   confetti: ^0.7.0
   permission_handler: ^11.0.1
+  showcaseview: ^2.0.3
 
 dev_dependencies:
   flutter_test:
