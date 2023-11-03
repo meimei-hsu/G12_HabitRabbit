@@ -244,7 +244,8 @@ class DoExercisePageState extends State<DoExercisePage> {
           _pageController.animateToPage(playIndex,
               duration: const Duration(milliseconds: 300), curve: Curves.ease);
           sport = nameList[playIndex];
-          if (currentIndex >= 2 && currentIndex < totalExerciseItemLength - 3) {
+          if (currentIndex >= 1 && currentIndex < totalExerciseItemLength - 1) {
+            //原本: 2, 3
             // 運動 5 秒後休息 1 秒
             Timer(const Duration(seconds: 5), () {
               _pageController.animateToPage(nameList.length + 1,
