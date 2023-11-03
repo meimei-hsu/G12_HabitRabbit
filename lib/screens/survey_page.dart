@@ -119,18 +119,18 @@ final questions_2 = [
     text: "冥想原因與目標(複選)",
     isMultiChoice: true,
     options: [
-      Option(text: "舒緩壓力", data: "mindfulnessLiking"),
-      Option(text: "減緩憂慮", data: "mindfulnessLiking"),
-      Option(text: "提升效率", data: "workLiking"),
-      Option(text: "增強動機", data: "workLiking"),
-      Option(text: "內心平靜", data: "mindfulnessLiking"),
-      Option(text: "提升自信", data: "kindnessLiking"),
-      Option(text: "關懷感激", data: "kindnessLiking"),
-      Option(text: "拓展人際", data: "kindnessLiking"),
-      Option(text: "高專注力", data: "workLiking"),
-      Option(text: "高創造力", data: "workLiking"),
-      Option(text: "高覺察力", data: "mindfulnessLiking"),
-      Option(text: "情緒健康", data: "kindnessLiking"),
+      Option(text: "舒緩\n壓力", data: "mindfulnessLiking"),
+      Option(text: "減緩\n憂慮", data: "mindfulnessLiking"),
+      Option(text: "提升\n效率", data: "workLiking"),
+      Option(text: "增強\n動機", data: "workLiking"),
+      Option(text: "內心\n平靜", data: "mindfulnessLiking"),
+      Option(text: "提升\n自信", data: "kindnessLiking"),
+      Option(text: "關懷\n感激", data: "kindnessLiking"),
+      Option(text: "拓展\n人際", data: "kindnessLiking"),
+      Option(text: "高專\n注力", data: "workLiking"),
+      Option(text: "高創\n造力", data: "workLiking"),
+      Option(text: "高覺\n察力", data: "mindfulnessLiking"),
+      Option(text: "情緒\n健康", data: "kindnessLiking"),
     ],
   ),
 ];
@@ -268,7 +268,7 @@ class OptionsWidget extends StatelessWidget {
     } else {
       // Q8
       return SizedBox(
-        height: 50,
+        height: 100,
         child: Center(
           child: Text(
             option.text,

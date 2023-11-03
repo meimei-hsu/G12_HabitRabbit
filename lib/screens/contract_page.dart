@@ -720,7 +720,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                                     '\n您所投入的金額：${data["money"]}\n'
                                     '\n合約開始日：${data["startDay"]}'
                                     '\n合約結束日：${data["endDay"]}'
-                                    '\n距離成功已完成：${Calculator.calcProgress(data["gem"])}%',
+                                    '\n距離成功已完成：${Calculator.calcProgress(data["gem"]).round()}%',
                                     style: const TextStyle(
                                       fontSize: 18.0,
                                       letterSpacing: 1.2,

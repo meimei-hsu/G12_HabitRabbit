@@ -304,9 +304,7 @@ class HomepageState extends State<Homepage> {
                               // 運動沒有、冥想沒有 --> 新增運動 + 冥想
                               // 今天之後 --> 新增；之前 --> 沒有
                               (HomeData.isBefore)
-                                  ? InformDialog()
-                                      .get(context, ":(", "溯及既往 打咩！")
-                                      .show()
+                                  ? InformDialog().get(context, ":(", "溯及既往 打咩！").show()
                                   : showModalBottomSheet(
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
@@ -329,9 +327,7 @@ class HomepageState extends State<Homepage> {
                               // 運動有、冥想沒有 --> 運動完成度、新增冥想
                               // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
                               (HomeData.isBefore)
-                                  ? InformDialog()
-                                      .get(context, ":(", "溯及既往 打咩！")
-                                      .show()
+                                  ? InformDialog().get(context, ":(", "溯及既往 打咩！").show()
                                   : showModalBottomSheet(
                                       shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(

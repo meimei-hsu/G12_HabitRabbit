@@ -346,7 +346,14 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                     ? () async {
                                         int currentIndex =
                                             HomeData.currentIndex;
-                                        List items =
+                                        List items = [
+                                          "暖身：深蹲",
+                                          "運動：上斜伏地挺身",
+                                          "運動：反向捲腹",
+                                          "運動：臀橋",
+                                          "伸展：側弓箭步"
+                                        ];
+                                        /*List items =
                                             HomeData.workoutPlan!.split(", ");
                                         for (int i = 0; i < items.length; i++) {
                                           if (i <= 2) {
@@ -356,7 +363,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                           } else {
                                             items[i] = "運動：${items[i]}";
                                           }
-                                        }
+                                        }*/
 
                                         if (await ClockDB.getFromDate(
                                                 "workout", DateTime.now()) ==
@@ -371,24 +378,22 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                               'type': 'exercise',
                                               'totalExerciseItemLength':
                                                   items.length,
-                                              'exerciseTime': items
-                                                      .sublist(currentIndex)
-                                                      .length *
-                                                  6, // should be 60s
-                                              'exerciseItem':
-                                                  items.sublist(currentIndex),
+                                              'exerciseTime':
+                                                  5 * 6, // should be 60s
+                                              'exerciseItem': items,
+                                                  // TODO: items.sublist(currentIndex), 從中間開始
                                               'currentIndex': currentIndex
                                             });
                                       }
                                     : () {
                                         InformDialog()
                                             .get(
-                                                context, "Good:)", "已完成今日冥想計畫！")
+                                                context, "Good:)", "已完成今日運動計畫！")
                                             .show();
                                       }
                                 : () {
                                     InformDialog()
-                                        .get(context, "錯誤:(", "無法做非今日的冥想計畫噢！")
+                                        .get(context, "錯誤:(", "無法做非今日的運動計畫噢！")
                                         .show();
                                   },
                             label: const Text(
@@ -716,8 +721,8 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                                               'type': 'meditation',
                                               'meditationPlan':
                                                   HomeData.meditationPlan,
-                                              'meditationTime':
-                                                  HomeData.meditationDuration,
+                                              'meditationTime': 5,
+                                                  // HomeData.meditationDuration,
                                             });
                                       }
                                     : () {

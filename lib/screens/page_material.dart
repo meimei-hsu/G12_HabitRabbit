@@ -22,7 +22,7 @@ class ColorSet {
   static const Color iconColor = Color(0xFF2F4F4F);
   static const Color borderColor = Color(0xFF2F4F4F);
   static const Color buttonColor = Color(0xFFFAE5DA);
-  static const Color errorColor = Color(0xFFF4C5AD);
+  static const Color errorColor = Color(0xFFFAE5DA);
   static const Color hintColor = Color(0xFFCAD2D2);
 }
 
@@ -58,7 +58,7 @@ class InformDialog {
         title: title,
         // FIXME: 標題顏色有點淺
         titleTextStyle: const TextStyle(
-            color: ColorSet.buttonColor,
+            color: ColorSet.textColor,
             fontSize: 20,
             fontWeight: FontWeight.bold),
         btnOkText: '好',
@@ -104,7 +104,7 @@ class HintDialog {
                 title,
                 // FIXME: 標題顏色有點淺
                 style: const TextStyle(
-                    color: ColorSet.buttonColor,
+                    color: ColorSet.textColor,
                     fontSize: 20,
                     fontWeight: FontWeight.bold),
               ),
@@ -233,7 +233,7 @@ class ConfirmDialog {
         ),
         title: title,
         titleTextStyle: const TextStyle(
-            color: ColorSet.buttonColor,
+            color: ColorSet.textColor,
             fontSize: 20,
             fontWeight: FontWeight.bold),
         btnOkText: (options != null) ? options[0] : '確定',

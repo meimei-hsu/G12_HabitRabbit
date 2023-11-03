@@ -103,7 +103,7 @@ class DoExercisePageState extends State<DoExercisePage> {
       for (int i = 0; i < exerciseItemList.length; i++)
         "assets/videos/${exerciseItem[i].replaceAll(RegExp(r'\W\W：'), '')}.gif"
     ];
-    videoList.add("assets/images/testPic.gif");
+    videoList.add("assets/videos/休息.gif");
     return videoList;
   }
 
@@ -126,6 +126,7 @@ class DoExercisePageState extends State<DoExercisePage> {
      */
 
     btnNoOnPress() {
+      // TODO: update(duration * progress)
       DurationDB.update("workout", {Calendar.today: currentIndex});
       canExit = true;
       showModalBottomSheet(
@@ -139,7 +140,7 @@ class DoExercisePageState extends State<DoExercisePage> {
           backgroundColor: ColorSet.bottomBarColor,
           context: context,
           builder: (context) {
-            return Wrap(children: const [
+            return const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -149,6 +150,7 @@ class DoExercisePageState extends State<DoExercisePage> {
     }
 
     btnYesOnPress() {
+      // TODO: update(duration * progress)
       DurationDB.update("workout", {Calendar.today: currentIndex});
       canExit = true;
       NotificationService().scheduleNotification(
@@ -166,11 +168,11 @@ class DoExercisePageState extends State<DoExercisePage> {
 
     AwesomeDialog dlg = ConfirmDialog().get(
         context,
-        "退出計畫",
-        "目前運動已經完成 ${(currentIndex / totalExerciseItemLength * 100).round()}% 囉！\n請問今天會回來繼續完成嗎？",
+        "提示:)",
+        "目前運動已經完成 ${(currentIndex / totalExerciseItemLength * 100).round()}% 囉！\n今天還會回來做運動嗎T^T？",
         btnYesOnPress,
         btnCancelOnPress: btnNoOnPress,
-        options: ["會，請等等通知我", "不會，明天再回來"]);
+        options: ["會！", "不會"]);
 
     await dlg.show();
     return Future.value(canExit);
@@ -191,7 +193,7 @@ class DoExercisePageState extends State<DoExercisePage> {
         timer.cancel();
         CongratsDialog.show(context,
             habit: "workout",
-            widgetAfterDismiss: Wrap(children: const [
+            widgetAfterDismiss: const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -463,7 +465,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           backgroundColor: ColorSet.bottomBarColor,
           context: context,
           builder: (context) {
-            return Wrap(children: const [
+            return const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
@@ -516,7 +518,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         timer.cancel();
         CongratsDialog.show(context,
             habit: "meditation",
-            widgetAfterDismiss: Wrap(children: const [
+            widgetAfterDismiss: const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
