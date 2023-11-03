@@ -185,10 +185,8 @@ class Calendar {
   static List<String> daysPassed() =>
       (todayWeekday != 7) ? getWeekFrom(firstDay, todayWeekday) : [];
   // Get the days of week that are yet to come
-  static List<String> daysComing() => (todayWeekday != 6)
-      ? getWeekFrom(
-          DateTime.now().add(const Duration(days: 1)), 14 - todayWeekday % 7)
-      : [];
+  static List<String> daysComing() => getWeekFrom(
+      DateTime.now().add(const Duration(days: 1)), 14 - (todayWeekday + 1) % 7);
   // Get the days of week from the first day
   static List<String> thisWeek() => getWeekFrom(firstDay, 7);
   // Get the days of week from the eighth day
@@ -935,6 +933,42 @@ class Calculator {
     return null;
   }
 
+  // Add up the total number of habit committed days for each week
+  static List? getWeekTotalDays(SplayTreeMap? durations) {
+    List retVal = []; // store the results
+
+    if (durations != null) {
+      List<DateTime> dates =
+          durations.keys.map((d) => DateTime.parse(d)).toList();
+      List values = durations.values.toList();
+
+      List<int> success = []; // store the completion status of the workoutPlans
+      for (var duration in values) {
+        List record = duration.split(", ");
+        // the 1st element of `record` is the completed minutes, and the 2nd element is the total minutes
+        // if the plan is completed (i.e. 1st element == 2nd), then set the status to 1 otherwise set to 0, and add to `success`
+        success.add((record[0] == record[1]) ? 1 : 0);
+      }
+
+      DateTime sunday = Calendar.getSunday(dates.first); // 1st day of each week
+      int count = 0; // the sum of habit days for the given month
+      for (int i = 0; i < dates.length; i++) {
+        if (dates[i].difference(sunday).inDays < 7) {
+          count += success[i];
+        } else {
+          // store the result to `retVal` when the difference to `sunday` is more than 7 days (1 week)
+          retVal.add([Calendar.dateToString(sunday), count]);
+          // reset variables for next iteration
+          sunday = sunday.add(const Duration(days: 7));
+          count = success[i];
+        }
+      }
+
+      return retVal;
+    }
+    return null;
+  }
+
   // Add up the total number of habit committed days for each month
   static List? getMonthTotalDays(SplayTreeMap? durations) {
     List retVal = []; // store the results
@@ -944,8 +978,7 @@ class Calculator {
           durations.keys.map((d) => DateTime.parse(d)).toList();
       List values = durations.values.toList();
 
-      List<int> success =
-          []; // store the completion status of the workout plans
+      List<int> success = []; // store the completion status of the workoutPlans
       for (var duration in values) {
         List record = duration.split(", ");
         // the 1st element of `record` is the completed minutes, and the 2nd element is the total minutes
@@ -960,17 +993,11 @@ class Calculator {
         if (dayOne.year == dates[i].year && dayOne.month == dates[i].month) {
           count += success[i];
         } else {
-          DateTime nextDayOne = DateTime(dayOne.year, dayOne.month + 1, 1);
-
-          // store the result to `retVal` when the difference to `dayOne`` is more than 1 month
-          retVal.add([
-            Calendar.dateToString(dayOne),
-            Calendar.dateToString(nextDayOne.subtract(const Duration(days: 1))),
-            count
-          ]);
+          // store the result to `retVal` when the difference to `dayOne` is more than 1 month
+          retVal.add([Calendar.dateToString(dayOne), count]);
 
           // reset variables for next iteration
-          dayOne = nextDayOne;
+          dayOne = DateTime(dayOne.year, dayOne.month + 1, 1);
           count = success[i];
         }
       }

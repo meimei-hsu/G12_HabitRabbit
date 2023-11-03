@@ -73,32 +73,17 @@ class Data {
     workoutGemImageUrl = "assets/images/${characterName}_workoutGem.png";
     meditationGemImageUrl = "assets/images/${characterName}_meditationGem.png";
 
-    switch (characterName) {
-      case "Fox":
-        characterNameZH = "狐狸";
-        break;
-      case "Cat":
-        characterNameZH = "貓咪";
-        break;
-      case "Pig":
-        characterNameZH = "豬豬";
-        break;
-      case "Mouse":
-        characterNameZH = "倉鼠";
-        break;
-      case "Lion":
-        characterNameZH = "獅子";
-        break;
-      case "Sheep":
-        characterNameZH = "綿羊";
-        break;
-      case "Dog":
-        characterNameZH = "狗狗";
-        break;
-      case "Sloth":
-        characterNameZH = "樹懶";
-        break;
-    }
+    Map<String, String> translationMap = {
+      "Fox": "狐狸",
+      "Cat": "貓咪",
+      "Pig": "豬豬",
+      "Mouse": "倉鼠",
+      "Lion": "獅子",
+      "Sheep": "綿羊",
+      "Dog": "狗狗",
+      "Sloth": "樹懶",
+    };
+    characterNameZH = translationMap[characterName]!;
   }
 
   static Future<void> fetchProfile() async {
@@ -465,15 +450,23 @@ class StatData {
   static Map<String, double> meditationTypePercentageMap = {};
   static List percentageMeditationList = [];
 
+  // 每週成功天數
+  static List exerciseWeekDaysList = [];
+  static List meditationWeekDaysList = [];
+  static double maxExerciseWeekDays = 0.0;
+  static double maxMeditationWeekDays = 0.0;
+
   // 每月成功天數
   static List exerciseMonthDaysList = [];
   static List meditationMonthDaysList = [];
-  static double maxExerciseDays = 0.0;
-  static double maxMeditationDays = 0.0;
+  static double maxExerciseMonthDays = 0.0;
+  static double maxMeditationMonthDays = 0.0;
 
+  // toggle index
   static int planProgress = 0;
   static int consecutiveDays = 0;
   static int accumulatedTime = 0;
+  static int weekDays = 0;
   static int monthDays = 0;
 
   static Future<void> fetch({bool isAddingWeight = false}) async {
@@ -492,7 +485,7 @@ class StatData {
         setPlanCompletionData();
         setConsecutiveDaysData();
         setCumulativeTimeData();
-        setMonthSuccessData();
+        setSuccessDaysData();
       }
       setWeightData();
       setTopInfoData();
@@ -710,27 +703,50 @@ class StatData {
     }
   }
 
-  // 每月成功天數圖表
-  static void setMonthSuccessData() {
+  // 每月(週)成功天數圖表
+  static void setSuccessDaysData() {
+    // Week Success Days
+    exerciseWeekDaysList =
+        Calculator.getWeekTotalDays(Data.durations?["workout"]) ?? [];
+    meditationWeekDaysList =
+        Calculator.getWeekTotalDays(Data.durations?["meditation"]) ?? [];
+
+    List<double> exerciseDays = [0];
+    for (int i = 0; i < exerciseWeekDaysList.length; i++) {
+      exerciseDays.add(exerciseWeekDaysList[i][1].toDouble());
+    }
+    if (exerciseDays.isNotEmpty) {
+      maxExerciseWeekDays = exerciseDays.reduce(max) + 2;
+    }
+
+    List<double> meditationDays = [0];
+    for (int i = 0; i < meditationWeekDaysList.length; i++) {
+      meditationDays.add(meditationWeekDaysList[i][1].toDouble());
+    }
+    if (meditationDays.isNotEmpty) {
+      maxMeditationWeekDays = meditationDays.reduce(max) + 2;
+    }
+
+    // Month Success Days
     exerciseMonthDaysList =
         Calculator.getMonthTotalDays(Data.durations?["workout"]) ?? [];
     meditationMonthDaysList =
         Calculator.getMonthTotalDays(Data.durations?["meditation"]) ?? [];
 
-    List<double> exerciseDays = [0];
+    exerciseDays = [0];
     for (int i = 0; i < exerciseMonthDaysList.length; i++) {
-      exerciseDays.add(exerciseMonthDaysList[i][2].toDouble());
+      exerciseDays.add(exerciseMonthDaysList[i][1].toDouble());
     }
     if (exerciseDays.isNotEmpty) {
-      maxExerciseDays = exerciseDays.reduce(max) + 10;
+      maxExerciseMonthDays = exerciseDays.reduce(max) + 10;
     }
 
-    List<double> meditationDays = [0];
+    meditationDays = [0];
     for (int i = 0; i < meditationMonthDaysList.length; i++) {
-      meditationDays.add(meditationMonthDaysList[i][2].toDouble());
+      meditationDays.add(meditationMonthDaysList[i][1].toDouble());
     }
     if (meditationDays.isNotEmpty) {
-      maxMeditationDays = meditationDays.reduce(max) + 10;
+      maxMeditationMonthDays = meditationDays.reduce(max) + 10;
     }
   }
 }

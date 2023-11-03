@@ -662,7 +662,13 @@ class StatisticPageState extends State<StatisticPage> {
                               (StatData.consecutiveDays == 0)
                                   ? SfCartesianChart(
                                       plotAreaBorderWidth: 0,
+                                      zoomPanBehavior: ZoomPanBehavior(
+                                        enablePanning: true,
+                                      ),
                                       primaryXAxis: CategoryAxis(
+                                        autoScrollingDelta: 7,
+                                        autoScrollingMode:
+                                            AutoScrollingMode.end,
                                         axisLine: const AxisLine(
                                           color: ColorSet.borderColor,
                                           width: 0.6,
@@ -679,7 +685,7 @@ class StatisticPageState extends State<StatisticPage> {
                                       ),
                                       primaryYAxis: NumericAxis(
                                         axisLine: const AxisLine(width: 0),
-                                        interval: 3,
+                                        interval: 2,
                                         labelStyle:
                                             const TextStyle(fontSize: 0),
                                         numberFormat: NumberFormat('#,##0 天'),
@@ -714,7 +720,14 @@ class StatisticPageState extends State<StatisticPage> {
                                     )
                                   : SfCartesianChart(
                                       plotAreaBorderWidth: 0,
+                                      zoomPanBehavior: ZoomPanBehavior(
+                                        enablePanning: true,
+                                        zoomMode: ZoomMode.x,
+                                      ),
                                       primaryXAxis: CategoryAxis(
+                                        autoScrollingDelta: 7,
+                                        autoScrollingMode:
+                                            AutoScrollingMode.end,
                                         axisLine: const AxisLine(
                                           color: ColorSet.borderColor,
                                           width: 0.6,
@@ -731,7 +744,7 @@ class StatisticPageState extends State<StatisticPage> {
                                       ),
                                       primaryYAxis: NumericAxis(
                                         axisLine: const AxisLine(width: 0),
-                                        interval: 3,
+                                        interval: 2,
                                         labelStyle:
                                             const TextStyle(fontSize: 0),
                                         numberFormat: NumberFormat('#,##0 天'),
@@ -914,6 +927,225 @@ class StatisticPageState extends State<StatisticPage> {
                           child: Column(children: [
                             ListTile(
                               title: const Text(
+                                '每週成功天數',
+                                //(weekDays == 0) ? '每週成功運動天數' : '每週成功冥想天數',
+                                style: TextStyle(
+                                    color: ColorSet.textColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0),
+                              ),
+                              trailing: ToggleSwitch(
+                                minHeight: 35,
+                                initialLabelIndex: StatData.weekDays,
+                                cornerRadius: 10.0,
+                                radiusStyle: true,
+                                labels: const ['運動', '冥想'],
+                                icons: const [
+                                  Icons.fitness_center_outlined,
+                                  Icons.self_improvement_outlined
+                                ],
+                                iconSize: 16,
+                                activeBgColors: const [
+                                  [ColorSet.exerciseColor],
+                                  [ColorSet.meditationColor]
+                                ],
+                                activeFgColor: ColorSet.textColor,
+                                inactiveBgColor: ColorSet.bottomBarColor,
+                                inactiveFgColor: ColorSet.textColor,
+                                totalSwitches: 2,
+                                //animate: true,
+                                //animationDuration: 300,
+                                onToggle: (index) {
+                                  StatData.weekDays = index!;
+                                  setState(() {});
+
+                                  // TODO: 可能可以刪，或是確認要加在哪些地方（完成統計頁後)
+                                  // add "scrolling automatically function" in the last container
+                                  // to scroll the listview to bottom automatically
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    _scrollController.animateTo(
+                                        _scrollController
+                                            .position.maxScrollExtent,
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        curve: Curves.easeOut);
+                                  });
+                                },
+                              ),
+                              visualDensity: const VisualDensity(vertical: -4),
+                            ),
+                            (StatData.weekDays == 0)
+                                ? Container(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                    child: SfCartesianChart(
+                                        // hide the border
+                                        plotAreaBorderWidth: 0,
+                                        zoomPanBehavior: ZoomPanBehavior(
+                                          enablePanning: true,
+                                          zoomMode: ZoomMode.x,
+                                        ),
+                                        primaryXAxis: CategoryAxis(
+                                          autoScrollingDelta: 7,
+                                          autoScrollingMode:
+                                              AutoScrollingMode.end,
+                                          interval: 1,
+                                          axisLine: const AxisLine(
+                                            color: ColorSet.textColor,
+                                            width: 0.6,
+                                          ),
+                                          labelStyle: const TextStyle(
+                                              color: ColorSet.textColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                          // set 0 or transparent color to hide grid lines and tick lines
+                                          majorTickLines:
+                                              const MajorTickLines(size: 0),
+                                          majorGridLines: const MajorGridLines(
+                                            color: Colors.transparent,
+                                          ),
+                                        ),
+                                        primaryYAxis: NumericAxis(
+                                          // must set for data label (above the column)
+                                          labelFormat: '{value} 天',
+                                          minimum: 0,
+                                          maximum: StatData.maxExerciseWeekDays,
+                                          interval: 2,
+                                          // set 0 to hide grid lines and tick lines
+                                          axisLine: const AxisLine(width: 0),
+                                          labelStyle: const TextStyle(
+                                            fontSize: 0,
+                                          ),
+                                          majorTickLines:
+                                              const MajorTickLines(size: 0),
+                                          majorGridLines: const MajorGridLines(
+                                            color: ColorSet.borderColor,
+                                          ),
+                                        ),
+                                        //tooltipBehavior: _tooltipBehavior,
+                                        series: <
+                                            ChartSeries<ChartData, String>>[
+                                          ColumnSeries<ChartData, String>(
+                                            dataSource:
+                                                getExerciseWeekDaysData(),
+                                            xValueMapper: (ChartData data, _) =>
+                                                data.x,
+                                            yValueMapper: (ChartData data, _) =>
+                                                data.y,
+                                            dataLabelSettings:
+                                                const DataLabelSettings(
+                                                    isVisible: true,
+                                                    textStyle: TextStyle(
+                                                        color:
+                                                            ColorSet.textColor,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                            color: ColorSet.exerciseColor,
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(10),
+                                                    topLeft:
+                                                        Radius.circular(10)),
+                                          )
+                                        ]))
+                                : Container(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                    child: SfCartesianChart(
+                                        // hide the border
+                                        plotAreaBorderWidth: 0,
+                                        zoomPanBehavior: ZoomPanBehavior(
+                                          enablePanning: true,
+                                          zoomMode: ZoomMode.x,
+                                        ),
+                                        primaryXAxis: CategoryAxis(
+                                          autoScrollingDelta: 7,
+                                          autoScrollingMode:
+                                              AutoScrollingMode.end,
+                                          interval: 1,
+                                          axisLine: const AxisLine(
+                                            color: ColorSet.textColor,
+                                            width: 0.6,
+                                          ),
+                                          labelStyle: const TextStyle(
+                                              color: ColorSet.textColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                          // set 0 or transparent color to hide grid lines and tick lines
+                                          majorTickLines:
+                                              const MajorTickLines(size: 0),
+                                          majorGridLines: const MajorGridLines(
+                                            color: Colors.transparent,
+                                          ),
+                                        ),
+                                        primaryYAxis: NumericAxis(
+                                          // must set for data label (above the column)
+                                          labelFormat: '{value} 天',
+                                          minimum: 0,
+                                          maximum:
+                                              StatData.maxMeditationWeekDays,
+                                          interval: 2,
+                                          // set 0 to hide grid lines and tick lines
+                                          axisLine: const AxisLine(width: 0),
+                                          labelStyle: const TextStyle(
+                                            fontSize: 0,
+                                          ),
+                                          majorTickLines:
+                                              const MajorTickLines(size: 0),
+                                          majorGridLines: const MajorGridLines(
+                                            color: ColorSet.borderColor,
+                                          ),
+                                        ),
+                                        //tooltipBehavior: _tooltipBehavior,
+                                        series: <
+                                            ChartSeries<ChartData, String>>[
+                                          ColumnSeries<ChartData, String>(
+                                            dataSource:
+                                                getMeditationWeekDaysData(),
+                                            xValueMapper: (ChartData data, _) =>
+                                                data.x,
+                                            yValueMapper: (ChartData data, _) =>
+                                                data.y,
+                                            dataLabelSettings:
+                                                const DataLabelSettings(
+                                                    isVisible: true,
+                                                    textStyle: TextStyle(
+                                                        color:
+                                                            ColorSet.textColor,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                            color: ColorSet.meditationColor,
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(10),
+                                                    topLeft:
+                                                        Radius.circular(10)),
+                                          )
+                                        ])),
+                          ]),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                          padding:
+                              const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+                          margin: const EdgeInsets.only(right: 10, left: 10),
+                          decoration: BoxDecoration(
+                            color: ColorSet.backgroundColor,
+                            border: Border.all(
+                                color: ColorSet.borderColor, width: 4),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Column(children: [
+                            ListTile(
+                              title: const Text(
                                 '每月成功天數',
                                 //(monthDays == 0) ? '每月成功運動天數' : '每月成功冥想天數',
                                 style: TextStyle(
@@ -969,7 +1201,14 @@ class StatisticPageState extends State<StatisticPage> {
                                     child: SfCartesianChart(
                                         // hide the border
                                         plotAreaBorderWidth: 0,
+                                        zoomPanBehavior: ZoomPanBehavior(
+                                          enablePanning: true,
+                                          zoomMode: ZoomMode.x,
+                                        ),
                                         primaryXAxis: CategoryAxis(
+                                          autoScrollingDelta: 7,
+                                          autoScrollingMode:
+                                              AutoScrollingMode.end,
                                           axisLine: const AxisLine(
                                             color: ColorSet.textColor,
                                             width: 0.6,
@@ -989,7 +1228,8 @@ class StatisticPageState extends State<StatisticPage> {
                                           // must set for data label (above the column)
                                           labelFormat: '{value} 天',
                                           minimum: 0,
-                                          maximum: StatData.maxExerciseDays,
+                                          maximum:
+                                              StatData.maxExerciseMonthDays,
                                           interval: 3,
                                           // set 0 to hide grid lines and tick lines
                                           axisLine: const AxisLine(width: 0),
@@ -1036,7 +1276,14 @@ class StatisticPageState extends State<StatisticPage> {
                                     child: SfCartesianChart(
                                         // hide the border
                                         plotAreaBorderWidth: 0,
+                                        zoomPanBehavior: ZoomPanBehavior(
+                                          enablePanning: true,
+                                          zoomMode: ZoomMode.x,
+                                        ),
                                         primaryXAxis: CategoryAxis(
+                                          autoScrollingDelta: 7,
+                                          autoScrollingMode:
+                                              AutoScrollingMode.end,
                                           axisLine: const AxisLine(
                                             color: ColorSet.textColor,
                                             width: 0.6,
@@ -1056,8 +1303,9 @@ class StatisticPageState extends State<StatisticPage> {
                                           // must set for data label (above the column)
                                           labelFormat: '{value} 天',
                                           minimum: 0,
-                                          maximum: StatData.maxMeditationDays,
-                                          interval: 7,
+                                          maximum:
+                                              StatData.maxMeditationMonthDays,
+                                          interval: 3,
                                           // set 0 to hide grid lines and tick lines
                                           axisLine: const AxisLine(width: 0),
                                           labelStyle: const TextStyle(
@@ -1139,14 +1387,13 @@ class StatisticPageState extends State<StatisticPage> {
     if (StatData.exerciseMonthDaysList.isEmpty) {
       return [];
     }
-
     debugPrint("exerciseMonthDaysList: ${StatData.exerciseMonthDaysList}");
     // [[2023-04-01, 2023-04-30, 1], [2023-05-01, 2023-05-31, 7], [2023-06-01, 2023-06-30, 3], [2023-07-01, 2023-07-31, 0]]
 
     for (int i = 0; i < StatData.exerciseMonthDaysList.length; i++) {
-      String monthEng =
-          month[StatData.exerciseMonthDaysList[i][0].split("-")[1]];
-      chartData.add(ChartData(monthEng, StatData.exerciseMonthDaysList[i][2]));
+      List startDay = StatData.exerciseMonthDaysList[i][0].split("-");
+      String monthEng = month[startDay[1]];
+      chartData.add(ChartData(monthEng, StatData.exerciseMonthDaysList[i][1]));
     }
 
     return chartData;
@@ -1158,14 +1405,59 @@ class StatisticPageState extends State<StatisticPage> {
     if (StatData.meditationMonthDaysList.isEmpty) {
       return [];
     }
-
     debugPrint("meditationMonthDaysList: ${StatData.meditationMonthDaysList}");
 
     for (int i = 0; i < StatData.meditationMonthDaysList.length; i++) {
-      String monthEng =
-          month[StatData.meditationMonthDaysList[i][0].split("-")[1]];
+      List startDay = StatData.meditationMonthDaysList[i][0].split("-");
+      String monthEng = month[startDay[1]];
       chartData
-          .add(ChartData(monthEng, StatData.meditationMonthDaysList[i][2]));
+          .add(ChartData(monthEng, StatData.meditationMonthDaysList[i][1]));
+    }
+
+    return chartData;
+  }
+
+  List<ChartData> getExerciseWeekDaysData() {
+    List<ChartData> chartData = [];
+
+    if (StatData.exerciseWeekDaysList.isEmpty) {
+      return [];
+    }
+    debugPrint("exerciseWeekDaysList: ${StatData.exerciseWeekDaysList}");
+    // [[2023-04-01, 2023-04-08, 3], ...]
+
+    List<String> addedMonths = [];
+    for (int i = 0; i < StatData.exerciseWeekDaysList.length; i++) {
+      List startDay = StatData.exerciseWeekDaysList[i][0].split("-");
+      String monthEng = month[startDay[1]];
+      String label = (addedMonths.contains(monthEng)) ? startDay[2] : monthEng;
+      chartData.add(ChartData(label, StatData.exerciseWeekDaysList[i][1]));
+
+      if (!addedMonths.contains(monthEng)) addedMonths.add(monthEng);
+      if (addedMonths.length == 12) addedMonths.clear();
+    }
+
+    return chartData;
+  }
+
+  List<ChartData> getMeditationWeekDaysData() {
+    List<ChartData> chartData = [];
+
+    if (StatData.meditationWeekDaysList.isEmpty) {
+      return [];
+    }
+    debugPrint("meditationWeekDaysList: ${StatData.meditationWeekDaysList}");
+    // [[2023-04-01, 2023-04-08, 3], ...]
+
+    List<String> addedMonths = [];
+    for (int i = 0; i < StatData.meditationWeekDaysList.length; i++) {
+      List startDay = StatData.meditationWeekDaysList[i][0].split("-");
+      String monthEng = month[startDay[1]];
+      String label = (addedMonths.contains(monthEng)) ? startDay[2] : monthEng;
+      chartData.add(ChartData(label, StatData.meditationWeekDaysList[i][1]));
+
+      if (!addedMonths.contains(monthEng)) addedMonths.add(monthEng);
+      if (addedMonths.length == 12) addedMonths.clear();
     }
 
     return chartData;
@@ -1173,6 +1465,7 @@ class StatisticPageState extends State<StatisticPage> {
 
   List<ChartData> getExerciseConsecutiveDaysChartData() {
     List<ChartData> chartData = [];
+    DateFormat dateFormat = DateFormat('MM/dd');
 
     debugPrint(
         "exerciseConsecutiveDaysList: ${StatData.consecutiveExerciseDaysList}");
@@ -1182,7 +1475,6 @@ class StatisticPageState extends State<StatisticPage> {
       DateTime endDate = StatData.consecutiveExerciseDaysList[i][1];
       double consecutiveDays = StatData.consecutiveExerciseDaysList[i][2];
 
-      DateFormat dateFormat = DateFormat('MM/dd');
       String startLabel = dateFormat.format(startDate);
       String endLabel = dateFormat.format(endDate);
 

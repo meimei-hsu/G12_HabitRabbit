@@ -429,9 +429,9 @@ class HomepageState extends State<Homepage> {
                 ),
                 const SizedBox(height: 50),
                 Showcase(
-                        key: bannerKey,
-                        description: 'TEST4',
-                        child: getBannerCarousel()),
+                    key: bannerKey,
+                    description: 'TEST4',
+                    child: getBannerCarousel()),
                 const SizedBox(height: 5),
                 Row(children: [
                   IconButton(
@@ -475,7 +475,7 @@ class HomepageState extends State<Homepage> {
                             backgroundColor: ColorSet.bottomBarColor,
                             context: context,
                             builder: (context) {
-                              return const Wrap(children: [
+                              return Wrap(children: const [
                                 FeedbackBottomSheet(
                                   arguments: {"type": 0},
                                 )
