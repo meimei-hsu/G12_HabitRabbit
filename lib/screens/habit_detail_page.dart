@@ -344,16 +344,9 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                             onPressed: (HomeData.isToday)
                                 ? (HomeData.workoutProgress! < 100)
                                     ? () async {
-                                        int currentIndex =
+                                        /*int currentIndex =
                                             HomeData.currentIndex;
-                                        List items = [
-                                          "暖身：深蹲",
-                                          "運動：上斜伏地挺身",
-                                          "運動：反向捲腹",
-                                          "運動：臀橋",
-                                          "伸展：側弓箭步"
-                                        ];
-                                        /*List items =
+                                        List items =
                                             HomeData.workoutPlan!.split(", ");
                                         for (int i = 0; i < items.length; i++) {
                                           if (i <= 2) {
@@ -363,7 +356,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                           } else {
                                             items[i] = "運動：${items[i]}";
                                           }
-                                        }*/
+                                        }
 
                                         if (await ClockDB.getFromDate(
                                                 "workout", DateTime.now()) ==
@@ -378,10 +371,45 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                               'type': 'exercise',
                                               'totalExerciseItemLength':
                                                   items.length,
-                                              'exerciseTime':
-                                                  5 * 6, // should be 60s
-                                              'exerciseItem': items,
-                                                  // TODO: items.sublist(currentIndex), 從中間開始
+                                              'exerciseTime': items
+                                                      .sublist(currentIndex)
+                                                      .length *
+                                                  6, // should be 60s
+                                              'exerciseItem':
+                                                  items.sublist(currentIndex),
+                                              'currentIndex': currentIndex
+                                            });
+                                      }*/
+
+                                        int currentIndex =
+                                            HomeData.currentIndex ~/
+                                                (HomeData.workoutDuration / 5);
+                                        List items = [
+                                          "暖身：深蹲",
+                                          "運動：上斜伏地挺身",
+                                          "運動：反向捲腹",
+                                          "運動：臀橋",
+                                          "緩和：側弓箭步"
+                                        ];
+
+                                        if (await ClockDB.getFromDate(
+                                                "workout", DateTime.now()) ==
+                                            null) {
+                                          ClockDB.updateForecast("workout");
+                                        }
+
+                                        if (!mounted) return;
+                                        Navigator.pushNamed(
+                                            context, '/countdown',
+                                            arguments: {
+                                              'type': 'exercise',
+                                              'totalExerciseItemLength':
+                                                  items.length,
+                                              'exerciseTime': (items.length -
+                                                      currentIndex) *
+                                                  6, // should be 60s
+                                              'exerciseItem':
+                                                  items.sublist(currentIndex),
                                               'currentIndex': currentIndex
                                             });
                                       }
@@ -722,7 +750,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                                               'meditationPlan':
                                                   HomeData.meditationPlan,
                                               'meditationTime': 5,
-                                                  // HomeData.meditationDuration,
+                                              // should be HomeData.meditationDuration,
                                             });
                                       }
                                     : () {

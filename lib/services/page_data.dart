@@ -18,6 +18,7 @@ class Data {
   static User? user = FirebaseAuth.instance.currentUser;
   static String characterImageURL = "";
   static String characterName = "";
+  static String characterNameZH = "";
   static String workoutGemImageUrl = "";
   static String meditationGemImageUrl = "";
 
@@ -71,6 +72,33 @@ class Data {
     characterName = character.substring(0, character.length - 2);
     workoutGemImageUrl = "assets/images/${characterName}_workoutGem.png";
     meditationGemImageUrl = "assets/images/${characterName}_meditationGem.png";
+
+    switch (characterName) {
+      case "Fox":
+        characterNameZH = "狐狸";
+        break;
+      case "Cat":
+        characterNameZH = "貓咪";
+        break;
+      case "Pig":
+        characterNameZH = "豬豬";
+        break;
+      case "Mouse":
+        characterNameZH = "倉鼠";
+        break;
+      case "Lion":
+        characterNameZH = "獅子";
+        break;
+      case "Sheep":
+        characterNameZH = "綿羊";
+        break;
+      case "Dog":
+        characterNameZH = "狗狗";
+        break;
+      case "Sloth":
+        characterNameZH = "樹懶";
+        break;
+    }
   }
 
   static Future<void> fetchProfile() async {
@@ -392,6 +420,8 @@ class SettingsData {
 }
 
 class StatData {
+  static bool isFetchingData = true;
+
   // 五小格
   static double bmi = 0.0;
   static String bmiStandard = "標準";
@@ -448,6 +478,8 @@ class StatData {
 
   static Future<void> fetch({bool isAddingWeight = false}) async {
     print("Refreshing StatisticPage...");
+    isFetchingData = true;
+
     if (Data.updatingDB) {
       await Data.fetchWeights();
       await Data.fetchPlansAndDurations();
@@ -467,6 +499,7 @@ class StatData {
     }
 
     Data.updatingUI[0] = false;
+    isFetchingData = false;
   }
 
   static setTopInfoData() {
@@ -486,7 +519,7 @@ class StatData {
     if (bmi <= cv[0]) bmiStandard = "消瘦";
     if (bmi > cv[0] && bmi <= cv[1]) bmiStandard = "標準";
     if (bmi > cv[1] && bmi <= cv[2]) bmiStandard = "微胖";
-    if (bmi > cv[2] && bmi <= cv[3]) bmiStandard = "肥胖";
+    if (bmi > cv[2]) bmiStandard = "肥胖";
 
     maxWorkoutConsecutiveDays = List<double>.generate(
         consecutiveExerciseDaysList.length,

@@ -170,7 +170,7 @@ class CongratsDialog {
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      "恭喜獲得${(habit == "workout") ? "運動" : "冥想"}寶物，你的小倉鼠很愛你呦~",
+                      "恭喜獲得${(habit == "workout") ? "運動" : "冥想"}寶物，你的小${Data.characterNameZH}很愛你呦~",
                       style: const TextStyle(
                           color: ColorSet.buttonColor,
                           fontSize: 16,

@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:square_progress_bar/square_progress_bar.dart';
-//import 'package:video_player/video_player.dart';
 
 import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/database.dart';
@@ -126,8 +124,9 @@ class DoExercisePageState extends State<DoExercisePage> {
      */
 
     btnNoOnPress() {
-      // TODO: update(duration * progress)
-      DurationDB.update("workout", {Calendar.today: currentIndex});
+      DurationDB.update("workout", {
+        Calendar.today: (currentIndex / 5 * HomeData.workoutDuration).round()
+      });
       canExit = true;
       showModalBottomSheet(
           isDismissible: false,
@@ -140,7 +139,7 @@ class DoExercisePageState extends State<DoExercisePage> {
           backgroundColor: ColorSet.bottomBarColor,
           context: context,
           builder: (context) {
-            return const Wrap(children: [
+            return Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -149,15 +148,18 @@ class DoExercisePageState extends State<DoExercisePage> {
       dispose();
     }
 
-    btnYesOnPress() {
-      // TODO: update(duration * progress)
-      DurationDB.update("workout", {Calendar.today: currentIndex});
+    btnYesOnPress() async {
+      await DurationDB.update("workout", {
+        Calendar.today: (currentIndex / 5 * HomeData.workoutDuration).round()
+      });
       canExit = true;
       NotificationService().scheduleNotification(
-          title: '該開始運動了！',
+          title: '該開始運動囉',
           body: '就快完成了，加油！',
           scheduledNotificationDateTime:
               DateTime.now().add(const Duration(seconds: 5)));
+      HomeData.fetch();
+      if(!mounted) return;
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
     }
@@ -193,14 +195,13 @@ class DoExercisePageState extends State<DoExercisePage> {
         timer.cancel();
         CongratsDialog.show(context,
             habit: "workout",
-            widgetAfterDismiss: const Wrap(children: [
+            widgetAfterDismiss: Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
             ]));
         dispose();
       } else if (ifStart == false) {
-        // TODO: .gif 暫停播放(偏難)
         timer.cancel();
         //_controller.pause();
       } else {
@@ -465,7 +466,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           backgroundColor: ColorSet.bottomBarColor,
           context: context,
           builder: (context) {
-            return const Wrap(children: [
+            return Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
@@ -474,15 +475,16 @@ class DoMeditationPageState extends State<DoMeditationPage> {
       dispose();
     }
 
-    btnYesOnPress() {
-      DurationDB.update("meditation",
+    btnYesOnPress() async {
+      await DurationDB.update("meditation",
           {Calendar.today: (HomeData.meditationDuration * _progress).round()});
       canExit = true;
       NotificationService().scheduleNotification(
-          title: '該開始冥想了！',
+          title: '該開始冥想囉',
           body: '就快完成了，加油！',
           scheduledNotificationDateTime:
               DateTime.now().add(const Duration(seconds: 3)));
+      if(!mounted) return;
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
     }
@@ -518,14 +520,13 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         timer.cancel();
         CongratsDialog.show(context,
             habit: "meditation",
-            widgetAfterDismiss: const Wrap(children: [
+            widgetAfterDismiss: Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
             ]));
         dispose();
       } else if (ifStart == false) {
-        // TODO: .gif 暫停播放(偏難)
         timer.cancel();
       } else {
         // Appbar timer
@@ -539,7 +540,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
   @override
   void initState() {
     super.initState();
-    totalTime = widget.arguments['meditationTime'] * 6; // totalTime = 300s
+    totalTime = widget.arguments['meditationTime'] * 6; // should be 60s
     countdownTime = totalTime;
 
     startTimer();
