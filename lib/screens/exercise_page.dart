@@ -175,6 +175,7 @@ class DoExercisePageState extends State<DoExercisePage> {
         btnYesOnPress,
         btnCancelOnPress: btnNoOnPress,
         options: ["會！", "不會"]);
+    // ["會，請等等通知我", "不會，明天再回來"]
 
     await dlg.show();
     return Future.value(canExit);
@@ -500,7 +501,8 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         "目前冥想已經完成 ${(_progress.toDouble() * 100).round()}% 囉！\n請問今天會回來繼續完成嗎？'",
         btnYesOnPress,
         btnCancelOnPress: btnNoOnPress,
-        options: ["會，請等等通知我", "不會，明天再回來"]);
+        options: ["會！", "不會"]);
+    // ["會，請等等通知我", "不會，明天再回來"]
 
     await dlg.show();
     return Future.value(canExit);
@@ -534,7 +536,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         totalTime--;
         _progress = (countdownTime - totalTime) / countdownTime;
       }
-      setState(() {});
+      if (totalTime >= 1) setState(() {});
     });
   }
 
@@ -599,7 +601,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
                   child: Center(
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width - 40,
-                      child: Image.asset("assets/videos/v3.gif"),
+                      child: Image.asset("assets/videos/冥想.gif"),
                     ),
                   )),
               const SizedBox(height: 10),

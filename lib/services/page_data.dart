@@ -752,6 +752,7 @@ class StatData {
 }
 
 class GameData {
+  static int characterLevel = 0;
   static int workoutGem = 0;
   static int meditationGem = 0;
   static double workoutPercent = 0;
@@ -767,6 +768,7 @@ class GameData {
     }
 
     if (Data.game != null) {
+      characterLevel = int.parse(Data.game!["character"].split("_").last);
       workoutGem = Data.game?["workoutGem"];
       meditationGem = Data.game?["meditationGem"];
       workoutPercent =

@@ -393,7 +393,7 @@ class QuizDialogState extends State<QuizDialog> {
                   Container(
                     height: 170,
                     width: 0.85 * screenWidth,
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       border: Border.all(color: ColorSet.textColor, width: 1),
@@ -403,13 +403,23 @@ class QuizDialogState extends State<QuizDialog> {
                     child: Wrap(
                       spacing: 5,
                       runSpacing: 10,
+                      alignment: WrapAlignment.center,
+                      runAlignment: WrapAlignment.center,
                       children: [
-                        for (int i = 0; i < GameData.workoutGem; i++) //運寶數量
-                          Image.asset(
+                        ...List.generate(
+                          GameData.workoutGem,
+                          (index) => Image.asset(
+                              height: 35, width: 35, Data.workoutGemImageUrl),
+                        ),
+                        ...List.generate(
+                          24 - GameData.workoutGem,
+                          (index) => Image.asset(
                             height: 35,
                             width: 35,
                             Data.workoutGemImageUrl
+                                .replaceFirst(RegExp(r'.png'), "_black.png"),
                           ),
+                        ),
                       ],
                     ),
                   ),
@@ -425,7 +435,7 @@ class QuizDialogState extends State<QuizDialog> {
                   Container(
                     height: 170,
                     width: 0.85 * screenWidth,
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
                       border: Border.all(color: ColorSet.textColor, width: 1),
@@ -434,16 +444,29 @@ class QuizDialogState extends State<QuizDialog> {
                     child: Wrap(
                       spacing: 5,
                       runSpacing: 10,
+                      alignment: WrapAlignment.center,
+                      runAlignment: WrapAlignment.center,
                       children: [
-                        for (int i = 0; i < GameData.meditationGem; i++) //冥寶數量
-                          Image.asset(
+                        ...List.generate(
+                          GameData.meditationGem,
+                          (index) => Image.asset(
+                              height: 35,
+                              width: 35,
+                              Data.meditationGemImageUrl),
+                        ),
+                        ...List.generate(
+                          24 - GameData.meditationGem,
+                          (index) => Image.asset(
                             height: 35,
                             width: 35,
                             Data.meditationGemImageUrl
+                                .replaceFirst(RegExp(r'.png'), "_black.png"),
                           ),
+                        ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -504,92 +527,39 @@ class GrowDialogState extends State<GrowDialog> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  Container(
-                    height: 120,
-                    width: 0.9 * screenWidth,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(color: ColorSet.textColor, width: 1),
-                      color: ColorSet.backgroundColor,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          height: 100,
-                          width: 100,
-                          'assets/images/${Data.characterName}_1.png',
-                        ),
-                        const SizedBox(width: 25),
-                        const Text(
-                          '第一階段',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: ColorSet.textColor,
+                  for (int i = 0; i < GameData.characterLevel + 1; i++) ...[
+                    Container(
+                      height: 120,
+                      width: 0.9 * screenWidth,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15.0),
+                        border: Border.all(color: ColorSet.textColor, width: 1),
+                        color: ColorSet.backgroundColor,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            height: 100,
+                            width: 100,
+                            (i == GameData.characterLevel)
+                                ? 'assets/images/${Data.characterName}_${i + 1}_black.png'
+                                : 'assets/images/${Data.characterName}_${i + 1}.png',
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    height: 120,
-                    width: 0.9 * screenWidth,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(color: ColorSet.textColor, width: 1),
-                      color: ColorSet.backgroundColor,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          height: 100,
-                          width: 100,
-                          'assets/images/${Data.characterName}_2.png',
-                        ),
-                        const SizedBox(width: 25),
-                        const Text(
-                          '第二階段',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: ColorSet.textColor,
+                          const SizedBox(width: 25),
+                          Text(
+                            '第${["一", "二", "三", "四", "五", "六"][i]}階段',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: ColorSet.textColor,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    height: 120,
-                    width: 0.9 * screenWidth,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(color: ColorSet.textColor, width: 1),
-                      color: ColorSet.backgroundColor,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          height: 120,
-                          width: 120,
-                          'assets/images/third_unknown.png',
-                        ),
-                        const SizedBox(width: 25),
-                        const Text(
-                          '???',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: ColorSet.textColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                    const SizedBox(height: 10),
+                  ]
                 ],
               ),
             ),
@@ -644,13 +614,13 @@ class InfoDialogState extends State<InfoDialog> {
             Padding(
               padding: const EdgeInsets.all(20),
               child: Container(
-                height: 280,
-                width: 0.9 * screenWidth,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  border: Border.all(color: ColorSet.textColor, width: 1),
-                  color: ColorSet.backgroundColor,
-                ),
+                  height: 280,
+                  width: 0.9 * screenWidth,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    border: Border.all(color: ColorSet.textColor, width: 1),
+                    color: ColorSet.backgroundColor,
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: RichText(
@@ -660,33 +630,46 @@ class InfoDialogState extends State<InfoDialog> {
                           color: ColorSet.textColor,
                         ),
                         children: [
-                          TextSpan(text: '每次運動與冥想結束後，您將會分別獲取角色的運動寶物與冥想寶物，寶物是讓角色晉級的關鍵。\n\n'),
+                          TextSpan(
+                              text:
+                                  '每次運動與冥想結束後，您將會分別獲取角色的運動寶物與冥想寶物，寶物是讓角色晉級的關鍵。\n\n'),
                           TextSpan(
                             text: '點選',
                           ),
                           WidgetSpan(
-                            child: Icon(Icons.list_alt, color: ColorSet.iconColor, size: 30,),
+                            child: Icon(
+                              Icons.list_alt,
+                              color: ColorSet.iconColor,
+                              size: 30,
+                            ),
                           ),
                           TextSpan(text: '可查看獲取的寶物數量。\n'),
                           TextSpan(
                             text: '點選',
                           ),
                           WidgetSpan(
-                            child: Icon(Icons.style, color: ColorSet.iconColor, size: 30,),
+                            child: Icon(
+                              Icons.style,
+                              color: ColorSet.iconColor,
+                              size: 30,
+                            ),
                           ),
                           TextSpan(text: '可查看角色狀態。\n'),
                           TextSpan(
                             text: '點選',
                           ),
                           WidgetSpan(
-                            child: Icon(Icons.request_quote_outlined, color: ColorSet.iconColor, size: 30,),
+                            child: Icon(
+                              Icons.request_quote_outlined,
+                              color: ColorSet.iconColor,
+                              size: 30,
+                            ),
                           ),
                           TextSpan(text: '可查看合約及建立新合約。\n'),
                         ],
                       ),
                     ),
-                  )
-              ),
+                  )),
             ),
           ],
         ),

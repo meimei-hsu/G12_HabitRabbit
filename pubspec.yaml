@@ -118,6 +118,7 @@ flutter:
     - assets/videos/反向捲腹.gif
     - assets/videos/臀橋.gif
     - assets/videos/休息.gif
+    - assets/videos/冥想.gif
     - assets/images/testPic.gif
     - assets/images/Logo.png
     - assets/images/lazy.png
@@ -140,7 +141,6 @@ flutter:
     - assets/images/jcb.png
     - assets/images/rabbit.png
     - assets/images/finish.png
-    - assets/images/third_unknown.png
     - assets/images/Exercise_1.jpg
     - assets/images/Exercise_2.jpg
     - assets/images/Meditation_1.jpg
@@ -152,8 +152,9 @@ flutter:
     - assets/images/Rabbit_2.png
     - assets/images/Rabbit_shining.png
     - assets/images/Contract.gif
+    - assets/images/coming_soon.png
 
-   # 八種人格角色
+   # 八種人格角色 (正常)
     - assets/images/Dog_1.png
     - assets/images/Dog_2.png
     - assets/images/Fox_1.png
@@ -166,12 +167,39 @@ flutter:
     - assets/images/Sloth_2.png
     - assets/images/Mouse_1.png
     - assets/images/Mouse_2.png
-    #- assets/images/Cat_1.png
-    #- assets/images/Cat_2.png
+    - assets/images/Cat_1.png
+    - assets/images/Cat_2.png
     - assets/images/Pig_1.png
     - assets/images/Pig_2.png
+   # 八種人格角色 (黑影)
+    - assets/images/Dog_2_black.png
+    - assets/images/Fox_2_black.png
+    - assets/images/Lion_2_black.png
+    - assets/images/Sheep_2_black.png
+    - assets/images/Sloth_2_black.png
+    - assets/images/Mouse_2_black.png
+    - assets/images/Cat_2_black.png
+    - assets/images/Pig_2_black.png
+    - assets/images/Mouse_3_black.png
+   # 八種人格角色 (頭貼)
+    - assets/images/Dog_1_head.png
+    - assets/images/Dog_2_head.png
+    - assets/images/Fox_1_head.png
+    - assets/images/Fox_2_head.png
+    - assets/images/Lion_1_head.png
+    - assets/images/Lion_2_head.png
+    - assets/images/Sheep_1_head.png
+    - assets/images/Sheep_2_head.png
+    - assets/images/Sloth_1_head.png
+    - assets/images/Sloth_2_head.png
+    - assets/images/Mouse_1_head.png
+    - assets/images/Mouse_2_head.png
+    - assets/images/Cat_1_head.png
+    - assets/images/Cat_2_head.png
+    - assets/images/Pig_1_head.png
+    - assets/images/Pig_2_head.png
 
-   # 冥寶、運寶
+   # 冥寶、運寶 (正常)
     - assets/images/Carrot.png
     - assets/images/BowTie.png
     - assets/images/Dog_workoutGem.png
@@ -190,8 +218,24 @@ flutter:
     - assets/images/Cat_meditationGem.png
     - assets/images/Pig_workoutGem.png
     - assets/images/Pig_meditationGem.png
+   # 冥寶、運寶 (黑影)
+    - assets/images/Dog_workoutGem_black.png
+    - assets/images/Dog_meditationGem_black.png
+    - assets/images/Fox_workoutGem_black.png
+    - assets/images/Fox_meditationGem_black.png
+    - assets/images/Lion_workoutGem_black.png
+    - assets/images/Lion_meditationGem_black.png
+    - assets/images/Sheep_workoutGem_black.png
+    - assets/images/Sheep_meditationGem_black.png
+    - assets/images/Sloth_workoutGem_black.png
+    - assets/images/Sloth_meditationGem_black.png
+    - assets/images/Mouse_workoutGem_black.png
+    - assets/images/Mouse_meditationGem_black.png
+    - assets/images/Cat_workoutGem_black.png
+    - assets/images/Cat_meditationGem_black.png
+    - assets/images/Pig_workoutGem_black.png
+    - assets/images/Pig_meditationGem_black.png
 
-    - assets/images/coming_soon.png
     # To add assets to your application, add an assets section, like this:
     # assets:
     #   - images/a_dot_burr.jpeg
