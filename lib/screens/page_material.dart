@@ -56,7 +56,6 @@ class InformDialog {
           fontSize: 16,
         ),
         title: title,
-        // FIXME: 標題顏色有點淺
         titleTextStyle: const TextStyle(
             color: ColorSet.textColor,
             fontSize: 20,
@@ -102,7 +101,6 @@ class HintDialog {
             children: [
               Text(
                 title,
-                // FIXME: 標題顏色有點淺
                 style: const TextStyle(
                     color: ColorSet.textColor,
                     fontSize: 20,

@@ -9,7 +9,6 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   Future<void> initNotification() async {
-    // TODO: change notification icon
     AndroidInitializationSettings initializationSettingsAndroid =
         const AndroidInitializationSettings('ic_launcher');
 

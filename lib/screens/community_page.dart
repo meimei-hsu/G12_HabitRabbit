@@ -1161,7 +1161,9 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                 );
               },
             );
-            Future.delayed(const Duration(seconds: 3), () {
+            // FIXME: Unhandled Exception: Null check operator used on a null value
+            // 如果點擊外面關掉對話框的話，2秒後Navigator無法pop
+            Future.delayed(const Duration(seconds: 2), () {
               Navigator.of(context).pop();
             });
           },

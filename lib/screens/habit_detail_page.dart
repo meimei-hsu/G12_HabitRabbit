@@ -1,16 +1,12 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import 'package:g12/screens/page_material.dart';
-
 import 'package:g12/services/database.dart';
 import 'package:g12/services/plan_algo.dart';
-
-import '../services/page_data.dart';
+import 'package:g12/services/page_data.dart';
 
 class ExerciseDetailPage extends StatefulWidget {
   const ExerciseDetailPage({super.key});
@@ -56,8 +52,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
             child: Image.asset("assets/videos/$vidName.gif"),
           ),
           onTap: () {
-            Navigator.pushNamed(context, '/video',
-                arguments: {'item': vidName});
+            _showVideoDialog(context, vidName);
           },
           visualDensity: const VisualDensity(vertical: 2),
         ));
@@ -84,267 +79,241 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorSet.backgroundColor,
+      appBar: AppBar(
         backgroundColor: ColorSet.backgroundColor,
-        appBar: AppBar(
-          backgroundColor: ColorSet.backgroundColor,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_rounded,
-                color: ColorSet.iconColor),
-            tooltip: "返回首頁",
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          elevation: 0,
-          title: const Text(
-            '運動計畫',
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                color: ColorSet.textColor,
-                fontSize: 28,
-                letterSpacing: 2,
-                fontWeight: FontWeight.bold,
-                height: 1),
-          ),
-          actions: (HomeData.workoutProgress! < 100 && !HomeData.isBefore)
-              ? [
-                  PopupMenuButton(
-                    constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.35,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_rounded,
+              color: ColorSet.iconColor),
+          tooltip: "返回首頁",
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        elevation: 0,
+        title: const Text(
+          '運動計畫',
+          textAlign: TextAlign.left,
+          style: TextStyle(
+              color: ColorSet.textColor,
+              fontSize: 28,
+              letterSpacing: 2,
+              fontWeight: FontWeight.bold,
+              height: 1),
+        ),
+        actions: (HomeData.workoutProgress! < 100 && !HomeData.isBefore)
+            ? [
+                PopupMenuButton(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.35,
+                  ),
+                  offset: const Offset(0, 50),
+                  icon: const Icon(Icons.more_vert_outlined,
+                      color: ColorSet.iconColor),
+                  color: ColorSet.backgroundColor,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10.0),
                     ),
-                    offset: const Offset(0, 50),
-                    icon: const Icon(Icons.more_vert_outlined,
-                        color: ColorSet.iconColor),
-                    color: ColorSet.backgroundColor,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10.0),
+                  ),
+                  tooltip: "功能清單",
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.edit_calendar_outlined,
+                              color: ColorSet.iconColor),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "修改日期",
+                            style: TextStyle(
+                                color: ColorSet.textColor, fontSize: 16),
+                          )
+                        ],
                       ),
                     ),
-                    tooltip: "功能清單",
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: 1,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.edit_calendar_outlined,
-                                color: ColorSet.iconColor),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              "修改日期",
-                              style: TextStyle(
-                                  color: ColorSet.textColor, fontSize: 16),
-                            )
-                          ],
-                        ),
+                    PopupMenuItem(
+                      value: 2,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.cached, color: ColorSet.iconColor),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "重新計畫",
+                            style: TextStyle(
+                                color: ColorSet.textColor, fontSize: 16),
+                          )
+                        ],
                       ),
-                      PopupMenuItem(
-                        value: 2,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.cached, color: ColorSet.iconColor),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              "重新計畫",
-                              style: TextStyle(
-                                  color: ColorSet.textColor, fontSize: 16),
-                            )
-                          ],
-                        ),
+                    ),
+                    PopupMenuItem(
+                      value: 3,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.delete_outline,
+                              color: Colors.deepOrangeAccent),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            "刪除計畫",
+                            style: TextStyle(
+                                color: Colors.deepOrangeAccent, fontSize: 16),
+                          )
+                        ],
                       ),
-                      PopupMenuItem(
-                        value: 3,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.delete_outline,
-                                color: Colors.deepOrangeAccent),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              "刪除計畫",
-                              style: TextStyle(
-                                  color: Colors.deepOrangeAccent, fontSize: 16),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                    onSelected: (value) async {
-                      if (value == 1) {
-                        if (!HomeData.isAfter &&
-                            HomeData.selectedDay?.weekday == 6) {
-                          InformDialog()
-                              .get(context, "無法修改:(", "今天已經星期六囉~\n無法再將計畫換到別天了！")
-                              .show();
-                        } else if (HomeData.isAfter &&
-                            HomeData.selectedDay?.weekday == 6) {
-                          InformDialog()
-                              .get(context, "無法修改:(", "星期六的計畫無法換到別天噢！")
-                              .show();
-                        } else {
-                          showModalBottomSheet(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(20),
-                                    topLeft: Radius.circular(20)),
-                              ),
-                              backgroundColor: ColorSet.bottomBarColor,
-                              context: context,
-                              builder: (context) {
-                                return ChangeDayBottomSheet(arguments: {
-                                  "day": HomeData.selectedDay,
-                                  "isToday": HomeData.isToday,
-                                  "type": 0
-                                });
-                              });
-                        }
-                      } else if (value == 2) {
-                        btnOkOnPress() {
-                          PlanAlgo.regenerateWorkout(HomeData.selectedDay!);
-                          setState(() {
-                            HomeData.isFetchingData = true;
-                          });
-                          Timer(const Duration(seconds: 5), () async {
-                            setState(() {
-                              HomeData.isFetchingData = false;
-                            });
-                            if (!mounted) return;
-                            InformDialog()
-                                .get(context, "完成重新生成:)",
-                                    "${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的運動計畫\n已經重新生成囉！")
-                                .show();
-                          });
-                        }
-
-                        ConfirmDialog()
-                            .get(
-                                context,
-                                "你確定嗎？",
-                                "確定要重新生成\n${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的運動計畫嗎？",
-                                btnOkOnPress)
+                    ),
+                  ],
+                  onSelected: (value) async {
+                    if (value == 1) {
+                      if (!HomeData.isAfter &&
+                          HomeData.selectedDay?.weekday == 6) {
+                        InformDialog()
+                            .get(context, "無法修改:(", "今天已經星期六囉~\n無法再將計畫換到別天了！")
+                            .show();
+                      } else if (HomeData.isAfter &&
+                          HomeData.selectedDay?.weekday == 6) {
+                        InformDialog()
+                            .get(context, "無法修改:(", "星期六的計畫無法換到別天噢！")
                             .show();
                       } else {
-                        btnOkOnPress() async {
-                          await PlanDB.delete("workout",
-                              Calendar.dateToString(HomeData.selectedDay!));
-                          if (!mounted) return;
-                          Navigator.pushNamed(context, "/");
-                        }
-
-                        ConfirmDialog()
-                            .get(
-                                context,
-                                "你確定嗎？",
-                                "確定要刪除\n${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的運動計畫嗎？",
-                                btnOkOnPress)
-                            .show();
+                        showModalBottomSheet(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(20),
+                                  topLeft: Radius.circular(20)),
+                            ),
+                            backgroundColor: ColorSet.bottomBarColor,
+                            context: context,
+                            builder: (context) {
+                              return ChangeDayBottomSheet(arguments: {
+                                "day": HomeData.selectedDay,
+                                "isToday": HomeData.isToday,
+                                "type": 0
+                              });
+                            });
                       }
-                    },
+                    } else if (value == 2) {
+                      btnOkOnPress() {
+                        PlanAlgo.regenerateWorkout(HomeData.selectedDay!);
+                        setState(() {
+                          HomeData.isFetchingData = true;
+                        });
+                        Timer(const Duration(seconds: 5), () async {
+                          setState(() {
+                            HomeData.isFetchingData = false;
+                          });
+                          if (!mounted) return;
+                          InformDialog()
+                              .get(context, "完成重新生成:)",
+                                  "${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的運動計畫\n已經重新生成囉！")
+                              .show();
+                        });
+                      }
+
+                      ConfirmDialog()
+                          .get(
+                              context,
+                              "你確定嗎？",
+                              "確定要重新生成\n${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的運動計畫嗎？",
+                              btnOkOnPress)
+                          .show();
+                    } else {
+                      btnOkOnPress() async {
+                        await PlanDB.delete("workout",
+                            Calendar.dateToString(HomeData.selectedDay!));
+                        if (!mounted) return;
+                        Navigator.pushNamed(context, "/");
+                      }
+
+                      ConfirmDialog()
+                          .get(
+                              context,
+                              "你確定嗎？",
+                              "確定要刪除\n${(HomeData.isToday) ? "今天" : " ${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day} "}的運動計畫嗎？",
+                              btnOkOnPress)
+                          .show();
+                    }
+                  },
+                ),
+              ]
+            : [],
+      ),
+      body: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(7.5),
+                  child: Image.asset(
+                    "assets/images/Exercise_2.jpg",
+                    width: MediaQuery.of(context).size.width * 0.8,
+                  )),
+            ),
+            Container(
+              margin: const EdgeInsets.only(right: 20, left: 20),
+              decoration: BoxDecoration(
+                  color: ColorSet.backgroundColor,
+                  border: Border.all(color: ColorSet.backgroundColor),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20))),
+              child: const ExercisePlanDetailItem(),
+            ),
+            const Divider(
+              color: ColorSet.borderColor,
+              thickness: 0.5,
+              indent: 20,
+              endIndent: 20,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 20, left: 20),
+                child: Theme(
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
+                  child: ListView(
+                    children: _getSportList(
+                        PlanDB.toWorkoutList(HomeData.workoutPlan!)),
                   ),
-                ]
-              : [],
-        ),
-        body: (HomeData.isFetchingData)
-            ? Center(
-                child: Container(
-                    padding:
-                        const EdgeInsets.only(right: 20, left: 20, bottom: 20),
-                    decoration: BoxDecoration(
-                        color: ColorSet.backgroundColor,
-                        border: Border.all(color: ColorSet.backgroundColor),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20))),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        LoadingAnimationWidget.horizontalRotatingDots(
-                          color: ColorSet.textColor,
-                          size: 100,
-                        ),
-                        const Text(
-                          "重新載入計畫中...",
-                          style: TextStyle(
-                            color: ColorSet.textColor,
-                          ),
-                        )
-                      ],
-                    )))
-            : SafeArea(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(right: 20, left: 20),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(7.5),
-                          child: Image.asset(
-                            "assets/images/Exercise_2.jpg",
-                            width: MediaQuery.of(context).size.width * 0.8,
-                          )),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(right: 20, left: 20),
-                      decoration: BoxDecoration(
-                          color: ColorSet.backgroundColor,
-                          border: Border.all(color: ColorSet.backgroundColor),
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20))),
-                      child: const ExercisePlanDetailItem(),
-                    ),
-                    const Divider(
-                      color: ColorSet.borderColor,
-                      thickness: 0.5,
-                      indent: 20,
-                      endIndent: 20,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 20, left: 20),
-                        child: Theme(
-                          data: Theme.of(context)
-                              .copyWith(dividerColor: Colors.transparent),
-                          child: ListView(
-                            children: _getSportList(
-                                PlanDB.toWorkoutList(HomeData.workoutPlan!)),
-                          ),
-                        ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: ElevatedButton.icon(
+                    icon: const Icon(Icons.play_arrow_rounded,
+                        color: ColorSet.iconColor),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          (HomeData.isToday && HomeData.workoutProgress! < 100)
+                              ? ColorSet.exerciseColor
+                              : ColorSet.chartLineColor,
+                      shadowColor: ColorSet.backgroundColor,
+                      elevation: 0,
+                      minimumSize: const Size(0, 45),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(right: 20, left: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              child: ElevatedButton.icon(
-                            icon: const Icon(Icons.play_arrow_rounded,
-                                color: ColorSet.iconColor),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: (HomeData.isToday &&
-                                      HomeData.workoutProgress! < 100)
-                                  ? ColorSet.exerciseColor
-                                  : ColorSet.chartLineColor,
-                              shadowColor: ColorSet.backgroundColor,
-                              elevation: 0,
-                              minimumSize: const Size(0, 45),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onPressed: (HomeData.isToday)
-                                ? (HomeData.workoutProgress! < 100)
-                                    ? () async {
-                                        /*int currentIndex =
+                    onPressed: (HomeData.isToday)
+                        ? (HomeData.workoutProgress! < 100)
+                            ? () async {
+                                /*int currentIndex =
                                             HomeData.currentIndex;
                                         List items =
                                             HomeData.workoutPlan!.split(", ");
@@ -381,66 +350,144 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                             });
                                       }*/
 
-                                        int currentIndex =
-                                            HomeData.currentIndex ~/
-                                                (HomeData.workoutDuration / 5);
-                                        List items = [
-                                          "暖身：深蹲",
-                                          "運動：上斜伏地挺身",
-                                          "運動：反向捲腹",
-                                          "運動：臀橋",
-                                          "緩和：側弓箭步"
-                                        ];
+                                int currentIndex = HomeData.currentIndex ~/
+                                    (HomeData.workoutDuration / 5);
+                                List items = [
+                                  "暖身：深蹲",
+                                  "運動：上斜伏地挺身",
+                                  "運動：反向捲腹",
+                                  "運動：臀橋",
+                                  "緩和：側弓箭步"
+                                ];
 
-                                        if (await ClockDB.getFromDate(
-                                                "workout", DateTime.now()) ==
-                                            null) {
-                                          ClockDB.updateForecast("workout");
-                                        }
+                                if (await ClockDB.getFromDate(
+                                        "workout", DateTime.now()) ==
+                                    null) {
+                                  ClockDB.updateForecast("workout");
+                                }
 
-                                        if (!mounted) return;
-                                        Navigator.pushNamed(
-                                            context, '/countdown',
-                                            arguments: {
-                                              'type': 'exercise',
-                                              'totalExerciseItemLength':
-                                                  items.length,
-                                              'exerciseTime': (items.length -
-                                                      currentIndex) *
-                                                  6, // should be 60s
-                                              'exerciseItem':
-                                                  items.sublist(currentIndex),
-                                              'currentIndex': currentIndex
-                                            });
-                                      }
-                                    : () {
-                                        InformDialog()
-                                            .get(
-                                                context, "Good:)", "已完成今日運動計畫！")
-                                            .show();
-                                      }
-                                : () {
-                                    InformDialog()
-                                        .get(context, "錯誤:(", "無法做非今日的運動計畫噢！")
-                                        .show();
-                                  },
-                            label: const Text(
-                              "開始運動",
-                              style: TextStyle(
+                                if (!mounted) return;
+                                Navigator.pushNamed(context, '/countdown',
+                                    arguments: {
+                                      'type': 'exercise',
+                                      'totalExerciseItemLength': items.length,
+                                      'exerciseTime':
+                                          (items.length - currentIndex) *
+                                              6, // should be 60s
+                                      'exerciseItem':
+                                          items.sublist(currentIndex),
+                                      'currentIndex': currentIndex
+                                    });
+                              }
+                            : () {
+                                InformDialog()
+                                    .get(context, "Good:)", "已完成今日運動計畫！")
+                                    .show();
+                              }
+                        : () {
+                            InformDialog()
+                                .get(context, "錯誤:(", "無法做非今日的運動計畫噢！")
+                                .show();
+                          },
+                    label: const Text(
+                      "開始運動",
+                      style: TextStyle(
+                          color: ColorSet.textColor,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showVideoDialog(BuildContext context, String vidName) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.7,
+              decoration: BoxDecoration(
+                color: ColorSet.backgroundColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    "assets/videos/$vidName.gif",
+                    width: double.infinity,
+                    fit: BoxFit.fitWidth,
+                  ),
+                  // TODO: Get description of item
+                  Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      ListTile(
+                          title: Padding(
+                            padding: const EdgeInsets.only(bottom: 15.0),
+                            child: Text(
+                              vidName,
+                              style: const TextStyle(
                                   color: ColorSet.textColor,
+                                  fontWeight: FontWeight.bold,
                                   fontSize: 24,
-                                  fontWeight: FontWeight.bold),
+                                  letterSpacing: 10),
                             ),
+                          ),
+                          subtitle: Column(
+                            children: [
+                              Row(
+                                children: const [
+                                  Text(
+                                    " \u2022  轉轉肩膀",
+                                    style: TextStyle(
+                                        color: ColorSet.textColor,
+                                        fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 5),
+                              Row(
+                                children: const [
+                                  Text(
+                                    " \u2022  扭扭脖子",
+                                    style: TextStyle(
+                                        color: ColorSet.textColor,
+                                        fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 5),
+                              Row(
+                                children: const [
+                                  Text(
+                                    " \u2022  動動嘴巴",
+                                    style: TextStyle(
+                                        color: ColorSet.textColor,
+                                        fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                            ],
                           )),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                ),
-              ));
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        });
   }
 }
 
@@ -633,154 +680,126 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                 ]
               : [],
         ),
-        body: (HomeData.isFetchingData)
-            ? Center(
+        body: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.only(right: 20, left: 20),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(7.5),
+                    child: Image.asset(
+                      "assets/images/Meditation_2.png",
+                      width: MediaQuery.of(context).size.width * 0.8,
+                    )),
+              ),
+              Container(
+                margin: const EdgeInsets.only(right: 20, left: 20),
+                decoration: BoxDecoration(
+                    color: ColorSet.backgroundColor,
+                    border: Border.all(color: ColorSet.backgroundColor),
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
+                child: const MeditationPlanDetailItem(),
+              ),
+              const Divider(
+                color: ColorSet.borderColor,
+                thickness: 0.5,
+                indent: 20,
+                endIndent: 20,
+              ),
+              Expanded(
+                  child: SingleChildScrollView(
                 child: Container(
-                    padding:
-                        const EdgeInsets.only(right: 20, left: 20, bottom: 20),
-                    decoration: BoxDecoration(
-                        color: ColorSet.backgroundColor,
-                        border: Border.all(color: ColorSet.backgroundColor),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(20))),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        LoadingAnimationWidget.horizontalRotatingDots(
-                          color: ColorSet.textColor,
-                          size: 100,
-                        ),
-                        const Text(
-                          "重新載入計畫中...",
-                          style: TextStyle(
-                            color: ColorSet.textColor,
+                  padding:
+                      const EdgeInsets.only(right: 20, left: 20, bottom: 10),
+                  child: Theme(
+                      data: Theme.of(context)
+                          .copyWith(dividerColor: Colors.transparent),
+                      child: Column(
+                        children: [
+                          // FIXME: 冥想Detail畫面看起來有點空
+                          const SizedBox(
+                            height: 10,
                           ),
-                        )
-                      ],
-                    )))
-            : SafeArea(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                          Text(
+                            getDescription(),
+                            style: const TextStyle(fontSize: 16),
+                          )
+                        ],
+                      )),
+                ),
+              )),
+              const SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: const EdgeInsets.only(right: 20, left: 20),
+                child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.only(right: 20, left: 20),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(7.5),
-                          child: Image.asset(
-                            "assets/images/Meditation_2.png",
-                            width: MediaQuery.of(context).size.width * 0.8,
-                          )),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(right: 20, left: 20),
-                      decoration: BoxDecoration(
-                          color: ColorSet.backgroundColor,
-                          border: Border.all(color: ColorSet.backgroundColor),
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20))),
-                      child: const MeditationPlanDetailItem(),
-                    ),
-                    const Divider(
-                      color: ColorSet.borderColor,
-                      thickness: 0.5,
-                      indent: 20,
-                      endIndent: 20,
-                    ),
                     Expanded(
-                        child: SingleChildScrollView(
-                      child: Container(
-                        padding: const EdgeInsets.only(
-                            right: 20, left: 20, bottom: 10),
-                        child: Theme(
-                            data: Theme.of(context)
-                                .copyWith(dividerColor: Colors.transparent),
-                            child: Column(
-                              children: [
-                                // FIXME: 冥想Detail畫面看起來有點空
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  getDescription(),
-                                  style: const TextStyle(fontSize: 16),
-                                )
-                              ],
-                            )),
+                        child: ElevatedButton.icon(
+                      icon: const Icon(Icons.play_arrow_rounded,
+                          color: ColorSet.iconColor),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: (HomeData.isToday &&
+                                HomeData.meditationProgress! < 100)
+                            ? ColorSet.meditationColor
+                            : ColorSet.chartLineColor,
+                        shadowColor: ColorSet.backgroundColor,
+                        elevation: 0,
+                        minimumSize: const Size(0, 45),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: (HomeData.isToday)
+                          ? (HomeData.meditationProgress! < 100)
+                              ? () async {
+                                  if (await ClockDB.getFromDate(
+                                          "meditation", DateTime.now()) ==
+                                      null) {
+                                    ClockDB.updateForecast("meditation");
+                                  }
+
+                                  if (!mounted) return;
+                                  Navigator.pushNamed(context, '/countdown',
+                                      arguments: {
+                                        'type': 'meditation',
+                                        'meditationPlan':
+                                            HomeData.meditationPlan,
+                                        'meditationTime': 5,
+                                        // should be HomeData.meditationDuration,
+                                      });
+                                }
+                              : () {
+                                  InformDialog()
+                                      .get(context, "Good:)", "已完成今日冥想計畫！")
+                                      .show();
+                                }
+                          : () {
+                              InformDialog()
+                                  .get(context, "錯誤:(", "無法做非今日的冥想計畫噢！")
+                                  .show();
+                            },
+                      label: const Text(
+                        "開始冥想",
+                        style: TextStyle(
+                            color: ColorSet.textColor,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold),
                       ),
                     )),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(right: 20, left: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                              child: ElevatedButton.icon(
-                            icon: const Icon(Icons.play_arrow_rounded,
-                                color: ColorSet.iconColor),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: (HomeData.isToday &&
-                                      HomeData.meditationProgress! < 100)
-                                  ? ColorSet.meditationColor
-                                  : ColorSet.chartLineColor,
-                              shadowColor: ColorSet.backgroundColor,
-                              elevation: 0,
-                              minimumSize: const Size(0, 45),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onPressed: (HomeData.isToday)
-                                ? (HomeData.meditationProgress! < 100)
-                                    ? () async {
-                                        if (await ClockDB.getFromDate(
-                                                "meditation", DateTime.now()) ==
-                                            null) {
-                                          ClockDB.updateForecast("meditation");
-                                        }
-
-                                        if (!mounted) return;
-                                        Navigator.pushNamed(
-                                            context, '/countdown',
-                                            arguments: {
-                                              'type': 'meditation',
-                                              'meditationPlan':
-                                                  HomeData.meditationPlan,
-                                              'meditationTime': 5,
-                                              // should be HomeData.meditationDuration,
-                                            });
-                                      }
-                                    : () {
-                                        InformDialog()
-                                            .get(
-                                                context, "Good:)", "已完成今日冥想計畫！")
-                                            .show();
-                                      }
-                                : () {
-                                    InformDialog()
-                                        .get(context, "錯誤:(", "無法做非今日的冥想計畫噢！")
-                                        .show();
-                                  },
-                            label: const Text(
-                              "開始冥想",
-                              style: TextStyle(
-                                  color: ColorSet.textColor,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          )),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
                   ],
                 ),
-              ));
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+            ],
+          ),
+        ));
   }
 }
 
@@ -1036,40 +1055,15 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
       return dayBtn;
     }
 
-    if (day.weekday == 7) {
-      for (int i = 1; i <= 6; i++) {
+    final today = Calendar.todayWeekday % 7;
+    final selected = day.weekday % 7;
+    // if todayWeekday > selectedWeekday, then the selectedDays is in the next week
+    for (int i = (today > selected ? 0 : today); i < 7; i++) {
+      if (i != selected) {
         allowedDayList.add(getDayBtn(i));
         allowedDayList.add(const SizedBox(
           width: 10,
         ));
-      }
-    } else if (isToday) {
-      for (int i = day.weekday + 1; i <= 6; i++) {
-        allowedDayList.add(getDayBtn(i));
-        allowedDayList.add(const SizedBox(
-          width: 10,
-        ));
-      }
-    } else {
-      for (int i = day.weekday + 1; i <= 6; i++) {
-        allowedDayList.add(getDayBtn(i));
-        allowedDayList.add(const SizedBox(
-          width: 10,
-        ));
-      }
-      for (int i = day.weekday - 1; i >= 0; i--) {
-        allowedDayList.insert(
-            0,
-            const SizedBox(
-              width: 10,
-            ));
-        if (today.weekday != 7) {
-          if (i >= today.weekday) {
-            allowedDayList.insert(0, getDayBtn(i));
-          }
-        } else {
-          allowedDayList.insert(0, getDayBtn(i));
-        }
       }
     }
     return allowedDayList;

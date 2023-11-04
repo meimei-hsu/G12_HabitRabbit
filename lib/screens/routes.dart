@@ -11,7 +11,6 @@ import 'package:g12/screens/survey_page.dart';
 import 'package:g12/screens/register_page.dart';
 import 'package:g12/screens/statistic_page.dart';
 import 'package:g12/screens/settings_page.dart';
-import 'package:g12/screens/video_page.dart';
 
 //配置路由規則
 final routes = {
@@ -22,7 +21,6 @@ final routes = {
   '/settings': (context, {arguments}) => const SettingsPage(),
   '/milestone': (context, {arguments}) => const GamificationPage(),
   '/community': (context, {arguments}) => const CommunityPage(),
-  '/video': (context, {arguments}) => VideoPage(arguments: arguments),
   /* ExercisePage */
   '/exercise': (context, {arguments}) => DoExercisePage(arguments: arguments),
   '/meditation': (context, {arguments}) =>
