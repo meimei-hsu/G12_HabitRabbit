@@ -1137,6 +1137,7 @@ class PartThreePageState extends State<PartThreePage>
               borderRadius: BorderRadius.circular(20),
             ),
             child: SizedBox(
+              // TODO: width fits the container of height narrow down
               width: 400.0,
               child: SwipeCards(
                 matchEngine: _matchEngine,

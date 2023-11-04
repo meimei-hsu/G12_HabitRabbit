@@ -412,9 +412,14 @@ class HomepageState extends State<Homepage> {
                                   ? InformDialog()
                                       .get(context, "提示:)", "要繼續努力養成習慣噢！")
                                       .show()
-                                  : InformDialog()
-                                      .get(context, "提示:)", "要記得完成計畫噢！")
-                                      .show();
+                                  : (HomeData.workoutProgress == 100 &&
+                                          HomeData.meditationProgress == 100)
+                                      ? InformDialog()
+                                          .get(context, "你太棒了", "今天的計畫都已經完成了！")
+                                          .show()
+                                      : InformDialog()
+                                          .get(context, "提示:)", "要記得完成計畫噢！")
+                                          .show();
                             }
                           }, // Image tapped
                           child: Image.asset(

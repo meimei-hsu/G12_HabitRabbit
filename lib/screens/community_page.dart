@@ -473,7 +473,7 @@ class FriendListPageState extends State<FriendListPage> {
                             onPressed: () {
                               InformDialog()
                                   .get(context, "戳到了:)",
-                                      "謝謝你提醒${info['userName']}回來完成習慣計畫，\n有你這個朋友真好!")
+                                      "謝謝你提醒${info['userName']}持續養成習慣，\n有你這個朋友真好!")
                                   .show();
                             },
                             style: ElevatedButton.styleFrom(
