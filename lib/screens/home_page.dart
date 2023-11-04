@@ -437,7 +437,7 @@ class HomepageState extends State<Homepage> {
                   IconButton(
                       onPressed: () {
                         Navigator.pushNamed(context, "/questionnaire",
-                            arguments: {"part": 0});
+                            arguments: {"part": 2});
                       },
                       icon: const Icon(Icons.sticky_note_2_outlined, size: 40)),
                   IconButton(
