@@ -1269,7 +1269,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
       if (!mounted) return;
       Navigator.pushNamed(context, '/pay', arguments: {
         'user': user,
-        'money': _money,
+        'money': contractData["money"],
       });
     }
 

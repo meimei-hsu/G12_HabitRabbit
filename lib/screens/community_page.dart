@@ -247,17 +247,21 @@ class FriendListPageState extends State<FriendListPage> {
                               InformDialog()
                                   .get(context, "警告！", "找不到該名用戶T^T")
                                   .show();
+                              _controller.clear();
                             } else if (searchText == CommData.socialCode) {
                               InformDialog()
                                   .get(context, "警告！", "不能新增自己為朋友喔T^T")
                                   .show();
+                              _controller.clear();
                             } else if (CommData.friends.contains(fullID)) {
                               InformDialog()
                                   .get(context, "警告！", "朋友已在清單內:) \n 快去認識新朋友吧~")
                                   .show();
+                              _controller.clear();
                             } else {
                               _showCustomDialog(context,
                                   userID: fullID, isFriend: false);
+                              _controller.clear();
                             }
                           }
                         },
@@ -515,10 +519,12 @@ class FriendListPageState extends State<FriendListPage> {
                         ],
                       )
                     : ElevatedButton(
-                        onPressed: () {
-                          CommData.friends.add(userID);
-                          GamificationDB.updateFriend(userID);
-                          Navigator.of(context).pop();
+                        onPressed: () async {
+                          CommData.friends.insert(0, userID);
+                          await GamificationDB.updateFriend(userID);
+                          if (!mounted) return;
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, "/community", (route) => false);
                           setState(() {});
                         },
                         style: ElevatedButton.styleFrom(
