@@ -39,10 +39,10 @@ class GamificationPageState extends State<GamificationPage> {
           backgroundColor: ColorSet.backgroundColor,
           automaticallyImplyLeading: false,
         ),
-        body: SafeArea(
+        body: const SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const <Widget>[
+            children: <Widget>[
               Padding(
                 padding:
                     EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 20),
@@ -71,6 +71,23 @@ class GamificationPageState extends State<GamificationPage> {
 class CharacterWidget extends StatelessWidget {
   const CharacterWidget({super.key});
 
+  double getImageWidthPercentage(){
+    String character = Data.characterName;
+    double percentage = 0;
+    if(character == "Mouse" || character == "Pig" || character == "Cat"){
+      percentage = 0.6;
+    }else if(character == "Sheep"){
+      percentage = 0.65;
+    }else if(character == "Dog"){
+      percentage = 0.7;
+    }else if(character == "Lion" || character == "Fox"){
+      percentage = 0.75;
+    }else if(character == "Sloth"){
+      percentage = 0.8;
+    }
+    return percentage;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -94,7 +111,7 @@ class CharacterWidget extends StatelessWidget {
           Image.asset(
             Data.characterImageURL,
             height: screenHeight * 0.35,
-            width: screenWidth * 0.6,
+            width: screenWidth * getImageWidthPercentage(),
           ),
           Container(
             padding: const EdgeInsets.only(left: 40),

@@ -42,6 +42,25 @@ class SettingsPageState extends State<SettingsPage> {
     setState(() {});
   }
 
+  double getImageWidthPercentage(){
+    String character = Data.characterName;
+    double percentage = 0;
+    if(character == "Mouse" || character == "Cat"){
+      percentage = 0.4;
+    }else if(character == "Pig"){
+      percentage = 0.45;
+    }else if(character == "Sheep"){
+      percentage = 0.65;
+    }else if(character == "Dog"){
+      percentage = 0.5;
+    }else if(character == "Lion" || character == "Fox"){
+      percentage = 0.55;
+    }else if(character == "Sloth"){
+      percentage = 0.6;
+    }
+    return percentage;
+  }
+
   @override
   Widget build(BuildContext context) {
     refresh();
@@ -81,9 +100,9 @@ class SettingsPageState extends State<SettingsPage> {
                     height: 30,
                   ),
                   Image.asset(
-                    Data.characterImageURL,
-                    height: MediaQuery.of(context).size.height / 5,
-                    width: MediaQuery.of(context).size.width / 2.5,
+                      Data.characterImageURL,
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    width: MediaQuery.of(context).size.width * getImageWidthPercentage(),
                   ),
                   const SizedBox(
                     height: 15,
