@@ -10,6 +10,12 @@ import 'package:g12/services/page_data.dart';
 
 import '../services/database.dart';
 
+final List<Widget> tabViews = [
+  const FriendListPage(),
+  const LeaderboardPage(),
+  const TeamChallengePage(),
+];
+
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});
 
@@ -21,12 +27,6 @@ class CommunityPageState extends State<CommunityPage>
     with TickerProviderStateMixin {
   late TabController _controller;
   int _currentIndex = 0;
-
-  final List<Widget> _tabViews = [
-    const FriendListPage(),
-    const LeaderboardPage(),
-    const TeamChallengePage(),
-  ];
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class CommunityPageState extends State<CommunityPage>
   void refresh() async {
     if (Data.updatingDB || Data.updatingUI[3]) await CommData.fetch();
     setState(() {
-      _tabViews[1] = const LeaderboardPage();
+      tabViews[1] = const LeaderboardPage();
     });
   }
 
@@ -148,7 +148,7 @@ class CommunityPageState extends State<CommunityPage>
                 Expanded(
                   child: IndexedStack(
                     index: _currentIndex,
-                    children: _tabViews,
+                    children: tabViews,
                   ),
                 ),
               ],
@@ -523,9 +523,10 @@ class FriendListPageState extends State<FriendListPage> {
                           CommData.friends.insert(0, userID);
                           await GamificationDB.updateFriend(userID);
                           if (!mounted) return;
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, "/community", (route) => false);
-                          setState(() {});
+                          Navigator.of(context).pop();
+                          setState(() {
+                            tabViews[1] = const LeaderboardPage();
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: ColorSet.backgroundColor,
