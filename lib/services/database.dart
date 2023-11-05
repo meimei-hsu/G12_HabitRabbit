@@ -339,32 +339,60 @@ class UserDB {
 
   // Update plan variables by user's feedback [滿意度, 疲憊度]
   static Future<bool> updateWorkoutFeedback(String type, List feedback) async {
-    final Map? data = await getUser();
+    String index1 = "${type}Liking", index2 = "${type}Ability";
+    List keys = [
+      ...["strengthLiking", "cardioLiking", "yogaLiking"],
+      ...["strengthAbility", "cardioAbility", "yogaAbility"]
+    ];
+    Map updateVal = {for (String key in keys) key: Data.profile![key]!};
 
-    if (data != null) {
-      String index1 = "${type}Liking", index2 = "${type}Ability";
-      num liking = data[index1], ability = data[index2];
-
-      List adjVal = [-5, -2, 0, 2, 5];
-      liking += adjVal[feedback[0] - 1];
-      ability -= adjVal[feedback[0] - 1];
-
-      return await update({index1: liking, index2: ability});
+    // adjust workoutLiking by feedback[0] (i.e. satisfiedScore)
+    List adjVal = [-5, -2, 0, 2, 5];
+    updateVal[index1] += adjVal[feedback[0] - 1];
+    // TODO: the adjusting method when score > 100 needs optimization
+    if (updateVal[index1] >= 100) {
+      for (String key in keys.sublist(0, 3)) {
+        updateVal[key] *= 0.8;
+      }
+    } else if (updateVal[index1] < 0) {
+      updateVal[index1] = 0;
     }
-    return false;
+    // adjust workoutAbility by feedback[1] (i.e. tiredScore)
+    updateVal[index2] -= adjVal[feedback[1] - 1];
+    if (updateVal[index2] >= 100) {
+      for (String key in keys.sublist(3, 6)) {
+        updateVal[key] *= 0.8;
+      }
+    } else if (updateVal[index2] < 0) {
+      updateVal[index2] = 0;
+    }
+
+    return await update(updateVal);
   }
 
-  static Future<bool> updateMeditationFeedback(
-      String type, List feedback) async {
+  static Future<bool> updateMeditationFeedback(String type, List feedback) async {
     String index = "${type}Liking";
     List keys = ["mindfulnessLiking", "workLiking", "kindnessLiking"];
     Map updateVal = {for (String key in keys) key: Data.profile![key]!};
 
+    bool overflow = false; // whether the score is over 100
+
+    // adjust meditationLiking by feedback[0] (i.e. satisfiedScore)
     List adjVal = [-5, -2, 0, 2, 5];
     updateVal[index] += adjVal[feedback[0] - 1];
 
+    // adjust meditationLiking by feedback[1~3] (i.e. recentSituation)
     for (int i = 0; i < 3; i++) {
       updateVal[keys[i]] += (feedback[i + 1] == 1) ? 10 : 0;
+      if (updateVal[keys[i]] >= 100) overflow = true;
+      if (updateVal[keys[i]] < 0) updateVal[keys[i]] = 0;
+    }
+
+    // TODO: the adjusting method when score > 100 needs optimization
+    if (overflow) {
+      for (String key in keys) {
+        updateVal[key] *= 0.8;
+      }
     }
 
     return await update(updateVal);

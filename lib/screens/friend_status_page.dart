@@ -49,7 +49,8 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                     SizedBox(
                       width: 100,
                       height: 100,
-                      child: Image.asset('assets/images/${FriendData.character}.png'),
+                      child: Image.asset(
+                          'assets/images/${FriendData.character}.png'),
                     ),
                     const SizedBox(width: 15),
                     Text(
@@ -74,12 +75,15 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+                            padding:
+                                const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                             margin: const EdgeInsets.only(right: 20, left: 20),
                             decoration: BoxDecoration(
                               color: ColorSet.backgroundColor,
-                              border: Border.all(color: ColorSet.borderColor, width: 4),
-                              borderRadius: const BorderRadius.all(Radius.circular(20)),
+                              border: Border.all(
+                                  color: ColorSet.borderColor, width: 4),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20)),
                             ),
                             child: Column(children: [
                               const ListTile(
@@ -98,23 +102,54 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                       isVisible: true,
                                       textStyle: const TextStyle(
                                           color: ColorSet.textColor,
-                                          fontSize: 14,
+                                          fontSize: 12,
                                           fontWeight: FontWeight.bold)),
+                                  tooltipBehavior: TooltipBehavior(
+                                    enable: true,
+                                    color: ColorSet.bottomBarColor,
+                                    builder: (dynamic data,
+                                        dynamic point,
+                                        dynamic series,
+                                        int pointIndex,
+                                        int seriesIndex) {
+                                      return Text(
+                                        "${point.x} ${("${point.x}" == "個人等級") ? "Lv" : "×"} ${point.y}",
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: ColorSet.textColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      );
+                                    },
+                                  ),
                                   series: <CircularSeries<ChartData, String>>[
                                     RadialBarSeries<ChartData, String>(
+                                      maximumValue: 1.0 +
+                                          [
+                                            FriendData.level,
+                                            FriendData.workoutGem,
+                                            FriendData.meditationGem
+                                          ].reduce(max),
                                       dataSource: [
                                         ChartData('個人等級', FriendData.level),
-                                        ChartData('運動寶物', FriendData.workoutGem),
-                                        ChartData('冥想寶物', FriendData.meditationGem),
+                                        ChartData(
+                                            '運動寶物', FriendData.workoutGem),
+                                        ChartData(
+                                            '冥想寶物', FriendData.meditationGem),
                                       ],
-                                      xValueMapper: (ChartData data, _) => data.x,
-                                      yValueMapper: (ChartData data, _) => data.y,
-                                      dataLabelSettings: const DataLabelSettings(
-                                          isVisible: true,
-                                          textStyle: TextStyle(
-                                              color: ColorSet.textColor,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold)),
+                                      xValueMapper: (ChartData data, _) =>
+                                          data.x,
+                                      yValueMapper: (ChartData data, _) =>
+                                          data.y,
+                                      /*dataLabelSettings:
+                                          const DataLabelSettings(
+                                              isVisible: true,
+                                              labelPosition:
+                                                  ChartDataLabelPosition.inside,
+                                              textStyle: TextStyle(
+                                                  color: ColorSet.textColor,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold)),*/
                                       cornerStyle: CornerStyle.bothCurve,
                                       pointColorMapper: (ChartData data, _) {
                                         if (data.x == "個人等級") {
@@ -129,6 +164,7 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                       },
                                       useSeriesColor: true,
                                       trackOpacity: 0.3,
+                                      radius: '100%',
                                     )
                                   ],
                                 ),
@@ -168,10 +204,11 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                   primaryXAxis: CategoryAxis(
                                     axisLine: const AxisLine(
                                       color: ColorSet.textColor,
+                                      width: 0.6,
                                     ),
                                     labelStyle: const TextStyle(
                                         color: ColorSet.textColor,
-                                        fontSize: 14,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold),
                                     majorTickLines:
                                         const MajorTickLines(size: 0),
@@ -180,8 +217,13 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                     ),
                                   ),
                                   primaryYAxis: NumericAxis(
+                                    labelFormat: '{value} 分',
+                                    minimum: 500,
+                                    interval: 50,
                                     axisLine: const AxisLine(width: 0),
-                                    labelStyle: const TextStyle(fontSize: 0),
+                                    labelStyle: const TextStyle(
+                                        fontSize: 10,
+                                        color: ColorSet.textColor),
                                     majorTickLines:
                                         const MajorTickLines(size: 0),
                                   ),
@@ -189,17 +231,24 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                     ColumnSeries<ChartData, String>(
                                       dataSource: [
                                         // TODO: get cumulativeTime data from database
-                                        ChartData('運動', Random().nextInt(100) + 100),
-                                        ChartData('冥想', Random().nextInt(100) + 100),
+                                        ChartData(
+                                            '運動', Random().nextInt(170) + 580),
+                                        ChartData(
+                                            '冥想', Random().nextInt(170) + 580),
                                       ],
-                                      xValueMapper: (ChartData data, _) => data.x,
-                                      yValueMapper: (ChartData data, _) => data.y,
-                                      dataLabelSettings: const DataLabelSettings(
-                                          isVisible: true,
-                                          textStyle: TextStyle(
-                                              color: ColorSet.textColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
+                                      xValueMapper: (ChartData data, _) =>
+                                          data.x,
+                                      yValueMapper: (ChartData data, _) =>
+                                          data.y,
+                                      dataLabelSettings:
+                                          const DataLabelSettings(
+                                              isVisible: true,
+                                              labelAlignment:
+                                                  ChartDataLabelAlignment.top,
+                                              textStyle: TextStyle(
+                                                  color: ColorSet.textColor,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold)),
                                       width: 0.3,
                                       color: ColorSet.meditationColor,
                                       borderRadius: const BorderRadius.only(
@@ -215,12 +264,15 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                             height: 15,
                           ),
                           Container(
-                            padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
+                            padding:
+                                const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
                             margin: const EdgeInsets.only(right: 20, left: 20),
                             decoration: BoxDecoration(
                               color: ColorSet.backgroundColor,
-                              border: Border.all(color: ColorSet.borderColor, width: 4),
-                              borderRadius: const BorderRadius.all(Radius.circular(20)),
+                              border: Border.all(
+                                  color: ColorSet.borderColor, width: 4),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20)),
                             ),
                             child: Column(children: [
                               const ListTile(
@@ -241,10 +293,11 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                   primaryXAxis: CategoryAxis(
                                     axisLine: const AxisLine(
                                       color: ColorSet.textColor,
+                                      width: 0.6,
                                     ),
                                     labelStyle: const TextStyle(
                                         color: ColorSet.textColor,
-                                        fontSize: 14,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.bold),
                                     majorTickLines:
                                         const MajorTickLines(size: 0),
@@ -253,8 +306,12 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                     ),
                                   ),
                                   primaryYAxis: NumericAxis(
+                                    labelFormat: '{value} 天',
+                                    interval: 5,
                                     axisLine: const AxisLine(width: 0),
-                                    labelStyle: const TextStyle(fontSize: 10, color: ColorSet.textColor),
+                                    labelStyle: const TextStyle(
+                                        fontSize: 10,
+                                        color: ColorSet.textColor),
                                     majorTickLines:
                                         const MajorTickLines(size: 0),
                                   ),
@@ -262,17 +319,24 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                     ColumnSeries<ChartData, String>(
                                       dataSource: [
                                         // TODO: get maximumConsecutiveDays data from database
-                                        ChartData('運動', Random().nextInt(20) + 3),
-                                        ChartData('冥想', Random().nextInt(20) + 3),
+                                        ChartData(
+                                            '運動', Random().nextInt(15) + 5),
+                                        ChartData(
+                                            '冥想', Random().nextInt(15) + 5),
                                       ],
-                                      xValueMapper: (ChartData data, _) => data.x,
-                                      yValueMapper: (ChartData data, _) => data.y,
-                                      dataLabelSettings: const DataLabelSettings(
-                                          isVisible: true,
-                                          textStyle: TextStyle(
-                                              color: ColorSet.textColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
+                                      xValueMapper: (ChartData data, _) =>
+                                          data.x,
+                                      yValueMapper: (ChartData data, _) =>
+                                          data.y,
+                                      dataLabelSettings:
+                                          const DataLabelSettings(
+                                              isVisible: true,
+                                              labelAlignment:
+                                                  ChartDataLabelAlignment.top,
+                                              textStyle: TextStyle(
+                                                  color: ColorSet.textColor,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold)),
                                       width: 0.3,
                                       color: ColorSet.meditationColor,
                                       borderRadius: const BorderRadius.only(

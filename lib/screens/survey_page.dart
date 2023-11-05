@@ -34,6 +34,15 @@ Map userInfo = {
 final questions_2 = [
   [
     Question(
+      text: "運動/冥想計畫時長",
+      options: [
+        Option(question: 1, text: "15分鐘", data: 15),
+        Option(question: 1, text: "30分鐘", data: 30),
+        Option(question: 1, text: "40分鐘", data: 45),
+        Option(question: 1, text: "60分鐘", data: 60),
+      ],
+    ),
+    Question(
       text: "運動/冥想計畫時間 (複選)",
       isMultiChoice: true,
       options: [
@@ -45,15 +54,6 @@ final questions_2 = [
         Option(question: 0, text: "星期六", data: 6),
         Option(question: 0, text: "星期日", data: 0),
         Option(question: 0, text: "每天", data: "1111111"),
-      ],
-    ),
-    Question(
-      text: "運動/冥想計畫時長",
-      options: [
-        Option(question: 1, text: "15分鐘", data: 15),
-        Option(question: 1, text: "30分鐘", data: 30),
-        Option(question: 1, text: "40分鐘", data: 45),
-        Option(question: 1, text: "60分鐘", data: 60),
       ],
     ),
   ],
@@ -982,10 +982,10 @@ class PartTwoPageState extends State<PartTwoPage> {
   void processInput() {
     final List keys = [
       [
-        "workoutDays",
         "workoutTime",
-        "meditationDays",
+        "workoutDays",
         "meditationTime",
+        "meditationDays",
       ],
       [
         "workoutGoals",
@@ -1007,7 +1007,10 @@ class PartTwoPageState extends State<PartTwoPage> {
         if (i == 0) {
           dynamic result;
           if (j == 0) {
-            // Get (0_0)workoutDays || Get (0_0)meditationDays
+            // Get (0-0)workoutTime || Get (0-0)meditationTime
+            result = answers.first.data;
+          } else if (j == 1) {
+            // Get (0-1)workoutDays || Get (0-1)meditationDays
             if (answers.first.text == "每天") {
               result = answers.first.data;
             } else {
@@ -1018,21 +1021,17 @@ class PartTwoPageState extends State<PartTwoPage> {
               }
               result = days.join('');
             }
-          } else if (j == 1) {
-            // Get (0_1)workoutTime || Get (0_1)meditationTime
-            result = answers.first.data;
           }
-
           userInfo[keys[i][j]] = result;
           userInfo[keys[i][j + 2]] = result;
         } else if (i == 1 || i == 2) {
-          // Get (1_0)workoutGoals || Get (1_1)meditationGoals
+          // Get (1-0)workoutGoals || Get (1-1)meditationGoals
           List reasons =
               List.generate(answers.length, (index) => answers[index].text);
           // Joint all the answers into a string with ", "
           if (i == 1) userInfo[keys[1][j]] = reasons.join(", ");
 
-          // Get (2_0)workoutLikings || Get (1_1)meditationLikings
+          // Get (2-0)workoutLikings || Get (1-1)meditationLikings
           for (Option option in answers) {
             if (i == 2 && j == 0) {
               // Set the workoutLiking to 60 if is selected, else 40
@@ -1043,7 +1042,7 @@ class PartTwoPageState extends State<PartTwoPage> {
             }
           }
         } else if (i == 3) {
-          // Get (3_0)strengthAbility, (3_1)yogaAbility, (3_2)cardioAbility
+          // Get (3-0)strengthAbility, (3-1)yogaAbility, (3-2)cardioAbility
           userInfo[keys[i][j]] = answers.first.data;
         }
       }
@@ -1171,8 +1170,8 @@ class PartThreePageState extends State<PartThreePage>
                             builder: (context, child) {
                               controller.forward(); // 啟動動畫
                               return Transform.translate(
-                                offset:
-                                    Offset(-10 + controller.value * -50, 0), // X軸位移
+                                offset: Offset(
+                                    -10 + controller.value * -50, 0), // X軸位移
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: const [
@@ -1203,8 +1202,8 @@ class PartThreePageState extends State<PartThreePage>
                             builder: (context, child) {
                               controller.forward(); // 啟動動畫
                               return Transform.translate(
-                                offset:
-                                    Offset(10 + controller.value * 50, 0), // X軸位移
+                                offset: Offset(
+                                    10 + controller.value * 50, 0), // X軸位移
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: const [

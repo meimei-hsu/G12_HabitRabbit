@@ -958,19 +958,6 @@ class StatisticPageState extends State<StatisticPage> {
                                 onToggle: (index) {
                                   StatData.weekDays = index!;
                                   setState(() {});
-
-                                  // TODO: 可能可以刪，或是確認要加在哪些地方（完成統計頁後)
-                                  // add "scrolling automatically function" in the last container
-                                  // to scroll the listview to bottom automatically
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    _scrollController.animateTo(
-                                        _scrollController
-                                            .position.maxScrollExtent,
-                                        duration:
-                                            const Duration(milliseconds: 200),
-                                        curve: Curves.easeOut);
-                                  });
                                 },
                               ),
                               visualDensity: const VisualDensity(vertical: -4),
@@ -1178,7 +1165,7 @@ class StatisticPageState extends State<StatisticPage> {
                                   StatData.monthDays = index!;
                                   setState(() {});
 
-                                  // TODO: 可能可以刪，或是確認要加在哪些地方（完成統計頁後)
+                                  // TODO: 確認要加在哪些地方（完成統計頁後)
                                   // add "scrolling automatically function" in the last container
                                   // to scroll the listview to bottom automatically
                                   WidgetsBinding.instance
