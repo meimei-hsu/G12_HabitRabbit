@@ -631,7 +631,7 @@ class InfoDialogState extends State<InfoDialog> {
                         children: [
                           TextSpan(
                               text:
-                                  '每次運動與冥想結束後，您將會分別獲取角色的運動寶物與冥想寶物，寶物是讓角色晉級的關鍵。\n\n'),
+                                  '每次運動與冥想結束後，您將會獲取寶物碎片，這些碎片會在本周的運動或冥想習慣達成率至100%時組合成寶物，而寶物是讓角色晉級的關鍵。\n\n'),
                           TextSpan(
                             text: '點選',
                           ),

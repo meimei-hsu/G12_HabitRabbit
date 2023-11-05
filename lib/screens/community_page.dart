@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:flutter/material.dart';
@@ -968,23 +969,23 @@ class TeamChallengePageState extends State<TeamChallengePage> {
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: () {
-            showDialog(
+            AwesomeDialog(
               context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  //title: Text("團隊合挑戰"),
-                  content: SizedBox(
-                    width: 100.0,
-                    height: 100.0,
-                    child: Image.asset("assets/images/coming_soon.png"),
-                  ),
-                );
-              },
-            );
-            Future.delayed(const Duration(seconds: 3), () {
-              Navigator.of(context).pop();
-            });
+              dialogType: DialogType.noHeader,
+              autoHide: const Duration(seconds: 2),
+              body: SizedBox(
+                width: 400.0,
+                height: 100.0,
+                child: Image.asset("assets/images/coming_soon.png"),
+              ),
+              width: MediaQuery.of(context).size.width * 0.9,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              dialogBorderRadius: const BorderRadius.all(Radius.circular(20)),
+            ).show();
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: ColorSet.backgroundColor,
+          ),
           child: const Text(
             '確定加入',
             style: TextStyle(
@@ -1148,25 +1149,23 @@ class TeamChallengePageState extends State<TeamChallengePage> {
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: () {
-            showDialog(
+            AwesomeDialog(
               context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  //title: Text("團隊合作賽"),
-                  content: SizedBox(
-                    width: 100.0,
-                    height: 100.0,
-                    child: Image.asset("assets/images/coming_soon.png"),
-                  ),
-                );
-              },
-            );
-            // FIXME: Unhandled Exception: Null check operator used on a null value
-            // 如果點擊外面關掉對話框的話，2秒後Navigator無法pop
-            Future.delayed(const Duration(seconds: 2), () {
-              Navigator.of(context).pop();
-            });
+              dialogType: DialogType.noHeader,
+              autoHide: const Duration(seconds: 2),
+              body: SizedBox(
+                width: 400.0,
+                height: 100.0,
+                child: Image.asset("assets/images/coming_soon.png"),
+              ),
+              width: MediaQuery.of(context).size.width * 0.9,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              dialogBorderRadius: const BorderRadius.all(Radius.circular(20)),
+            ).show();
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: ColorSet.backgroundColor,
+          ),
           child: const Text(
             '確定加入',
             style: TextStyle(

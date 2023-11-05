@@ -10,6 +10,8 @@ import 'package:g12/services/plan_algo.dart';
 // ignore_for_file: avoid_print
 
 class Data {
+  // isFirstTime is true if the user is registering
+  static bool isFirstTime = false;
   // updatingDB is true if database is updating
   static bool updatingDB = false;
   // updatingUI is true if the five component of the bottom navigation bar needs to be updated
@@ -40,19 +42,18 @@ class Data {
     if (Data.user != null) {
       // fetch data from database
       await fetchProfile();
+      await fetchGame();
+      if (profile == null || game == null) {
+        await user?.delete();
+        return false;
+      }
       await fetchHabits();
       await fetchPlansAndDurations();
-      await fetchGame();
       await fetchCharacter();
       await fetchContract();
       await fetchWeights();
       await fetchClocks();
-      if (profile == null || game == null) {
-        await FirebaseAuth.instance.signOut();
-        await user?.delete();
-        return false;
-      }
-      // update UI
+     // update UI
       await HomeData.fetch();
       await StatData.fetch();
       await GameData.fetch();
@@ -738,7 +739,7 @@ class StatData {
       exerciseDays.add(exerciseMonthDaysList[i][1].toDouble());
     }
     if (exerciseDays.isNotEmpty) {
-      maxExerciseMonthDays = exerciseDays.reduce(max) + 10;
+      maxExerciseMonthDays = exerciseDays.reduce(max) + 5;
     }
 
     meditationDays = [0];
@@ -746,7 +747,7 @@ class StatData {
       meditationDays.add(meditationMonthDaysList[i][1].toDouble());
     }
     if (meditationDays.isNotEmpty) {
-      maxMeditationMonthDays = meditationDays.reduce(max) + 10;
+      maxMeditationMonthDays = meditationDays.reduce(max) + 5;
     }
   }
 }

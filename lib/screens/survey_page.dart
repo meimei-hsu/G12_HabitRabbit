@@ -36,24 +36,24 @@ final questions_2 = [
     Question(
       text: "運動/冥想計畫時長",
       options: [
-        Option(question: 1, text: "15分鐘", data: 15),
-        Option(question: 1, text: "30分鐘", data: 30),
-        Option(question: 1, text: "40分鐘", data: 45),
-        Option(question: 1, text: "60分鐘", data: 60),
+        Option(question: 0, text: "15分鐘", data: 15),
+        Option(question: 0, text: "30分鐘", data: 30),
+        Option(question: 0, text: "40分鐘", data: 45),
+        Option(question: 0, text: "60分鐘", data: 60),
       ],
     ),
     Question(
       text: "運動/冥想計畫時間 (複選)",
       isMultiChoice: true,
       options: [
-        Option(question: 0, text: "星期一", data: 1),
-        Option(question: 0, text: "星期二", data: 2),
-        Option(question: 0, text: "星期三", data: 3),
-        Option(question: 0, text: "星期四", data: 4),
-        Option(question: 0, text: "星期五", data: 5),
-        Option(question: 0, text: "星期六", data: 6),
-        Option(question: 0, text: "星期日", data: 0),
-        Option(question: 0, text: "每天", data: "1111111"),
+        Option(question: 1, text: "星期一", data: 1),
+        Option(question: 1, text: "星期二", data: 2),
+        Option(question: 1, text: "星期三", data: 3),
+        Option(question: 1, text: "星期四", data: 4),
+        Option(question: 1, text: "星期五", data: 5),
+        Option(question: 1, text: "星期六", data: 6),
+        Option(question: 1, text: "星期日", data: 0),
+        Option(question: 1, text: "每天", data: "1111111"),
       ],
     ),
   ],
@@ -497,44 +497,48 @@ class TitlePageState extends State<TitlePage> {
         resizeToAvoidBottomInset: false,
         appBar:
             AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(36, 48, 36, 48),
-          child: Container(
-            alignment: Alignment.center,
-            height: MediaQuery.of(context).size.height * 0.75,
-            decoration: BoxDecoration(
-              border: Border.all(color: ColorSet.borderColor, width: 2),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-            child: Column(
-              children: [
-                /*BubbleSpecialTwo(
+        body: WillPopScope(
+          onWillPop: () async => (Data.isFirstTime) ? false : true,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(36, 48, 36, 48),
+            child: Container(
+              alignment: Alignment.center,
+              height: MediaQuery.of(context).size.height * 0.75,
+              decoration: BoxDecoration(
+                border: Border.all(color: ColorSet.borderColor, width: 2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+              child: Column(
+                children: [
+                  /*BubbleSpecialTwo(
                   text: 'bubble special tow with tail',
                   isSender: true,
                   color: Color(0xFFE8E8EE),
                   sent: true,
                 ),*/
-                Padding(
-                  padding: const EdgeInsets.only(top: 100, left: 50, right: 50),
-                  child: Text(
-                    title[widget.arguments['part']],
-                    style: const TextStyle(
-                      color: ColorSet.textColor,
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 100, left: 50, right: 50),
+                    child: Text(
+                      title[widget.arguments['part']],
+                      style: const TextStyle(
+                        color: ColorSet.textColor,
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 100, left: 150),
-                  child: Image.asset(
-                    "assets/images/Rabbit_2.png",
-                    width: 180,
-                    height: 200,
-                  ),
-                )
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 100, left: 150),
+                    child: Image.asset(
+                      "assets/images/Rabbit_2.png",
+                      width: 180,
+                      height: 200,
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -598,242 +602,254 @@ class PartOnePageState extends State<PartOnePage> {
         resizeToAvoidBottomInset: true,
         appBar:
             AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
-        body: ListView(controller: _scrollController, children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(35, 50, 35, 0),
-            child: Container(
-              alignment: Alignment.center,
-              height: MediaQuery.of(context).size.height * 0.7,
-              decoration: BoxDecoration(
-                border: Border.all(color: ColorSet.borderColor, width: 2),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: const EdgeInsets.fromLTRB(5, 18, 5, 18),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(
-                        '生理性別',
-                        style: getQuestionStyle(),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  getBackgroundColor("gender", "男"), // 按鈕顏色設定
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                userInfo['gender'] = "男";
-                                isComplete = checkCompletion();
-                              });
-                            },
-                            child: Text(
-                              "男",
-                              style: TextStyle(
-                                color: getForegroundColor("gender", "男"),
-                                // 字體顏色設定
-                                fontSize: 18,
+        body: WillPopScope(
+          onWillPop: () async => (Data.isFirstTime) ? false : true,
+          child: ListView(
+            controller: _scrollController,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(35, 50, 35, 0),
+                child: Container(
+                  alignment: Alignment.center,
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: ColorSet.borderColor, width: 2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(5, 18, 5, 18),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            '生理性別',
+                            style: getQuestionStyle(),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: getBackgroundColor(
+                                      "gender", "男"), // 按鈕顏色設定
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    userInfo['gender'] = "男";
+                                    isComplete = checkCompletion();
+                                  });
+                                },
+                                child: Text(
+                                  "男",
+                                  style: TextStyle(
+                                    color: getForegroundColor("gender", "男"),
+                                    // 字體顏色設定
+                                    fontSize: 18,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 25),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  getBackgroundColor("gender", "女"),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                userInfo['gender'] = "女";
-                                isComplete = checkCompletion();
-                              });
-                            },
-                            child: Text(
-                              "女",
-                              style: TextStyle(
-                                color: getForegroundColor("gender", "女"),
-                                fontSize: 18,
+                              const SizedBox(width: 25),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      getBackgroundColor("gender", "女"),
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    userInfo['gender'] = "女";
+                                    isComplete = checkCompletion();
+                                  });
+                                },
+                                child: Text(
+                                  "女",
+                                  style: TextStyle(
+                                    color: getForegroundColor("gender", "女"),
+                                    fontSize: 18,
+                                  ),
+                                ),
                               ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 36),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            '生日',
+                            style: getQuestionStyle(),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30),
+                          child: Container(
+                            width: 250,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: ColorSet.backgroundColor,
+                              border: Border.all(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: DatePickerCupertino(
+                              hintText: '請選擇日期',
+                              style: const TextStyle(
+                                color: ColorSet.textColor,
+                                fontSize: 15,
+                              ),
+                              onDateTimeChanged: (date) {
+                                setState(() {
+                                  userInfo['birthday'] =
+                                      Calendar.dateToString(date);
+                                  isComplete = checkCompletion();
+                                });
+                              },
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 36),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(
-                        '生日',
-                        style: getQuestionStyle(),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Container(
-                        width: 250,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: ColorSet.backgroundColor,
-                          border: Border.all(color: Colors.transparent),
-                          borderRadius: BorderRadius.circular(15),
                         ),
-                        child: DatePickerCupertino(
-                          hintText: '請選擇日期',
-                          style: const TextStyle(
-                            color: ColorSet.textColor,
-                            fontSize: 15,
+                        const SizedBox(height: 36),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            '身高',
+                            style: getQuestionStyle(),
                           ),
-                          onDateTimeChanged: (date) {
-                            setState(() {
-                              userInfo['birthday'] =
-                                  Calendar.dateToString(date);
-                              isComplete = checkCompletion();
-                            });
-                          },
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 36),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(
-                        '身高',
-                        style: getQuestionStyle(),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Container(
-                        width: 250,
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            color: ColorSet.backgroundColor),
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 9),
-                            border: InputBorder.none,
-                            hintText: '請輸入您的身高(cm)',
-                            hintStyle: TextStyle(
-                              color: ColorSet.textColor,
-                              fontSize: 15,
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30),
+                          child: Container(
+                            width: 250,
+                            decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15)),
+                                color: ColorSet.backgroundColor),
+                            child: TextField(
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 9),
+                                border: InputBorder.none,
+                                hintText: '請輸入您的身高(cm)',
+                                hintStyle: TextStyle(
+                                  color: ColorSet.textColor,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              style: const TextStyle(
+                                color: ColorSet.textColor,
+                                fontSize: 15,
+                              ),
+                              cursorColor: ColorSet.borderColor,
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                setState(() {
+                                  userInfo['height'] = int.parse(value);
+                                  isComplete = checkCompletion();
+                                });
+                              },
                             ),
                           ),
-                          style: const TextStyle(
-                            color: ColorSet.textColor,
-                            fontSize: 15,
-                          ),
-                          cursorColor: ColorSet.borderColor,
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            setState(() {
-                              userInfo['height'] = int.parse(value);
-                              isComplete = checkCompletion();
-                            });
-                          },
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 36),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(
-                        '體重',
-                        style: getQuestionStyle(),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Container(
-                        width: 250,
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            color: ColorSet.backgroundColor),
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 9),
-                            border: InputBorder.none,
-                            hintText: '請輸入您的體重(kg)',
-                            hintStyle: TextStyle(
-                              color: ColorSet.textColor,
-                              fontSize: 15,
-                            ),
+                        const SizedBox(height: 36),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            '體重',
+                            style: getQuestionStyle(),
                           ),
-                          style: const TextStyle(
-                            color: ColorSet.textColor,
-                            fontSize: 15,
-                          ),
-                          cursorColor: ColorSet.borderColor,
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              _scrollController.animateTo(
-                                  _scrollController.position.maxScrollExtent,
-                                  duration: const Duration(milliseconds: 200),
-                                  curve: Curves.easeOut);
-                            });
+                        ),
+                        const SizedBox(height: 12),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30),
+                          child: Container(
+                            width: 250,
+                            decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15)),
+                                color: ColorSet.backgroundColor),
+                            child: TextField(
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 9),
+                                border: InputBorder.none,
+                                hintText: '請輸入您的體重(kg)',
+                                hintStyle: TextStyle(
+                                  color: ColorSet.textColor,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              style: const TextStyle(
+                                color: ColorSet.textColor,
+                                fontSize: 15,
+                              ),
+                              cursorColor: ColorSet.borderColor,
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  _scrollController.animateTo(
+                                      _scrollController
+                                          .position.maxScrollExtent,
+                                      duration:
+                                          const Duration(milliseconds: 200),
+                                      curve: Curves.easeOut);
+                                });
 
-                            setState(() {
-                              userInfo["weight"] = int.parse(value);
-                              isComplete = checkCompletion();
-                            });
-                          },
+                                setState(() {
+                                  userInfo["weight"] = int.parse(value);
+                                  isComplete = checkCompletion();
+                                });
+                              },
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 20, bottom: 30),
-            child: IconButton(
-                onPressed: () {
-                  if (isComplete) {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const TitlePage(arguments: {"part": 1})));
-                  } else {
-                    InformDialog()
-                        .get(
+              Container(
+                padding: const EdgeInsets.only(top: 20, bottom: 30),
+                child: IconButton(
+                  onPressed: () {
+                    if (isComplete) {
+                      Navigator.pushReplacement(
                           context,
-                          "錯誤:(",
-                          "題目尚未填寫完畢喔~",
-                        )
-                        .show();
-                  }
-                },
-                icon: Icon(
-                  Icons.keyboard_arrow_right_outlined,
-                  size: 50,
-                  color: (isComplete)
-                      ? ColorSet.iconColor
-                      : ColorSet.chartLineColor,
-                )),
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const TitlePage(arguments: {"part": 1})));
+                    } else {
+                      InformDialog()
+                          .get(
+                            context,
+                            "錯誤:(",
+                            "題目尚未填寫完畢喔~",
+                          )
+                          .show();
+                    }
+                  },
+                  icon: Icon(
+                    Icons.keyboard_arrow_right_outlined,
+                    size: 50,
+                    color: (isComplete)
+                        ? ColorSet.iconColor
+                        : ColorSet.chartLineColor,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ]),
+        ),
       ),
     );
   }
@@ -859,60 +875,83 @@ class PartTwoPageState extends State<PartTwoPage> {
         resizeToAvoidBottomInset: true,
         appBar:
             AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(35, 30, 35, 0),
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.7,
-                decoration: BoxDecoration(
-                  border: Border.all(color: ColorSet.borderColor, width: 2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                padding: const EdgeInsets.fromLTRB(5, 18, 5, 18),
-                child: QuestionsWidget(
-                  pageController: pageController,
-                  scrollController: scrollController,
-                  onClickedOption: selectOption,
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(top: 15, bottom: 20),
-              child: IconButton(
-                onPressed: () async {
-                  if (isComplete) {
-                    if (pageController.page == 3) {
-                      processInput(); // update the data into userInfo
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const TitlePage(arguments: {"part": 2})),
-                      );
-                    } else {
-                      nextQuestion();
-                    }
-                  } else {
-                    InformDialog()
-                        .get(
-                          context,
-                          "錯誤:(",
-                          "題目尚未填寫完畢喔~",
-                        )
-                        .show();
-                  }
-                },
-                icon: Icon(
-                  Icons.keyboard_arrow_right_outlined,
-                  size: 50,
-                  color: (isComplete)
-                      ? ColorSet.iconColor
-                      : ColorSet.chartLineColor,
+        body: WillPopScope(
+          onWillPop: () async => (Data.isFirstTime) ? false : true,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(35, 30, 35, 0),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: ColorSet.borderColor, width: 2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.fromLTRB(5, 18, 5, 18),
+                  child: QuestionsWidget(
+                    pageController: pageController,
+                    scrollController: scrollController,
+                    onClickedOption: selectOption,
+                  ),
                 ),
               ),
-            ),
-          ],
+              Container(
+                padding: const EdgeInsets.fromLTRB(30, 15, 50, 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        if (pageController.page == 0) {
+                          InformDialog()
+                              .get(context, "無法返回", "您已經在第一頁嘍")
+                              .show();
+                        } else {
+                          nextQuestion(goBack: true);
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.keyboard_arrow_left_outlined,
+                        size: 50,
+                        color: ColorSet.iconColor,
+                      ),
+                    ),
+                    const SizedBox(width: 200),
+                    IconButton(
+                      onPressed: () async {
+                        if (isComplete) {
+                          if (pageController.page == 3) {
+                            processInput(); // update the data into userInfo
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const TitlePage(arguments: {"part": 2})),
+                            );
+                          } else {
+                            nextQuestion(goBack: false);
+                          }
+                        } else {
+                          InformDialog()
+                              .get(
+                                context,
+                                "錯誤:(",
+                                "題目尚未填寫完畢喔~",
+                              )
+                              .show();
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.keyboard_arrow_right_outlined,
+                        size: 50,
+                        color: ColorSet.iconColor,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -958,8 +997,8 @@ class PartTwoPageState extends State<PartTwoPage> {
     });
   }
 
-  void nextQuestion() {
-    final indexPage = (pageController.page! + 1).toInt();
+  void nextQuestion({required bool goBack}) {
+    final indexPage = (pageController.page! + (goBack ? -1 : 1)).toInt();
     pageController.jumpToPage(indexPage);
 
     setState(() {
@@ -1126,145 +1165,148 @@ class PartThreePageState extends State<PartThreePage>
       child: Scaffold(
         appBar:
             AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(36, 48, 36, 48),
-          child: Container(
-            alignment: Alignment.center,
-            height: MediaQuery.of(context).size.height * 0.75,
-            decoration: BoxDecoration(
-              border: Border.all(color: ColorSet.borderColor, width: 2),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: SizedBox(
-              // TODO: width fits the container of height narrow down
-              width: 400.0,
-              child: SwipeCards(
-                matchEngine: _matchEngine,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    alignment: Alignment.center,
-                    color: ColorSet.backgroundColor,
-                    padding: const EdgeInsets.all(30),
-                    margin: const EdgeInsets.all(30),
-                    child: Stack(
+        body: WillPopScope(
+          onWillPop: () async => (Data.isFirstTime) ? false : true,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(36, 48, 36, 48),
+            child: Container(
+              alignment: Alignment.center,
+              height: MediaQuery.of(context).size.height * 0.75,
+              decoration: BoxDecoration(
+                border: Border.all(color: ColorSet.borderColor, width: 2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: SizedBox(
+                // TODO: width fits the container of height narrow down
+                width: 400.0,
+                child: SwipeCards(
+                  matchEngine: _matchEngine,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
                       alignment: Alignment.center,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              _swipeItems[index].content,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  color: ColorSet.textColor),
+                      color: ColorSet.backgroundColor,
+                      padding: const EdgeInsets.all(30),
+                      margin: const EdgeInsets.all(30),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _swipeItems[index].content,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: ColorSet.textColor),
+                              ),
+                            ],
+                          ),
+                          Positioned(
+                            left: 15,
+                            top: 400,
+                            child: AnimatedBuilder(
+                              animation: controller,
+                              builder: (context, child) {
+                                controller.forward(); // 啟動動畫
+                                return Transform.translate(
+                                  offset: Offset(
+                                      -10 + controller.value * -50, 0), // X軸位移
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      Icon(
+                                        FontAwesomeIcons.angleDoubleLeft,
+                                        color: ColorSet.textColor,
+                                        size: 40,
+                                      ),
+                                      SizedBox(width: 6),
+                                      Text(
+                                        '否 Nope',
+                                        style: TextStyle(
+                                          color: ColorSet.textColor,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
-                          ],
-                        ),
-                        Positioned(
-                          left: 15,
-                          top: 400,
-                          child: AnimatedBuilder(
-                            animation: controller,
-                            builder: (context, child) {
-                              controller.forward(); // 啟動動畫
-                              return Transform.translate(
-                                offset: Offset(
-                                    -10 + controller.value * -50, 0), // X軸位移
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: const [
-                                    Icon(
-                                      FontAwesomeIcons.angleDoubleLeft,
-                                      color: ColorSet.textColor,
-                                      size: 40,
-                                    ),
-                                    SizedBox(width: 6),
-                                    Text(
-                                      '否 Nope',
-                                      style: TextStyle(
-                                        color: ColorSet.textColor,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
                           ),
-                        ),
-                        Positioned(
-                          right: 15,
-                          top: 400,
-                          child: AnimatedBuilder(
-                            animation: controller,
-                            builder: (context, child) {
-                              controller.forward(); // 啟動動畫
-                              return Transform.translate(
-                                offset: Offset(
-                                    10 + controller.value * 50, 0), // X軸位移
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: const [
-                                    Text(
-                                      '是 Yes',
-                                      style: TextStyle(
-                                        color: ColorSet.textColor,
-                                        fontSize: 16,
+                          Positioned(
+                            right: 15,
+                            top: 400,
+                            child: AnimatedBuilder(
+                              animation: controller,
+                              builder: (context, child) {
+                                controller.forward(); // 啟動動畫
+                                return Transform.translate(
+                                  offset: Offset(
+                                      10 + controller.value * 50, 0), // X軸位移
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      Text(
+                                        '是 Yes',
+                                        style: TextStyle(
+                                          color: ColorSet.textColor,
+                                          fontSize: 16,
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(width: 6),
-                                    Icon(
-                                      FontAwesomeIcons.angleDoubleRight,
-                                      color: ColorSet.textColor,
-                                      size: 40,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
+                                      SizedBox(width: 6),
+                                      Icon(
+                                        FontAwesomeIcons.angleDoubleRight,
+                                        color: ColorSet.textColor,
+                                        size: 40,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-                onStackFinished: () {
-                  controller.dispose();
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ResultPage()));
-                },
-                itemChanged: (SwipeItem item, int index) {
-                  debugPrint("$index. ${item.content}");
-                },
-                upSwipeAllowed: false,
-                fillSpace: true,
-                likeTag: Container(
-                  margin: const EdgeInsets.all(24.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration:
-                      BoxDecoration(border: Border.all(color: Colors.green)),
-                  child: const Text(
-                    'YES',
-                    style: TextStyle(
-                      color: Colors.green,
-                      fontSize: 24,
+                        ],
+                      ),
+                    );
+                  },
+                  onStackFinished: () {
+                    controller.dispose();
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ResultPage()));
+                  },
+                  itemChanged: (SwipeItem item, int index) {
+                    debugPrint("$index. ${item.content}");
+                  },
+                  upSwipeAllowed: false,
+                  fillSpace: true,
+                  likeTag: Container(
+                    margin: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.all(3.0),
+                    decoration:
+                        BoxDecoration(border: Border.all(color: Colors.green)),
+                    child: const Text(
+                      'YES',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontSize: 24,
+                      ),
                     ),
                   ),
-                ),
-                nopeTag: Container(
-                  margin: const EdgeInsets.all(24.0),
-                  padding: const EdgeInsets.all(3.0),
-                  decoration:
-                      BoxDecoration(border: Border.all(color: Colors.red)),
-                  child: const Text(
-                    'NOPE',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 24,
+                  nopeTag: Container(
+                    margin: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.all(3.0),
+                    decoration:
+                        BoxDecoration(border: Border.all(color: Colors.red)),
+                    child: const Text(
+                      'NOPE',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 24,
+                      ),
                     ),
                   ),
                 ),

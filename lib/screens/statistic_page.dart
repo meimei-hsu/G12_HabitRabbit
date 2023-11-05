@@ -37,56 +37,56 @@ class StatisticPageState extends State<StatisticPage> {
   Widget build(BuildContext context) {
     refresh();
     return SafeArea(
-        child: Scaffold(
-      backgroundColor: ColorSet.backgroundColor,
-      appBar: AppBar(
-        elevation: 0,
-        title: Text(
-          '${Data.user?.displayName!} 的統計資料',
-          textAlign: TextAlign.left,
-          style: const TextStyle(
-              color: ColorSet.textColor,
-              fontSize: 28,
-              letterSpacing: 2,
-              fontWeight: FontWeight.bold,
-              height: 1),
-        ),
+      child: Scaffold(
         backgroundColor: ColorSet.backgroundColor,
-        automaticallyImplyLeading: false,
-      ),
-      body: (StatData.isFetchingData)
-          ? Center(
-              child: Container(
-                  padding:
-                      const EdgeInsets.only(right: 20, left: 20, bottom: 20),
-                  decoration: BoxDecoration(
-                      color: ColorSet.bottomBarColor,
-                      border: Border.all(color: ColorSet.bottomBarColor),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20))),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      LoadingAnimationWidget.horizontalRotatingDots(
-                        color: ColorSet.textColor,
-                        size: 100,
-                      ),
-                      const Text(
-                        "重新整理中...",
-                        style: TextStyle(
+        appBar: AppBar(
+          elevation: 0,
+          title: Text(
+            '${Data.user?.displayName!} 的統計資料',
+            textAlign: TextAlign.left,
+            style: const TextStyle(
+                color: ColorSet.textColor,
+                fontSize: 28,
+                letterSpacing: 2,
+                fontWeight: FontWeight.bold,
+                height: 1),
+          ),
+          backgroundColor: ColorSet.backgroundColor,
+          automaticallyImplyLeading: false,
+        ),
+        body: (StatData.isFetchingData)
+            ? Center(
+                child: Container(
+                    padding:
+                        const EdgeInsets.only(right: 20, left: 20, bottom: 20),
+                    decoration: BoxDecoration(
+                        color: ColorSet.bottomBarColor,
+                        border: Border.all(color: ColorSet.bottomBarColor),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20))),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        LoadingAnimationWidget.horizontalRotatingDots(
                           color: ColorSet.textColor,
+                          size: 100,
                         ),
-                      )
-                    ],
-                  )))
-          : Padding(
-              padding: const EdgeInsets.all(10),
-              //ListView可各分配空間給兩張圖
-              child: ListView(
-                controller: _scrollController,
-                children: [
-                  Column(
+                        const Text(
+                          "重新整理中...",
+                          style: TextStyle(
+                            color: ColorSet.textColor,
+                          ),
+                        )
+                      ],
+                    )))
+            : Padding(
+                padding: const EdgeInsets.all(10),
+                //ListView可各分配空間給兩張圖
+                child: ListView(
+                  controller: _scrollController,
+                  children: [
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
@@ -529,100 +529,105 @@ class StatisticPageState extends State<StatisticPage> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
                           ),
-                          child: Column(children: [
-                            ListTile(
-                              title: const Text(
-                                '計畫進度表',
-                                //(planProgress == 0) ? '運動計畫進度表' : '冥想計畫進度表',
-                                style: TextStyle(
-                                    color: ColorSet.textColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: const Text(
+                                  '計畫進度表',
+                                  //(planProgress == 0) ? '運動計畫進度表' : '冥想計畫進度表',
+                                  style: TextStyle(
+                                      color: ColorSet.textColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0),
+                                ),
+                                trailing: ToggleSwitch(
+                                  minHeight: 35,
+                                  initialLabelIndex: StatData.planProgress,
+                                  cornerRadius: 10.0,
+                                  radiusStyle: true,
+                                  labels: const ['運動', '冥想'],
+                                  icons: const [
+                                    Icons.fitness_center_outlined,
+                                    Icons.self_improvement_outlined
+                                  ],
+                                  iconSize: 16,
+                                  activeBgColors: const [
+                                    [ColorSet.exerciseColor],
+                                    [ColorSet.meditationColor]
+                                  ],
+                                  activeFgColor: ColorSet.textColor,
+                                  inactiveBgColor: ColorSet.bottomBarColor,
+                                  inactiveFgColor: ColorSet.textColor,
+                                  totalSwitches: 2,
+                                  //animate: true,
+                                  //animationDuration: 300,
+                                  onToggle: (index) {
+                                    StatData.planProgress = index!;
+                                    setState(() {});
+                                  },
+                                ),
+                                visualDensity:
+                                    const VisualDensity(vertical: -4),
                               ),
-                              trailing: ToggleSwitch(
-                                minHeight: 35,
-                                initialLabelIndex: StatData.planProgress,
-                                cornerRadius: 10.0,
-                                radiusStyle: true,
-                                labels: const ['運動', '冥想'],
-                                icons: const [
-                                  Icons.fitness_center_outlined,
-                                  Icons.self_improvement_outlined
-                                ],
-                                iconSize: 16,
-                                activeBgColors: const [
-                                  [ColorSet.exerciseColor],
-                                  [ColorSet.meditationColor]
-                                ],
-                                activeFgColor: ColorSet.textColor,
-                                inactiveBgColor: ColorSet.bottomBarColor,
-                                inactiveFgColor: ColorSet.textColor,
-                                totalSwitches: 2,
-                                //animate: true,
-                                //animationDuration: 300,
-                                onToggle: (index) {
-                                  StatData.planProgress = index!;
-                                  setState(() {});
-                                },
-                              ),
-                              visualDensity: const VisualDensity(vertical: -4),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                              child: HeatMapCalendar(
-                                defaultColor: ColorSet.bottomBarColor,
-                                textColor: ColorSet.textColor,
-                                weekTextColor: ColorSet.textColor,
-                                colorMode: ColorMode.color,
-                                fontSize: 18,
-                                weekFontSize: 14,
-                                monthFontSize: 16,
-                                flexible: true,
-                                margin: const EdgeInsets.all(2.5),
-                                datasets: (StatData.planProgress == 0)
-                                    ? StatData.exerciseCompletionRateMap
-                                    : StatData.meditationCompletionRateMap,
-                                colorsets: colorSet,
-                                colorTipCount: 2,
-                                colorTipSize: 20,
-                                colorTipHelper: const [
-                                  Text(
-                                    "失敗 ",
-                                    style: TextStyle(
-                                        color: ColorSet.textColor,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  Text(
-                                    " 成功",
-                                    style: TextStyle(
-                                        color: ColorSet.textColor,
-                                        fontWeight: FontWeight.w500),
-                                  )
-                                ],
-                                /*onClick: (value) {
+                              Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                child: HeatMapCalendar(
+                                  defaultColor: ColorSet.bottomBarColor,
+                                  textColor: ColorSet.textColor,
+                                  weekTextColor: ColorSet.textColor,
+                                  colorMode: ColorMode.color,
+                                  fontSize: 18,
+                                  weekFontSize: 14,
+                                  monthFontSize: 16,
+                                  flexible: true,
+                                  margin: const EdgeInsets.all(2.5),
+                                  datasets: (StatData.planProgress == 0)
+                                      ? StatData.exerciseCompletionRateMap
+                                      : StatData.meditationCompletionRateMap,
+                                  colorsets: colorSet,
+                                  colorTipCount: 2,
+                                  colorTipSize: 20,
+                                  colorTipHelper: const [
+                                    Text(
+                                      "失敗 ",
+                                      style: TextStyle(
+                                          color: ColorSet.textColor,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text(
+                                      " 成功",
+                                      style: TextStyle(
+                                          color: ColorSet.textColor,
+                                          fontWeight: FontWeight.w500),
+                                    )
+                                  ],
+                                  /*onClick: (value) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(value.toString())),
                                   );
                                 },*/
-                              ),
-                            )
-                          ]),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                         const SizedBox(
                           height: 15,
                         ),
                         Container(
-                            padding:
-                                const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
-                            margin: const EdgeInsets.only(right: 10, left: 10),
-                            decoration: BoxDecoration(
-                              color: ColorSet.backgroundColor,
-                              border: Border.all(
-                                  color: ColorSet.textColor, width: 4),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
-                            ),
-                            child: Column(children: [
+                          padding:
+                              const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+                          margin: const EdgeInsets.only(right: 10, left: 10),
+                          decoration: BoxDecoration(
+                            color: ColorSet.backgroundColor,
+                            border:
+                                Border.all(color: ColorSet.textColor, width: 4),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Column(
+                            children: [
                               ListTile(
                                 title: const Text(
                                   '連續完成天數',
@@ -659,140 +664,75 @@ class StatisticPageState extends State<StatisticPage> {
                                 visualDensity:
                                     const VisualDensity(vertical: -4),
                               ),
-                              (StatData.consecutiveDays == 0)
-                                  ? SfCartesianChart(
-                                      plotAreaBorderWidth: 0,
-                                      zoomPanBehavior: ZoomPanBehavior(
-                                        enablePanning: true,
-                                      ),
-                                      primaryXAxis: CategoryAxis(
-                                        autoScrollingDelta: 7,
-                                        autoScrollingMode:
-                                            AutoScrollingMode.end,
-                                        axisLine: const AxisLine(
-                                          color: ColorSet.borderColor,
-                                          width: 0.6,
-                                        ),
-                                        labelStyle: const TextStyle(
-                                            color: ColorSet.borderColor,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold),
-                                        majorTickLines:
-                                            const MajorTickLines(size: 0),
-                                        majorGridLines: const MajorGridLines(
-                                          color: Colors.transparent,
-                                        ),
-                                      ),
-                                      primaryYAxis: NumericAxis(
-                                        axisLine: const AxisLine(width: 0),
-                                        interval: 2,
-                                        labelStyle:
-                                            const TextStyle(fontSize: 0),
-                                        numberFormat: NumberFormat('#,##0 天'),
-                                        majorTickLines:
-                                            const MajorTickLines(size: 0),
-                                        majorGridLines: const MajorGridLines(
-                                          color: ColorSet.borderColor,
-                                        ),
-                                      ),
-                                      series: <BarSeries<ChartData, String>>[
-                                        BarSeries<ChartData, String>(
-                                          dataSource:
-                                              getExerciseConsecutiveDaysChartData(),
-                                          xValueMapper: (ChartData data, _) =>
-                                              data.x,
-                                          yValueMapper: (ChartData data, _) =>
-                                              data.y,
-                                          dataLabelSettings:
-                                              const DataLabelSettings(
-                                                  isVisible: true,
-                                                  textStyle: TextStyle(
-                                                      color: ColorSet.textColor,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                          color: ColorSet.exerciseColor,
-                                          borderRadius: const BorderRadius.only(
-                                              topRight: Radius.circular(10),
-                                              bottomRight: Radius.circular(10)),
-                                        ),
-                                      ],
-                                    )
-                                  : SfCartesianChart(
-                                      plotAreaBorderWidth: 0,
-                                      zoomPanBehavior: ZoomPanBehavior(
-                                        enablePanning: true,
-                                        zoomMode: ZoomMode.x,
-                                      ),
-                                      primaryXAxis: CategoryAxis(
-                                        autoScrollingDelta: 7,
-                                        autoScrollingMode:
-                                            AutoScrollingMode.end,
-                                        axisLine: const AxisLine(
-                                          color: ColorSet.borderColor,
-                                          width: 0.6,
-                                        ),
-                                        labelStyle: const TextStyle(
+                              SfCartesianChart(
+                                plotAreaBorderWidth: 0,
+                                zoomPanBehavior: ZoomPanBehavior(
+                                  enablePanning: true,
+                                ),
+                                primaryXAxis: CategoryAxis(
+                                  autoScrollingDelta: 7,
+                                  autoScrollingMode: AutoScrollingMode.end,
+                                  axisLine: const AxisLine(
+                                    color: ColorSet.borderColor,
+                                    width: 0.6,
+                                  ),
+                                  labelStyle: const TextStyle(
+                                      color: ColorSet.textColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                  majorTickLines: const MajorTickLines(size: 0),
+                                  majorGridLines: const MajorGridLines(
+                                    color: Colors.transparent,
+                                  ),
+                                ),
+                                primaryYAxis: NumericAxis(
+                                  axisLine: const AxisLine(width: 0),
+                                  interval: 2,
+                                  labelStyle: const TextStyle(fontSize: 0),
+                                  numberFormat: NumberFormat('#,##0 天'),
+                                  majorTickLines: const MajorTickLines(size: 0),
+                                ),
+                                series: <BarSeries<ChartData, String>>[
+                                  BarSeries<ChartData, String>(
+                                    dataSource: (StatData.consecutiveDays == 0)
+                                        ? getExerciseConsecutiveDaysChartData()
+                                        : getMeditationConsecutiveDaysChartData(),
+                                    xValueMapper: (ChartData data, _) => data.x,
+                                    yValueMapper: (ChartData data, _) => data.y,
+                                    dataLabelSettings: const DataLabelSettings(
+                                        isVisible: true,
+                                        textStyle: TextStyle(
                                             color: ColorSet.textColor,
                                             fontSize: 15,
-                                            fontWeight: FontWeight.bold),
-                                        majorTickLines:
-                                            const MajorTickLines(size: 0),
-                                        majorGridLines: const MajorGridLines(
-                                          color: Colors.transparent,
-                                        ),
-                                      ),
-                                      primaryYAxis: NumericAxis(
-                                        axisLine: const AxisLine(width: 0),
-                                        interval: 2,
-                                        labelStyle:
-                                            const TextStyle(fontSize: 0),
-                                        numberFormat: NumberFormat('#,##0 天'),
-                                        majorTickLines:
-                                            const MajorTickLines(size: 0),
-                                        majorGridLines: const MajorGridLines(
-                                          color: ColorSet.borderColor,
-                                        ),
-                                      ),
-                                      series: <BarSeries<ChartData, String>>[
-                                        BarSeries<ChartData, String>(
-                                          dataSource:
-                                              getMeditationConsecutiveDaysChartData(),
-                                          xValueMapper: (ChartData data, _) =>
-                                              data.x,
-                                          yValueMapper: (ChartData data, _) =>
-                                              data.y,
-                                          dataLabelSettings:
-                                              const DataLabelSettings(
-                                                  isVisible: true,
-                                                  textStyle: TextStyle(
-                                                      color: ColorSet.textColor,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                          color: const Color(0xffE9EAFD),
-                                          borderRadius: const BorderRadius.only(
-                                              topRight: Radius.circular(10),
-                                              bottomRight: Radius.circular(10)),
-                                        ),
-                                      ],
-                                    )
-                            ])),
+                                            fontWeight: FontWeight.bold)),
+                                    color: (StatData.consecutiveDays == 0)
+                                        ? ColorSet.exerciseColor
+                                        : ColorSet.meditationColor,
+                                    borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(10),
+                                        bottomRight: Radius.circular(10)),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
                         const SizedBox(
                           height: 15,
                         ),
                         Container(
-                            padding:
-                                const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
-                            margin: const EdgeInsets.only(right: 10, left: 10),
-                            decoration: BoxDecoration(
-                              color: ColorSet.backgroundColor,
-                              border: Border.all(
-                                  color: ColorSet.borderColor, width: 4),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
-                            ),
-                            child: Column(children: [
+                          padding:
+                              const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+                          margin: const EdgeInsets.only(right: 10, left: 10),
+                          decoration: BoxDecoration(
+                            color: ColorSet.backgroundColor,
+                            border: Border.all(
+                                color: ColorSet.borderColor, width: 4),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Column(
+                            children: [
                               ListTile(
                                 title: const Text(
                                   '累積比例',
@@ -829,292 +769,57 @@ class StatisticPageState extends State<StatisticPage> {
                                 visualDensity:
                                     const VisualDensity(vertical: -4),
                               ),
-                              (StatData.accumulatedTime == 0)
-                                  ? SfCircularChart(
-                                      legend: Legend(
-                                          isVisible: true,
-                                          textStyle: const TextStyle(
-                                              color: ColorSet.textColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      series: <
-                                          CircularSeries<ChartData, String>>[
-                                          DoughnutSeries<ChartData, String>(
-                                            dataSource:
-                                                getExerciseTypePercentageChartData(),
-                                            innerRadius: '40%',
-                                            xValueMapper: (ChartData data, _) =>
-                                                data.x,
-                                            yValueMapper: (ChartData data, _) =>
-                                                data.y,
-                                            pointColorMapper:
-                                                (ChartData data, _) {
-                                              if (data.x == "有氧") {
-                                                return const Color(0xfffbd9c6);
-                                              } else if (data.x == "重訓") {
-                                                return const Color(0xfffae5da);
-                                              } else if (data.x == "瑜珈") {
-                                                return const Color(0xfffcf1ec);
-                                              } else {
-                                                return const Color(0xfffdfdfd);
-                                              }
-                                            },
-                                            //顯示數字(趴數)
-                                            dataLabelSettings:
-                                                const DataLabelSettings(
-                                              isVisible: true,
-                                              textStyle: TextStyle(
-                                                  color: ColorSet.textColor,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ])
-                                  : SfCircularChart(
-                                      legend: Legend(
-                                          isVisible: true,
-                                          textStyle: const TextStyle(
-                                              color: ColorSet.textColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      series: <
-                                          CircularSeries<ChartData, String>>[
-                                          DoughnutSeries<ChartData, String>(
-                                            dataSource:
-                                                getMeditationTypePercentageChartData(),
-                                            innerRadius: '40%',
-                                            xValueMapper: (ChartData data, _) =>
-                                                data.x,
-                                            yValueMapper: (ChartData data, _) =>
-                                                data.y,
-                                            pointColorMapper:
-                                                (ChartData data, _) {
-                                              if (data.x == "正念冥想") {
-                                                return const Color(0xffe9eafd);
-                                              } else if (data.x == "工作冥想") {
-                                                return const Color(0xffd6d8fa);
-                                              } else if (data.x == "慈心冥想") {
-                                                return const Color(0xffc2c5f7);
-                                              } else {
-                                                return const Color(0xfffdfdfd);
-                                              }
-                                            },
-                                            dataLabelSettings:
-                                                const DataLabelSettings(
-                                              isVisible: true,
-                                              textStyle: TextStyle(
-                                                  color: ColorSet.textColor,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ]),
-                            ])),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          padding:
-                              const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
-                          margin: const EdgeInsets.only(right: 10, left: 10),
-                          decoration: BoxDecoration(
-                            color: ColorSet.backgroundColor,
-                            border: Border.all(
-                                color: ColorSet.borderColor, width: 4),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20)),
+                              SfCircularChart(
+                                legend: Legend(
+                                    isVisible: true,
+                                    textStyle: const TextStyle(
+                                        color: ColorSet.textColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold)),
+                                series: <CircularSeries<ChartData, String>>[
+                                  DoughnutSeries<ChartData, String>(
+                                    dataSource: (StatData.accumulatedTime == 0)
+                                        ? getExerciseTypePercentageChartData()
+                                        : getMeditationTypePercentageChartData(),
+                                    innerRadius: '40%',
+                                    xValueMapper: (ChartData data, _) => data.x,
+                                    yValueMapper: (ChartData data, _) => data.y,
+                                    pointColorMapper: (ChartData data, _) {
+                                      if (StatData.accumulatedTime == 0) {
+                                        if (data.x == "有氧") {
+                                          return const Color(0xfffbd9c6);
+                                        } else if (data.x == "重訓") {
+                                          return const Color(0xfffae5da);
+                                        } else if (data.x == "瑜珈") {
+                                          return const Color(0xfffcf1ec);
+                                        } else {
+                                          return const Color(0xfffdfdfd);
+                                        }
+                                      } else {
+                                        if (data.x == "正念") {
+                                          return const Color(0xffe9eafd);
+                                        } else if (data.x == "工作") {
+                                          return const Color(0xffd6d8fa);
+                                        } else if (data.x == "慈心") {
+                                          return const Color(0xffc2c5f7);
+                                        } else {
+                                          return const Color(0xfffdfdfd);
+                                        }
+                                      }
+                                    },
+                                    //顯示數字(趴數)
+                                    dataLabelSettings: const DataLabelSettings(
+                                      isVisible: true,
+                                      textStyle: TextStyle(
+                                          color: ColorSet.textColor,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
                           ),
-                          child: Column(children: [
-                            ListTile(
-                              title: const Text(
-                                '每週成功天數',
-                                //(weekDays == 0) ? '每週成功運動天數' : '每週成功冥想天數',
-                                style: TextStyle(
-                                    color: ColorSet.textColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0),
-                              ),
-                              trailing: ToggleSwitch(
-                                minHeight: 35,
-                                initialLabelIndex: StatData.weekDays,
-                                cornerRadius: 10.0,
-                                radiusStyle: true,
-                                labels: const ['運動', '冥想'],
-                                icons: const [
-                                  Icons.fitness_center_outlined,
-                                  Icons.self_improvement_outlined
-                                ],
-                                iconSize: 16,
-                                activeBgColors: const [
-                                  [ColorSet.exerciseColor],
-                                  [ColorSet.meditationColor]
-                                ],
-                                activeFgColor: ColorSet.textColor,
-                                inactiveBgColor: ColorSet.bottomBarColor,
-                                inactiveFgColor: ColorSet.textColor,
-                                totalSwitches: 2,
-                                //animate: true,
-                                //animationDuration: 300,
-                                onToggle: (index) {
-                                  StatData.weekDays = index!;
-                                  setState(() {});
-                                },
-                              ),
-                              visualDensity: const VisualDensity(vertical: -4),
-                            ),
-                            (StatData.weekDays == 0)
-                                ? Container(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                    child: SfCartesianChart(
-                                        // hide the border
-                                        plotAreaBorderWidth: 0,
-                                        zoomPanBehavior: ZoomPanBehavior(
-                                          enablePanning: true,
-                                          zoomMode: ZoomMode.x,
-                                        ),
-                                        primaryXAxis: CategoryAxis(
-                                          autoScrollingDelta: 7,
-                                          autoScrollingMode:
-                                              AutoScrollingMode.end,
-                                          interval: 1,
-                                          axisLine: const AxisLine(
-                                            color: ColorSet.textColor,
-                                            width: 0.6,
-                                          ),
-                                          labelStyle: const TextStyle(
-                                              color: ColorSet.textColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                          // set 0 or transparent color to hide grid lines and tick lines
-                                          majorTickLines:
-                                              const MajorTickLines(size: 0),
-                                          majorGridLines: const MajorGridLines(
-                                            color: Colors.transparent,
-                                          ),
-                                        ),
-                                        primaryYAxis: NumericAxis(
-                                          // must set for data label (above the column)
-                                          labelFormat: '{value} 天',
-                                          minimum: 0,
-                                          maximum: StatData.maxExerciseWeekDays,
-                                          interval: 2,
-                                          // set 0 to hide grid lines and tick lines
-                                          axisLine: const AxisLine(width: 0),
-                                          labelStyle: const TextStyle(
-                                            fontSize: 0,
-                                          ),
-                                          majorTickLines:
-                                              const MajorTickLines(size: 0),
-                                          majorGridLines: const MajorGridLines(
-                                            color: ColorSet.borderColor,
-                                          ),
-                                        ),
-                                        //tooltipBehavior: _tooltipBehavior,
-                                        series: <
-                                            ChartSeries<ChartData, String>>[
-                                          ColumnSeries<ChartData, String>(
-                                            dataSource:
-                                                getExerciseWeekDaysData(),
-                                            xValueMapper: (ChartData data, _) =>
-                                                data.x,
-                                            yValueMapper: (ChartData data, _) =>
-                                                data.y,
-                                            dataLabelSettings:
-                                                const DataLabelSettings(
-                                                    isVisible: true,
-                                                    textStyle: TextStyle(
-                                                        color:
-                                                            ColorSet.textColor,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                            color: ColorSet.exerciseColor,
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(10),
-                                                    topLeft:
-                                                        Radius.circular(10)),
-                                          )
-                                        ]))
-                                : Container(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                    child: SfCartesianChart(
-                                        // hide the border
-                                        plotAreaBorderWidth: 0,
-                                        zoomPanBehavior: ZoomPanBehavior(
-                                          enablePanning: true,
-                                          zoomMode: ZoomMode.x,
-                                        ),
-                                        primaryXAxis: CategoryAxis(
-                                          autoScrollingDelta: 7,
-                                          autoScrollingMode:
-                                              AutoScrollingMode.end,
-                                          interval: 1,
-                                          axisLine: const AxisLine(
-                                            color: ColorSet.textColor,
-                                            width: 0.6,
-                                          ),
-                                          labelStyle: const TextStyle(
-                                              color: ColorSet.textColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                          // set 0 or transparent color to hide grid lines and tick lines
-                                          majorTickLines:
-                                              const MajorTickLines(size: 0),
-                                          majorGridLines: const MajorGridLines(
-                                            color: Colors.transparent,
-                                          ),
-                                        ),
-                                        primaryYAxis: NumericAxis(
-                                          // must set for data label (above the column)
-                                          labelFormat: '{value} 天',
-                                          minimum: 0,
-                                          maximum:
-                                              StatData.maxMeditationWeekDays,
-                                          interval: 2,
-                                          // set 0 to hide grid lines and tick lines
-                                          axisLine: const AxisLine(width: 0),
-                                          labelStyle: const TextStyle(
-                                            fontSize: 0,
-                                          ),
-                                          majorTickLines:
-                                              const MajorTickLines(size: 0),
-                                          majorGridLines: const MajorGridLines(
-                                            color: ColorSet.borderColor,
-                                          ),
-                                        ),
-                                        //tooltipBehavior: _tooltipBehavior,
-                                        series: <
-                                            ChartSeries<ChartData, String>>[
-                                          ColumnSeries<ChartData, String>(
-                                            dataSource:
-                                                getMeditationWeekDaysData(),
-                                            xValueMapper: (ChartData data, _) =>
-                                                data.x,
-                                            yValueMapper: (ChartData data, _) =>
-                                                data.y,
-                                            dataLabelSettings:
-                                                const DataLabelSettings(
-                                                    isVisible: true,
-                                                    textStyle: TextStyle(
-                                                        color:
-                                                            ColorSet.textColor,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                            color: ColorSet.meditationColor,
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(10),
-                                                    topLeft:
-                                                        Radius.circular(10)),
-                                          )
-                                        ])),
-                          ]),
                         ),
                         const SizedBox(
                           height: 15,
@@ -1130,215 +835,268 @@ class StatisticPageState extends State<StatisticPage> {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(20)),
                           ),
-                          child: Column(children: [
-                            ListTile(
-                              title: const Text(
-                                '每月成功天數',
-                                //(monthDays == 0) ? '每月成功運動天數' : '每月成功冥想天數',
-                                style: TextStyle(
-                                    color: ColorSet.textColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: const Text(
+                                  '每週成功天數',
+                                  //(weekDays == 0) ? '每週成功運動天數' : '每週成功冥想天數',
+                                  style: TextStyle(
+                                      color: ColorSet.textColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0),
+                                ),
+                                trailing: ToggleSwitch(
+                                  minHeight: 35,
+                                  initialLabelIndex: StatData.weekDays,
+                                  cornerRadius: 10.0,
+                                  radiusStyle: true,
+                                  labels: const ['運動', '冥想'],
+                                  icons: const [
+                                    Icons.fitness_center_outlined,
+                                    Icons.self_improvement_outlined
+                                  ],
+                                  iconSize: 16,
+                                  activeBgColors: const [
+                                    [ColorSet.exerciseColor],
+                                    [ColorSet.meditationColor]
+                                  ],
+                                  activeFgColor: ColorSet.textColor,
+                                  inactiveBgColor: ColorSet.bottomBarColor,
+                                  inactiveFgColor: ColorSet.textColor,
+                                  totalSwitches: 2,
+                                  //animate: true,
+                                  //animationDuration: 300,
+                                  onToggle: (index) {
+                                    StatData.weekDays = index!;
+                                    setState(() {});
+                                  },
+                                ),
+                                visualDensity:
+                                    const VisualDensity(vertical: -4),
                               ),
-                              trailing: ToggleSwitch(
-                                minHeight: 35,
-                                initialLabelIndex: StatData.monthDays,
-                                cornerRadius: 10.0,
-                                radiusStyle: true,
-                                labels: const ['運動', '冥想'],
-                                icons: const [
-                                  Icons.fitness_center_outlined,
-                                  Icons.self_improvement_outlined
-                                ],
-                                iconSize: 16,
-                                activeBgColors: const [
-                                  [ColorSet.exerciseColor],
-                                  [ColorSet.meditationColor]
-                                ],
-                                activeFgColor: ColorSet.textColor,
-                                inactiveBgColor: ColorSet.bottomBarColor,
-                                inactiveFgColor: ColorSet.textColor,
-                                totalSwitches: 2,
-                                //animate: true,
-                                //animationDuration: 300,
-                                onToggle: (index) {
-                                  StatData.monthDays = index!;
-                                  setState(() {});
+                              Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                child: SfCartesianChart(
+                                  // hide the border
+                                  plotAreaBorderWidth: 0,
+                                  zoomPanBehavior: ZoomPanBehavior(
+                                    enablePanning: true,
+                                    zoomMode: ZoomMode.x,
+                                  ),
+                                  primaryXAxis: CategoryAxis(
+                                    autoScrollingDelta: 7,
+                                    autoScrollingMode: AutoScrollingMode.end,
+                                    interval: 1,
+                                    axisLine: const AxisLine(
+                                      color: ColorSet.textColor,
+                                      width: 0.6,
+                                    ),
+                                    labelStyle: const TextStyle(
+                                        color: ColorSet.textColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                    // set 0 or transparent color to hide grid lines and tick lines
+                                    majorTickLines:
+                                        const MajorTickLines(size: 0),
+                                    majorGridLines: const MajorGridLines(
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                  primaryYAxis: NumericAxis(
+                                    // must set for data label (above the column)
+                                    labelFormat: '{value} 天',
+                                    minimum: 0,
+                                    maximum: (StatData.weekDays == 0)
+                                        ? StatData.maxExerciseWeekDays
+                                        : StatData.maxMeditationWeekDays,
+                                    interval: 2,
+                                    // set 0 to hide grid lines and tick lines
+                                    axisLine: const AxisLine(width: 0),
+                                    labelStyle: const TextStyle(
+                                        fontSize: 10,
+                                        color: ColorSet.textColor),
+                                    majorTickLines:
+                                        const MajorTickLines(size: 0),
+                                  ),
+                                  series: <ChartSeries<ChartData, String>>[
+                                    ColumnSeries<ChartData, String>(
+                                      dataSource: (StatData.weekDays == 0)
+                                          ? getExerciseWeekDaysData()
+                                          : getMeditationWeekDaysData(),
+                                      xValueMapper: (ChartData data, _) =>
+                                          data.x,
+                                      yValueMapper: (ChartData data, _) =>
+                                          data.y,
+                                      dataLabelSettings:
+                                          const DataLabelSettings(
+                                              isVisible: true,
+                                              textStyle: TextStyle(
+                                                  color: ColorSet.textColor,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold)),
+                                      color: (StatData.weekDays == 0)
+                                          ? ColorSet.exerciseColor
+                                          : ColorSet.meditationColor,
+                                      borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(10),
+                                          topLeft: Radius.circular(10)),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                          padding:
+                              const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+                          margin: const EdgeInsets.only(right: 10, left: 10),
+                          decoration: BoxDecoration(
+                            color: ColorSet.backgroundColor,
+                            border: Border.all(
+                                color: ColorSet.borderColor, width: 4),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: const Text(
+                                  '每月成功天數',
+                                  //(monthDays == 0) ? '每月成功運動天數' : '每月成功冥想天數',
+                                  style: TextStyle(
+                                      color: ColorSet.textColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0),
+                                ),
+                                trailing: ToggleSwitch(
+                                  minHeight: 35,
+                                  initialLabelIndex: StatData.monthDays,
+                                  cornerRadius: 10.0,
+                                  radiusStyle: true,
+                                  labels: const ['運動', '冥想'],
+                                  icons: const [
+                                    Icons.fitness_center_outlined,
+                                    Icons.self_improvement_outlined
+                                  ],
+                                  iconSize: 16,
+                                  activeBgColors: const [
+                                    [ColorSet.exerciseColor],
+                                    [ColorSet.meditationColor]
+                                  ],
+                                  activeFgColor: ColorSet.textColor,
+                                  inactiveBgColor: ColorSet.bottomBarColor,
+                                  inactiveFgColor: ColorSet.textColor,
+                                  totalSwitches: 2,
+                                  //animate: true,
+                                  //animationDuration: 300,
+                                  onToggle: (index) {
+                                    StatData.monthDays = index!;
+                                    setState(() {});
 
-                                  // TODO: 確認要加在哪些地方（完成統計頁後)
-                                  // add "scrolling automatically function" in the last container
-                                  // to scroll the listview to bottom automatically
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    _scrollController.animateTo(
-                                        _scrollController
-                                            .position.maxScrollExtent,
-                                        duration:
-                                            const Duration(milliseconds: 200),
-                                        curve: Curves.easeOut);
-                                  });
-                                },
+                                    // TODO: 確認要加在哪些地方（完成統計頁後)
+                                    // add "scrolling automatically function" in the last container
+                                    // to scroll the listview to bottom automatically
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                      _scrollController.animateTo(
+                                          _scrollController
+                                              .position.maxScrollExtent,
+                                          duration:
+                                              const Duration(milliseconds: 200),
+                                          curve: Curves.easeOut);
+                                    });
+                                  },
+                                ),
+                                visualDensity:
+                                    const VisualDensity(vertical: -4),
                               ),
-                              visualDensity: const VisualDensity(vertical: -4),
-                            ),
-                            (StatData.monthDays == 0)
-                                ? Container(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                    child: SfCartesianChart(
-                                        // hide the border
-                                        plotAreaBorderWidth: 0,
-                                        zoomPanBehavior: ZoomPanBehavior(
-                                          enablePanning: true,
-                                          zoomMode: ZoomMode.x,
-                                        ),
-                                        primaryXAxis: CategoryAxis(
-                                          autoScrollingDelta: 7,
-                                          autoScrollingMode:
-                                              AutoScrollingMode.end,
-                                          axisLine: const AxisLine(
-                                            color: ColorSet.textColor,
-                                            width: 0.6,
-                                          ),
-                                          labelStyle: const TextStyle(
-                                              color: ColorSet.textColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                          // set 0 or transparent color to hide grid lines and tick lines
-                                          majorTickLines:
-                                              const MajorTickLines(size: 0),
-                                          majorGridLines: const MajorGridLines(
-                                            color: Colors.transparent,
-                                          ),
-                                        ),
-                                        primaryYAxis: NumericAxis(
-                                          // must set for data label (above the column)
-                                          labelFormat: '{value} 天',
-                                          minimum: 0,
-                                          maximum:
-                                              StatData.maxExerciseMonthDays,
-                                          interval: 3,
-                                          // set 0 to hide grid lines and tick lines
-                                          axisLine: const AxisLine(width: 0),
-                                          labelStyle: const TextStyle(
-                                            fontSize: 0,
-                                          ),
-                                          majorTickLines:
-                                              const MajorTickLines(size: 0),
-                                          majorGridLines: const MajorGridLines(
-                                            color: ColorSet.borderColor,
-                                          ),
-                                        ),
-                                        //tooltipBehavior: _tooltipBehavior,
-                                        series: <
-                                            ChartSeries<ChartData, String>>[
-                                          ColumnSeries<ChartData, String>(
-                                            dataSource:
-                                                getExerciseMonthDaysData(),
-                                            xValueMapper: (ChartData data, _) =>
-                                                data.x,
-                                            yValueMapper: (ChartData data, _) =>
-                                                data.y,
-                                            dataLabelSettings:
-                                                const DataLabelSettings(
-                                                    isVisible: true,
-                                                    textStyle: TextStyle(
-                                                        color:
-                                                            ColorSet.textColor,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                            color: ColorSet.exerciseColor,
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(10),
-                                                    topLeft:
-                                                        Radius.circular(10)),
-                                          )
-                                        ]))
-                                : Container(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                    child: SfCartesianChart(
-                                        // hide the border
-                                        plotAreaBorderWidth: 0,
-                                        zoomPanBehavior: ZoomPanBehavior(
-                                          enablePanning: true,
-                                          zoomMode: ZoomMode.x,
-                                        ),
-                                        primaryXAxis: CategoryAxis(
-                                          autoScrollingDelta: 7,
-                                          autoScrollingMode:
-                                              AutoScrollingMode.end,
-                                          axisLine: const AxisLine(
-                                            color: ColorSet.textColor,
-                                            width: 0.6,
-                                          ),
-                                          labelStyle: const TextStyle(
-                                              color: ColorSet.textColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                          // set 0 or transparent color to hide grid lines and tick lines
-                                          majorTickLines:
-                                              const MajorTickLines(size: 0),
-                                          majorGridLines: const MajorGridLines(
-                                            color: Colors.transparent,
-                                          ),
-                                        ),
-                                        primaryYAxis: NumericAxis(
-                                          // must set for data label (above the column)
-                                          labelFormat: '{value} 天',
-                                          minimum: 0,
-                                          maximum:
-                                              StatData.maxMeditationMonthDays,
-                                          interval: 3,
-                                          // set 0 to hide grid lines and tick lines
-                                          axisLine: const AxisLine(width: 0),
-                                          labelStyle: const TextStyle(
-                                            fontSize: 0,
-                                          ),
-                                          majorTickLines:
-                                              const MajorTickLines(size: 0),
-                                          majorGridLines: const MajorGridLines(
-                                            color: ColorSet.borderColor,
-                                          ),
-                                        ),
-                                        //tooltipBehavior: _tooltipBehavior,
-                                        series: <
-                                            ChartSeries<ChartData, String>>[
-                                          ColumnSeries<ChartData, String>(
-                                            dataSource:
-                                                getMeditationMonthDaysData(),
-                                            xValueMapper: (ChartData data, _) =>
-                                                data.x,
-                                            yValueMapper: (ChartData data, _) =>
-                                                data.y,
-                                            dataLabelSettings:
-                                                const DataLabelSettings(
-                                                    isVisible: true,
-                                                    textStyle: TextStyle(
-                                                        color:
-                                                            ColorSet.textColor,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                            color: ColorSet.meditationColor,
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(10),
-                                                    topLeft:
-                                                        Radius.circular(10)),
-                                          )
-                                        ])),
-                          ]),
+                              Container(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                child: SfCartesianChart(
+                                  // hide the border
+                                  plotAreaBorderWidth: 0,
+                                  zoomPanBehavior: ZoomPanBehavior(
+                                    enablePanning: true,
+                                    zoomMode: ZoomMode.x,
+                                  ),
+                                  primaryXAxis: CategoryAxis(
+                                    autoScrollingDelta: 7,
+                                    autoScrollingMode: AutoScrollingMode.end,
+                                    axisLine: const AxisLine(
+                                      color: ColorSet.textColor,
+                                      width: 0.6,
+                                    ),
+                                    labelStyle: const TextStyle(
+                                        color: ColorSet.textColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                    // set 0 or transparent color to hide grid lines and tick lines
+                                    majorTickLines:
+                                        const MajorTickLines(size: 0),
+                                    majorGridLines: const MajorGridLines(
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                  primaryYAxis: NumericAxis(
+                                    // must set for data label (above the column)
+                                    labelFormat: '{value} 天',
+                                    minimum: 0,
+                                    maximum: (StatData.monthDays == 0)
+                                        ? StatData.maxExerciseMonthDays
+                                        : StatData.maxMeditationMonthDays,
+                                    interval: 3,
+                                    // set 0 to hide grid lines and tick lines
+                                    axisLine: const AxisLine(width: 0),
+                                    labelStyle: const TextStyle(
+                                        fontSize: 10,
+                                        color: ColorSet.textColor),
+                                    majorTickLines:
+                                        const MajorTickLines(size: 0),
+                                  ),
+                                  //tooltipBehavior: _tooltipBehavior,
+                                  series: <ChartSeries<ChartData, String>>[
+                                    ColumnSeries<ChartData, String>(
+                                      dataSource: (StatData.monthDays == 0)
+                                          ? getExerciseMonthDaysData()
+                                          : getMeditationMonthDaysData(),
+                                      xValueMapper: (ChartData data, _) =>
+                                          data.x,
+                                      yValueMapper: (ChartData data, _) =>
+                                          data.y,
+                                      dataLabelSettings:
+                                          const DataLabelSettings(
+                                              isVisible: true,
+                                              textStyle: TextStyle(
+                                                  color: ColorSet.textColor,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold)),
+                                      color: (StatData.monthDays == 0)
+                                          ? ColorSet.exerciseColor
+                                          : ColorSet.meditationColor,
+                                      borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(10),
+                                          topLeft: Radius.circular(10)),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ]),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-    ));
+      ),
+    );
   }
 
   List<FlSpot> _getWeightData() {
@@ -1496,9 +1254,9 @@ class StatisticPageState extends State<StatisticPage> {
     "cardio": "有氧",
     "yoga": "瑜珈",
     "strength": "重訓",
-    "mindfulness": "正念冥想",
-    "work": "工作冥想",
-    "kindness": "慈心冥想",
+    "mindfulness": "正念",
+    "work": "工作",
+    "kindness": "慈心",
   };
 
   String translateTypeToChinese(String englishType) {

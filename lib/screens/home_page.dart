@@ -29,17 +29,16 @@ class HomepageState extends State<Homepage> {
   GlobalKey bannerKey = GlobalKey();
 
   // TODO: 判斷是否為第一次登入
-  bool isFirstTime = false;
-
   @override
   void initState() {
     super.initState();
-    if (isFirstTime) {
+    if (Data.isFirstTime) {
       WidgetsBinding.instance.addPostFrameCallback(
         (_) => ShowCaseWidget.of(context)
             .startShowCase([calendarKey, bubbleKey, rabbitKey, bannerKey]),
       );
     }
+    Data.isFirstTime = false;
   }
 
   Widget getBannerCarousel() {
@@ -179,7 +178,7 @@ class HomepageState extends State<Homepage> {
                 ),
                 Showcase(
                     key: calendarKey,
-                    description: 'TEST1',
+                    description: '可滑動觀看近兩週的計畫',
                     child: Container(
                       color: ColorSet.backgroundColor, //日曆背景
                       child: TableCalendar(
@@ -301,7 +300,7 @@ class HomepageState extends State<Homepage> {
                     children: [
                       Showcase(
                           key: bubbleKey,
-                          description: 'TEST2',
+                          description: '顯示選取日的計畫完成進度',
                           child: BubbleSpecialThree(
                             text:
                                 'Hello ${Data.user!.displayName}～\n${getDialogText()}',
@@ -316,7 +315,7 @@ class HomepageState extends State<Homepage> {
                       Expanded(
                           child: Showcase(
                         key: rabbitKey,
-                        description: 'TEST3',
+                        description: '點選可以新增計畫以培養運動和冥想習慣',
                         child: GestureDetector(
                           onTap: () {
                             debugPrint("workoutPlan: ${HomeData.workoutPlan}");
@@ -435,7 +434,7 @@ class HomepageState extends State<Homepage> {
                 const SizedBox(height: 50),
                 Showcase(
                     key: bannerKey,
-                    description: 'TEST4',
+                    description: '點擊後開始觀看計畫內容',
                     child: getBannerCarousel()),
                 const SizedBox(height: 5),
                 Row(children: [

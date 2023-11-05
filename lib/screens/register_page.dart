@@ -564,6 +564,7 @@ class SignupFormState extends State<SignupForm> {
                                                 );
 
                                                 if (user != null) {
+                                                  Data.isFirstTime = true;
                                                   if (!mounted) return;
                                                   Navigator
                                                       .pushNamedAndRemoveUntil(

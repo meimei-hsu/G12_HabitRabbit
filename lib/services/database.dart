@@ -203,8 +203,7 @@ General Database: database records that occurs occasionally
 */
 
 class UserDB {
-  static get uid =>
-      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
+  static get uid => FirebaseAuth.instance.currentUser?.uid;
   static const db = "users";
 
   // Define the columns of the user table
@@ -370,7 +369,8 @@ class UserDB {
     return await update(updateVal);
   }
 
-  static Future<bool> updateMeditationFeedback(String type, List feedback) async {
+  static Future<bool> updateMeditationFeedback(
+      String type, List feedback) async {
     String index = "${type}Liking";
     List keys = ["mindfulnessLiking", "workLiking", "kindnessLiking"];
     Map updateVal = {for (String key in keys) key: Data.profile![key]!};
@@ -405,8 +405,7 @@ class UserDB {
 }
 
 class ContractDB {
-  static get uid =>
-      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
+  static get uid => FirebaseAuth.instance.currentUser?.uid;
   static const db = "contract";
 
   // Define the columns of the user table
@@ -460,8 +459,7 @@ class ContractDB {
 }
 
 class GamificationDB {
-  static get uid =>
-      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
+  static get uid => FirebaseAuth.instance.currentUser?.uid;
   static const db = "gamification";
 
   // Define the columns of the milestone table
@@ -614,8 +612,7 @@ class GamificationDB {
 }
 
 class HabitDB {
-  static get uid =>
-      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
+  static get uid => FirebaseAuth.instance.currentUser?.uid;
   static const db = "s";
 
   // Select all workouts
@@ -689,8 +686,7 @@ Journal Database: database records that occurs daily
 */
 
 class PlanDB {
-  static get uid =>
-      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
+  static get uid => FirebaseAuth.instance.currentUser?.uid;
   static const table = "Plan";
 
   // Format the String of plan into List of workouts, grouped by workout sets
@@ -1090,8 +1086,7 @@ class Calculator {
 }
 
 class DurationDB {
-  static get uid =>
-      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
+  static get uid => FirebaseAuth.instance.currentUser?.uid;
   static const table = "Duration";
 
   // Select all durations
@@ -1130,8 +1125,7 @@ class DurationDB {
 }
 
 class ClockDB {
-  static get uid =>
-      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
+  static get uid => FirebaseAuth.instance.currentUser?.uid;
   static const table = "Clock";
 
   // Select all start time records
@@ -1206,8 +1200,7 @@ class ClockDB {
 }
 
 class WeightDB {
-  static get uid =>
-      FirebaseAuth.instance.currentUser?.uid ?? "j6QYBrgbLIQH7h8iRyslntFFKV63";
+  static get uid => FirebaseAuth.instance.currentUser?.uid;
   static const table = "weight";
 
   // Select all weight
