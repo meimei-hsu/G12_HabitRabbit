@@ -42,21 +42,28 @@ class SettingsPageState extends State<SettingsPage> {
     setState(() {});
   }
 
-  double getImageWidthPercentage(){
+  double getImageWidthPercentage() {
     String character = Data.characterName;
+    String characterImageURL = Data.characterImageURL;
     double percentage = 0;
-    if(character == "Mouse" || character == "Cat"){
-      percentage = 0.4;
-    }else if(character == "Pig"){
-      percentage = 0.45;
-    }else if(character == "Sheep"){
-      percentage = 0.65;
-    }else if(character == "Dog"){
-      percentage = 0.5;
-    }else if(character == "Lion" || character == "Fox"){
-      percentage = 0.55;
-    }else if(character == "Sloth"){
-      percentage = 0.6;
+
+    if (character == "Mouse") {
+      percentage = (characterImageURL.contains("_2")) ? 0.4 : 0.6;
+    } else if (character == "Cat") {
+      percentage = (characterImageURL.contains("_2")) ? 0.4 : 0.65;
+    } else if (character == "Pig") {
+      percentage = (characterImageURL.contains("_2")) ? 0.5 : 0.65;
+    } else if (character == "Sheep") {
+      percentage = (characterImageURL.contains("_2")) ? 0.65 : 0.6;
+    } else if (character == "Dog") {
+      percentage = (characterImageURL.contains("_2")) ? 0.55 : 0.5;
+    } else if (character == "Fox") {
+      percentage = (characterImageURL.contains("_2")) ? 0.55 : 0.5;
+    }
+    if (character == "Lion") {
+      percentage = (characterImageURL.contains("_2")) ? 0.6 : 0.65;
+    } else if (character == "Sloth") {
+      percentage = 0.7;
     }
     return percentage;
   }
@@ -100,9 +107,10 @@ class SettingsPageState extends State<SettingsPage> {
                     height: 30,
                   ),
                   Image.asset(
-                      Data.characterImageURL,
+                    Data.characterImageURL,
                     height: MediaQuery.of(context).size.height * 0.2,
-                    width: MediaQuery.of(context).size.width * getImageWidthPercentage(),
+                    width: MediaQuery.of(context).size.width *
+                        getImageWidthPercentage(),
                   ),
                   const SizedBox(
                     height: 15,
