@@ -71,19 +71,27 @@ class GamificationPageState extends State<GamificationPage> {
 class CharacterWidget extends StatelessWidget {
   const CharacterWidget({super.key});
 
-  double getImageWidthPercentage(){
+  double getImageWidthPercentage() {
     String character = Data.characterName;
+    String characterImageURL = Data.characterImageURL;
     double percentage = 0;
-    if(character == "Mouse" || character == "Pig" || character == "Cat"){
+
+    if (character == "Mouse") {
       percentage = 0.6;
-    }else if(character == "Sheep"){
-      percentage = 0.65;
-    }else if(character == "Dog"){
-      percentage = 0.7;
-    }else if(character == "Lion" || character == "Fox"){
-      percentage = 0.75;
-    }else if(character == "Sloth"){
-      percentage = 0.8;
+    } else if (character == "Pig") {
+      percentage = (characterImageURL.contains("_2")) ? 0.6 : 0.7;
+    } else if (character == "Cat") {
+      percentage = (characterImageURL.contains("_2")) ? 0.6 : 0.7;
+    } else if (character == "Sheep") {
+      percentage = (characterImageURL.contains("_2")) ? 0.65 : 0.6;
+    } else if (character == "Dog") {
+      percentage = (characterImageURL.contains("_2")) ? 0.7 : 0.6;
+    } else if (character == "Lion") {
+      percentage = (characterImageURL.contains("_2")) ? 0.75 : 0.8;
+    } else if (character == "Fox") {
+      percentage = (characterImageURL.contains("_2")) ? 0.75 : 0.65;
+    }else if (character == "Sloth") {
+      percentage = (characterImageURL.contains("_2")) ? 0.8 : 0.75;
     }
     return percentage;
   }
