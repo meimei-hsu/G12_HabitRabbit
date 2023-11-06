@@ -108,7 +108,7 @@ class SettingsPageState extends State<SettingsPage> {
                     height: 15,
                   ),
                   Text(
-                    Data.user!.displayName!,
+                    Data.profile?["userName"],
                     style: const TextStyle(
                       color: ColorSet.textColor,
                       fontSize: 22,
@@ -143,11 +143,19 @@ class SettingsPageState extends State<SettingsPage> {
                         builder: (context) {
                           SettingsData.isSettingWorkout();
                           return const ChangeDurationBottomSheet();
+                        }).then((success) => {
+                          if (success)
+                            {
+                              InformDialog()
+                                  .get(context, "提示:)",
+                                      "${SettingsData.habitTypeZH}計畫時長已更新！")
+                                  .show()
+                            }
                         });
                   },
                   icons: CupertinoIcons.timer,
                   iconStyle: iconStyle,
-                  title: '更改時長',
+                  title: '更改計畫時長',
                   titleStyle: titleStyle,
                   //subtitle: "更改每次運動計畫的長度",
                   //subtitleStyle: subtitleStyle,
@@ -166,6 +174,14 @@ class SettingsPageState extends State<SettingsPage> {
                         builder: (context) {
                           SettingsData.isSettingWorkout();
                           return const ChangeDayAndNotificationTimeBottomSheet();
+                        }).then((success) => {
+                          if (success)
+                            {
+                              InformDialog()
+                                  .get(context, "提示:)",
+                                      "${SettingsData.habitTypeZH}計畫日與通知時間已更新！")
+                                  .show()
+                            }
                         });
                   },
                   icons: Icons.calendar_today_outlined,
@@ -188,6 +204,14 @@ class SettingsPageState extends State<SettingsPage> {
                         builder: (context) {
                           SettingsData.isSettingWorkout();
                           return const ChangeLikingBottomSheet();
+                        }).then((success) => {
+                          if (success)
+                            {
+                              InformDialog()
+                                  .get(context, "提示:)",
+                                      "${SettingsData.habitTypeZH}偏好已更新！")
+                                  .show()
+                            }
                         });
                   },
                   icons: CupertinoIcons.heart_circle,
@@ -210,6 +234,14 @@ class SettingsPageState extends State<SettingsPage> {
                         builder: (context) {
                           SettingsData.isSettingWorkout();
                           return const ChangeGoalBottomSheet();
+                        }).then((success) => {
+                          if (success)
+                            {
+                              InformDialog()
+                                  .get(context, "提示:)",
+                                      "${SettingsData.habitTypeZH}目標已更新！")
+                                  .show()
+                            }
                         });
                   },
                   icons: Icons.gps_fixed,
@@ -244,6 +276,14 @@ class SettingsPageState extends State<SettingsPage> {
                         builder: (context) {
                           SettingsData.isSettingDisplayName();
                           return const ChangeProfileBottomSheet();
+                        }).then((success) => {
+                          if (success)
+                            {
+                              refresh(),
+                              InformDialog()
+                                  .get(context, "提示:)", "暱稱已更新！")
+                                  .show()
+                            }
                         });
                   },
                   icons: CupertinoIcons.textformat_alt,
@@ -265,8 +305,13 @@ class SettingsPageState extends State<SettingsPage> {
                         builder: (context) {
                           SettingsData.isSettingPassword();
                           return const ChangeProfileBottomSheet();
-                        });
-                    setState(() {});
+                        }).then((success) {
+                      if (success) {
+                        InformDialog().get(context, "提示:)", "密碼已更新！").show();
+                      } else {
+                        InformDialog().get(context, "警告:(", "密碼錯誤QQ").show();
+                      }
+                    });
                   },
                   icons: Icons.password_outlined,
                   iconStyle: iconStyle,
@@ -496,9 +541,7 @@ class ChangeDurationBottomSheetState extends State<ChangeDurationBottomSheet> {
                 }
 
                 if (!mounted) return;
-                InformDialog()
-                    .get(context, "完成更改:)", "${SettingsData.habitTypeZH}時長已更新！")
-                    .show();
+                Navigator.pop(context, true);
               },
               child: const Text(
                 "確定",
@@ -865,11 +908,7 @@ class ChangeDayAndNotificationTimeBottomSheetState
                 }
 
                 if (!mounted) return;
-                InformDialog()
-                    .get(context, "提示:)",
-                        "週${SettingsData.habitTypeZH}日與通知時間已更新！")
-                    .show();
-                // FIXME: should close the bottom sheet after pressing "確定"
+                Navigator.pop(context, true);
               },
               child: const Text(
                 "確定",
@@ -1112,9 +1151,7 @@ class ChangeLikingBottomSheetState extends State<ChangeLikingBottomSheet> {
                 }
 
                 if (!mounted) return;
-                InformDialog()
-                    .get(context, "提示:)", "${SettingsData.habitTypeZH}偏好已更新！")
-                    .show();
+                Navigator.pop(context, true);
               },
               child: const Text(
                 "確定",
@@ -1302,9 +1339,7 @@ class ChangeGoalBottomSheetState extends State<ChangeGoalBottomSheet> {
                 }
 
                 if (!mounted) return;
-                InformDialog()
-                    .get(context, "提示:)", "${SettingsData.habitTypeZH}目標已更新！")
-                    .show();
+                Navigator.pop(context, true);
               },
               child: const Text(
                 "確定",
@@ -1502,18 +1537,11 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                   onPressed: () async {
                     if (SettingsData.functionCode == "更改暱稱") {
                       String userName = controller.text;
-                      await Data.user!.updateDisplayName(userName);
                       await UserDB.update({"userName": userName});
-                      await GamificationDB.update({"userName": userName});
-                      Data.user = FirebaseAuth.instance.currentUser;
                       if (!mounted) return;
-                      // FIXME: Navigator.pop(context) -> Null check operator used on a null value
-                      // Navigator.pushNamed(context, "/settings");
-                      // 如果用push而不是pop，則按返回見的時候，會回到這個更改密碼bottomSheet，不合理
-                      InformDialog()
-                          .get(context, "提示:)",
-                              "${SettingsData.functionCode}已完成！")
-                          .show();
+                      Navigator.pop(context, true);
+                      await GamificationDB.update({"userName": userName});
+                      await Data.user!.updateDisplayName(userName);
                     } else {
                       AuthCredential credential = EmailAuthProvider.credential(
                         email: Data.user!.email!,
@@ -1525,10 +1553,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                           await Data.user!
                               .updatePassword(newPasswordController.text);
                           if (!mounted) return;
-                          InformDialog()
-                              .get(context, "提示:)",
-                                  "${SettingsData.functionCode}已完成！")
-                              .show();
+                          Navigator.pop(context, true);
                         } else {
                           await UserDB.delete();
                           await ContractDB.delete();
@@ -1541,7 +1566,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                       } catch (e) {
                         if (!mounted) return;
                         debugPrint(e.toString());
-                        InformDialog().get(context, "警告:(", "密碼錯誤QQ").show();
+                        Navigator.pop(context, true);
                       }
                     }
                   },

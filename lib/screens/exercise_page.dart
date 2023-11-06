@@ -77,6 +77,7 @@ class DoExercisePageState extends State<DoExercisePage> {
     // 懶載入方式構建
     return PageView.builder(
       // 構建每一個子Item的佈局
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
         return buildPageViewItemWidget(index, videoList);
       },
@@ -145,7 +146,6 @@ class DoExercisePageState extends State<DoExercisePage> {
               )
             ]);
           });
-      dispose();
     }
 
     btnYesOnPress() async {
@@ -201,7 +201,6 @@ class DoExercisePageState extends State<DoExercisePage> {
                 arguments: {"type": 0},
               )
             ]));
-        dispose();
       } else if (ifStart == false) {
         timer.cancel();
         //_controller.pause();
@@ -299,14 +298,6 @@ class DoExercisePageState extends State<DoExercisePage> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       startTimer();
     });
-  }
-
-  @override
-  void dispose() {
-    //銷毀 controller
-    _pageController.dispose();
-    //_controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -474,7 +465,6 @@ class DoMeditationPageState extends State<DoMeditationPage> {
               )
             ]);
           });
-      dispose();
     }
 
     btnYesOnPress() async {
@@ -528,7 +518,6 @@ class DoMeditationPageState extends State<DoMeditationPage> {
                 arguments: {"type": 1},
               )
             ]));
-        dispose();
       } else if (ifStart == false) {
         timer.cancel();
       } else {

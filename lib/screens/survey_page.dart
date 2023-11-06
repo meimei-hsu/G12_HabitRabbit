@@ -1409,13 +1409,16 @@ class ResultPageState extends State<ResultPage> {
                     ),
                   ),
                   onPressed: () async {
-                    await UserDB.insert(userInfo);
-                    await WeightDB.update({
-                      Calendar.dateToString(DateTime.now()): userInfo["weight"]
-                    });
-                    await GamificationDB.insert(userInfo, character);
-                    await Data.init();
-                    await PlanAlgo.execute();
+                    if (Data.isFirstTime) {
+                      await UserDB.insert(userInfo);
+                      await WeightDB.update({
+                        Calendar.dateToString(DateTime.now()):
+                            userInfo["weight"]
+                      });
+                      await GamificationDB.insert(userInfo, character);
+                      await Data.init();
+                      await PlanAlgo.execute();
+                    }
                     if (!mounted) return;
                     Navigator.pushNamedAndRemoveUntil(
                         context, '/', (Route<dynamic> route) => false);

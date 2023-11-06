@@ -39,10 +39,10 @@ class GamificationPageState extends State<GamificationPage> {
           backgroundColor: ColorSet.backgroundColor,
           automaticallyImplyLeading: false,
         ),
-        body: const SafeArea(
+        body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Padding(
                 padding:
                     EdgeInsets.only(left: 25, right: 25, top: 10, bottom: 20),
@@ -399,9 +399,9 @@ class QuizDialogState extends State<QuizDialog> {
               padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
               child: Column(
                 children: [
-                  const Text(
-                    '運動寶物',
-                    style: TextStyle(
+                  Text(
+                    '運動寶物 (${GameData.workoutGem} / 24)',
+                    style: const TextStyle(
                         fontSize: 20,
                         color: ColorSet.textColor,
                         fontWeight: FontWeight.bold),
@@ -440,9 +440,9 @@ class QuizDialogState extends State<QuizDialog> {
                     ),
                   ),
                   const SizedBox(height: 20.0),
-                  const Text(
-                    '冥想寶物',
-                    style: TextStyle(
+                  Text(
+                    '冥想寶物 (${GameData.meditationGem} / 24)',
+                    style: const TextStyle(
                         fontSize: 20,
                         color: ColorSet.textColor,
                         fontWeight: FontWeight.bold),
@@ -550,7 +550,9 @@ class GrowDialogState extends State<GrowDialog> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.0),
                         border: Border.all(color: ColorSet.textColor, width: 1),
-                        color: ColorSet.backgroundColor,
+                        color: (i + 1 == GameData.characterLevel)
+                            ? ColorSet.backgroundColor // TODO: 將角色現階段螢光起來
+                            : ColorSet.backgroundColor,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

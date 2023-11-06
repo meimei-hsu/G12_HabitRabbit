@@ -79,22 +79,24 @@ class FirstContractPageState extends State<FirstContractPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          SpeechBalloon(
-              color: ColorSet.backgroundColor,
-              width: MediaQuery.of(context).size.width * 0.9,
-              height: MediaQuery.of(context).size.height * 0.47,
-              nipLocation: NipLocation.bottom,
-              nipHeight: 30,
-              borderColor: ColorSet.borderColor,
-              borderRadius: 20,
-              borderWidth: 8,
-              child: Center(
-                  child: Container(
-                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                child: SingleChildScrollView(
-                    padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+      body: GestureDetector(
+        onTap: updateDialog,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SpeechBalloon(
+                  color: ColorSet.backgroundColor,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  nipLocation: NipLocation.bottom,
+                  nipHeight: 30,
+                  borderColor: ColorSet.borderColor,
+                  borderRadius: 20,
+                  borderWidth: 8,
+                  child: Center(
+                      child: Container(
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -109,33 +111,18 @@ class FirstContractPageState extends State<FirstContractPage> {
                         const SizedBox(
                           height: 5,
                         ),
-                        if (tapCount != 2 &&
+                        if (tapCount != 1 &&
+                            tapCount != 2 &&
                             tapCount != 3 &&
                             tapCount != 4 &&
                             tapCount != 5) ...[
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              padding:
-                                  const EdgeInsets.only(right: 10, left: 10),
-                              backgroundColor: ColorSet.bottomBarColor,
-                              shadowColor: Colors.transparent,
-                              elevation: 0,
-                              minimumSize: const Size.fromHeight(40),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
+                          const Text(
+                            '➤ 點擊前往下一步',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: ColorSet.textColor,
                             ),
-                            onPressed: () {
-                              updateDialog();
-                            },
-                            child: const Text(
-                              '➤ 點擊前往下一步',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                color: ColorSet.textColor,
-                              ),
-                            ),
-                          )
+                          ),
                         ],
                         if (tapCount == 2) ...[
                           const SizedBox(height: 10.0),
@@ -361,6 +348,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                                       right: 10, left: 10),
                                   child: TextFormField(
                                     validator: (value) {
+                                      // TODO: validator context
                                       if (value == null || value.isEmpty) {
                                         return "請輸入金額！";
                                       } else if (double.parse(value) == 0) {
@@ -455,24 +443,26 @@ class FirstContractPageState extends State<FirstContractPage> {
                               ]))
                         ],
                       ],
-                    )),
-              ))),
-          const SizedBox(
-            height: 50,
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/images/Contract.gif',
-                  width: MediaQuery.of(context).size.width * 0.85,
+                    ),
+                  ))),
+              const SizedBox(
+                height: 50,
+              ),
+              Container(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/Contract.gif',
+                      width: MediaQuery.of(context).size.width * 0.85,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ]),
+        ),
       ),
     );
   }
@@ -1057,6 +1047,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                 padding: const EdgeInsets.only(right: 20, left: 20),
                 child: TextFormField(
                   validator: (value) {
+                    // TODO: validator context
                     if (value == null || value.isEmpty) {
                       return "請輸入金額！";
                     } else if (double.parse(value) == 0) {
@@ -1103,6 +1094,12 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                   },
                 ),
               ),
+              /*SizedBox(
+            height: MediaQuery.of(context).size.width * 0.1,
+            width: MediaQuery.of(context).size.width * 0.85,
+            child: ListView(
+                scrollDirection: Axis.horizontal, children: _getMoneyBtnList()),
+          ),*/
               const SizedBox(
                 height: 10,
               ),
@@ -1171,6 +1168,45 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
         },
         child: Text(
           choice,
+          style: const TextStyle(
+            color: ColorSet.textColor,
+            fontSize: 16,
+          ),
+        ),
+      ));
+      btnList.add(const SizedBox(
+        width: 10,
+      ));
+    }
+    return btnList;
+  }
+
+  // TODO: 合約金額由點選方式改成輸入方式
+  List<Widget> _getMoneyBtnList() {
+    List moneyList = [100, 150, 200, 250, 300];
+    List<Widget> btnList = [];
+
+    for (final money in moneyList) {
+      int choice = money;
+      btnList.add(OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          side: const BorderSide(
+            color: ColorSet.textColor,
+          ),
+          backgroundColor: (_money == choice)
+              ? (_type == "運動")
+                  ? ColorSet.exerciseColor
+                  : ColorSet.meditationColor
+              : ColorSet.backgroundColor,
+        ),
+        onPressed: () {
+          _selectAmount(choice);
+        },
+        child: Text(
+          "$choice",
           style: const TextStyle(
             color: ColorSet.textColor,
             fontSize: 16,

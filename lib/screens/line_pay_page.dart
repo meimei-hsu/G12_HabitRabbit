@@ -79,8 +79,7 @@ class PayPageState extends State<PayPage> {
                   leading: CircleAvatar(
                     radius: 48, // Image radius
                     // TODO: 頭貼上有個藍色認證勾勾?
-                    backgroundImage: AssetImage(
-                        Data.characterImageURL),
+                    backgroundImage: AssetImage(Data.characterImageURL),
                   ),
                   trailing: const Icon(Icons.info_outline_rounded),
                   title: Text("$userName 正在付款。"),
@@ -247,12 +246,6 @@ class PasswordPageState extends State<PasswordPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    pinCodeController.dispose();
-    super.dispose();
-  }
-
   onKeyboardTap(String value) {
     setState(() {
       pinCode = pinCode + value;
@@ -313,7 +306,6 @@ class PasswordPageState extends State<PasswordPage> {
                   controller: pinCodeController,
                   onComplete: (text) {
                     Navigator.pushNamed(context, '/pay/checkout');
-                    //dispose();
                   },
                 ),
               ],
@@ -565,8 +557,7 @@ class ConfirmPageState extends State<ConfirmPage> {
                           onPressed: () {
                             Navigator.pushNamedAndRemoveUntil(
                                 context,
-                                '/contract/already',
-                                (Route<dynamic> route) => false);
+                                '/contract/already', ModalRoute.withName('/'));
                           },
                           child: const Text(
                             "付款",
