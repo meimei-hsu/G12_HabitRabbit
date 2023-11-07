@@ -829,10 +829,10 @@ class PartOnePageState extends State<PartOnePage> {
                               builder: (context) =>
                                   const TitlePage(arguments: {"part": 1})));
                     } else {
-                      InformDialog()
+                        ErrorDialog()
                           .get(
                             context,
-                            "錯誤:(",
+                            "警告！",
                             "題目尚未填寫完畢喔~",
                           )
                           .show();
@@ -903,8 +903,8 @@ class PartTwoPageState extends State<PartTwoPage> {
                     IconButton(
                       onPressed: () async {
                         if (pageController.page == 0) {
-                          InformDialog()
-                              .get(context, "無法返回", "您已經在第一頁嘍")
+                          ErrorDialog()
+                              .get(context, "警告！", "無法返回\n您已經在第一頁嘍")
                               .show();
                         } else {
                           nextQuestion(goBack: true);
@@ -932,10 +932,10 @@ class PartTwoPageState extends State<PartTwoPage> {
                             nextQuestion(goBack: false);
                           }
                         } else {
-                          InformDialog()
+                          ErrorDialog()
                               .get(
                                 context,
-                                "錯誤:(",
+                                "警告！",
                                 "題目尚未填寫完畢喔~",
                               )
                               .show();

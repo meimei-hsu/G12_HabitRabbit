@@ -244,17 +244,17 @@ class FriendListPageState extends State<FriendListPage> {
                                 .show();
                           } else {
                             if (fullID == null) {
-                              InformDialog()
+                              ErrorDialog()
                                   .get(context, "警告！", "找不到該名用戶T^T")
                                   .show();
                               _controller.clear();
                             } else if (searchText == CommData.socialCode) {
-                              InformDialog()
+                              ErrorDialog()
                                   .get(context, "警告！", "不能新增自己為朋友喔T^T")
                                   .show();
                               _controller.clear();
                             } else if (CommData.friends.contains(fullID)) {
-                              InformDialog()
+                              ErrorDialog()
                                   .get(context, "警告！", "朋友已在清單內:) \n 快去認識新朋友吧~")
                                   .show();
                               _controller.clear();

@@ -970,7 +970,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                         await ContractDB.getWorkout() != null;
                     if (hasWorkoutContract) {
                       if (!mounted) return;
-                      InformDialog()
+                      ErrorDialog()
                           .get(context, "警告！", "已建立過運動合約，不允許二次投入")
                           .show();
                     } else {
@@ -1006,7 +1006,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                         await ContractDB.getMeditation() != null;
                     if (hasMeditationContract) {
                       if (!mounted) return;
-                      InformDialog()
+                      ErrorDialog()
                           .get(context, "警告！", "已建立過冥想合約，不允許二次投入")
                           .show();
                     } else {

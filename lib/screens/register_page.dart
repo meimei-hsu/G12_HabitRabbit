@@ -252,8 +252,8 @@ class LoginFormState extends State<LoginForm> {
 
                                     if (errMsg.isNotEmpty) {
                                       if (!mounted) return;
-                                      InformDialog()
-                                          .get(context, ":(", errMsg)
+                                      ErrorDialog()
+                                          .get(context, "警告！", errMsg)
                                           .show();
                                     } else {
                                       if (user != null) {
@@ -584,8 +584,8 @@ class SignupFormState extends State<SignupForm> {
 
                                             if (errMsg.isNotEmpty) {
                                               if (!mounted) return;
-                                              InformDialog()
-                                                  .get(context, ":(", errMsg)
+                                              ErrorDialog()
+                                                  .get(context, "警告！", errMsg)
                                                   .show();
                                             }
 

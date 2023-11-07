@@ -151,7 +151,9 @@ flutter:
    # 兔子
     - assets/images/Rabbit_1.png
     - assets/images/Rabbit_2.png
+    - assets/images/Rabbit_head.png
     - assets/images/Rabbit_shining.png
+    - assets/images/Rabbit_sad.png
     - assets/images/Contract.gif
     - assets/images/coming_soon.png
 

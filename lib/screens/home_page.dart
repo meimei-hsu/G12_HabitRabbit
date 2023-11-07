@@ -569,7 +569,7 @@ class HomepageState extends State<Homepage> {
                               // 運動沒有、冥想有 --> 冥想完成度、新增運動
                               // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
                               (HomeData.isBefore)
-                                  ? InformDialog()
+                                  ? ErrorDialog()
                                       .get(context, "警告:(", "溯及既往 打咩！")
                                       .show()
                                   : showModalBottomSheet(
@@ -638,7 +638,7 @@ class HomepageState extends State<Homepage> {
                           const Icon(Icons.monetization_on_outlined, size: 40)),
                   IconButton(
                       onPressed: () {
-                        InformDialog().get(context, "警告:(", "溯及既往 打咩！").show();
+                        ErrorDialog().get(context, "警告:(", "溯及既往 打咩！").show();
                       },
                       icon: const Icon(Icons.notifications_none_outlined,
                           size: 40)),

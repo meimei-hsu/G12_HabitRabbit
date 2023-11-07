@@ -36,7 +36,53 @@ class InformDialog {
         customHeader: Image.asset(
           height: 75,
           width: 75,
-          'assets/images/Carrot.png',
+          'assets/images/Rabbit_shining.png',
+        ),
+        dialogBorderRadius: const BorderRadius.all(
+          Radius.circular(20),
+        ),
+        buttonsBorderRadius: const BorderRadius.all(
+          Radius.circular(100),
+        ),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        dialogBackgroundColor: ColorSet.backgroundColor,
+        dismissOnTouchOutside: true,
+        dismissOnBackKeyPress: true,
+        headerAnimationLoop: false,
+        animType: AnimType.bottomSlide,
+        desc: desc,
+        descTextStyle: const TextStyle(
+          color: ColorSet.textColor,
+          fontSize: 16,
+        ),
+        title: title,
+        titleTextStyle: const TextStyle(
+            color: ColorSet.textColor,
+            fontSize: 20,
+            fontWeight: FontWeight.bold),
+        btnOkText: '好',
+        btnOkColor: ColorSet.buttonColor,
+        buttonsTextStyle: const TextStyle(
+            color: ColorSet.textColor,
+            fontSize: 18,
+            fontWeight: FontWeight.bold),
+        btnOkOnPress: () {
+          (btnOkOnPress != null) ? btnOkOnPress() : null;
+        });
+  }
+}
+
+class ErrorDialog {
+  AwesomeDialog get(BuildContext context, String title, String desc,
+      {Function? btnOkOnPress}) {
+    return AwesomeDialog(
+        context: context,
+        dialogType: DialogType.noHeader,
+        width: MediaQuery.of(context).size.width * 0.9,
+        customHeader: Image.asset(
+          height: 75,
+          width: 75,
+          'assets/images/Rabbit_sad.png',
         ),
         dialogBorderRadius: const BorderRadius.all(
           Radius.circular(20),
@@ -129,7 +175,7 @@ class HintDialog {
         customHeader: Image.asset(
           height: 75,
           width: 75,
-          'assets/images/Carrot.png',
+          'assets/images/Rabbit_head.png',
         ),
         dialogBorderRadius: const BorderRadius.all(
           Radius.circular(20),
