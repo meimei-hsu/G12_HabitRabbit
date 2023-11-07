@@ -314,39 +314,7 @@ class FriendListPageState extends State<FriendListPage> {
                       Map? info = Data.community?[friendID];
                       return (info == null)
                           ? Container()
-                          : ListTile(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    color: ColorSet.borderColor, width: 2),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              leading: CircleAvatar(
-                                radius: 25,
-                                backgroundColor: ColorSet.backgroundColor,
-                                backgroundImage: AssetImage(
-                                    'assets/images/${info["character"]}_head.png'),
-                              ),
-                              title: Text(
-                                info["userName"],
-                                style: const TextStyle(
-                                  color: ColorSet.textColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              trailing: const Padding(
-                                  padding: EdgeInsets.only(right: 16.0),
-                                  child: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: ColorSet.iconColor,
-                                  ),
-                                ),
-                              onTap: () {
-                                _showCustomDialog(context,
-                                    userID: friendID, isFriend: true);
-                              },
-                            );
-                      /*Container(
+                          : Container(
                               height: 70,
                               decoration: BoxDecoration(
                                 color: ColorSet.backgroundColor,
@@ -355,43 +323,45 @@ class FriendListPageState extends State<FriendListPage> {
                                 borderRadius:
                                     const BorderRadius.all(Radius.circular(50)),
                               ),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 16.0),
-                                    child: CircleAvatar(
-                                      radius: 25,
-                                      backgroundColor: ColorSet.backgroundColor,
-                                      backgroundImage: AssetImage(
-                                          'assets/images/${info["character"]}_head.png'),
+                              child: InkWell(
+                                onTap: () {
+                                  _showCustomDialog(context,
+                                      userID: friendID, isFriend: true);
+                                },
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(left: 16.0),
+                                      child: CircleAvatar(
+                                        radius: 25,
+                                        backgroundColor:
+                                            ColorSet.backgroundColor,
+                                        backgroundImage: AssetImage(
+                                            'assets/images/${info["character"]}_head.png'),
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 15),
-                                  Text(
-                                    info["userName"],
-                                    style: const TextStyle(
-                                      color: ColorSet.textColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                                    const SizedBox(width: 15),
+                                    Text(
+                                      info["userName"],
+                                      style: const TextStyle(
+                                        color: ColorSet.textColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(child: Container()),
-                                  InkWell(
-                                    onTap: () {
-                                      _showCustomDialog(context,
-                                          userID: friendID, isFriend: true);
-                                    },
-                                    child: const Padding(
+                                    Expanded(child: Container()),
+                                    const Padding(
                                       padding: EdgeInsets.only(right: 16.0),
                                       child: Icon(
                                         Icons.arrow_forward_ios,
                                         color: ColorSet.iconColor,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            );*/
+                            );
                     },
                     separatorBuilder: (BuildContext context, int index) {
                       return const SizedBox(height: 12);
