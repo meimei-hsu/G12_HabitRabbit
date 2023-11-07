@@ -334,19 +334,13 @@ class FriendListPageState extends State<FriendListPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              trailing: InkWell(
-                                onTap: () {
-                                  _showCustomDialog(context,
-                                      userID: friendID, isFriend: true);
-                                },
-                                child: const Padding(
+                              trailing: const Padding(
                                   padding: EdgeInsets.only(right: 16.0),
                                   child: Icon(
                                     Icons.arrow_forward_ios,
                                     color: ColorSet.iconColor,
                                   ),
                                 ),
-                              ),
                               onTap: () {
                                 _showCustomDialog(context,
                                     userID: friendID, isFriend: true);

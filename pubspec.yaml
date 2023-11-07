@@ -80,6 +80,7 @@ dependencies:
   confetti: ^0.7.0
   permission_handler: ^11.0.1
   showcaseview: ^2.0.3
+  page_view_dot_indicator: ^2.3.0
 
 dev_dependencies:
   flutter_test:

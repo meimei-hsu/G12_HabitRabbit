@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:banner_carousel/banner_carousel.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -10,6 +13,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/plan_algo.dart';
 import 'package:g12/services/page_data.dart';
+import 'package:g12/services/database.dart';
 
 // TODO: Delete after page testing
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,6 +31,10 @@ class HomepageState extends State<Homepage> {
   GlobalKey rabbitKey = GlobalKey();
   GlobalKey bubbleKey = GlobalKey();
   GlobalKey bannerKey = GlobalKey();
+
+  // banner's controller
+  int selectedPage = 0;
+  PageController controller = PageController();
 
   // TODO: 判斷是否為第一次登入
   @override
@@ -47,7 +55,6 @@ class HomepageState extends State<Homepage> {
     const String rest = "assets/images/Rest.PNG";
 
     List<BannerModel> listBanners;
-
     if (HomeData.workoutPlan == null && HomeData.meditationPlan == null) {
       listBanners = [BannerModel(imagePath: rest, id: "3")];
     } else if (HomeData.workoutPlan != null &&
@@ -84,8 +91,185 @@ class HomepageState extends State<Homepage> {
           Navigator.pushNamed(context, '/detail/meditation');
         }
 
-        // TODO: 加上點休息圖的回饋
+        // Rest
+        if (id == "3") {
+          InformDialog().get(context, "提醒", "今日沒有計畫喔~\n請點選兔子以新增計畫").show();
+        }
       },
+    );
+  }
+
+  Widget getBanner() {
+    List<String> imgNames = [];
+    if (HomeData.workoutPlan != null) imgNames.add("Exercise_1.jpg");
+    if (HomeData.meditationPlan != null) imgNames.add("Meditation_1.jpg");
+    if (imgNames.isEmpty) imgNames.add("Rest.PNG");
+
+    return GestureDetector(
+      onTap: () {
+        int type = (imgNames.length > 1)
+            ? selectedPage
+            : ["Exercise_1.jpg", "Meditation_1.jpg", "Rest.PNG"]
+                .indexOf(imgNames.first);
+
+        switch (type) {
+          case 0:
+            Navigator.pushNamed(context, '/detail/exercise');
+            break;
+          case 1:
+            Navigator.pushNamed(context, '/detail/meditation');
+            break;
+          case 2:
+            InformDialog().get(context, "提醒", "今日沒有計畫喔~\n請點選兔子以新增計畫").show();
+            break;
+        }
+      },
+      onLongPress: () {
+        // selected plan's information
+        int type = (imgNames.length > 1)
+            ? selectedPage
+            : ["Exercise_1.jpg", "Meditation_1.jpg", "Rest.PNG"]
+                .indexOf(imgNames.first);
+        String typeZH = (type == 0) ? "運動" : "冥想";
+        String date =
+            "${HomeData.selectedDay?.month} / ${HomeData.selectedDay?.day}";
+
+        // functions
+        changeDate() {
+          if (!HomeData.isAfter && HomeData.selectedDay?.weekday == 6) {
+            InformDialog()
+                .get(context, "無法修改:(", "今天已經星期六囉~\n無法再將計畫換到別天了！")
+                .show();
+          } else {
+            showModalBottomSheet(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20)),
+                ),
+                backgroundColor: ColorSet.bottomBarColor,
+                context: context,
+                builder: (context) {
+                  return ChangeDayBottomSheet(arguments: {
+                    "day": HomeData.selectedDay,
+                    "isToday": HomeData.isToday,
+                    "type": type
+                  });
+                });
+          }
+        }
+
+        regenerate() {
+          btnOkOnPress() {
+            (type == 0)
+                ? PlanAlgo.regenerateWorkout(HomeData.selectedDay!)
+                : PlanAlgo.regenerateMeditation(HomeData.selectedDay!);
+            setState(() {
+              HomeData.isFetchingData = true;
+            });
+            Timer(const Duration(seconds: 5), () async {
+              setState(() {
+                HomeData.isFetchingData = false;
+              });
+              if (!mounted) return;
+              InformDialog()
+                  .get(context, "完成重新生成:)",
+                      "${(HomeData.isToday) ? "今天" : date}的$typeZH計畫\n已經重新生成囉！")
+                  .show();
+            });
+          }
+
+          ConfirmDialog()
+              .get(
+                  context,
+                  "你確定嗎？",
+                  "確定要重新生成\n${(HomeData.isToday) ? "今天" : date}的$typeZH計畫嗎？",
+                  btnOkOnPress)
+              .show();
+        }
+
+        delete() {
+          btnOkOnPress() async {
+            (type == 0)
+                ? await PlanDB.delete(
+                    "workout", Calendar.dateToString(HomeData.selectedDay!))
+                : await PlanDB.delete(
+                    "meditation", Calendar.dateToString(HomeData.selectedDay!));
+            if (!mounted) return;
+            Navigator.pushNamed(context, "/");
+          }
+
+          ConfirmDialog()
+              .get(
+                  context,
+                  "你確定嗎？",
+                  "確定要刪除\n${(HomeData.isToday) ? "今天" : date}的$typeZH計畫嗎？",
+                  btnOkOnPress)
+              .show();
+        }
+
+        // popup menu dialog
+        if (type == 2) {
+          InformDialog().get(context, "提醒", "今日沒有計畫喔~\n請點選兔子以新增計畫").show();
+        } else {
+          if (!HomeData.isBefore) {
+            String title = "$date $typeZH計畫";
+            List<String> funcNames = ["修改日期", "重新計畫", "刪除計畫"];
+            List<Function> functions = [changeDate, regenerate, delete];
+            MenuDialog().get(context, title, funcNames, functions).show();
+          } else {
+            InformDialog().get(context, "錯誤:(", "無法修改以前的計畫").show();
+          }
+        }
+      },
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.9,
+        height: 300,
+        child: Stack(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(left: 0, right: 0),
+              decoration: BoxDecoration(
+                border: Border.all(color: ColorSet.borderColor, width: 1.5),
+              ),
+              child: PageView.builder(
+                controller: controller,
+                onPageChanged: (int page) =>
+                    setState(() => selectedPage = page),
+                itemCount: imgNames.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Image.asset("assets/images/${imgNames[index]}",
+                      fit: BoxFit.fill);
+                },
+              ),
+            ),
+            (imgNames.length > 1)
+                ? Container(
+                    alignment: Alignment.bottomCenter,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 24),
+                    child: PageViewDotIndicator(
+                      currentItem: selectedPage,
+                      count: imgNames.length,
+                      unselectedColor: Colors.black26,
+                      selectedColor: Colors.blueGrey,
+                      duration: const Duration(milliseconds: 200),
+                      boxShape: BoxShape.circle,
+                      onItemClicked: (index) {
+                        setState(() => selectedPage = index);
+                        controller.animateToPage(
+                          index,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                    ),
+                  )
+                : Container(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -148,29 +332,29 @@ class HomepageState extends State<Homepage> {
       body: (HomeData.isFetchingData)
           ? Center(
               child: Container(
-                  padding:
-                      const EdgeInsets.only(right: 20, left: 20, bottom: 20),
-                  decoration: BoxDecoration(
-                      color: ColorSet.bottomBarColor,
-                      border: Border.all(color: ColorSet.bottomBarColor),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20))),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      LoadingAnimationWidget.horizontalRotatingDots(
+                padding: const EdgeInsets.only(right: 20, left: 20, bottom: 20),
+                decoration: BoxDecoration(
+                    color: ColorSet.bottomBarColor,
+                    border: Border.all(color: ColorSet.bottomBarColor),
+                    borderRadius: const BorderRadius.all(Radius.circular(20))),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    LoadingAnimationWidget.horizontalRotatingDots(
+                      color: ColorSet.textColor,
+                      size: 100,
+                    ),
+                    const Text(
+                      "重新整理中...",
+                      style: TextStyle(
                         color: ColorSet.textColor,
-                        size: 100,
                       ),
-                      const Text(
-                        "重新整理中...",
-                        style: TextStyle(
-                          color: ColorSet.textColor,
-                        ),
-                      )
-                    ],
-                  )))
+                    )
+                  ],
+                ),
+              ),
+            )
           : Column(
               children: [
                 const SizedBox(
@@ -299,19 +483,20 @@ class HomepageState extends State<Homepage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Showcase(
-                          key: bubbleKey,
-                          description: '顯示選取日的計畫完成進度',
-                          child: BubbleSpecialThree(
-                            text:
-                                'Hello ${Data.user!.displayName}～\n${getDialogText()}',
-                            color: ColorSet.buttonColor,
-                            tail: true,
-                            textStyle: const TextStyle(
-                              color: ColorSet.textColor,
-                              fontSize: 18,
-                              //fontWeight: FontWeight.bold,
-                            ),
-                          )),
+                        key: bubbleKey,
+                        description: '顯示選取日的計畫完成進度',
+                        child: BubbleSpecialThree(
+                          text:
+                              'Hello ${Data.user!.displayName}～\n${getDialogText()}',
+                          color: ColorSet.buttonColor,
+                          tail: true,
+                          textStyle: const TextStyle(
+                            color: ColorSet.textColor,
+                            fontSize: 18,
+                            //fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                       Expanded(
                           child: Showcase(
                         key: rabbitKey,
@@ -434,8 +619,8 @@ class HomepageState extends State<Homepage> {
                 const SizedBox(height: 50),
                 Showcase(
                     key: bannerKey,
-                    description: '點擊後開始觀看計畫內容',
-                    child: getBannerCarousel()),
+                    description: '點擊後觀看計畫詳細內容',
+                    child: getBanner()), // getBannerCarousel()
                 const SizedBox(height: 5),
                 Row(children: [
                   IconButton(
@@ -737,6 +922,199 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
                 style: TextStyle(
                   color: ColorSet.textColor,
                   fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// 修改計畫日
+class ChangeDayBottomSheet extends StatefulWidget {
+  final Map arguments;
+
+  const ChangeDayBottomSheet({super.key, required this.arguments});
+
+  @override
+  ChangeDayBottomSheetState createState() => ChangeDayBottomSheetState();
+}
+
+class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
+  late DateTime day;
+  late bool isToday;
+  late int type;
+
+  late DateTime today;
+
+  String changedDayWeekday = "";
+  DateTime changedDayDate = DateTime.now();
+
+  final ScrollController _controller = ScrollController();
+
+  @override
+  void initState() {
+    day = getDateOnly(widget.arguments['day']);
+    isToday = widget.arguments['isToday'];
+    type = widget.arguments['type'];
+
+    today = getDateOnly(DateTime.now());
+
+    super.initState();
+  }
+
+  DateTime getDateOnly(DateTime day) {
+    return DateTime(day.year, day.month, day.day);
+  }
+
+  List<Widget> _getAllowedDayList() {
+    List<Widget> allowedDayList = [];
+    List weekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
+
+    OutlinedButton getDayBtn(int i) {
+      OutlinedButton dayBtn = OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          side: const BorderSide(
+            color: ColorSet.borderColor,
+          ),
+          backgroundColor: (changedDayWeekday == weekdayNameList[i])
+              ? (type == 0)
+                  ? ColorSet.exerciseColor
+                  : ColorSet.meditationColor
+              : ColorSet.backgroundColor,
+        ),
+        onPressed: () {
+          setState(() {
+            changedDayWeekday = weekdayNameList[i];
+            changedDayDate = day
+                .add(Duration(days: (day.weekday == 7) ? 1 : i - day.weekday));
+          });
+        },
+        child: Text(
+          weekdayNameList[i],
+          style: const TextStyle(
+            color: ColorSet.textColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+      return dayBtn;
+    }
+
+    final today = Calendar.todayWeekday % 7;
+    final selected = day.weekday % 7;
+    // if todayWeekday > selectedWeekday, then the selectedDays is in the next week
+    for (int i = (today > selected ? 0 : today); i < 7; i++) {
+      if (i != selected) {
+        allowedDayList.add(getDayBtn(i));
+        allowedDayList.add(const SizedBox(width: 10));
+      }
+    }
+    return allowedDayList;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
+            title: Text(
+              "修改${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫到別天",
+              style: const TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            trailing: Container(
+              padding: const EdgeInsets.only(right: 20, left: 20),
+              /*decoration: BoxDecoration(
+                border: Border.all(color: ColorSet.borderColor, width: 2),
+                color: Colors.transparent,
+                shape: BoxShape.circle,
+              ),*/
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: ColorSet.iconColor,
+                ),
+                tooltip: "關閉",
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+          Text(
+              "你要將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫換到哪天呢？",
+              style: const TextStyle(color: ColorSet.textColor, fontSize: 16)),
+          const SizedBox(height: 10),
+          // FIXME: Add padding between choice and scrollbar
+          SizedBox(
+              height: MediaQuery.of(context).size.width * 0.1,
+              width: MediaQuery.of(context).size.width * 0.85,
+              child: Scrollbar(
+                controller: _controller,
+                thumbVisibility: true,
+                child: ListView(
+                    controller: _controller,
+                    scrollDirection: Axis.horizontal,
+                    children: _getAllowedDayList()),
+              )),
+          const SizedBox(
+            height: 15,
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 20, right: 18),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.only(right: 10, left: 10),
+                backgroundColor: ColorSet.backgroundColor,
+                shadowColor: Colors.transparent,
+                minimumSize: const Size.fromHeight(50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                // FIXME: 如果修改天數，換到已經有計畫的日子怎麼辦? (現在是直接蓋掉原本的)
+                DateTime originalDate = day;
+                (type == 0)
+                    ? await PlanDB.updateDate(
+                        "workout", originalDate, changedDayDate)
+                    : await PlanDB.updateDate(
+                        "meditation", originalDate, changedDayDate);
+                debugPrint(
+                    "Change $day's ${(type == 0) ? "workout plan" : "meditation plan"} to $changedDayDate 星期$changedDayWeekday.");
+                if (!mounted) return;
+
+                btnOkOnPress() {
+                  Navigator.pushNamed(context, "/");
+                  debugPrint("Change!!!");
+                }
+
+                InformDialog()
+                    .get(context, "修改完成:)",
+                        "已經將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫\n換到 ${changedDayDate.month} / ${changedDayDate.day} 星期$changedDayWeekday囉！",
+                        btnOkOnPress: btnOkOnPress)
+                    .show();
+              },
+              child: const Text(
+                "確定",
+                style: TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),

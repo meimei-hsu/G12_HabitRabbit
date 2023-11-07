@@ -421,10 +421,7 @@ class QuestionsWidget extends StatelessWidget {
   Widget buildPage({required int index, required List<Question> questions}) =>
       Container(
         padding: const EdgeInsets.all(16),
-        child: Scrollbar(
-          controller: scrollController,
-          thumbVisibility: true,
-          child: CustomScrollView(
+        child: CustomScrollView(
           controller: scrollController,
           physics: const ClampingScrollPhysics(),
           slivers: [
@@ -454,7 +451,7 @@ class QuestionsWidget extends StatelessWidget {
               )
             ],
           ],
-        ),)
+        ),
       );
 }
 

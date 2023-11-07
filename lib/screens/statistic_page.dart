@@ -735,110 +735,6 @@ class StatisticPageState extends State<StatisticPage> {
                             children: [
                               ListTile(
                                 title: const Text(
-                                  '累積比例',
-                                  //(accumulatedTime == 0) ? '累積運動時長' : '累積冥想時長',
-                                  style: TextStyle(
-                                      color: ColorSet.textColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.0),
-                                ),
-                                trailing: ToggleSwitch(
-                                  minHeight: 35,
-                                  initialLabelIndex: StatData.accumulatedTime,
-                                  cornerRadius: 10.0,
-                                  radiusStyle: true,
-                                  labels: const ['運動', '冥想'],
-                                  icons: const [
-                                    Icons.fitness_center_outlined,
-                                    Icons.self_improvement_outlined
-                                  ],
-                                  iconSize: 16,
-                                  activeBgColors: const [
-                                    [ColorSet.exerciseColor],
-                                    [ColorSet.meditationColor]
-                                  ],
-                                  activeFgColor: ColorSet.textColor,
-                                  inactiveBgColor: ColorSet.bottomBarColor,
-                                  inactiveFgColor: ColorSet.textColor,
-                                  totalSwitches: 2,
-                                  onToggle: (index) {
-                                    StatData.accumulatedTime = index!;
-                                    setState(() {});
-                                  },
-                                ),
-                                visualDensity:
-                                    const VisualDensity(vertical: -4),
-                              ),
-                              SfCircularChart(
-                                legend: Legend(
-                                    isVisible: true,
-                                    textStyle: const TextStyle(
-                                        color: ColorSet.textColor,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold)),
-                                series: <CircularSeries<ChartData, String>>[
-                                  DoughnutSeries<ChartData, String>(
-                                    dataSource: (StatData.accumulatedTime == 0)
-                                        ? getExerciseTypePercentageChartData()
-                                        : getMeditationTypePercentageChartData(),
-                                    innerRadius: '40%',
-                                    xValueMapper: (ChartData data, _) => data.x,
-                                    yValueMapper: (ChartData data, _) => data.y,
-                                    pointColorMapper: (ChartData data, _) {
-                                      if (StatData.accumulatedTime == 0) {
-                                        if (data.x == "有氧") {
-                                          return const Color(0xfffbd9c6);
-                                        } else if (data.x == "重訓") {
-                                          return const Color(0xfffae5da);
-                                        } else if (data.x == "瑜珈") {
-                                          return const Color(0xfffcf1ec);
-                                        } else {
-                                          return const Color(0xfffdfdfd);
-                                        }
-                                      } else {
-                                        if (data.x == "正念") {
-                                          return const Color(0xffe9eafd);
-                                        } else if (data.x == "工作") {
-                                          return const Color(0xffd6d8fa);
-                                        } else if (data.x == "慈心") {
-                                          return const Color(0xffc2c5f7);
-                                        } else {
-                                          return const Color(0xfffdfdfd);
-                                        }
-                                      }
-                                    },
-                                    //顯示數字(趴數)
-                                    dataLabelSettings: const DataLabelSettings(
-                                      isVisible: true,
-                                      textStyle: TextStyle(
-                                          color: ColorSet.textColor,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          padding:
-                              const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
-                          margin: const EdgeInsets.only(right: 10, left: 10),
-                          decoration: BoxDecoration(
-                            color: ColorSet.backgroundColor,
-                            border: Border.all(
-                                color: ColorSet.borderColor, width: 4),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(20)),
-                          ),
-                          child: Column(
-                            children: [
-                              ListTile(
-                                title: const Text(
                                   '每週成功天數',
                                   //(weekDays == 0) ? '每週成功運動天數' : '每週成功冥想天數',
                                   style: TextStyle(
@@ -998,19 +894,6 @@ class StatisticPageState extends State<StatisticPage> {
                                   onToggle: (index) {
                                     StatData.monthDays = index!;
                                     setState(() {});
-
-                                    // TODO: 確認要加在哪些地方（完成統計頁後)
-                                    // add "scrolling automatically function" in the last container
-                                    // to scroll the listview to bottom automatically
-                                    WidgetsBinding.instance
-                                        .addPostFrameCallback((_) {
-                                      _scrollController.animateTo(
-                                          _scrollController
-                                              .position.maxScrollExtent,
-                                          duration:
-                                              const Duration(milliseconds: 200),
-                                          curve: Curves.easeOut);
-                                    });
                                   },
                                 ),
                                 visualDensity:
@@ -1086,6 +969,123 @@ class StatisticPageState extends State<StatisticPage> {
                                     ),
                                   ],
                                 ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                          padding:
+                              const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
+                          margin: const EdgeInsets.only(right: 10, left: 10),
+                          decoration: BoxDecoration(
+                            color: ColorSet.backgroundColor,
+                            border: Border.all(
+                                color: ColorSet.borderColor, width: 4),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                          ),
+                          child: Column(
+                            children: [
+                              ListTile(
+                                title: const Text(
+                                  '累積比例',
+                                  //(accumulatedTime == 0) ? '累積運動時長' : '累積冥想時長',
+                                  style: TextStyle(
+                                      color: ColorSet.textColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0),
+                                ),
+                                trailing: ToggleSwitch(
+                                  minHeight: 35,
+                                  initialLabelIndex: StatData.accumulatedTime,
+                                  cornerRadius: 10.0,
+                                  radiusStyle: true,
+                                  labels: const ['運動', '冥想'],
+                                  icons: const [
+                                    Icons.fitness_center_outlined,
+                                    Icons.self_improvement_outlined
+                                  ],
+                                  iconSize: 16,
+                                  activeBgColors: const [
+                                    [ColorSet.exerciseColor],
+                                    [ColorSet.meditationColor]
+                                  ],
+                                  activeFgColor: ColorSet.textColor,
+                                  inactiveBgColor: ColorSet.bottomBarColor,
+                                  inactiveFgColor: ColorSet.textColor,
+                                  totalSwitches: 2,
+                                  onToggle: (index) {
+                                    StatData.accumulatedTime = index!;
+                                    setState(() {});
+
+                                    // TODO: 確認要加在哪些地方（完成統計頁後)
+                                    // add "scrolling automatically function" in the last container
+                                    // to scroll the listview to bottom automatically
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                      _scrollController.animateTo(
+                                          _scrollController
+                                              .position.maxScrollExtent,
+                                          duration:
+                                              const Duration(milliseconds: 200),
+                                          curve: Curves.easeOut);
+                                    });
+                                  },
+                                ),
+                                visualDensity:
+                                    const VisualDensity(vertical: -4),
+                              ),
+                              SfCircularChart(
+                                legend: Legend(
+                                    isVisible: true,
+                                    textStyle: const TextStyle(
+                                        color: ColorSet.textColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold)),
+                                series: <CircularSeries<ChartData, String>>[
+                                  DoughnutSeries<ChartData, String>(
+                                    dataSource: (StatData.accumulatedTime == 0)
+                                        ? getExerciseTypePercentageChartData()
+                                        : getMeditationTypePercentageChartData(),
+                                    innerRadius: '40%',
+                                    xValueMapper: (ChartData data, _) => data.x,
+                                    yValueMapper: (ChartData data, _) => data.y,
+                                    pointColorMapper: (ChartData data, _) {
+                                      if (StatData.accumulatedTime == 0) {
+                                        if (data.x == "有氧") {
+                                          return const Color(0xfffbd9c6);
+                                        } else if (data.x == "重訓") {
+                                          return const Color(0xfffae5da);
+                                        } else if (data.x == "瑜珈") {
+                                          return const Color(0xfffcf1ec);
+                                        } else {
+                                          return const Color(0xfffdfdfd);
+                                        }
+                                      } else {
+                                        if (data.x == "正念") {
+                                          return const Color(0xffe9eafd);
+                                        } else if (data.x == "工作") {
+                                          return const Color(0xffd6d8fa);
+                                        } else if (data.x == "慈心") {
+                                          return const Color(0xffc2c5f7);
+                                        } else {
+                                          return const Color(0xfffdfdfd);
+                                        }
+                                      }
+                                    },
+                                    //顯示數字(趴數)
+                                    dataLabelSettings: const DataLabelSettings(
+                                      isVisible: true,
+                                      textStyle: TextStyle(
+                                          color: ColorSet.textColor,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
                               )
                             ],
                           ),
@@ -1313,7 +1313,7 @@ class StatisticPageState extends State<StatisticPage> {
 
 ////////////////////// Parameter of AddWeightBottomSheet //////////////////////
 
-  // 新增體重 bottom sheet
+  // 新增20 bottom sheet
   Widget getAddWeightBottomSheet(StateSetter setModalState) {
     String showingDate =
         "${selectedDate.year} / ${selectedDate.month} / ${selectedDate.day}";

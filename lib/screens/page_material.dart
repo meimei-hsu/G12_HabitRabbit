@@ -72,6 +72,53 @@ class InformDialog {
   }
 }
 
+class ConfirmDialog {
+  AwesomeDialog get(
+      BuildContext context, String title, String desc, Function btnOkOnPress,
+      {Function? btnCancelOnPress, List? options}) {
+    return AwesomeDialog(
+        context: context,
+        dialogType: DialogType.noHeader,
+        width: MediaQuery.of(context).size.width * 0.9,
+        dialogBorderRadius: const BorderRadius.all(
+          Radius.circular(20),
+        ),
+        buttonsBorderRadius: const BorderRadius.all(
+          Radius.circular(100),
+        ),
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        dialogBackgroundColor: ColorSet.backgroundColor,
+        dismissOnTouchOutside: true,
+        dismissOnBackKeyPress: true,
+        headerAnimationLoop: false,
+        animType: AnimType.bottomSlide,
+        desc: desc,
+        descTextStyle: const TextStyle(
+          color: ColorSet.textColor,
+          fontSize: 16,
+        ),
+        title: title,
+        titleTextStyle: const TextStyle(
+            color: ColorSet.textColor,
+            fontSize: 20,
+            fontWeight: FontWeight.bold),
+        btnOkText: (options != null) ? options[0] : '確定',
+        btnOkColor: ColorSet.buttonColor,
+        buttonsTextStyle: const TextStyle(
+            color: ColorSet.textColor,
+            fontSize: 18,
+            fontWeight: FontWeight.bold),
+        btnOkOnPress: () {
+          btnOkOnPress();
+        },
+        btnCancelText: (options != null) ? options[1] : '取消',
+        btnCancelColor: ColorSet.backgroundColor,
+        btnCancelOnPress: () {
+          (btnCancelOnPress != null) ? btnCancelOnPress() : null;
+        });
+  }
+}
+
 class HintDialog {
   AwesomeDialog get(BuildContext context, String title, String selectableText,
       {Function? btnOkOnPress}) {
@@ -132,6 +179,7 @@ class CongratsDialog {
       {required String habit, required Widget widgetAfterDismiss}) async {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         final ConfettiController controller =
             ConfettiController(duration: const Duration(seconds: 3))
@@ -204,50 +252,49 @@ class CongratsDialog {
   }
 }
 
-class ConfirmDialog {
-  AwesomeDialog get(
-      BuildContext context, String title, String desc, Function btnOkOnPress,
-      {Function? btnCancelOnPress, List? options}) {
+class MenuDialog {
+  AwesomeDialog get(BuildContext context, String title, List<String> funcNames,
+      List<Function> functions) {
     return AwesomeDialog(
-        context: context,
-        dialogType: DialogType.noHeader,
-        width: MediaQuery.of(context).size.width * 0.9,
-        dialogBorderRadius: const BorderRadius.all(
-          Radius.circular(20),
+      context: context,
+      dialogType: DialogType.noHeader,
+      width: MediaQuery.of(context).size.width * 0.8,
+      dialogBorderRadius: const BorderRadius.all(Radius.circular(20)),
+      dialogBackgroundColor: ColorSet.backgroundColor,
+      body: SizedBox(
+        height: 200,
+        child: Column(
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            for (int i = 0; i < 3; i++)
+              TextButton(
+                onPressed: () => {Navigator.pop(context), functions[i]()},
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(ColorSet.backgroundColor),
+                  overlayColor:
+                      MaterialStateProperty.all(ColorSet.backgroundColor),
+                ),
+                child: Text(
+                  funcNames[i],
+                  style: const TextStyle(
+                    color: ColorSet.textColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+          ],
         ),
-        buttonsBorderRadius: const BorderRadius.all(
-          Radius.circular(100),
-        ),
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        dialogBackgroundColor: ColorSet.backgroundColor,
-        dismissOnTouchOutside: true,
-        dismissOnBackKeyPress: true,
-        headerAnimationLoop: false,
-        animType: AnimType.bottomSlide,
-        desc: desc,
-        descTextStyle: const TextStyle(
-          color: ColorSet.textColor,
-          fontSize: 16,
-        ),
-        title: title,
-        titleTextStyle: const TextStyle(
-            color: ColorSet.textColor,
-            fontSize: 20,
-            fontWeight: FontWeight.bold),
-        btnOkText: (options != null) ? options[0] : '確定',
-        btnOkColor: ColorSet.buttonColor,
-        buttonsTextStyle: const TextStyle(
-            color: ColorSet.textColor,
-            fontSize: 18,
-            fontWeight: FontWeight.bold),
-        btnOkOnPress: () {
-          btnOkOnPress();
-        },
-        btnCancelText: (options != null) ? options[1] : '取消',
-        btnCancelColor: ColorSet.backgroundColor,
-        btnCancelOnPress: () {
-          (btnCancelOnPress != null) ? btnCancelOnPress() : null;
-        });
+      ),
+    );
   }
 }
 
