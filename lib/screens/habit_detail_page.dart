@@ -240,7 +240,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
                                     .show();
                               }
                         : () {
-                            InformDialog()
+                            ErrorDialog()
                                 .get(context, "錯誤:(", "無法做非今日的運動計畫噢！")
                                 .show();
                           },
@@ -634,7 +634,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                                       .show();
                                 }
                           : () {
-                              InformDialog()
+                              ErrorDialog()
                                   .get(context, "錯誤:(", "無法做非今日的冥想計畫噢！")
                                   .show();
                             },
