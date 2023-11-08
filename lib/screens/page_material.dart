@@ -126,6 +126,11 @@ class ConfirmDialog {
         context: context,
         dialogType: DialogType.noHeader,
         width: MediaQuery.of(context).size.width * 0.9,
+        customHeader: Image.asset(
+          height: 75,
+          width: 75,
+          'assets/images/Rabbit_head.png',
+        ),
         dialogBorderRadius: const BorderRadius.all(
           Radius.circular(20),
         ),

@@ -93,7 +93,7 @@ class HomepageState extends State<Homepage> {
 
         // Rest
         if (id == "3") {
-          InformDialog().get(context, "提醒", "今日沒有計畫喔~\n請點選兔子以新增計畫").show();
+          InformDialog().get(context, "提醒:)", "今日是休息日~\n想要動起來就新增計畫吧").show();
         }
       },
     );
@@ -138,7 +138,7 @@ class HomepageState extends State<Homepage> {
         changeDate() {
           if (!HomeData.isAfter && HomeData.selectedDay?.weekday == 6) {
             InformDialog()
-                .get(context, "無法修改:(", "今天已經星期六囉~\n無法再將計畫換到別天了！")
+                .get(context, "警告:(", "今天已經星期六囉~\n無法再將計畫換到別天了！")
                 .show();
           } else {
             showModalBottomSheet(
@@ -280,25 +280,25 @@ class HomepageState extends State<Homepage> {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
       dialogText =
-          (HomeData.isBefore) ? "沒有運動計畫\n沒有冥想計畫" : "沒有運動計畫\n沒有冥想計畫\n點我新增計畫！";
+          (HomeData.isBefore) ? "沒有運動計畫\n沒有冥想計畫" : "沒有運動計畫\n沒有冥想計畫\n點兔兔新增計畫！";
     } else if (HomeData.workoutPlan != null &&
         HomeData.meditationPlan == null) {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
       dialogText = (HomeData.isBefore)
-          ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n目前尚未安排任何冥想計畫，點選我新增"
+          ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n目前尚未安排任何冥想計畫，點選兔兔新增"
           : (HomeData.isToday)
-              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點我新增！"
-              : "今日有運動計畫\n記得要來完成噢~\n點選我新增冥想計畫！";
+              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點選兔兔新增！"
+              : "今日有運動計畫\n記得要來完成噢~\n點選兔兔新增冥想計畫！";
     } else if (HomeData.workoutPlan == null &&
         HomeData.meditationPlan != null) {
       // 運動沒有、冥想有 --> 冥想完成度、新增運動
       // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
       dialogText = (HomeData.isBefore)
-          ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n目前尚未安排任何運動計畫，點選我新增"
+          ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n目前尚未安排任何運動計畫，點選兔兔新增"
           : (HomeData.isToday)
-              ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "有夠讚！\n" : "讓我們一起加油~\n"}今日尚未安排運動計畫，點選我新增"
-              : "今日有冥想計畫\n記得要來完成噢~\n點選我新增運動計畫！";
+              ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "有夠讚！\n" : "讓我們一起加油~\n"}今日尚未安排運動計畫，點選兔兔新增"
+              : "今日有冥想計畫\n記得要來完成噢~\n點選兔兔新增運動計畫！";
     } else {
       // 運動有、冥想有 --> 運動完成度、冥想完成度
       // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
@@ -664,7 +664,7 @@ class HomepageState extends State<Homepage> {
                             backgroundColor: ColorSet.bottomBarColor,
                             context: context,
                             builder: (context) {
-                              return Wrap(children: const [
+                              return const Wrap(children: [
                                 FeedbackBottomSheet(
                                   arguments: {"type": 0},
                                 )
