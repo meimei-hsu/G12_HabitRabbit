@@ -5,10 +5,8 @@ import 'package:swipe_cards/swipe_cards.dart';
 import 'dart:async';
 
 import 'package:g12/services/database.dart';
-
-import '../services/page_data.dart';
-import '../services/plan_algo.dart';
-import 'page_material.dart';
+import 'package:g12/services/page_data.dart';
+import 'package:g12/screens/page_material.dart';
 
 //////////////////////////////  Data Type  /////////////////////////////////////
 
@@ -1410,11 +1408,10 @@ class ResultPageState extends State<ResultPage> {
                       await UserDB.insert(userInfo);
                       await WeightDB.update({
                         Calendar.dateToString(DateTime.now()):
-                            userInfo["weight"]
+                            (userInfo["weight"]).toDouble()
                       });
                       await GamificationDB.insert(userInfo, character);
                       await Data.init();
-                      await PlanAlgo.execute();
                     }
                     if (!mounted) return;
                     Navigator.pushNamedAndRemoveUntil(

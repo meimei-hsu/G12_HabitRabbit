@@ -609,7 +609,11 @@ class ChangeDayAndNotificationTimeBottomSheetState
       for (int i = 0; i < 7; i++)
         if (SettingsData.userData[dayKey][i] == 1) i
     ];
-    forecast = Map.from(SettingsData.timeForecast[notificationKey]);
+    forecast = Map.from(SettingsData.timeForecast[notificationKey] ??
+        {
+          for (int i = 0; i < 7; i++)
+            "forecast_$i": Calendar.timeToString(TimeOfDay.now())
+        });
   }
 
   List<Widget> _getDayBtnList() {

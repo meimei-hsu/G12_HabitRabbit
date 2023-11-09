@@ -1190,7 +1190,10 @@ class ClockDB {
       });
     } else {
       // Update actual start time to ClockDB
-      return update(habit, {Calendar.dateToString(today): actualTime});
+      return update(habit, {
+        "forecast_${today.weekday % 7}": actualTime,
+        Calendar.dateToString(today): actualTime
+      });
     }
   }
 

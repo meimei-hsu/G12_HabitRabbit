@@ -53,14 +53,14 @@ class Data {
       await fetchContract();
       await fetchWeights();
       await fetchClocks();
-     // update UI
+      // execute plan algorithm
+      await PlanAlgo.execute();
+      // update UI
       await HomeData.fetch();
       await StatData.fetch();
       await GameData.fetch();
       await SettingsData.fetch();
       await CommData.fetch();
-      // execute plan algorithm
-      await PlanAlgo.execute();
       return true;
     }
     return false;
@@ -515,12 +515,14 @@ class StatData {
     if (bmi > cv[1] && bmi <= cv[2]) bmiStandard = "微胖";
     if (bmi > cv[2]) bmiStandard = "肥胖";
 
-    maxWorkoutConsecutiveDays = List<double>.generate(
-        consecutiveExerciseDaysList.length,
-        (index) => consecutiveExerciseDaysList[index][2]).reduce(max);
-    maxMeditationConsecutiveDays = List<double>.generate(
-        consecutiveMeditationDaysList.length,
-        (index) => consecutiveExerciseDaysList[index][2]).reduce(max);
+    maxWorkoutConsecutiveDays = (consecutiveExerciseDaysList.isEmpty)
+        ? 0
+        : List<double>.generate(consecutiveExerciseDaysList.length,
+            (index) => consecutiveExerciseDaysList[index][2]).reduce(max);
+    maxMeditationConsecutiveDays = (consecutiveMeditationDaysList.isEmpty)
+        ? 0
+        : List<double>.generate(consecutiveMeditationDaysList.length,
+            (index) => consecutiveExerciseDaysList[index][2]).reduce(max);
 
     Data.durations?["workout"]?.forEach((key, value) {
       workoutAccumulatedTime += int.parse(value.split(", ")[0]);

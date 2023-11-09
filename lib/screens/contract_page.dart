@@ -887,7 +887,6 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
 
   String? _type;
   String? _content;
-  int? _money;
   late bool processing;
 
   @override
@@ -903,7 +902,6 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
       setState(() {
         _type = contractData["type"];
         _content = contractData["content"];
-        _money = contractData["money"];
       });
     }
   }
@@ -1181,45 +1179,6 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
     return btnList;
   }
 
-  // TODO: 合約金額由點選方式改成輸入方式
-  List<Widget> _getMoneyBtnList() {
-    List moneyList = [100, 150, 200, 250, 300];
-    List<Widget> btnList = [];
-
-    for (final money in moneyList) {
-      int choice = money;
-      btnList.add(OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          side: const BorderSide(
-            color: ColorSet.textColor,
-          ),
-          backgroundColor: (_money == choice)
-              ? (_type == "運動")
-                  ? ColorSet.exerciseColor
-                  : ColorSet.meditationColor
-              : ColorSet.backgroundColor,
-        ),
-        onPressed: () {
-          _selectAmount(choice);
-        },
-        child: Text(
-          "$choice",
-          style: const TextStyle(
-            color: ColorSet.textColor,
-            fontSize: 16,
-          ),
-        ),
-      ));
-      btnList.add(const SizedBox(
-        width: 10,
-      ));
-    }
-    return btnList;
-  }
-
   _selectType(String t) {
     setState(() {
       _type = t;
@@ -1251,13 +1210,6 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
           contractData["gem"] = "0, 15";
           break;
       }
-    });
-  }
-
-  _selectAmount(int a) {
-    setState(() {
-      _money = a;
-      contractData["money"] = a;
     });
   }
 

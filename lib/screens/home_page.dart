@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
-import 'package:banner_carousel/banner_carousel.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
@@ -47,56 +45,6 @@ class HomepageState extends State<Homepage> {
       );
     }
     Data.isFirstTime = false;
-  }
-
-  Widget getBannerCarousel() {
-    const String exercise = "assets/images/Exercise_1.jpg";
-    const String meditation = "assets/images/Meditation_1.jpg";
-    const String rest = "assets/images/Rest.PNG";
-
-    List<BannerModel> listBanners;
-    if (HomeData.workoutPlan == null && HomeData.meditationPlan == null) {
-      listBanners = [BannerModel(imagePath: rest, id: "3")];
-    } else if (HomeData.workoutPlan != null &&
-        HomeData.meditationPlan == null) {
-      listBanners = [BannerModel(imagePath: exercise, id: "1")];
-    } else if (HomeData.workoutPlan == null &&
-        HomeData.meditationPlan != null) {
-      listBanners = [BannerModel(imagePath: meditation, id: "2")];
-    } else {
-      listBanners = [
-        BannerModel(imagePath: exercise, id: "1"),
-        BannerModel(imagePath: meditation, id: "2"),
-      ];
-    }
-
-    return BannerCarousel(
-      height: 300,
-      margin: const EdgeInsets.only(left: 0, right: 0),
-      viewportFraction: 0.9,
-      spaceBetween: 5,
-      borderRadius: 10,
-      activeColor: const Color(0xff4b3d70),
-      disableColor: const Color(0xfff6cdb7),
-      showIndicator: false,
-      banners: listBanners,
-      onTap: (id) async {
-        // Exercise
-        if (id == "1") {
-          Navigator.pushNamed(context, '/detail/exercise');
-        }
-
-        // Meditation
-        if (id == "2") {
-          Navigator.pushNamed(context, '/detail/meditation');
-        }
-
-        // Rest
-        if (id == "3") {
-          InformDialog().get(context, "提醒:)", "今日是休息日~\n想要動起來就新增計畫吧").show();
-        }
-      },
-    );
   }
 
   Widget getBanner() {
@@ -222,13 +170,12 @@ class HomepageState extends State<Homepage> {
           }
         }
       },
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.9,
-        height: 300,
-        child: Stack(
+      child: Column(
           children: [
             Container(
               alignment: Alignment.center,
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: MediaQuery.of(context).size.height * 0.35,
               margin: const EdgeInsets.only(left: 0, right: 0),
               decoration: BoxDecoration(
                 border: Border.all(color: ColorSet.borderColor, width: 1.5),
@@ -269,7 +216,6 @@ class HomepageState extends State<Homepage> {
                 : Container(),
           ],
         ),
-      ),
     );
   }
 
@@ -619,8 +565,8 @@ class HomepageState extends State<Homepage> {
                 const SizedBox(height: 50),
                 Showcase(
                     key: bannerKey,
-                    description: '點擊後觀看計畫詳細內容',
-                    child: getBanner()), // getBannerCarousel()
+                    description: '點擊查看計畫內容，長按修改計畫資訊',
+                    child: getBanner()),
                 const SizedBox(height: 5),
                 Row(children: [
                   IconButton(
@@ -664,7 +610,7 @@ class HomepageState extends State<Homepage> {
                             backgroundColor: ColorSet.bottomBarColor,
                             context: context,
                             builder: (context) {
-                              return const Wrap(children: [
+                              return Wrap(children: const [
                                 FeedbackBottomSheet(
                                   arguments: {"type": 0},
                                 )
