@@ -1,17 +1,13 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:speech_balloon/speech_balloon.dart';
 
 import 'package:g12/screens/page_material.dart';
 import 'package:g12/screens/register_page.dart';
-
 import 'package:g12/services/database.dart';
-import 'package:speech_balloon/speech_balloon.dart';
+import 'package:g12/services/page_data.dart';
 
 // Define global variables for ContractPage
-User? user = FirebaseAuth.instance.currentUser;
-Map contractData = {
+Map newContract = {
   "type": "",
   "content": "",
   "startDay": Calendar.dateToString(DateTime.now()),
@@ -36,22 +32,24 @@ class FirstContractPageState extends State<FirstContractPage> {
   final DateTime startDay = DateTime.now();
   final List<String> dialogs = [
     '承諾合約協助您養成習慣',
-    '您可以在此約定期間根據自己的情況選擇不同的選項。'
+    '您可以在根據自己的情況選擇不同的條款。'
         '一旦契約開始執行，將無法取消或更改內容，直到完成您設定的目標。'
-        '\n如未能成功實現目標，您將同意把投入的資金全部捐出；'
-        '如您成功實現了目標，Habit Rabbit 將退還您全部的資金。',
+        '\n契約簽訂前，您需要先投入一筆保證金。'
+        '如未能成功實現目標，則該筆資金將全數捐至慈善機構；'
+        '如您成功實現了目標，則將退還原款，並獎勵 3% 現金回饋。',
     '是否確認投入合約？',
     '請點選您想要投入類型：',
     '請點選您想要投入方案：',
     '您要投入多少金錢督促自己：',
   ];
 
-  void updateDialog() {
-    setState(() {
-      if (tapCount < dialogs.length) {
-        tapCount++;
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    if (GameData.contracts.isNotEmpty) {
+      tapCount = 4;
+      newContract["type"] = GameData.lastContractZH;
+    }
   }
 
   @override
@@ -80,7 +78,14 @@ class FirstContractPageState extends State<FirstContractPage> {
         ),
       ),
       body: GestureDetector(
-        onTap: updateDialog,
+        onTap: () {
+          setState(() {
+            // 除了說明頁(p.0~1)，其他都需要選擇選項才能跳下一頁
+            if (tapCount < 2) {
+              tapCount++;
+            }
+          });
+        },
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -142,7 +147,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  Navigator.pushNamed(context, '/');
+                                  Navigator.of(context).pop();
                                 },
                                 child: const Text(
                                   '再考慮一下',
@@ -199,7 +204,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 onPressed: () {
                                   setState(() {
                                     tapCount++;
-                                    contractData["type"] = '運動'; // 賦值给type字段
+                                    newContract["type"] = '運動'; // 賦值给type字段
                                   });
                                 },
                                 child: const Text(
@@ -225,7 +230,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 onPressed: () {
                                   setState(() {
                                     tapCount++;
-                                    contractData["type"] = '冥想';
+                                    newContract["type"] = '冥想';
                                   });
                                 },
                                 child: const Text(
@@ -256,13 +261,13 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 onPressed: () {
                                   setState(() {
                                     tapCount++;
-                                    contractData["content"] = "基礎 (1月內達成3週目標)";
-                                    contractData["endDay"] =
+                                    newContract["content"] = "基礎 (1月內達成3週目標)";
+                                    newContract["endDay"] =
                                         Calendar.dateToString(DateTime(
                                             startDay.year,
                                             startDay.month + 1,
                                             startDay.day));
-                                    contractData["gem"] = "0, 3";
+                                    newContract["gem"] = "0, 3";
                                   });
                                 },
                                 child: const Text(
@@ -287,13 +292,13 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 onPressed: () {
                                   setState(() {
                                     tapCount++;
-                                    contractData["content"] = "進階 (2月內達成7週目標)";
-                                    contractData["endDay"] =
+                                    newContract["content"] = "進階 (2月內達成7週目標)";
+                                    newContract["endDay"] =
                                         Calendar.dateToString(DateTime(
                                             startDay.year,
                                             startDay.month + 2,
                                             startDay.day));
-                                    contractData["gem"] = "0, 7";
+                                    newContract["gem"] = "0, 7";
                                   });
                                 },
                                 child: const Text(
@@ -318,13 +323,13 @@ class FirstContractPageState extends State<FirstContractPage> {
                                 onPressed: () {
                                   setState(() {
                                     tapCount++;
-                                    contractData["content"] = "困難 (4月內達成15週目標)";
-                                    contractData["endDay"] =
+                                    newContract["content"] = "困難 (4月內達成15週目標)";
+                                    newContract["endDay"] =
                                         Calendar.dateToString(DateTime(
                                             startDay.year,
                                             startDay.month + 4,
                                             startDay.day));
-                                    contractData["gem"] = "0, 15";
+                                    newContract["gem"] = "0, 15";
                                   });
                                 },
                                 child: const Text(
@@ -393,8 +398,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                                     keyboardType: TextInputType.number,
                                     onChanged: (value) {
                                       setState(() {
-                                        contractData["money"] =
-                                            int.parse(value);
+                                        newContract["money"] = int.parse(value);
                                       });
                                     },
                                   ),
@@ -421,13 +425,12 @@ class FirstContractPageState extends State<FirstContractPage> {
                                       if (moneyFormKey.currentState!
                                           .validate()) {
                                         setState(() {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const SecondContractPage(),
-                                            ),
-                                          );
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const SecondContractPage()),
+                                              ModalRoute.withName('/'));
                                         });
                                       }
                                     },
@@ -529,20 +532,17 @@ class SecondContractPageState extends State<SecondContractPage> {
                           height: 5,
                         ),
                         Text(
-                          '立契約人於約定期間積極養成  ${contractData["type"]}  習慣'
-                          '\n選擇方案為  ${contractData["content"]}'
-                          '\n投入金額為  ${contractData["money"]}  元'
-                          '\n\n若未達成設定目標，立契約人同意將投入金額全數捐出；'
-                          '若達成設定目標則將退還全數金額。',
+                          '立契約人於約定期間積極養成  ${newContract["type"]}  習慣'
+                          '\n選擇方案為  ${newContract["content"]}'
+                          '\n投入金額為  ${newContract["money"]}  元'
+                          '\n\n若未達成設定目標，立契約人同意將投入金額全數捐至慈善機構；'
+                          '若達成設定目標，本公司同意以 103% 的比例退還立契約人之款項。',
                           style: const TextStyle(
                             fontSize: 15.0,
                             color: ColorSet.textColor,
                           ),
                         ),
                         const SizedBox(height: 10.0),
-                        /*Padding(
-                        padding: const EdgeInsets.only(left: 100),
-                        child: */
                         Row(
                           children: [
                             Expanded(
@@ -559,8 +559,10 @@ class SecondContractPageState extends State<SecondContractPage> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, '/contract/initial');
+                                  Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      '/contract/initial',
+                                      ModalRoute.withName('/'));
                                 },
                                 child: const Text(
                                   '取消 / 重新輸入',
@@ -587,11 +589,9 @@ class SecondContractPageState extends State<SecondContractPage> {
                                 ),
                                 onPressed: () {
                                   btnOkOnPress() async {
-                                    ContractDB.update(contractData);
                                     Navigator.pushNamed(context, '/pay',
                                         arguments: {
-                                          'user': user,
-                                          'money': contractData["money"],
+                                          'contract': newContract,
                                         });
                                   }
 
@@ -653,11 +653,14 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
     viewportFraction: 0.85,
   );
 
+  void refresh() async {
+    if (Data.updatingDB || Data.updatingUI[1]) await GameData.fetch();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    String type1 = "workout";
-    String type2 = "meditation";
-
+    refresh();
     return Scaffold(
         backgroundColor: ColorSet.backgroundColor,
         appBar: AppBar(
@@ -687,60 +690,43 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                 child: PageView(
                   controller: _pageController,
                   children: [
-                    Container(
-                      //padding: const EdgeInsets.only(top: 40, left: 10, right: 10),
-                      padding: const EdgeInsets.only(
-                        top: 20,
-                        //bottom: 250,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(20.0),
-                        decoration: BoxDecoration(
-                          color: ColorSet.backgroundColor,
-                          border:
-                              Border.all(color: ColorSet.borderColor, width: 4),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(15)),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            FutureBuilder<Map<String, dynamic>?>(
-                              future: ContractDB.getContract(),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return const Text('Error fetching data');
-                                } else if (snapshot.data!.containsKey(type1)) {
-                                  Map data = snapshot.data![type1];
-                                  return Text(
-                                    '立契約人將依照選擇之方案來養成各項習慣，'
-                                    '若目標達成系統將投入金額全數退回，失敗則全數捐出。\n'
-                                    '\n您選擇養成的習慣：${data["type"]}'
-                                    '\n您選擇的方案：${data["content"]}'
-                                    '\n您所投入的金額：${data["money"]}\n'
-                                    '\n合約開始日：${data["startDay"]}'
-                                    '\n合約結束日：${data["endDay"]}'
-                                    '\n距離成功已完成：${Calculator.calcProgress(data["gem"]).round()}%',
-                                    style: const TextStyle(
-                                      fontSize: 18.0,
-                                      letterSpacing: 1.2,
-                                      color: ColorSet.textColor,
-                                    ),
-                                  );
-                                } else {
-                                  return const Text(
-                                      '尚未有運動合約資料'); // If no data is found, show a message
-                                }
-                              },
-                            ),
-                          ],
+                    for (Map data in GameData.contracts)
+                      Container(
+                        padding:
+                            const EdgeInsets.only(top: 30, left: 10, right: 10),
+                        child: Container(
+                          padding: const EdgeInsets.all(20.0),
+                          decoration: BoxDecoration(
+                            color: ColorSet.backgroundColor,
+                            border: Border.all(
+                                color: ColorSet.borderColor, width: 4),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15)),
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '立契約人將依照選擇之方案來養成各項習慣，'
+                                '如未能成功實現目標，Habit Rabbit 將把投入的資金全部捐出；'
+                                '如您成功實現了目標，Habit Rabbit 將退還原款，並獎勵 3% 現金回饋。\n'
+                                '\n您選擇養成的習慣：${data["type"]}'
+                                '\n您選擇的方案：${data["content"]}'
+                                '\n您所投入的金額：${data["money"]}\n'
+                                '\n合約開始日：${data["startDay"]}'
+                                '\n合約結束日：${data["endDay"]}'
+                                '\n距離成功已完成：${Calculator.calcProgress(data["gem"]).round()}%',
+                                style: const TextStyle(
+                                  fontSize: 18.0,
+                                  letterSpacing: 1.2,
+                                  color: ColorSet.textColor,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
+                    /*Container(
                       //padding: const EdgeInsets.only(top: 40, left: 10, right: 10),
                       padding: const EdgeInsets.only(
                         top: 20,
@@ -792,7 +778,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                           ],
                         ),
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ),
@@ -815,7 +801,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                         ),
                       ),
                       onPressed: () {
-                        Future<Map<String, dynamic>?> futureContract =
+                        /*Future<Map<String, dynamic>?> futureContract =
                             ContractDB.getContract();
                         futureContract.then((data) {
                           bool workoutContractExists =
@@ -826,7 +812,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                           if (workoutContractExists &&
                               meditationContractExists) {
                             // Show the dialog message for one second and then hide it
-                            InformDialog()
+                            ErrorDialog()
                                 .get(context, "無法新增:(", "每種類型合約僅能建立一次！")
                                 .show();
                           } else {
@@ -842,8 +828,22 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                                 builder: (context) {
                                   return const OptionsBottomSheet();
                                 });
-                          }
-                        });
+                          }*/
+                        if (GameData.contracts.length == 2) {
+                          // Show the dialog message for one second and then hide it
+                          ErrorDialog()
+                              .get(context, "無法新增:(", "每種類型合約僅能建立一次！")
+                              .show();
+                        } else {
+                          ConfirmDialog()
+                              .get(
+                                  context,
+                                  "新增合約",
+                                  "是否確認新增${GameData.lastContractZH}合約？",
+                                  () => Navigator.pushNamed(
+                                      context, '/contract/initial'))
+                              .show();
+                        }
                       },
                       child: const Text(
                         '新增合約！',
@@ -875,7 +875,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
   }
 }
 
-class OptionsBottomSheet extends StatefulWidget {
+/*class OptionsBottomSheet extends StatefulWidget {
   const OptionsBottomSheet({super.key});
 
   @override
@@ -1087,7 +1087,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
                     setState(() {
-                      contractData["money"] = int.parse(value);
+                      newContract["money"] = int.parse(value);
                     });
                   },
                 ),
@@ -1182,7 +1182,7 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
   _selectType(String t) {
     setState(() {
       _type = t;
-      contractData["type"] = t;
+      newContract["type"] = t;
     });
   }
 
@@ -1192,22 +1192,22 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
       DateTime startDay = DateTime.now();
       switch (p) {
         case "基礎":
-          contractData["content"] = "基礎 (1月內達成3週目標)";
-          contractData["endDay"] = Calendar.dateToString(
+          newContract["content"] = "基礎 (1月內達成3週目標)";
+          newContract["endDay"] = Calendar.dateToString(
               DateTime(startDay.year, startDay.month + 1, startDay.day));
-          contractData["gem"] = "0, 3";
+          newContract["gem"] = "0, 3";
           break;
         case "進階":
-          contractData["content"] = "進階 (2月內達成7週目標)";
-          contractData["endDay"] = Calendar.dateToString(
+          newContract["content"] = "進階 (2月內達成7週目標)";
+          newContract["endDay"] = Calendar.dateToString(
               DateTime(startDay.year, startDay.month + 2, startDay.day));
-          contractData["gem"] = "0, 7";
+          newContract["gem"] = "0, 7";
           break;
         case "困難":
-          contractData["content"] = "困難 (4月內達成15週目標)";
-          contractData["endDay"] = Calendar.dateToString(
+          newContract["content"] = "困難 (4月內達成15週目標)";
+          newContract["endDay"] = Calendar.dateToString(
               DateTime(startDay.year, startDay.month + 4, startDay.day));
-          contractData["gem"] = "0, 15";
+          newContract["gem"] = "0, 15";
           break;
       }
     });
@@ -1215,15 +1215,15 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
 
   void _startContract() async {
     btnOkOnPress() async {
-      ContractDB.update(contractData);
+      // ContractDB.update(contractData);
       Navigator.of(context).pop(true);
       setState(() {
         processing = true;
       });
       if (!mounted) return;
       Navigator.pushNamed(context, '/pay', arguments: {
-        'user': user,
-        'money': contractData["money"],
+        'user': Data.profile!["userName"],
+        'money': newContract["money"],
       });
     }
 
@@ -1231,4 +1231,4 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
         .get(context, "提示", "確定後無法進行修改或刪除，請深思熟慮", btnOkOnPress)
         .show();
   }
-}
+}*/

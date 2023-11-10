@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pin_code_fields/flutter_pin_code_fields.dart';
 import 'package:onscreen_num_keyboard/onscreen_num_keyboard.dart';
 
+import '../services/database.dart';
 import '../services/page_data.dart';
 
 // Define global variables for LinePayPage
+Map contract = {};
 String userName = "", money = "";
 
 class PayPage extends StatefulWidget {
@@ -23,8 +25,9 @@ class PayPageState extends State<PayPage> {
   @override
   void initState() {
     super.initState();
-    userName = widget.arguments['user'].displayName;
-    money = widget.arguments['money'].toString();
+    contract = widget.arguments['contract'];
+    userName = Data.profile!["userName"];
+    money = contract['money'].toString();
   }
 
   String getPayTime() {
@@ -78,8 +81,10 @@ class PayPageState extends State<PayPage> {
                 ListTile(
                   leading: CircleAvatar(
                     radius: 48, // Image radius
+                    backgroundColor: Colors.transparent,
                     // TODO: 頭貼上有個藍色認證勾勾?
-                    backgroundImage: AssetImage(Data.characterImageURL),
+                    backgroundImage: AssetImage(Data.characterImageURL
+                        .replaceAll(RegExp(r'.png'), "_head.png")),
                   ),
                   trailing: const Icon(Icons.info_outline_rounded),
                   title: Text("$userName 正在付款。"),
@@ -218,7 +223,7 @@ class PayPageState extends State<PayPage> {
             minimumSize: const Size.fromHeight(55), // NEW
           ),
           onPressed: () {
-            Navigator.pushNamed(context, '/pay/password');
+            Navigator.popAndPushNamed(context, '/pay/password');
           },
           child: Text(
             '支付NT\$ $money',
@@ -305,7 +310,8 @@ class PasswordPageState extends State<PasswordPage> {
                   keyboardType: TextInputType.number,
                   controller: pinCodeController,
                   onComplete: (text) {
-                    Navigator.pushNamed(context, '/pay/checkout');
+                    pinCodeController.clear();
+                    Navigator.popAndPushNamed(context, '/pay/checkout');
                   },
                 ),
               ],
@@ -406,7 +412,7 @@ class ConfirmPageState extends State<ConfirmPage> {
                         fontWeight: FontWeight.bold),
                   ),
                   trailing: Text(
-                    "懶蟲運動科技公司",
+                    "習慣兔科技公司",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                   visualDensity: VisualDensity(vertical: -4),
@@ -420,7 +426,7 @@ class ConfirmPageState extends State<ConfirmPage> {
                         fontWeight: FontWeight.bold),
                   ),
                   trailing: Text(
-                    "懶蟲們，一起運動吧！",
+                    "習慣兔，你的專屬習慣Tool！",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                   visualDensity: VisualDensity(vertical: -4),
@@ -540,7 +546,7 @@ class ConfirmPageState extends State<ConfirmPage> {
                             backgroundColor: const Color(0xFFA0A9B8),
                             shadowColor: Colors.white,
                             minimumSize: const Size(0, 45)),
-                        onPressed: () {},
+                        onPressed: () => Navigator.pop(context),
                         child: const Text(
                           "取消",
                           style: TextStyle(color: Colors.white, fontSize: 15),
@@ -554,9 +560,10 @@ class ConfirmPageState extends State<ConfirmPage> {
                               backgroundColor: const Color(0xFF23B91A),
                               shadowColor: Colors.white,
                               minimumSize: const Size(0, 45)),
-                          onPressed: () {
-                            Navigator.pushNamedAndRemoveUntil(
-                                context,
+                          onPressed: () async {
+                            await ContractDB.update(contract);
+                            if (!mounted) return;
+                            Navigator.pushNamedAndRemoveUntil(context,
                                 '/contract/already', ModalRoute.withName('/'));
                           },
                           child: const Text(
@@ -614,14 +621,14 @@ class CompanyDescriptionItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   const Text(
-                    "懶蟲運動科技公司",
+                    "習慣兔科技公司",
                     style: TextStyle(
                       fontSize: 10.0,
                     ),
                   ),
                   const Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
                   const Text(
-                    "懶蟲們，一起運動吧！",
+                    "習慣兔，你的專屬習慣Tool！",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),

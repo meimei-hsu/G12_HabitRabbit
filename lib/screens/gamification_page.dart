@@ -90,7 +90,7 @@ class CharacterWidget extends StatelessWidget {
       percentage = (characterImageURL.contains("_2")) ? 0.75 : 0.8;
     } else if (character == "Fox") {
       percentage = (characterImageURL.contains("_2")) ? 0.75 : 0.65;
-    }else if (character == "Sloth") {
+    } else if (character == "Sloth") {
       percentage = (characterImageURL.contains("_2")) ? 0.8 : 0.75;
     }
     return percentage;

@@ -496,7 +496,7 @@ class TitlePageState extends State<TitlePage> {
         appBar:
             AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
         body: WillPopScope(
-          onWillPop: () async => (Data.isFirstTime) ? false : true,
+          onWillPop: () async => false,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(36, 48, 36, 48),
             child: Container(
@@ -601,7 +601,13 @@ class PartOnePageState extends State<PartOnePage> {
         appBar:
             AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
         body: WillPopScope(
-          onWillPop: () async => (Data.isFirstTime) ? false : true,
+          onWillPop: () async => (Data.isFirstTime)
+              ? ConfirmDialog()
+                  .get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
+                      () => Navigator.pop(context, true),
+                      btnCancelOnPress: () => false)
+                  .show() as bool
+              : true,
           child: ListView(
             controller: _scrollController,
             children: [
@@ -827,7 +833,7 @@ class PartOnePageState extends State<PartOnePage> {
                               builder: (context) =>
                                   const TitlePage(arguments: {"part": 1})));
                     } else {
-                        ErrorDialog()
+                      ErrorDialog()
                           .get(
                             context,
                             "警告！",
@@ -874,7 +880,13 @@ class PartTwoPageState extends State<PartTwoPage> {
         appBar:
             AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
         body: WillPopScope(
-          onWillPop: () async => (Data.isFirstTime) ? false : true,
+          onWillPop: () async => (Data.isFirstTime)
+              ? ConfirmDialog()
+                  .get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
+                      () => Navigator.pop(context, true),
+                      btnCancelOnPress: () => false)
+                  .show() as bool
+              : true,
           child: Column(
             children: [
               Padding(
@@ -1164,7 +1176,13 @@ class PartThreePageState extends State<PartThreePage>
         appBar:
             AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
         body: WillPopScope(
-          onWillPop: () async => (Data.isFirstTime) ? false : true,
+          onWillPop: () async => (Data.isFirstTime)
+              ? ConfirmDialog()
+                  .get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
+                      () => Navigator.pop(context, true),
+                      btnCancelOnPress: () => false)
+                  .show() as bool
+              : true,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(36, 48, 36, 48),
             child: Container(

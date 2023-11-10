@@ -761,6 +761,8 @@ class GameData {
   static double workoutPercent = 0;
   static double meditationPercent = 0;
   static double totalPercent = 0;
+  static List<Map> contracts = [];
+  static String lastContractZH = ""; // the only contract that user hasn't build
 
   static Future<void> fetch() async {
     print("Refreshing GamificationPage...");
@@ -779,6 +781,14 @@ class GameData {
       meditationPercent =
           Calculator.calcProgress(Data.game?["meditationFragment"]).toDouble();
       totalPercent = (workoutGem + meditationGem) / 48 * 100;
+    }
+
+    contracts = [
+      Data.contract?["workout"] ?? {},
+      Data.contract?["meditation"] ?? {}
+    ]..removeWhere((element) => element.isEmpty);
+    if (contracts.length == 1) {
+      lastContractZH = (contracts[0]["type"] == "運動") ? "冥想" : "運動";
     }
 
     Data.updatingUI[1] = false;
