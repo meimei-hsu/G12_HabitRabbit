@@ -399,9 +399,7 @@ class UserDB {
   }
 
   // Delete data from userName
-  static Future<bool> delete() async {
-    return await DB.delete(db, uid);
-  }
+  static Future<bool> delete() async => await DB.delete(db, uid);
 }
 
 class ContractDB {
@@ -427,12 +425,6 @@ class ContractDB {
         ? Map<String, dynamic>.from(snapshot as Map)
         : null;
   }
-
-  // Select workout contract from userID
-  static Future<Map?> getWorkout() async => (await getContract())?["workout"];
-  // Select meditation contract from userID
-  static Future<Map?> getMeditation() async =>
-      (await getContract())?["meditation"];
 
   // Update data {columnName: value} from userID
   static Future<bool> update(Map data) async => await DB.update(
@@ -513,7 +505,7 @@ class GamificationDB {
       String uid = keys[i];
       chart[uid] = [
         rank,
-        "assets/images/${Data.community?[uid]["character"]}.png",
+        "assets/images/${Data.community?[uid]["character"]}_head.png",
         Data.community?[uid]["userName"]
       ];
     }
@@ -557,9 +549,14 @@ class GamificationDB {
       await DB.update("$db/$uid", data);
 
   static Future<bool> updateFriend(String newFriend) async {
-    String? friends = Data.game?["friends"];
-    friends = (friends != null) ? "$newFriend, $friends" : newFriend;
-    return await DB.update("$db/$uid", {"friends": friends});
+    String? myFriends = Data.game?["friends"];
+    myFriends = (myFriends != null) ? "$newFriend, $myFriends" : newFriend;
+
+    String? theirFriends = Data.community?[newFriend]["friends"];
+    theirFriends = (theirFriends != null) ? "$uid, $theirFriends" : uid;
+
+    return await DB.update("$db/$uid", {"friends": myFriends}) &&
+        await DB.update("$db/$newFriend", {"friends": theirFriends});
   }
 
   static Future<bool> updateCharacterLevel() async {
@@ -591,6 +588,16 @@ class GamificationDB {
     return false;
   }
 
+  static Future<bool> updateDayCount(String habit, int dayCount) async {
+    Map? table = Data.game;
+    if (table != null) {
+      int fragment = int.parse(table["${habit}Fragment"].split(", ")[0]);
+      return await DB
+          .update("$db/$uid", {"${habit}Fragment": "$fragment, $dayCount"});
+    }
+    return false;
+  }
+
   static Future<bool> resetFragment() async {
     Map? table = Data.profile;
     if (table != null) {
@@ -607,8 +614,33 @@ class GamificationDB {
 
   // Delete data from userName
   static Future<bool> delete() async {
-    return await DB.delete(db, uid);
+    // 將你的痕跡你的朋友們那刪除
+    for (var fid in CommData.friends) {
+      Data.community?[fid]["friends"] =
+          Data.community?[fid]["friends"].split(", ").remove(uid).join(", ");
+    }
+
+    return await DB.update(db, Data.community!) && await DB.delete(db, uid);
   }
+}
+
+// 紀錄未通知的戳戳他功能 (格式：{被戳的UID: 戳人的UID})
+class PokeDB {
+  static get uid => FirebaseAuth.instance.currentUser?.uid;
+  static const db = "poke";
+
+  // Select data from userID
+  static Future<String?> getPoke() async {
+    var snapshot = await DB.select(db, uid);
+    return (snapshot != null) ? snapshot as String : null;
+  }
+
+  // Update data {columnName: value} from userID
+  static Future<bool> update(String bePokedID) async =>
+      await DB.update(db, {bePokedID: uid});
+
+  // Delete data from userID
+  static Future<bool> delete() async => await DB.delete(db, uid);
 }
 
 class HabitDB {

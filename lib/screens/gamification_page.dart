@@ -27,7 +27,7 @@ class GamificationPageState extends State<GamificationPage> {
         appBar: AppBar(
           elevation: 0,
           title: Text(
-            '${Data.user?.displayName!} 的角色',
+            '${Data.profile?["userName"]} 的角色',
             textAlign: TextAlign.left,
             style: const TextStyle(
                 color: ColorSet.textColor,

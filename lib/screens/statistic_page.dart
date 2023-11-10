@@ -42,7 +42,7 @@ class StatisticPageState extends State<StatisticPage> {
         appBar: AppBar(
           elevation: 0,
           title: Text(
-            '${Data.user?.displayName!} 的統計資料',
+            '${Data.profile?["userName"]} 的統計資料',
             textAlign: TextAlign.left,
             style: const TextStyle(
                 color: ColorSet.textColor,

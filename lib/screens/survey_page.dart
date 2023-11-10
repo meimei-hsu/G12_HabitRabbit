@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:datepicker_cupertino/datepicker_cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'dart:async';
 
@@ -74,7 +75,7 @@ final questions_2 = [
       text: "冥想原因與目標 (複選)",
       isMultiChoice: true,
       options: [
-        Option(question: 3, text: "舒緩壓力", data: "mindfulnessLiking"),
+        Option(question: 3, text: "紓解壓力", data: "mindfulnessLiking"),
         Option(question: 3, text: "減緩憂慮", data: "mindfulnessLiking"),
         Option(question: 3, text: "增強動機", data: "workLiking"),
         Option(question: 3, text: "提升效率", data: "workLiking"),
@@ -1343,6 +1344,7 @@ class ResultPage extends StatefulWidget {
 }
 
 class ResultPageState extends State<ResultPage> {
+  bool isProcessing = false;
   String character = "";
   late Widget imageWidget;
 
@@ -1414,29 +1416,55 @@ class ResultPageState extends State<ResultPage> {
                 const SizedBox(height: 20),
                 imageWidget,
                 const SizedBox(height: 20),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: ColorSet.textColor,
-                    side: const BorderSide(
-                      color: ColorSet.borderColor,
-                    ),
-                  ),
-                  onPressed: () async {
-                    if (Data.isFirstTime) {
-                      await UserDB.insert(userInfo);
-                      await WeightDB.update({
-                        Calendar.dateToString(DateTime.now()):
-                            (userInfo["weight"]).toDouble()
-                      });
-                      await GamificationDB.insert(userInfo, character);
-                      await Data.init();
-                    }
-                    if (!mounted) return;
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, '/', (Route<dynamic> route) => false);
-                  },
-                  child: const Text("確認"),
-                ),
+                isProcessing
+                    ? Center(
+                        child: LoadingAnimationWidget.horizontalRotatingDots(
+                          color: ColorSet.bottomBarColor,
+                          size: 100,
+                        ),
+                      )
+                    : OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: ColorSet.textColor,
+                          side: const BorderSide(
+                            color: ColorSet.borderColor,
+                          ),
+                        ),
+                        onPressed: () async {
+                          setState(() {
+                            isProcessing = true;
+                          });
+
+                          if (Data.isFirstTime) {
+                            userInfo["userName"] = Data.user?.displayName;
+                            await UserDB.insert(userInfo);
+                            await WeightDB.update({
+                              Calendar.dateToString(DateTime.now()):
+                                  (userInfo["weight"]).toDouble()
+                            });
+                            for (String habit in Data.habitTypes) {
+                              await ClockDB.update(habit, {
+                                for (int i = 0; i < 7; i++)
+                                  "forecast_$i": "09:00"
+                              });
+                            }
+                            await GamificationDB.insert(userInfo, character);
+                            await Data.init();
+                          }
+                          if (!mounted) return;
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, '/', (Route<dynamic> route) => false);
+
+                          setState(() {
+                            isProcessing = false;
+                          });
+                        },
+                        child: const Text("確認"),
+                      ),
+                isProcessing
+                    ? const Text("個人化中",
+                        style: TextStyle(color: ColorSet.hintColor))
+                    : Container(),
               ],
             ),
           ),

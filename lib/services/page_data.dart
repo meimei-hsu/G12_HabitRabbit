@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:g12/services/database.dart';
 import 'package:g12/services/plan_algo.dart';
+import 'package:g12/services/notification.dart';
 
 // ignore_for_file: avoid_print
 
@@ -40,7 +41,7 @@ class Data {
     print("initializing data");
     user = FirebaseAuth.instance.currentUser;
     if (Data.user != null) {
-      // fetch data from database
+      // fetch indispensable data from database
       await fetchProfile();
       await fetchGame();
       if (profile == null || game == null) {
@@ -48,13 +49,14 @@ class Data {
         return false;
       }
       await fetchHabits();
+      // execute plan algorithm
+      await PlanAlgo.execute();
+      // fetch other data from database
       await fetchPlansAndDurations();
       await fetchCharacter();
       await fetchContract();
       await fetchWeights();
       await fetchClocks();
-      // execute plan algorithm
-      await PlanAlgo.execute();
       // update UI
       await HomeData.fetch();
       await StatData.fetch();
@@ -64,6 +66,28 @@ class Data {
       return true;
     }
     return false;
+  }
+
+  static void refresh() async {
+    print("refreshing data");
+    // update UI
+    await fetchGame();
+    await HomeData.fetch();
+    await StatData.fetch();
+    await GameData.fetch();
+    await SettingsData.fetch();
+    await CommData.fetch();
+
+    // notify the user if he/she is poked
+    String? friendID = await PokeDB.getPoke();
+    if (friendID != null) {
+      NotificationService().scheduleNotification(
+          title: '你被戳了',
+          body: '你的朋友${community?[friendID]["userName"]}戳了戳你，趕快回來與他一起培養習慣吧！',
+          scheduledNotificationDateTime:
+          DateTime.now().add(const Duration(seconds: 1)));
+      await PokeDB.delete();
+    }
   }
 
   static Future<void> fetchCharacter() async {
@@ -377,7 +401,6 @@ class SettingsData {
 
     timeForecast["workoutClock"] = Data.predClocks?["workout"];
     timeForecast["meditationClock"] = Data.predClocks?["meditation"];
-    timeForecast.removeWhere((key, value) => value == null);
 
     Data.updatingUI[4] = false;
   }

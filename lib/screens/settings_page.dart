@@ -152,7 +152,7 @@ class SettingsPageState extends State<SettingsPage> {
                           SettingsData.isSettingWorkout();
                           return const ChangeDurationBottomSheet();
                         }).then((success) => {
-                          if (success)
+                          if (success == true)
                             {
                               InformDialog()
                                   .get(context, "提示:)",
@@ -183,7 +183,7 @@ class SettingsPageState extends State<SettingsPage> {
                           SettingsData.isSettingWorkout();
                           return const ChangeDayAndNotificationTimeBottomSheet();
                         }).then((success) => {
-                          if (success)
+                          if (success == true)
                             {
                               InformDialog()
                                   .get(context, "提示:)",
@@ -213,7 +213,7 @@ class SettingsPageState extends State<SettingsPage> {
                           SettingsData.isSettingWorkout();
                           return const ChangeLikingBottomSheet();
                         }).then((success) => {
-                          if (success)
+                          if (success == true)
                             {
                               InformDialog()
                                   .get(context, "提示:)",
@@ -243,7 +243,7 @@ class SettingsPageState extends State<SettingsPage> {
                           SettingsData.isSettingWorkout();
                           return const ChangeGoalBottomSheet();
                         }).then((success) => {
-                          if (success)
+                          if (success == true)
                             {
                               InformDialog()
                                   .get(context, "提示:)",
@@ -285,7 +285,7 @@ class SettingsPageState extends State<SettingsPage> {
                           SettingsData.isSettingDisplayName();
                           return const ChangeProfileBottomSheet();
                         }).then((success) => {
-                          if (success)
+                          if (success == true)
                             {
                               refresh(),
                               InformDialog()
@@ -314,9 +314,9 @@ class SettingsPageState extends State<SettingsPage> {
                           SettingsData.isSettingPassword();
                           return const ChangeProfileBottomSheet();
                         }).then((success) {
-                      if (success) {
+                      if (success == true) {
                         InformDialog().get(context, "提示:)", "密碼已更新！").show();
-                      } else {
+                      } else if (success == false) {
                         ErrorDialog().get(context, "警告:(", "密碼錯誤QQ").show();
                       }
                     });
@@ -609,11 +609,7 @@ class ChangeDayAndNotificationTimeBottomSheetState
       for (int i = 0; i < 7; i++)
         if (SettingsData.userData[dayKey][i] == 1) i
     ];
-    forecast = Map.from(SettingsData.timeForecast[notificationKey] ??
-        {
-          for (int i = 0; i < 7; i++)
-            "forecast_$i": Calendar.timeToString(TimeOfDay.now())
-        });
+    forecast = Map.from(SettingsData.timeForecast[notificationKey]);
   }
 
   List<Widget> _getDayBtnList() {
@@ -654,7 +650,6 @@ class ChangeDayAndNotificationTimeBottomSheetState
               for (int i = 0; i < 7; i++)
                 if (daySelectedDays[i] == 1) i
             ];
-            forecast = SettingsData.timeForecast[notificationKey];
           },
           child: Text(
             dayWeekdayNameList[i],
@@ -859,13 +854,14 @@ class ChangeDayAndNotificationTimeBottomSheetState
               )),
           const SizedBox(height: 10),
           Container(
-              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-              margin: const EdgeInsets.only(right: 15, left: 15),
-              decoration: BoxDecoration(
-                border: Border.all(color: ColorSet.borderColor, width: 3),
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-              ),
-              child: Column(children: [
+            padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+            margin: const EdgeInsets.only(right: 15, left: 15),
+            decoration: BoxDecoration(
+              border: Border.all(color: ColorSet.borderColor, width: 3),
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+            ),
+            child: Column(
+              children: [
                 Text(
                   "${SettingsData.habitTypeZH}日的通知時間？",
                   style:
@@ -873,17 +869,20 @@ class ChangeDayAndNotificationTimeBottomSheetState
                 ),
                 const SizedBox(height: 10),
                 SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.25,
-                    width: MediaQuery.of(context).size.width * 0.85,
-                    child: Scrollbar(
-                      controller: _notificationController,
-                      thumbVisibility: true,
-                      child: ListView(
-                          controller: _notificationController,
-                          scrollDirection: Axis.vertical,
-                          children: _getTimeBtnList()),
-                    )),
-              ])),
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  width: MediaQuery.of(context).size.width * 0.85,
+                  child: Scrollbar(
+                    controller: _notificationController,
+                    thumbVisibility: true,
+                    child: ListView(
+                        controller: _notificationController,
+                        scrollDirection: Axis.vertical,
+                        children: _getTimeBtnList()),
+                  ),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(
             height: 10,
           ),
@@ -908,7 +907,8 @@ class ChangeDayAndNotificationTimeBottomSheetState
                 if (modifiedList != originalList) {
                   SettingsData.userData[dayKey] = modifiedList;
                   await UserDB.update({dayKey: modifiedList.join("")});
-                  // TODO: update to GamificationDB
+                  await GamificationDB.updateDayCount(
+                      SettingsData.habitType, modifiedList.length);
                 }
 
                 Map originalMap = SettingsData.timeForecast[notificationKey];
@@ -1216,17 +1216,18 @@ class ChangeGoalBottomSheetState extends State<ChangeGoalBottomSheet> {
       ];
     } else if (SettingsData.habitType == "meditation") {
       selectableItems = [
-        "壓力",
-        "憂慮",
-        "效率",
-        "動機",
-        "平靜",
-        "自愛",
-        "感激",
-        "人際",
-        "專注力",
-        "創造力",
-        "情緒健康"
+        "紓解壓力",
+        "減緩憂慮",
+        "增強動機",
+        "提升效率",
+        "提升自信",
+        "情緒健康",
+        "內心平靜",
+        "高覺察力",
+        "高專注力",
+        "高創造力",
+        "拓展人際",
+        "練習感激",
       ];
     }
   }
@@ -1527,7 +1528,7 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                       child: _getTextFormField(
                           controller: controller,
                           hintText: (SettingsData.functionCode == "更改暱稱")
-                              ? Data.user?.displayName
+                              ? (Data.profile?["userName"])
                               : "密碼驗證"),
                     ),
               const SizedBox(

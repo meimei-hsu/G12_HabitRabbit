@@ -56,7 +56,7 @@ class CommunityPageState extends State<CommunityPage>
         appBar: AppBar(
           elevation: 0,
           title: Text(
-            '${Data.user?.displayName!} 的朋友圈',
+            '${Data.profile?["userName"]} 的朋友圈',
             style: const TextStyle(
                 color: ColorSet.textColor,
                 fontSize: 28,
@@ -478,6 +478,7 @@ class FriendListPageState extends State<FriendListPage> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
+                              PokeDB.update(userID);
                               InformDialog()
                                   .get(context, "戳到了:)",
                                       "謝謝你提醒${info['userName']}持續養成習慣，\n有你這個朋友真好!")
@@ -636,14 +637,9 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                   left: 40.0, top: 10.0, right: 40.0),
                               itemCount: chart.length,
                               itemBuilder: (BuildContext context, int index) {
-                                if (toggles[ordinalNum] == 0) {
-                                  chart.removeWhere((key, value) =>
-                                      !CommData.friends.contains(key) &&
-                                      key != Data.user?.uid);
-                                }
                                 final String uid = chart.keys.toList()[index];
                                 final bool isCurrentUser =
-                                    (chart[uid][2] == Data.user?.displayName);
+                                    (chart[uid][2] == Data.profile?["userName"]);
                                 final Color containerColor = isCurrentUser
                                     ? (toggles[ordinalNum] == 0)
                                         ? ColorSet.friendColor
@@ -678,7 +674,7 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                             ColorSet.backgroundColor,
                                         backgroundImage: AssetImage(chart[uid]
                                                 [1] ??
-                                            'assets/images/Dog_1.png'),
+                                            'assets/images/Dog_1_head.png'),
                                       ),
                                     ),
                                     const SizedBox(width: 15),

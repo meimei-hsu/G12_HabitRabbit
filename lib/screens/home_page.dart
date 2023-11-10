@@ -171,51 +171,50 @@ class HomepageState extends State<Homepage> {
         }
       },
       child: Column(
-          children: [
-            Container(
-              alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width * 0.9,
-              height: MediaQuery.of(context).size.height * 0.35,
-              margin: const EdgeInsets.only(left: 0, right: 0),
-              decoration: BoxDecoration(
-                border: Border.all(color: ColorSet.borderColor, width: 1.5),
-              ),
-              child: PageView.builder(
-                controller: controller,
-                onPageChanged: (int page) =>
-                    setState(() => selectedPage = page),
-                itemCount: imgNames.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Image.asset("assets/images/${imgNames[index]}",
-                      fit: BoxFit.fill);
-                },
-              ),
+        children: [
+          Container(
+            alignment: Alignment.center,
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.33,
+            margin: const EdgeInsets.only(left: 0, right: 0),
+            decoration: BoxDecoration(
+              border: Border.all(color: ColorSet.borderColor, width: 1.5),
             ),
-            (imgNames.length > 1)
-                ? Container(
-                    alignment: Alignment.bottomCenter,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 24),
-                    child: PageViewDotIndicator(
-                      currentItem: selectedPage,
-                      count: imgNames.length,
-                      unselectedColor: Colors.black26,
-                      selectedColor: Colors.blueGrey,
-                      duration: const Duration(milliseconds: 200),
-                      boxShape: BoxShape.circle,
-                      onItemClicked: (index) {
-                        setState(() => selectedPage = index);
-                        controller.animateToPage(
-                          index,
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                    ),
-                  )
-                : Container(),
-          ],
-        ),
+            child: PageView.builder(
+              controller: controller,
+              onPageChanged: (int page) => setState(() => selectedPage = page),
+              itemCount: imgNames.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Image.asset("assets/images/${imgNames[index]}",
+                    fit: BoxFit.fill);
+              },
+            ),
+          ),
+          (imgNames.length > 1)
+              ? Container(
+                  alignment: Alignment.bottomCenter,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24),
+                  child: PageViewDotIndicator(
+                    currentItem: selectedPage,
+                    count: imgNames.length,
+                    unselectedColor: Colors.black26,
+                    selectedColor: Colors.blueGrey,
+                    duration: const Duration(milliseconds: 200),
+                    boxShape: BoxShape.circle,
+                    onItemClicked: (index) {
+                      setState(() => selectedPage = index);
+                      controller.animateToPage(
+                        index,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                  ),
+                )
+              : Container(),
+        ],
+      ),
     );
   }
 
@@ -433,7 +432,7 @@ class HomepageState extends State<Homepage> {
                         description: '顯示選取日的計畫完成進度',
                         child: BubbleSpecialThree(
                           text:
-                              'Hello ${Data.user!.displayName}～\n${getDialogText()}',
+                              'Hello ${Data.profile?["userName"]}～\n${getDialogText()}',
                           color: ColorSet.buttonColor,
                           tail: true,
                           textStyle: const TextStyle(
@@ -552,6 +551,7 @@ class HomepageState extends State<Homepage> {
                                           .show();
                             }
                           }, // Image tapped
+                          onLongPress: () async => Data.refresh(),
                           child: Image.asset(
                             "assets/images/Rabbit_2.png",
                             width: 125,
