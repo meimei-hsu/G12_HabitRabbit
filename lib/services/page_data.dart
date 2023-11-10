@@ -48,15 +48,16 @@ class Data {
         await user?.delete();
         return false;
       }
-      await fetchHabits();
-      // execute plan algorithm
-      await PlanAlgo.execute();
       // fetch other data from database
-      await fetchPlansAndDurations();
       await fetchCharacter();
-      await fetchContract();
       await fetchWeights();
       await fetchClocks();
+      await fetchContract();
+      await fetchHabits();
+      if (isFirstTime) await PlanAlgo.initialize();
+      await fetchPlansAndDurations();
+      if (!isFirstTime) await PlanAlgo.execute();
+
       // update UI
       await HomeData.fetch();
       await StatData.fetch();
@@ -83,9 +84,10 @@ class Data {
     if (friendID != null) {
       NotificationService().scheduleNotification(
           title: '你被戳了',
-          body: '你的朋友${community?[friendID]["userName"]}戳了戳你，趕快回來與他一起培養習慣吧！',
+          body:
+              '你的朋友${community?[friendID]?["userName"] ?? ""}戳了戳你，趕快回來與他一起培養習慣吧！',
           scheduledNotificationDateTime:
-          DateTime.now().add(const Duration(seconds: 1)));
+              DateTime.now().add(const Duration(seconds: 1)));
       await PokeDB.delete();
     }
   }

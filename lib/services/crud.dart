@@ -62,6 +62,7 @@ class DB {
   static Future<bool> delete(String path, String id) async {
     final DatabaseReference ref = FirebaseDatabase.instance.ref("$path/$id");
     try {
+      print("(delete) $path: $id");
       await ref.remove();
       Data.updatingDB = true;
       return true;

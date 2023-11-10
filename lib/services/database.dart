@@ -616,8 +616,8 @@ class GamificationDB {
   static Future<bool> delete() async {
     // 將你的痕跡你的朋友們那刪除
     for (var fid in CommData.friends) {
-      Data.community?[fid]["friends"] =
-          Data.community?[fid]["friends"].split(", ").remove(uid).join(", ");
+      List friends = Data.community?[fid]["friends"].split(", ")..remove(uid);
+      Data.community?[fid]["friends"] = friends.join(", ");
     }
 
     return await DB.update(db, Data.community!) && await DB.delete(db, uid);

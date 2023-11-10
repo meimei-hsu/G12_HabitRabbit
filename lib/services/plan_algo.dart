@@ -6,6 +6,23 @@ import 'package:g12/services/page_data.dart';
 // ignore_for_file: avoid_print
 
 class PlanAlgo {
+  // Execute when user register an account.
+  static initialize() async {
+    for (bool thisWeek in [true, false]) {
+      await PlanData.fetch(habit: "workout", thisWeek: thisWeek);
+      var skd = await WorkoutAlgorithm.arrangeSchedule();
+      var plan = await WorkoutAlgorithm.arrangePlan(skd);
+      if (plan.isNotEmpty) await PlanDB.update("workout", plan);
+    }
+
+    for (bool thisWeek in [true, false]) {
+      await PlanData.fetch(habit: "meditation", thisWeek: thisWeek);
+      var skd = await MeditationAlgorithm.arrangeSchedule();
+      var plan = await MeditationAlgorithm.arrangePlan(skd);
+      if (plan.isNotEmpty) await PlanDB.update("meditation", plan);
+    }
+  }
+
   // Start point of the planning algorithm
   // Execute when user login or after giving feedback.
   static execute() async {
@@ -34,7 +51,7 @@ class PlanAlgo {
       thisWeek = false;
       print("Generate next week's workout plan.");
     }
-    if (check["workoutThisWeek"]! == false) {
+    if (check["workoutThisWeek"]! == false || Data.isFirstTime) {
       thisWeek = true;
       print("Generate this week's workout plan.");
     }
@@ -61,7 +78,7 @@ class PlanAlgo {
       thisWeek = false;
       print("Generate next week's meditation plan.");
     }
-    if (check["meditationThisWeek"]! == false) {
+    if (check["meditationThisWeek"]! == false || Data.isFirstTime) {
       thisWeek = true;
       print("Generate this week's meditation plan.");
     }

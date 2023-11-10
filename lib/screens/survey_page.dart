@@ -811,7 +811,7 @@ class PartOnePageState extends State<PartOnePage> {
                                 });
 
                                 setState(() {
-                                  userInfo["weight"] = int.parse(value);
+                                  userInfo["weight"] = double.parse(value);
                                   isComplete = checkCompletion();
                                 });
                               },
@@ -1049,6 +1049,7 @@ class PartTwoPageState extends State<PartTwoPage> {
       ],
     ];
 
+    userInfo["userName"] = Data.user?.displayName;
     for (int i = 0; i < questions_2.length; i++) {
       List questionGroup = questions_2[i];
       for (int j = 0; j < questionGroup.length; j++) {
@@ -1436,7 +1437,6 @@ class ResultPageState extends State<ResultPage> {
                           });
 
                           if (Data.isFirstTime) {
-                            userInfo["userName"] = Data.user?.displayName;
                             await UserDB.insert(userInfo);
                             await WeightDB.update({
                               Calendar.dateToString(DateTime.now()):

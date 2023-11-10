@@ -720,6 +720,7 @@ class StatisticPageState extends State<StatisticPage> {
                         const SizedBox(
                           height: 15,
                         ),
+                        // TODO: 橫向 "連續完成天數"
                         Container(
                           padding:
                               const EdgeInsets.fromLTRB(5.0, 10.0, 5.0, 10.0),
@@ -1222,8 +1223,8 @@ class StatisticPageState extends State<StatisticPage> {
 
       String startLabel = dateFormat.format(startDate);
       String endLabel = dateFormat.format(endDate);
-
       String label = "$startLabel - $endLabel";
+
       chartData.add(ChartData(label, consecutiveDays.toInt()));
     }
     return chartData;
@@ -1243,8 +1244,8 @@ class StatisticPageState extends State<StatisticPage> {
       DateFormat dateFormat = DateFormat('MM/dd');
       String startLabel = dateFormat.format(startDate);
       String endLabel = dateFormat.format(endDate);
-
       String label = "$startLabel - $endLabel";
+
       chartData.add(ChartData(label, consecutiveDays.toInt()));
     }
     return chartData;
