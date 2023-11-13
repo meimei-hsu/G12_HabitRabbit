@@ -268,6 +268,111 @@ class HomepageState extends State<Homepage> {
       ? ColorSet.buttonColor
       : ColorSet.backgroundColor;
 
+  void addPlan(){
+    debugPrint("workoutPlan: ${HomeData.workoutPlan}");
+    debugPrint(
+        "meditationPlan: ${HomeData.meditationPlan}");
+    debugPrint("isBefore: ${HomeData.isBefore}");
+    debugPrint("_selectedDay: ${HomeData.selectedDay}");
+    debugPrint("_focusedDay: ${HomeData.focusedDay}");
+    debugPrint(DateTime(
+        HomeData.selectedDay!.year,
+        HomeData.selectedDay!.month,
+        HomeData.selectedDay!.day)
+        .toString());
+    if (HomeData.workoutPlan == null &&
+        HomeData.meditationPlan == null) {
+      // 運動沒有、冥想沒有 --> 新增運動 + 冥想
+      // 今天之後 --> 新增；之前 --> 沒有
+      (HomeData.isBefore)
+          ? InformDialog()
+          .get(context, ":(", "溯及既往 打咩！")
+          .show()
+          : showModalBottomSheet(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20),
+                topLeft: Radius.circular(20)),
+          ),
+          backgroundColor: ColorSet.bottomBarColor,
+          context: context,
+          builder: (context) {
+            return AddPlanBottomSheet(arguments: {
+              "selectedDay": HomeData.selectedDay,
+              "addWorkout": true,
+              "addMeditation": true,
+              "time": HomeData.time,
+              "isToday": HomeData.isToday
+            });
+          });
+    } else if (HomeData.workoutPlan != null &&
+        HomeData.meditationPlan == null) {
+      // 運動有、冥想沒有 --> 運動完成度、新增冥想
+      // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
+      (HomeData.isBefore)
+          ? InformDialog()
+          .get(context, ":(", "溯及既往 打咩！")
+          .show()
+          : showModalBottomSheet(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20),
+                topLeft: Radius.circular(20)),
+          ),
+          backgroundColor: ColorSet.bottomBarColor,
+          context: context,
+          builder: (context) {
+            return AddPlanBottomSheet(arguments: {
+              "selectedDay": HomeData.selectedDay,
+              "addWorkout": false,
+              "addMeditation": true,
+              "time": HomeData.time,
+              "isToday": HomeData.isToday
+            });
+          });
+    } else if (HomeData.workoutPlan == null &&
+        HomeData.meditationPlan != null) {
+      // 運動沒有、冥想有 --> 冥想完成度、新增運動
+      // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
+      (HomeData.isBefore)
+          ? ErrorDialog()
+          .get(context, "警告:(", "溯及既往 打咩！")
+          .show()
+          : showModalBottomSheet(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20),
+                topLeft: Radius.circular(20)),
+          ),
+          backgroundColor: ColorSet.bottomBarColor,
+          context: context,
+          builder: (context) {
+            return AddPlanBottomSheet(arguments: {
+              "selectedDay": HomeData.selectedDay,
+              "addWorkout": true,
+              "addMeditation": false,
+              "time": HomeData.time,
+              "isToday": HomeData.isToday
+            });
+          });
+    } else {
+      // 運動有、冥想有 --> 運動完成度、冥想完成度
+      // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
+      (HomeData.isBefore)
+          ? InformDialog()
+          .get(context, "提示:)", "要繼續努力養成習慣噢！")
+          .show()
+          : (HomeData.workoutProgress == 100 &&
+          HomeData.meditationProgress == 100)
+          ? InformDialog()
+          .get(context, "你太棒了", "今天的計畫都已經完成了！")
+          .show()
+          : InformDialog()
+          .get(context, "提示:)", "要記得完成計畫噢！")
+          .show();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     refresh();
@@ -430,7 +535,9 @@ class HomepageState extends State<Homepage> {
                       Showcase(
                         key: bubbleKey,
                         description: '顯示選取日的計畫完成進度',
-                        child: BubbleSpecialThree(
+                        child: GestureDetector(
+                          onTap: addPlan, // Image tapped
+                          child: BubbleSpecialThree(
                           text:
                               'Hello ${Data.profile?["userName"]}～\n${getDialogText()}',
                           color: ColorSet.buttonColor,
@@ -440,117 +547,14 @@ class HomepageState extends State<Homepage> {
                             fontSize: 18,
                             //fontWeight: FontWeight.bold,
                           ),
-                        ),
+                        ),)
                       ),
                       Expanded(
                           child: Showcase(
                         key: rabbitKey,
                         description: '點選可以新增計畫以培養運動和冥想習慣',
                         child: GestureDetector(
-                          onTap: () {
-                            debugPrint("workoutPlan: ${HomeData.workoutPlan}");
-                            debugPrint(
-                                "meditationPlan: ${HomeData.meditationPlan}");
-                            debugPrint("isBefore: ${HomeData.isBefore}");
-                            debugPrint("_selectedDay: ${HomeData.selectedDay}");
-                            debugPrint("_focusedDay: ${HomeData.focusedDay}");
-                            debugPrint(DateTime(
-                                    HomeData.selectedDay!.year,
-                                    HomeData.selectedDay!.month,
-                                    HomeData.selectedDay!.day)
-                                .toString());
-                            if (HomeData.workoutPlan == null &&
-                                HomeData.meditationPlan == null) {
-                              // 運動沒有、冥想沒有 --> 新增運動 + 冥想
-                              // 今天之後 --> 新增；之前 --> 沒有
-                              (HomeData.isBefore)
-                                  ? InformDialog()
-                                      .get(context, ":(", "溯及既往 打咩！")
-                                      .show()
-                                  : showModalBottomSheet(
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(20),
-                                            topLeft: Radius.circular(20)),
-                                      ),
-                                      backgroundColor: ColorSet.bottomBarColor,
-                                      context: context,
-                                      builder: (context) {
-                                        return AddPlanBottomSheet(arguments: {
-                                          "selectedDay": HomeData.selectedDay,
-                                          "addWorkout": true,
-                                          "addMeditation": true,
-                                          "time": HomeData.time,
-                                          "isToday": HomeData.isToday
-                                        });
-                                      });
-                            } else if (HomeData.workoutPlan != null &&
-                                HomeData.meditationPlan == null) {
-                              // 運動有、冥想沒有 --> 運動完成度、新增冥想
-                              // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
-                              (HomeData.isBefore)
-                                  ? InformDialog()
-                                      .get(context, ":(", "溯及既往 打咩！")
-                                      .show()
-                                  : showModalBottomSheet(
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(20),
-                                            topLeft: Radius.circular(20)),
-                                      ),
-                                      backgroundColor: ColorSet.bottomBarColor,
-                                      context: context,
-                                      builder: (context) {
-                                        return AddPlanBottomSheet(arguments: {
-                                          "selectedDay": HomeData.selectedDay,
-                                          "addWorkout": false,
-                                          "addMeditation": true,
-                                          "time": HomeData.time,
-                                          "isToday": HomeData.isToday
-                                        });
-                                      });
-                            } else if (HomeData.workoutPlan == null &&
-                                HomeData.meditationPlan != null) {
-                              // 運動沒有、冥想有 --> 冥想完成度、新增運動
-                              // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
-                              (HomeData.isBefore)
-                                  ? ErrorDialog()
-                                      .get(context, "警告:(", "溯及既往 打咩！")
-                                      .show()
-                                  : showModalBottomSheet(
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(20),
-                                            topLeft: Radius.circular(20)),
-                                      ),
-                                      backgroundColor: ColorSet.bottomBarColor,
-                                      context: context,
-                                      builder: (context) {
-                                        return AddPlanBottomSheet(arguments: {
-                                          "selectedDay": HomeData.selectedDay,
-                                          "addWorkout": true,
-                                          "addMeditation": false,
-                                          "time": HomeData.time,
-                                          "isToday": HomeData.isToday
-                                        });
-                                      });
-                            } else {
-                              // 運動有、冥想有 --> 運動完成度、冥想完成度
-                              // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
-                              (HomeData.isBefore)
-                                  ? InformDialog()
-                                      .get(context, "提示:)", "要繼續努力養成習慣噢！")
-                                      .show()
-                                  : (HomeData.workoutProgress == 100 &&
-                                          HomeData.meditationProgress == 100)
-                                      ? InformDialog()
-                                          .get(context, "你太棒了", "今天的計畫都已經完成了！")
-                                          .show()
-                                      : InformDialog()
-                                          .get(context, "提示:)", "要記得完成計畫噢！")
-                                          .show();
-                            }
-                          }, // Image tapped
+                          onTap: addPlan, // Image tapped
                           onLongPress: () async => Data.refresh(),
                           child: Image.asset(
                             "assets/images/Rabbit_2.png",
