@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "package:flutter/services.dart";
 import 'package:speech_balloon/speech_balloon.dart';
 
 import 'package:g12/screens/page_material.dart';
@@ -396,6 +397,8 @@ class FirstContractPageState extends State<FirstContractPage> {
                                       fontSize: 17,
                                     ),
                                     keyboardType: TextInputType.number,
+                                    // 禁止輸入小數點、逗點、負號
+                                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                     onChanged: (value) {
                                       setState(() {
                                         newContract["money"] = int.parse(value);
