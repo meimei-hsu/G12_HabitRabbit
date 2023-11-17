@@ -34,7 +34,6 @@ class HomepageState extends State<Homepage> {
   int selectedPage = 0;
   PageController controller = PageController();
 
-  // TODO: 判斷是否為第一次登入
   @override
   void initState() {
     super.initState();
@@ -233,7 +232,7 @@ class HomepageState extends State<Homepage> {
       dialogText = (HomeData.isBefore)
           ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n目前尚未安排任何冥想計畫，點選兔兔新增"
           : (HomeData.isToday)
-              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，點選兔兔新增！"
+              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，\n點選兔兔新增！"
               : "今日有運動計畫\n記得要來完成噢~\n點選兔兔新增冥想計畫！";
     } else if (HomeData.workoutPlan == null &&
         HomeData.meditationPlan != null) {
@@ -242,7 +241,7 @@ class HomepageState extends State<Homepage> {
       dialogText = (HomeData.isBefore)
           ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n目前尚未安排任何運動計畫，點選兔兔新增"
           : (HomeData.isToday)
-              ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "有夠讚！\n" : "讓我們一起加油~\n"}今日尚未安排運動計畫，點選兔兔新增"
+              ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "有夠讚！\n" : "讓我們一起加油~\n"}今日尚未安排運動計畫，\n點選兔兔新增"
               : "今日有冥想計畫\n記得要來完成噢~\n點選兔兔新增運動計畫！";
     } else {
       // 運動有、冥想有 --> 運動完成度、冥想完成度

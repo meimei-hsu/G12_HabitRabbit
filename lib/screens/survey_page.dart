@@ -494,12 +494,11 @@ class TitlePageState extends State<TitlePage> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar:
-            AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
+        backgroundColor: ColorSet.backgroundColor,
         body: WillPopScope(
           onWillPop: () async => false,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(36, 48, 36, 48),
+            padding: const EdgeInsets.fromLTRB(35, 80, 35, 80),
             child: Container(
               alignment: Alignment.center,
               height: MediaQuery.of(context).size.height * 0.75,
@@ -599,8 +598,7 @@ class PartOnePageState extends State<PartOnePage> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar:
-            AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
+        backgroundColor: ColorSet.backgroundColor,
         body: WillPopScope(
           onWillPop: () async => (Data.isFirstTime)
               ? ConfirmDialog()
@@ -613,7 +611,7 @@ class PartOnePageState extends State<PartOnePage> {
             controller: _scrollController,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(35, 50, 35, 0),
+                padding: const EdgeInsets.fromLTRB(35, 75, 35, 0),
                 child: Container(
                   alignment: Alignment.center,
                   height: MediaQuery.of(context).size.height * 0.7,
@@ -824,7 +822,7 @@ class PartOnePageState extends State<PartOnePage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.only(top: 20, bottom: 30),
+                padding: const EdgeInsets.only(top: 20, bottom: 50),
                 child: IconButton(
                   onPressed: () {
                     if (isComplete) {
@@ -878,8 +876,7 @@ class PartTwoPageState extends State<PartTwoPage> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        appBar:
-            AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
+        backgroundColor: ColorSet.backgroundColor,
         body: WillPopScope(
           onWillPop: () async => (Data.isFirstTime)
               ? ConfirmDialog()
@@ -891,7 +888,7 @@ class PartTwoPageState extends State<PartTwoPage> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(35, 30, 35, 0),
+                padding: const EdgeInsets.fromLTRB(35, 75, 35, 0),
                 child: Container(
                   height: MediaQuery.of(context).size.height * 0.7,
                   decoration: BoxDecoration(
@@ -907,7 +904,7 @@ class PartTwoPageState extends State<PartTwoPage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.fromLTRB(30, 15, 50, 20),
+                padding: const EdgeInsets.fromLTRB(30, 20, 50, 50),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -1175,8 +1172,7 @@ class PartThreePageState extends State<PartThreePage>
 
     return SafeArea(
       child: Scaffold(
-        appBar:
-            AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
+        backgroundColor: ColorSet.backgroundColor,
         body: WillPopScope(
           onWillPop: () async => (Data.isFirstTime)
               ? ConfirmDialog()
@@ -1186,7 +1182,7 @@ class PartThreePageState extends State<PartThreePage>
                   .show() as bool
               : true,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(36, 48, 36, 48),
+            padding: const EdgeInsets.fromLTRB(35, 80, 35, 80),
             child: Container(
               alignment: Alignment.center,
               height: MediaQuery.of(context).size.height * 0.75,
@@ -1391,10 +1387,9 @@ class ResultPageState extends State<ResultPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar:
-            AppBar(backgroundColor: ColorSet.backgroundColor, elevation: 0.0),
+        backgroundColor: ColorSet.backgroundColor,
         body: Padding(
-          padding: const EdgeInsets.fromLTRB(36, 48, 36, 12),
+          padding: const EdgeInsets.fromLTRB(35, 80, 35, 80),
           child: Container(
             alignment: Alignment.center,
             height: MediaQuery.of(context).size.height * 0.75,

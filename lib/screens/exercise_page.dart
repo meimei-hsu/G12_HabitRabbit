@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:square_progress_bar/square_progress_bar.dart';
 
@@ -413,6 +414,8 @@ class DoMeditationPage extends StatefulWidget {
 }
 
 class DoMeditationPageState extends State<DoMeditationPage> {
+  final player = AudioPlayer();
+
   late int totalTime;
   late int countdownTime;
   double _progress = 0.0;
@@ -505,12 +508,15 @@ class DoMeditationPageState extends State<DoMeditationPage> {
       ifStart = true;
     }
 
-    Timer.periodic(period, (timer) {
+    Timer.periodic(period, (timer) async {
       if (totalTime < 1) {
         DurationDB.update(
             "meditation", {Calendar.today: HomeData.meditationDuration});
         GamificationDB.updateFragment("meditation");
+
         timer.cancel();
+        await player.stop();
+
         CongratsDialog.show(context,
             habit: "meditation",
             widgetAfterDismiss: Wrap(children: const [
@@ -520,6 +526,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
             ]));
       } else if (ifStart == false) {
         timer.cancel();
+        await player.pause();
       } else {
         // Appbar timer
         totalTime--;
@@ -529,13 +536,20 @@ class DoMeditationPageState extends State<DoMeditationPage> {
     });
   }
 
+  Future<void> initPlayer() async {
+    await player.setAsset('assets/audios/Meditation_30s.mp3');
+  }
+
   @override
   void initState() {
     super.initState();
     totalTime = widget.arguments['meditationTime'] * 6; // should be 60s
     countdownTime = totalTime;
 
+    initPlayer();
+
     startTimer();
+    player.play();
   }
 
   @override
