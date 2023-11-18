@@ -374,6 +374,8 @@ class QuizDialogState extends State<QuizDialog> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Material(
       color: ColorSet.bottomBarColor,
       child: SingleChildScrollView(
@@ -416,8 +418,8 @@ class QuizDialogState extends State<QuizDialog> {
                   ),
                   const SizedBox(height: 10.0),
                   Container(
-                    height: 170,
-                    width: 0.85 * screenWidth,
+                    height: 0.2 * screenHeight,
+                    width: 0.9 * screenWidth,
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
@@ -457,8 +459,8 @@ class QuizDialogState extends State<QuizDialog> {
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    height: 170,
-                    width: 0.85 * screenWidth,
+                    height: 0.2 * screenHeight,
+                    width: 0.9 * screenWidth,
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),

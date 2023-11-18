@@ -94,7 +94,7 @@ class FirstContractPageState extends State<FirstContractPage> {
               SpeechBalloon(
                   color: ColorSet.backgroundColor,
                   width: MediaQuery.of(context).size.width * 0.9,
-                  height: MediaQuery.of(context).size.height * 0.4,
+                  height: MediaQuery.of(context).size.height * 0.45,
                   nipLocation: NipLocation.bottom,
                   nipHeight: 30,
                   borderColor: ColorSet.borderColor,
@@ -452,7 +452,7 @@ class FirstContractPageState extends State<FirstContractPage> {
                     ),
                   ))),
               const SizedBox(
-                height: 50,
+                height: 40,
               ),
               Container(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),
@@ -512,7 +512,7 @@ class SecondContractPageState extends State<SecondContractPage> {
               SpeechBalloon(
                 color: ColorSet.backgroundColor,
                 width: MediaQuery.of(context).size.width * 0.9,
-                height: MediaQuery.of(context).size.height * 0.4,
+                height: MediaQuery.of(context).size.height * 0.45,
                 nipLocation: NipLocation.bottom,
                 nipHeight: 30,
                 borderColor: ColorSet.borderColor,
@@ -571,7 +571,8 @@ class SecondContractPageState extends State<SecondContractPage> {
                                   '取消 / 重新輸入',
                                   style: TextStyle(
                                     color: ColorSet.textColor,
-                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.5,
                                   ),
                                 ),
                               ),
@@ -607,7 +608,8 @@ class SecondContractPageState extends State<SecondContractPage> {
                                   '確定',
                                   style: TextStyle(
                                     color: ColorSet.textColor,
-                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16.5,
                                   ),
                                 ),
                               ),
@@ -621,7 +623,7 @@ class SecondContractPageState extends State<SecondContractPage> {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 40,
               ),
               Container(
                 padding: const EdgeInsets.only(right: 20.0),
@@ -696,9 +698,9 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                     for (Map data in GameData.contracts)
                       Container(
                         padding:
-                            const EdgeInsets.only(top: 30, left: 10, right: 10),
+                            const EdgeInsets.only(top: 20, left: 5, right: 5),
                         child: Container(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(15.0),
                           decoration: BoxDecoration(
                             color: ColorSet.backgroundColor,
                             border: Border.all(
@@ -720,7 +722,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                                 '\n合約結束日：${data["endDay"]}'
                                 '\n距離成功已完成：${Calculator.calcProgress(data["gem"]).round()}%',
                                 style: const TextStyle(
-                                  fontSize: 18.0,
+                                  fontSize: 17.0,
                                   letterSpacing: 1.2,
                                   color: ColorSet.textColor,
                                 ),
@@ -858,7 +860,7 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
                     ),
                     Image.asset(
                       'assets/images/Rabbit_2.png',
-                      height: MediaQuery.of(context).size.height * 0.3,
+                      height: MediaQuery.of(context).size.height * 0.27,
                       width: MediaQuery.of(context).size.width * 0.5,
                     ),
                   ],

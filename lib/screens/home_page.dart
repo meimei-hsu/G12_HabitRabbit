@@ -5,6 +5,7 @@ import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:speech_balloon/speech_balloon.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
@@ -33,6 +34,18 @@ class HomepageState extends State<Homepage> {
   // banner's controller
   int selectedPage = 0;
   PageController controller = PageController();
+
+  Color selectedColor = (DateTime(HomeData.selectedDay!.year,
+              HomeData.selectedDay!.month, HomeData.selectedDay!.day) ==
+          DateTime(
+              HomeData.today.year, HomeData.today.month, HomeData.today.day))
+      ? ColorSet.buttonColor
+      : ColorSet.backgroundColor;
+
+  TextStyle tutorialTitleStyle = const TextStyle(
+      color: ColorSet.textColor, fontSize: 18, fontWeight: FontWeight.bold);
+  TextStyle tutorialDescStyle =
+      const TextStyle(color: ColorSet.hintColor, fontSize: 14);
 
   @override
   void initState() {
@@ -260,115 +273,92 @@ class HomepageState extends State<Homepage> {
     setState(() {});
   }
 
-  Color selectedColor = (DateTime(HomeData.selectedDay!.year,
-              HomeData.selectedDay!.month, HomeData.selectedDay!.day) ==
-          DateTime(
-              HomeData.today.year, HomeData.today.month, HomeData.today.day))
-      ? ColorSet.buttonColor
-      : ColorSet.backgroundColor;
-
-  void addPlan(){
+  void addPlan() {
     debugPrint("workoutPlan: ${HomeData.workoutPlan}");
-    debugPrint(
-        "meditationPlan: ${HomeData.meditationPlan}");
+    debugPrint("meditationPlan: ${HomeData.meditationPlan}");
     debugPrint("isBefore: ${HomeData.isBefore}");
     debugPrint("_selectedDay: ${HomeData.selectedDay}");
     debugPrint("_focusedDay: ${HomeData.focusedDay}");
-    debugPrint(DateTime(
-        HomeData.selectedDay!.year,
-        HomeData.selectedDay!.month,
-        HomeData.selectedDay!.day)
+    debugPrint(DateTime(HomeData.selectedDay!.year, HomeData.selectedDay!.month,
+            HomeData.selectedDay!.day)
         .toString());
-    if (HomeData.workoutPlan == null &&
-        HomeData.meditationPlan == null) {
+    if (HomeData.workoutPlan == null && HomeData.meditationPlan == null) {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
       (HomeData.isBefore)
-          ? InformDialog()
-          .get(context, ":(", "溯及既往 打咩！")
-          .show()
+          ? InformDialog().get(context, ":(", "溯及既往 打咩！").show()
           : showModalBottomSheet(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20),
-                topLeft: Radius.circular(20)),
-          ),
-          backgroundColor: ColorSet.bottomBarColor,
-          context: context,
-          builder: (context) {
-            return AddPlanBottomSheet(arguments: {
-              "selectedDay": HomeData.selectedDay,
-              "addWorkout": true,
-              "addMeditation": true,
-              "time": HomeData.time,
-              "isToday": HomeData.isToday
-            });
-          });
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20)),
+              ),
+              backgroundColor: ColorSet.bottomBarColor,
+              context: context,
+              builder: (context) {
+                return AddPlanBottomSheet(arguments: {
+                  "selectedDay": HomeData.selectedDay,
+                  "addWorkout": true,
+                  "addMeditation": true,
+                  "time": HomeData.time,
+                  "isToday": HomeData.isToday
+                });
+              });
     } else if (HomeData.workoutPlan != null &&
         HomeData.meditationPlan == null) {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
       (HomeData.isBefore)
-          ? InformDialog()
-          .get(context, ":(", "溯及既往 打咩！")
-          .show()
+          ? InformDialog().get(context, ":(", "溯及既往 打咩！").show()
           : showModalBottomSheet(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20),
-                topLeft: Radius.circular(20)),
-          ),
-          backgroundColor: ColorSet.bottomBarColor,
-          context: context,
-          builder: (context) {
-            return AddPlanBottomSheet(arguments: {
-              "selectedDay": HomeData.selectedDay,
-              "addWorkout": false,
-              "addMeditation": true,
-              "time": HomeData.time,
-              "isToday": HomeData.isToday
-            });
-          });
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20)),
+              ),
+              backgroundColor: ColorSet.bottomBarColor,
+              context: context,
+              builder: (context) {
+                return AddPlanBottomSheet(arguments: {
+                  "selectedDay": HomeData.selectedDay,
+                  "addWorkout": false,
+                  "addMeditation": true,
+                  "time": HomeData.time,
+                  "isToday": HomeData.isToday
+                });
+              });
     } else if (HomeData.workoutPlan == null &&
         HomeData.meditationPlan != null) {
       // 運動沒有、冥想有 --> 冥想完成度、新增運動
       // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
       (HomeData.isBefore)
-          ? ErrorDialog()
-          .get(context, "警告:(", "溯及既往 打咩！")
-          .show()
+          ? ErrorDialog().get(context, "警告:(", "溯及既往 打咩！").show()
           : showModalBottomSheet(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20),
-                topLeft: Radius.circular(20)),
-          ),
-          backgroundColor: ColorSet.bottomBarColor,
-          context: context,
-          builder: (context) {
-            return AddPlanBottomSheet(arguments: {
-              "selectedDay": HomeData.selectedDay,
-              "addWorkout": true,
-              "addMeditation": false,
-              "time": HomeData.time,
-              "isToday": HomeData.isToday
-            });
-          });
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20)),
+              ),
+              backgroundColor: ColorSet.bottomBarColor,
+              context: context,
+              builder: (context) {
+                return AddPlanBottomSheet(arguments: {
+                  "selectedDay": HomeData.selectedDay,
+                  "addWorkout": true,
+                  "addMeditation": false,
+                  "time": HomeData.time,
+                  "isToday": HomeData.isToday
+                });
+              });
     } else {
       // 運動有、冥想有 --> 運動完成度、冥想完成度
       // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
       (HomeData.isBefore)
-          ? InformDialog()
-          .get(context, "提示:)", "要繼續努力養成習慣噢！")
-          .show()
+          ? InformDialog().get(context, "提示:)", "要繼續努力養成習慣噢！").show()
           : (HomeData.workoutProgress == 100 &&
-          HomeData.meditationProgress == 100)
-          ? InformDialog()
-          .get(context, "你太棒了", "今天的計畫都已經完成了！")
-          .show()
-          : InformDialog()
-          .get(context, "提示:)", "要記得完成計畫噢！")
-          .show();
+                  HomeData.meditationProgress == 100)
+              ? InformDialog().get(context, "你太棒了", "今天的計畫都已經完成了！").show()
+              : InformDialog().get(context, "提示:)", "要記得完成計畫噢！").show();
     }
   }
 
@@ -409,9 +399,40 @@ class HomepageState extends State<Homepage> {
                 const SizedBox(
                   height: 10,
                 ),
-                Showcase(
+                Showcase.withWidget(
                     key: calendarKey,
-                    description: '可滑動觀看近兩週的計畫',
+                    targetBorderRadius: BorderRadius.circular(8.0),
+                    targetPadding: const EdgeInsets.all(5),
+                    overlayColor: ColorSet.hintColor,
+                    overlayOpacity: 0.7,
+                    height: MediaQuery.of(context).size.height * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    container: SpeechBalloon(
+                        color: ColorSet.backgroundColor,
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        nipLocation: NipLocation.top,
+                        nipHeight: 25,
+                        borderColor: ColorSet.borderColor,
+                        borderRadius: 20,
+                        borderWidth: 6,
+                        child: Center(
+                            child: Container(
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      "可滑動觀看近兩週的計畫",
+                                      style: tutorialTitleStyle,
+                                    ),
+                                    Text(
+                                      '➤ 點擊螢幕查看下一個',
+                                      style: tutorialDescStyle,
+                                    )
+                                  ],
+                                )))),
                     child: Container(
                       color: ColorSet.backgroundColor, //日曆背景
                       child: TableCalendar(
@@ -531,27 +552,93 @@ class HomepageState extends State<Homepage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Showcase(
-                        key: bubbleKey,
-                        description: '顯示選取日的計畫完成進度',
-                        child: GestureDetector(
-                          onTap: addPlan, // Image tapped
-                          child: BubbleSpecialThree(
-                          text:
-                              'Hello ${Data.profile?["userName"]}～\n${getDialogText()}',
-                          color: ColorSet.buttonColor,
-                          tail: true,
-                          textStyle: const TextStyle(
-                            color: ColorSet.textColor,
-                            fontSize: 18,
-                            //fontWeight: FontWeight.bold,
-                          ),
-                        ),)
-                      ),
+                      Showcase.withWidget(
+                          key: bubbleKey,
+                          targetBorderRadius: BorderRadius.circular(8.0),
+                          targetPadding: const EdgeInsets.all(5),
+                          overlayColor: ColorSet.hintColor,
+                          overlayOpacity: 0.7,
+                          height: MediaQuery.of(context).size.height * 0.1,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          container: SpeechBalloon(
+                              color: ColorSet.backgroundColor,
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              height: MediaQuery.of(context).size.height * 0.1,
+                              nipLocation: NipLocation.top,
+                              nipHeight: 25,
+                              borderColor: ColorSet.borderColor,
+                              borderRadius: 20,
+                              borderWidth: 6,
+                              child: Center(
+                                  child: Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            "顯示選取日的計畫完成進度",
+                                            style: tutorialTitleStyle,
+                                          ),
+                                          Text(
+                                            '➤ 點擊螢幕查看下一個',
+                                            style: tutorialDescStyle,
+                                          )
+                                        ],
+                                      )))),
+                          child: GestureDetector(
+                            onTap: addPlan, // Image tapped
+                            child: BubbleSpecialThree(
+                              text:
+                                  'Hello ${Data.profile?["userName"]}～\n${getDialogText()}',
+                              color: ColorSet.buttonColor,
+                              tail: true,
+                              textStyle: const TextStyle(
+                                color: ColorSet.textColor,
+                                fontSize: 18,
+                                //fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )),
                       Expanded(
-                          child: Showcase(
+                          child: Showcase.withWidget(
                         key: rabbitKey,
-                        description: '點選可以新增計畫以培養運動和冥想習慣',
+                        targetBorderRadius: BorderRadius.circular(8.0),
+                        targetPadding: const EdgeInsets.all(5),
+                        overlayColor: ColorSet.hintColor,
+                        overlayOpacity: 0.7,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        container: SpeechBalloon(
+                            color: ColorSet.backgroundColor,
+                            width: MediaQuery.of(context).size.width * 0.75,
+                            height: MediaQuery.of(context).size.height * 0.13,
+                            nipLocation: NipLocation.top,
+                            nipHeight: 25,
+                            borderColor: ColorSet.borderColor,
+                            borderRadius: 20,
+                            borderWidth: 6,
+                            child: Center(
+                                child: Container(
+                                    padding: const EdgeInsets.only(
+                                        left: 20.0, right: 20.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "點選可以新增計畫，",
+                                          style: tutorialTitleStyle,
+                                        ),
+                                        Text(
+                                          "以培養運動和冥想習慣",
+                                          style: tutorialTitleStyle,
+                                        ),
+                                        Text(
+                                          '➤ 點擊螢幕查看下一個',
+                                          style: tutorialDescStyle,
+                                        )
+                                      ],
+                                    )))),
                         child: GestureDetector(
                           onTap: addPlan, // Image tapped
                           onLongPress: () async => Data.refresh(),
@@ -566,9 +653,44 @@ class HomepageState extends State<Homepage> {
                   ),
                 ),
                 const SizedBox(height: 50),
-                Showcase(
+                Showcase.withWidget(
                     key: bannerKey,
-                    description: '點擊查看計畫內容，長按修改計畫資訊',
+                    targetBorderRadius: BorderRadius.circular(8.0),
+                    targetPadding: const EdgeInsets.all(5),
+                    overlayColor: ColorSet.hintColor,
+                    overlayOpacity: 0.7,
+                    height: MediaQuery.of(context).size.height * 0.1,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    container: SpeechBalloon(
+                        color: ColorSet.backgroundColor,
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        height: MediaQuery.of(context).size.height * 0.13,
+                        nipLocation: NipLocation.top,
+                        nipHeight: 25,
+                        borderColor: ColorSet.borderColor,
+                        borderRadius: 20,
+                        borderWidth: 6,
+                        child: Center(
+                            child: Container(
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      "點擊查看計畫內容；",
+                                      style: tutorialTitleStyle,
+                                    ),
+                                    Text(
+                                      "長按修改計畫資訊",
+                                      style: tutorialTitleStyle,
+                                    ),
+                                    Text(
+                                      '➤ 點擊螢幕完成首頁導覽',
+                                      style: tutorialDescStyle,
+                                    )
+                                  ],
+                                )))),
                     child: getBanner()),
                 const SizedBox(height: 5),
                 Row(children: [
