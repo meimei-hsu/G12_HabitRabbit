@@ -80,8 +80,14 @@ class CommunityPageState extends State<CommunityPage>
                     child: SizedBox(
                       child: TabBar(
                         controller: _controller,
-                        indicatorColor: ColorSet.borderColor,
+                        indicatorColor: ColorSet.textColor,
                         indicatorWeight: 3,
+                        indicator: const BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(width: 3.0, color: ColorSet.borderColor),
+                            ),
+                            //borderRadius: BorderRadius.circular(10),
+                            color: ColorSet.bottomBarColor),
                         tabs: const [
                           Tab(
                             icon: Column(
@@ -93,7 +99,7 @@ class CommunityPageState extends State<CommunityPage>
                                 Text(
                                   '朋友列表',
                                   style: TextStyle(
-                                    color: ColorSet.iconColor,
+                                    color: ColorSet.textColor,
                                     fontSize: 12,
                                   ),
                                 ),
@@ -105,12 +111,12 @@ class CommunityPageState extends State<CommunityPage>
                               children: [
                                 Icon(
                                   Icons.emoji_events,
-                                  color: ColorSet.iconColor, // 设置图标颜色
+                                  color: ColorSet.iconColor,
                                 ),
                                 Text(
                                   '排行榜',
                                   style: TextStyle(
-                                    color: ColorSet.iconColor,
+                                    color: ColorSet.textColor,
                                     fontSize: 12,
                                   ),
                                 ),
@@ -127,7 +133,7 @@ class CommunityPageState extends State<CommunityPage>
                                 Text(
                                   '團隊挑戰賽',
                                   style: TextStyle(
-                                    color: ColorSet.iconColor,
+                                    color: ColorSet.textColor,
                                     fontSize: 12,
                                   ),
                                 ),
@@ -135,7 +141,6 @@ class CommunityPageState extends State<CommunityPage>
                             ),
                           ),
                         ],
-                        unselectedLabelColor: ColorSet.textColor,
                         onTap: (index) {
                           setState(() {
                             _currentIndex = index;
@@ -146,8 +151,8 @@ class CommunityPageState extends State<CommunityPage>
                   ),
                 ),
                 Expanded(
-                  child: IndexedStack(
-                    index: _currentIndex,
+                  child: TabBarView(
+                    controller: _controller,
                     children: tabViews,
                   ),
                 ),
@@ -1034,10 +1039,9 @@ class TeamChallengePageState extends State<TeamChallengePage> {
               child: const Text(
                 '確定加入',
                 style: TextStyle(
-                  color: ColorSet.textColor,
-                  fontSize: 17.0,
-                  fontWeight: FontWeight.bold
-                ),
+                    color: ColorSet.textColor,
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.bold),
               ),
             )),
         /*ElevatedButton(
@@ -1173,7 +1177,12 @@ class TeamChallengePageState extends State<TeamChallengePage> {
               )),
         ),*/
         const SizedBox(height: 5),
-        const Divider(thickness: 1.5, color: ColorSet.bottomBarColor, indent: 10, endIndent: 10,),
+        const Divider(
+          thickness: 1.5,
+          color: ColorSet.bottomBarColor,
+          indent: 10,
+          endIndent: 10,
+        ),
         const SizedBox(height: 5),
         const Text('團隊合作賽',
             style: TextStyle(
@@ -1198,39 +1207,39 @@ class TeamChallengePageState extends State<TeamChallengePage> {
         Container(
             padding: const EdgeInsets.only(left: 100.0, right: 100.0),
             child: ElevatedButton(
-          onPressed: () {
-            AwesomeDialog(
-              context: context,
-              dialogType: DialogType.noHeader,
-              autoHide: const Duration(seconds: 2),
-              body: SizedBox(
-                width: 400.0,
-                height: 100.0,
-                child: Image.asset("assets/images/coming_soon.png"),
+              onPressed: () {
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.noHeader,
+                  autoHide: const Duration(seconds: 2),
+                  body: SizedBox(
+                    width: 400.0,
+                    height: 100.0,
+                    child: Image.asset("assets/images/coming_soon.png"),
+                  ),
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  dialogBorderRadius:
+                      const BorderRadius.all(Radius.circular(20)),
+                ).show();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorSet.bottomBarColor,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+                minimumSize: const Size.fromHeight(40),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-              width: MediaQuery.of(context).size.width * 0.9,
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              dialogBorderRadius: const BorderRadius.all(Radius.circular(20)),
-            ).show();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: ColorSet.bottomBarColor,
-            shadowColor: Colors.transparent,
-            elevation: 0,
-            minimumSize: const Size.fromHeight(40),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          child: const Text(
-            '確定加入',
-            style: TextStyle(
-              color: ColorSet.textColor,
-              fontSize: 17.0,
-              fontWeight: FontWeight.bold
-            ),
-          ),
-        )),
+              child: const Text(
+                '確定加入',
+                style: TextStyle(
+                    color: ColorSet.textColor,
+                    fontSize: 17.0,
+                    fontWeight: FontWeight.bold),
+              ),
+            )),
         /*ElevatedButton(
           onPressed: () {
             bool showTextField = false;
