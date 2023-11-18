@@ -1356,27 +1356,6 @@ class StatisticPageState extends State<StatisticPage> {
                 },
               ),
             ),
-            // TODO: delete after confirming which style
-            /*trailing: IconButton(
-              padding: const EdgeInsets.only(top: 5, right: 20),
-              icon: const Icon(
-                Icons.close_rounded,
-                color: Color(0xff4b4370),
-              ),
-              style: IconButton.styleFrom(
-                shape: const CircleBorder(
-                    side: BorderSide(color: Color(0xff4b4370))),
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-              ),
-              onPressed: () {
-                weightController.clear();
-                setState(() {
-                  selectedDate = DateTime.now();
-                });
-                Navigator.pop(context);
-              },
-            ),*/
           ),
           const SizedBox(
             height: 10,

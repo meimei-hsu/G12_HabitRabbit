@@ -354,7 +354,6 @@ class FirstContractPageState extends State<FirstContractPage> {
                                       right: 10, left: 10),
                                   child: TextFormField(
                                     validator: (value) {
-                                      // TODO: validator context
                                       if (value == null || value.isEmpty) {
                                         return "請輸入金額！";
                                       } else if (double.parse(value) == 0) {
@@ -686,7 +685,6 @@ class AlreadyContractPageState extends State<AlreadyContractPage> {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        // FIXME: fix the position
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1050,7 +1048,6 @@ class OptionsBottomSheetState extends State<OptionsBottomSheet> {
                 padding: const EdgeInsets.only(right: 20, left: 20),
                 child: TextFormField(
                   validator: (value) {
-                    // TODO: validator context
                     if (value == null || value.isEmpty) {
                       return "請輸入金額！";
                     } else if (double.parse(value) == 0) {

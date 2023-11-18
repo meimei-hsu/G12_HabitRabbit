@@ -82,10 +82,10 @@ class CommunityPageState extends State<CommunityPage>
                         controller: _controller,
                         indicatorColor: ColorSet.borderColor,
                         indicatorWeight: 3,
-                        tabs: [
+                        tabs: const [
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.group,
                                   color: ColorSet.iconColor,
@@ -102,7 +102,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.emoji_events,
                                   color: ColorSet.iconColor, // 设置图标颜色
@@ -119,7 +119,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.sports_kabaddi,
                                   color: ColorSet.iconColor,
@@ -197,9 +197,9 @@ class FriendListPageState extends State<FriendListPage> {
                 '\n等級：${CommData.level}',
                 style: const TextStyle(
                   color: ColorSet.textColor,
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  height: 1.5,
+                  height: 1.2,
                 ),
               ),
             ]),
@@ -213,6 +213,7 @@ class FriendListPageState extends State<FriendListPage> {
                     controller: _controller,
                     decoration: InputDecoration(
                       hintText: '快輸社交碼 加入新朋友！',
+                      hintStyle: const TextStyle(color: ColorSet.hintColor),
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 15, horizontal: 20),
                       enabledBorder: OutlineInputBorder(
@@ -264,6 +265,8 @@ class FriendListPageState extends State<FriendListPage> {
                               _controller.clear();
                             }
                           }
+                          // Unfocus the keyboard
+                          FocusManager.instance.primaryFocus?.unfocus();
                         },
                       ),
                     ),
@@ -281,9 +284,9 @@ class FriendListPageState extends State<FriendListPage> {
           ),
           Container(
               padding: const EdgeInsets.only(top: 20.0, left: 25.0),
-              child: Row(
+              child: const Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     '朋友列表',
                     style: TextStyle(
@@ -307,7 +310,7 @@ class FriendListPageState extends State<FriendListPage> {
                   )
                 : ListView.separated(
                     padding: const EdgeInsets.only(
-                        left: 30.0, top: 10.0, right: 30.0),
+                        left: 25.0, top: 10.0, right: 25.0),
                     itemCount: CommData.friends.length,
                     itemBuilder: (BuildContext context, int index) {
                       String friendID = CommData.friends[index];
@@ -321,7 +324,7 @@ class FriendListPageState extends State<FriendListPage> {
                                 border: Border.all(
                                     color: ColorSet.borderColor, width: 2),
                                 borderRadius:
-                                    const BorderRadius.all(Radius.circular(50)),
+                                    const BorderRadius.all(Radius.circular(30)),
                               ),
                               child: InkWell(
                                 onTap: () {
@@ -346,7 +349,7 @@ class FriendListPageState extends State<FriendListPage> {
                                       info["userName"],
                                       style: const TextStyle(
                                         color: ColorSet.textColor,
-                                        fontSize: 16,
+                                        fontSize: 20,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -384,7 +387,7 @@ class FriendListPageState extends State<FriendListPage> {
             width: MediaQuery.of(context).size.width * 0.7,
             decoration: BoxDecoration(
               color: ColorSet.backgroundColor,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(20),
             ),
             padding: const EdgeInsets.all(20.0),
             child: Column(
@@ -408,13 +411,13 @@ class FriendListPageState extends State<FriendListPage> {
                 const SizedBox(height: 15),
                 Container(
                   height: 60,
-                  width: 220,
+                  width: 250,
                   decoration: BoxDecoration(
                     color: ColorSet.backgroundColor,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(15),
                     border: Border.all(
                       color: ColorSet.borderColor,
-                      width: 1.0,
+                      width: 2.0,
                     ),
                   ),
                   child: Row(
@@ -422,7 +425,7 @@ class FriendListPageState extends State<FriendListPage> {
                     children: [
                       const Padding(
                         padding: EdgeInsets.all(8.0),
-                        child: Icon(Icons.person),
+                        child: Icon(Icons.person, color: ColorSet.iconColor),
                       ),
                       Expanded(
                         child: Text(
@@ -441,21 +444,22 @@ class FriendListPageState extends State<FriendListPage> {
                 const SizedBox(height: 15),
                 Container(
                   height: 60,
-                  width: 220,
+                  width: 250,
                   decoration: BoxDecoration(
                     color: ColorSet.backgroundColor,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(15),
                     border: Border.all(
                       color: ColorSet.borderColor,
-                      width: 1.0,
+                      width: 2.0,
                     ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Icon(Icons.emoji_events),
+                        padding: EdgeInsets.all(8.0),
+                        child:
+                            Icon(Icons.emoji_events, color: ColorSet.iconColor),
                       ),
                       Expanded(
                         child: Text(
@@ -473,54 +477,74 @@ class FriendListPageState extends State<FriendListPage> {
                 ),
                 const SizedBox(height: 20),
                 (isFriend)
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              PokeDB.update(userID);
-                              InformDialog()
-                                  .get(context, "戳到了:)",
-                                      "謝謝你提醒${info['userName']}持續養成習慣，\n有你這個朋友真好!")
-                                  .show();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorSet.backgroundColor,
-                            ),
-                            child: const Text(
-                              '戳戳他',
-                              style: TextStyle(
-                                color: ColorSet.textColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                    ? Container(
+                        padding: const EdgeInsets.only(right: 5, left: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                                child: ElevatedButton(
+                              onPressed: () {
+                                PokeDB.update(userID);
+                                InformDialog()
+                                    .get(context, "戳到了:)",
+                                        "謝謝你提醒${info['userName']}持續養成習慣，\n有你這個朋友真好!")
+                                    .show();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding:
+                                    const EdgeInsets.only(right: 10, left: 10),
+                                backgroundColor: ColorSet.bottomBarColor,
+                                shadowColor: Colors.transparent,
+                                elevation: 0,
+                                minimumSize: const Size.fromHeight(40),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 30),
-                          ElevatedButton(
-                            onPressed: () {
-                              CommData.currentFriend = userID;
-                              FriendData.fetch();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const FriendStatusPage()));
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorSet.backgroundColor,
-                            ),
-                            child: const Text(
-                              '看看他',
-                              style: TextStyle(
-                                color: ColorSet.textColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                              child: const Text(
+                                '戳戳他',
+                                style: TextStyle(
+                                  color: ColorSet.textColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ),
-                        ],
-                      )
+                            )),
+                            const SizedBox(width: 10),
+                            Expanded(
+                                child: ElevatedButton(
+                              onPressed: () {
+                                CommData.currentFriend = userID;
+                                FriendData.fetch();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const FriendStatusPage()));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding:
+                                    const EdgeInsets.only(right: 10, left: 10),
+                                backgroundColor: ColorSet.bottomBarColor,
+                                shadowColor: Colors.transparent,
+                                elevation: 0,
+                                minimumSize: const Size.fromHeight(40),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: const Text(
+                                '看看他',
+                                style: TextStyle(
+                                  color: ColorSet.textColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )),
+                          ],
+                        ))
                     : ElevatedButton(
                         onPressed: () async {
                           CommData.friends.insert(0, userID);
@@ -532,7 +556,14 @@ class FriendListPageState extends State<FriendListPage> {
                           });
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorSet.backgroundColor,
+                          padding: const EdgeInsets.only(right: 10, left: 10),
+                          backgroundColor: ColorSet.bottomBarColor,
+                          shadowColor: Colors.transparent,
+                          elevation: 0,
+                          minimumSize: const Size.fromHeight(40),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                         child: const Text(
                           '加朋友',
@@ -638,8 +669,8 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                               itemCount: chart.length,
                               itemBuilder: (BuildContext context, int index) {
                                 final String uid = chart.keys.toList()[index];
-                                final bool isCurrentUser =
-                                    (chart[uid][2] == Data.profile?["userName"]);
+                                final bool isCurrentUser = (chart[uid][2] ==
+                                    Data.profile?["userName"]);
                                 final Color containerColor = isCurrentUser
                                     ? (toggles[ordinalNum] == 0)
                                         ? ColorSet.friendColor
@@ -717,8 +748,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -727,7 +758,7 @@ final List<Widget> competitionList = [
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
-          child: Text('七日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
+          child: Text('七日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝隊將獲得經驗值與等級的提升。',
               style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
@@ -739,8 +770,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -749,7 +780,7 @@ final List<Widget> competitionList = [
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
-          child: Text('十四日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
+          child: Text('十四日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝隊將獲得經驗值與等級的提升。',
               style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
@@ -761,8 +792,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -771,7 +802,7 @@ final List<Widget> competitionList = [
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
-          child: Text('二十八日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
+          child: Text('二十八日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝隊將獲得經驗值與等級的提升。',
               style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
@@ -783,8 +814,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -793,7 +824,7 @@ final List<Widget> competitionList = [
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
-          child: Text('三十二日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
+          child: Text('三十二日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝隊將獲得經驗值與等級的提升。',
               style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
@@ -805,8 +836,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -815,7 +846,7 @@ final List<Widget> competitionList = [
         SizedBox(height: 10),
         Padding(
           padding: EdgeInsets.only(left: 20, right: 20),
-          child: Text('六十四日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝利隊伍將獲得經驗值與等級的提升。',
+          child: Text('六十四日內組內所有成員進行運動或冥想的習慣養成，兩隊中完成度較高者為勝！勝隊將獲得經驗值與等級的提升。',
               style: TextStyle(color: ColorSet.textColor, fontSize: 18.0)),
         ),
       ],
@@ -830,8 +861,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -852,8 +883,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -874,8 +905,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -896,8 +927,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -918,8 +949,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: Column(
-      children: const [
+    child: const Column(
+      children: [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -963,7 +994,7 @@ class TeamChallengePageState extends State<TeamChallengePage> {
           items: competitionList,
           carouselController: _competitionController,
           options: CarouselOptions(
-            height: MediaQuery.of(context).size.height * 0.3,
+            height: MediaQuery.of(context).size.height * 0.27,
             enlargeCenterPage: true,
             aspectRatio: 2.0,
             onPageChanged: (index, reason) {
@@ -972,33 +1003,43 @@ class TeamChallengePageState extends State<TeamChallengePage> {
           ),
         ),
         const SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: () {
-            AwesomeDialog(
-              context: context,
-              dialogType: DialogType.noHeader,
-              autoHide: const Duration(seconds: 2),
-              body: SizedBox(
-                width: 400.0,
-                height: 100.0,
-                child: Image.asset("assets/images/coming_soon.png"),
+        Container(
+            padding: const EdgeInsets.only(left: 100.0, right: 100.0),
+            child: ElevatedButton(
+              onPressed: () {
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.noHeader,
+                  autoHide: const Duration(seconds: 2),
+                  body: SizedBox(
+                    width: 400.0,
+                    height: 100.0,
+                    child: Image.asset("assets/images/coming_soon.png"),
+                  ),
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  dialogBorderRadius:
+                      const BorderRadius.all(Radius.circular(20)),
+                ).show();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorSet.bottomBarColor,
+                shadowColor: Colors.transparent,
+                elevation: 0,
+                minimumSize: const Size.fromHeight(40),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-              width: MediaQuery.of(context).size.width * 0.9,
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-              dialogBorderRadius: const BorderRadius.all(Radius.circular(20)),
-            ).show();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: ColorSet.backgroundColor,
-          ),
-          child: const Text(
-            '確定加入',
-            style: TextStyle(
-              color: ColorSet.textColor,
-              fontSize: 14.0,
-            ),
-          ),
-        ),
+              child: const Text(
+                '確定加入',
+                style: TextStyle(
+                  color: ColorSet.textColor,
+                  fontSize: 17.0,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            )),
         /*ElevatedButton(
           onPressed: () {
             showDialog(
@@ -1131,7 +1172,9 @@ class TeamChallengePageState extends State<TeamChallengePage> {
                 fontSize: 14.0,
               )),
         ),*/
-        const SizedBox(height: 20),
+        const SizedBox(height: 5),
+        const Divider(thickness: 1.5, color: ColorSet.bottomBarColor, indent: 10, endIndent: 10,),
+        const SizedBox(height: 5),
         const Text('團隊合作賽',
             style: TextStyle(
               color: ColorSet.textColor,
@@ -1143,7 +1186,7 @@ class TeamChallengePageState extends State<TeamChallengePage> {
           items: teamworkList,
           carouselController: _teamworkController,
           options: CarouselOptions(
-            height: MediaQuery.of(context).size.height * 0.26,
+            height: MediaQuery.of(context).size.height * 0.27,
             enlargeCenterPage: true,
             aspectRatio: 2.0,
             onPageChanged: (index, reason) {
@@ -1152,7 +1195,9 @@ class TeamChallengePageState extends State<TeamChallengePage> {
           ),
         ),
         const SizedBox(height: 10),
-        ElevatedButton(
+        Container(
+            padding: const EdgeInsets.only(left: 100.0, right: 100.0),
+            child: ElevatedButton(
           onPressed: () {
             AwesomeDialog(
               context: context,
@@ -1169,16 +1214,23 @@ class TeamChallengePageState extends State<TeamChallengePage> {
             ).show();
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: ColorSet.backgroundColor,
+            backgroundColor: ColorSet.bottomBarColor,
+            shadowColor: Colors.transparent,
+            elevation: 0,
+            minimumSize: const Size.fromHeight(40),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
           child: const Text(
             '確定加入',
             style: TextStyle(
               color: ColorSet.textColor,
-              fontSize: 14.0,
+              fontSize: 17.0,
+              fontWeight: FontWeight.bold
             ),
           ),
-        ),
+        )),
         /*ElevatedButton(
           onPressed: () {
             bool showTextField = false;

@@ -561,7 +561,7 @@ class GrowDialogState extends State<GrowDialog> {
                         borderRadius: BorderRadius.circular(15.0),
                         border: Border.all(color: ColorSet.textColor, width: 1),
                         color: (i + 1 == GameData.characterLevel)
-                            ? ColorSet.backgroundColor // TODO: 將角色現階段螢光起來
+                            ? ColorSet.usersColor
                             : ColorSet.backgroundColor,
                       ),
                       child: Row(
