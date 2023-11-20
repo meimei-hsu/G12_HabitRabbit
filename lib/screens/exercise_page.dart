@@ -10,8 +10,7 @@ import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/database.dart';
 import 'package:g12/services/plan_algo.dart';
 import 'package:g12/Services/notification.dart';
-
-import '../services/page_data.dart';
+import 'package:g12/services/page_data.dart';
 
 class DoExercisePage extends StatefulWidget {
   final Map arguments;
@@ -23,6 +22,8 @@ class DoExercisePage extends StatefulWidget {
 }
 
 class DoExercisePageState extends State<DoExercisePage> {
+  final audioPlayer = AudioPlayer();
+
   String sport = "運動項目";
   late int totalTime;
   late int countdownTime;
@@ -172,10 +173,10 @@ class DoExercisePageState extends State<DoExercisePage> {
     AwesomeDialog dlg = ConfirmDialog().get(
         context,
         "提示:)",
-        "目前運動已經完成 ${(currentIndex / totalExerciseItemLength * 100).round()}% 囉！\n今天還會回來做運動嗎T^T？",
+        "目前運動已經完成 ${(currentIndex / totalExerciseItemLength * 100).round()}% 囉！\n請問今天會回來繼續完成嗎？",
         btnYesOnPress,
         btnCancelOnPress: btnNoOnPress,
-        options: ["會！", "不會"]);
+        options: ["會的", "不會"]);
     // ["會，請等等通知我", "不會，明天再回來"]
 
     await dlg.show();
@@ -189,12 +190,15 @@ class DoExercisePageState extends State<DoExercisePage> {
       ifStart = true;
     }
 
-    Timer.periodic(period, (timer) {
+    Timer.periodic(period, (timer) async {
       if (totalTime < 1) {
         DurationDB.update(
             "workout", {Calendar.today: HomeData.workoutDuration});
         GamificationDB.updateFragment("workout");
         timer.cancel();
+        await audioPlayer.stop();
+
+        if(!mounted) return;
         CongratsDialog.show(context,
             habit: "workout",
             widgetAfterDismiss: Wrap(children: const [
@@ -204,6 +208,7 @@ class DoExercisePageState extends State<DoExercisePage> {
             ]));
       } else if (ifStart == false) {
         timer.cancel();
+        await audioPlayer.pause();
         //_controller.pause();
       } else {
         // Appbar timer
@@ -253,14 +258,23 @@ class DoExercisePageState extends State<DoExercisePage> {
                   duration: const Duration(milliseconds: 5),
                   curve: Curves.ease);
               sport = sport.replaceAll("運動", "休息");
+              playAudio("休息");
             });
           }
           debugPrint(
               "currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
+
+          playAudio(sport);
         }
       }
       if (totalTime >= 1) setState(() {});
     });
+  }
+
+  Future<void> playAudio(String sport) async {
+    sport = sport.contains("休息") ? "休息" : sport.substring(3);
+    await audioPlayer.setAsset('assets/audios/$sport.mp3');
+    await audioPlayer.play();
   }
 
   @override
@@ -298,6 +312,7 @@ class DoExercisePageState extends State<DoExercisePage> {
     ///當前頁面繪製完第一幀後回撥
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       startTimer();
+      playAudio(sport);
     });
   }
 
@@ -414,7 +429,7 @@ class DoMeditationPage extends StatefulWidget {
 }
 
 class DoMeditationPageState extends State<DoMeditationPage> {
-  final player = AudioPlayer();
+  final audioPlayer = AudioPlayer();
 
   late int totalTime;
   late int countdownTime;
@@ -494,7 +509,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         "目前冥想已經完成 ${(_progress.toDouble() * 100).round()}% 囉！\n請問今天會回來繼續完成嗎？'",
         btnYesOnPress,
         btnCancelOnPress: btnNoOnPress,
-        options: ["會！", "不會"]);
+        options: ["會的", "不會"]);
     // ["會，請等等通知我", "不會，明天再回來"]
 
     await dlg.show();
@@ -515,8 +530,9 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         GamificationDB.updateFragment("meditation");
 
         timer.cancel();
-        await player.stop();
+        await audioPlayer.stop();
 
+        if(!mounted) return;
         CongratsDialog.show(context,
             habit: "meditation",
             widgetAfterDismiss: Wrap(children: const [
@@ -526,7 +542,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
             ]));
       } else if (ifStart == false) {
         timer.cancel();
-        await player.pause();
+        await audioPlayer.pause();
       } else {
         // Appbar timer
         totalTime--;
@@ -537,7 +553,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
   }
 
   Future<void> initPlayer() async {
-    await player.setAsset('assets/audios/Meditation_30s.mp3');
+    await audioPlayer.setAsset('assets/audios/冥想.mp3');
   }
 
   @override
@@ -549,7 +565,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
     initPlayer();
 
     startTimer();
-    player.play();
+    audioPlayer.play();
   }
 
   @override

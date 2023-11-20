@@ -590,6 +590,7 @@ class PartOnePageState extends State<PartOnePage> {
   void dispose() {
     heightController.dispose();
     weightController.dispose();
+    userInfo["gender"] = ""; // reset to default value
     super.dispose();
   }
 
@@ -929,7 +930,14 @@ class PartTwoPageState extends State<PartTwoPage> {
                       onPressed: () async {
                         if (isComplete) {
                           if (pageController.page == 3) {
-                            processInput(); // update the data into userInfo
+                            // update the data into userInfo
+                            processInput();
+                            // clear the answers
+                            for (int i = 0; i < 4; i++) {
+                              for (Question q in questions_2[i]) {
+                                q.selectedOptions.clear();
+                              }
+                            }
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(

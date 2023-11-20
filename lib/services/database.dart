@@ -479,37 +479,52 @@ class GamificationDB {
   }
 
   static Map getChart(String category, {bool isGlobal = true}) {
-    Map chart = {Data.user?.uid: Data.game?[category]};
+    if (category.isNotEmpty) {
+      // 個人等級排行榜
+      Map chart = {uid: Data.game?[category]};
 
-    Data.community?.forEach((key, value) {
-      if (!isGlobal && !CommData.friends.contains(key)) return;
-      dynamic catVal = value[category];
-      // select the last character as character's level
-      if (category == "character") {
-        catVal = int.parse(catVal[catVal.length - 1]);
+      Data.community?.forEach((key, value) {
+        if (!isGlobal && !CommData.friends.contains(key)) return;
+        chart[key] = value[category];
+      });
+
+      // Sort the chart by descending order
+      chart = Map.fromEntries(chart.entries.toList()
+        ..sort((e1, e2) => e2.value.compareTo(e1.value)));
+      // Set the values to user's corresponding rank
+      List keys = chart.keys.toList();
+      List values = chart.values.toList();
+      for (int i = 0; i < chart.length; i++) {
+        // Set the rank as the previous if their values are same, else rank++
+        int rank = (i == 0) ? 1 : chart[keys[i - 1]][0];
+        if (i != 0 && (values[i - 1] != values[i])) rank++;
+        // Set the value to the following format: ["rank", "photoUrl", "userName"]
+        String uid = keys[i];
+        chart[uid] = [
+          rank,
+          "assets/images/${Data.community?[uid]["character"]}_head.png",
+          Data.community?[uid]["userName"]
+        ];
       }
-      chart[key] = catVal;
-    });
+      return chart;
+    } else {
+      // TODO: "運動累積時間", "冥想累積時間", "運動最大連續天數", "冥想最大連續天數" 排行榜
+      List keys = (isGlobal)
+          ? Data.community?.keys.toList() ?? []
+          : [uid, ...CommData.friends];
+      keys.shuffle();
 
-    // Sort the chart by descending order
-    chart = Map.fromEntries(
-        chart.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value)));
-    // Set the values to user's corresponding rank
-    List keys = chart.keys.toList();
-    List values = chart.values.toList();
-    for (int i = 0; i < chart.length; i++) {
-      // Set the rank as the previous if their values are same, else rank++
-      int rank = (i == 0) ? 1 : chart[keys[i - 1]][0];
-      if (i != 0 && (values[i - 1] != values[i])) rank++;
-      // Set the value to the following format: ["rank", "photoUrl", "userName"]
-      String uid = keys[i];
-      chart[uid] = [
-        rank,
-        "assets/images/${Data.community?[uid]["character"]}_head.png",
-        Data.community?[uid]["userName"]
-      ];
+      Map chart = {};
+      for (int i = 0; i < keys.length; i++) {
+        String uid = keys[i];
+        chart[uid] = [
+          i + 1,
+          "assets/images/${Data.community?[uid]["character"]}_head.png",
+          Data.community?[uid]["userName"]
+        ];
+      }
+      return chart;
     }
-    return chart;
   }
 
   static String? convertSocialCode(String friendCode) {

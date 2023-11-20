@@ -1022,9 +1022,6 @@ class StatisticPageState extends State<StatisticPage> {
                                     StatData.accumulatedTime = index!;
                                     setState(() {});
 
-                                    // TODO: 確認要加在哪些地方（完成統計頁後)
-                                    // add "scrolling automatically function" in the last container
-                                    // to scroll the listview to bottom automatically
                                     WidgetsBinding.instance
                                         .addPostFrameCallback((_) {
                                       _scrollController.animateTo(
@@ -1126,7 +1123,7 @@ class StatisticPageState extends State<StatisticPage> {
     "12": "Dec"
   };
 
-  // FIXME: 顯示年份（但這應該可以放不重要TODO）
+  // TODO: 顯示年份
   List<ChartData> getExerciseMonthDaysData() {
     List<ChartData> chartData = [];
 

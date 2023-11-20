@@ -1,11 +1,9 @@
-import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/database.dart';
-import 'package:g12/services/plan_algo.dart';
 import 'package:g12/services/page_data.dart';
 
 class ExerciseDetailPage extends StatefulWidget {
@@ -265,6 +263,30 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
   }
 
   void _showVideoDialog(BuildContext context, String vidName) {
+    List? description = {
+      "深蹲": ["雙腳站立，與髖部同寬，雙臂伸直在你前面與肩同高。", "彎曲膝蓋，同時向後坐。", "恢復到起始位置，然後重複動作。"],
+      "上斜伏地挺身": [
+        "從桌子後方踏出一大步，雙手握住邊緣，與肩同寬。",
+        "彎曲肘部，呈約90度角，將胸部靠近桌沿。",
+        "推起身體，伸直手臂回到起始位置，然後重複動作。"
+      ],
+      "反向捲腹": [
+        "背部貼地，彎曲膝蓋，腳底放在地板上，雙臂伸直並貼在身體兩側的地板上。",
+        "慢慢將膝蓋靠近胸部，稍微提高臀部。",
+        "放下腿部回到起始位置，然後重複動作。"
+      ],
+      "臀橋": [
+        "背部貼地，彎曲膝蓋，腳底放在地板上，雙臂伸直並貼在身體兩側的地板上。",
+        "提起臀部，使身體從膝蓋到胸部呈現一條直線。",
+        "保持臀部抬起5秒，放下回到起始位置，然後重複動作。"
+      ],
+      "側弓箭步": [
+        "雙腳並攏，雙手放在臀部。",
+        "用右腳邁出一大步，彎曲膝蓋。當你向後邁步回到起始位置時，站起身來。",
+        "重複動作，用左腳向前邁步，然後返回起始位置。"
+      ],
+    }[vidName];
+
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -273,71 +295,69 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
               width: MediaQuery.of(context).size.width * 0.7,
               decoration: BoxDecoration(
                 color: ColorSet.backgroundColor,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(20),
               ),
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Image.asset(
                     "assets/videos/$vidName.gif",
                     width: double.infinity,
                     fit: BoxFit.fitWidth,
                   ),
-                  // TODO: Get description of item
-                  Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      ListTile(
-                          title: Padding(
-                            padding: const EdgeInsets.only(bottom: 15.0),
-                            child: Text(
-                              vidName,
-                              style: const TextStyle(
-                                  color: ColorSet.textColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 24,
-                                  letterSpacing: 10),
+                  const SizedBox(height: 10),
+                  Text(
+                    vidName,
+                    style: const TextStyle(
+                        color: ColorSet.textColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        letterSpacing: 8),
+                  ),
+                  const SizedBox(height: 10),
+                  if (description == null) ...[
+                    const Text(
+                      "動作說明編輯中...",
+                      style: TextStyle(
+                        color: ColorSet.textColor,
+                        fontSize: 18,
+                        height: 1.5,
+                      ),
+                    ),
+                  ] else ...[
+                    for (String desc in description)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '\u2022',
+                            style: TextStyle(
+                              color: ColorSet.textColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              height: 1.5,
                             ),
                           ),
-                          subtitle: Column(
-                            children: [
-                              Row(
-                                children: const [
-                                  Text(
-                                    " \u2022  轉轉肩膀",
-                                    style: TextStyle(
-                                        color: ColorSet.textColor,
-                                        fontSize: 18),
-                                  ),
-                                ],
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Expanded(
+                            child: Text(
+                              desc,
+                              textAlign: TextAlign.left,
+                              softWrap: true,
+                              style: const TextStyle(
+                                color: ColorSet.textColor,
+                                fontSize: 18,
+                                height: 1.5,
                               ),
-                              const SizedBox(height: 5),
-                              Row(
-                                children: const [
-                                  Text(
-                                    " \u2022  扭扭脖子",
-                                    style: TextStyle(
-                                        color: ColorSet.textColor,
-                                        fontSize: 18),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                children: const [
-                                  Text(
-                                    " \u2022  動動嘴巴",
-                                    style: TextStyle(
-                                        color: ColorSet.textColor,
-                                        fontSize: 18),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )),
-                    ],
-                  )
+                            ),
+                          ),
+                        ],
+                      )
+                  ],
                 ],
               ),
             ),
@@ -354,17 +374,12 @@ class MeditationDetailPage extends StatefulWidget {
 }
 
 class MeditationDetailPageState extends State<MeditationDetailPage> {
-  String getDescription() {
-    switch (HomeData.meditationType) {
-      case "正念冥想":
-        return "正念冥想益處包括對生活滿意度增加、降低焦慮、提升創意思考、學習成績提升、增加免疫力、提升睡眠品質等。";
-      case "工作冥想":
-        return "工作冥想益處包括生產力增加、增添自信、具備人生目標、提升專注力等。";
-      case "慈心冥想":
-        return "慈心冥想益處包括保持正向積極、維持友好關係、減緩焦慮、增強自我激勵等。";
-    }
-    return "";
-  }
+  String description = {
+        "正念冥想": "「正念冥想」的益處包括對生活滿意度增加、降低焦慮、提升創意思考、學習成績提升、增加免疫力、提升睡眠品質等。",
+        "工作冥想": "「工作冥想」的益處包括生產力增加、增添自信、具備人生目標、提升專注力等。",
+        "慈心冥想": "「慈心冥想」的益處包括保持正向積極、維持友好關係、減緩焦慮、增強自我激勵等。"
+      }[HomeData.meditationType] ??
+      "";
 
   @override
   Widget build(BuildContext context) {
@@ -429,13 +444,17 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                           .copyWith(dividerColor: Colors.transparent),
                       child: Column(
                         children: [
-                          // FIXME: 冥想Detail畫面看起來有點空
                           const SizedBox(
                             height: 10,
                           ),
                           Text(
-                            getDescription(),
-                            style: const TextStyle(fontSize: 16),
+                            "$description\n\n"
+                            "今日的冥想主題是「${HomeData.meditationPlan}」，請選擇一個安靜的環境，調整成舒服的坐姿後，跟著語音的引導進行練習。",
+                            style: const TextStyle(
+                              color: ColorSet.textColor,
+                              fontSize: 18,
+                              height: 1.5,
+                            ),
                           )
                         ],
                       )),
@@ -572,7 +591,6 @@ class ExercisePlanDetailItem extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22.0),
                           ),
-                          subtitle: const Text("TEXT"), // TODO: content?
                           visualDensity: const VisualDensity(vertical: -4),
                         ),
                         ListTile(
@@ -587,7 +605,6 @@ class ExercisePlanDetailItem extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22.0),
                           ),
-                          subtitle: const Text("TEXT"), // TODO: content?
                           visualDensity: const VisualDensity(vertical: -4),
                         )
                       ],
@@ -661,7 +678,6 @@ class MeditationPlanDetailItem extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22.0),
                           ),
-                          subtitle: const Text("TEXT"), // TODO: content?
                           visualDensity: const VisualDensity(vertical: -4),
                         ),
                         ListTile(
@@ -670,13 +686,12 @@ class MeditationPlanDetailItem extends StatelessWidget {
                             color: ColorSet.iconColor,
                           ),
                           title: Text(
-                            HomeData.meditationType!, // TODO: 名稱對應中文
+                            HomeData.meditationType!,
                             style: const TextStyle(
                                 color: ColorSet.textColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 22.0),
                           ),
-                          subtitle: const Text("TEXT"), // TODO: content?
                           visualDensity: const VisualDensity(vertical: -4),
                         )
                       ],
@@ -688,196 +703,5 @@ class MeditationPlanDetailItem extends StatelessWidget {
             const Padding(padding: EdgeInsets.symmetric(vertical: 8.0)),
           ],
         ));
-  }
-}
-
-// 修改計畫日
-class ChangeDayBottomSheet extends StatefulWidget {
-  final Map arguments;
-
-  const ChangeDayBottomSheet({super.key, required this.arguments});
-
-  @override
-  ChangeDayBottomSheetState createState() => ChangeDayBottomSheetState();
-}
-
-class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
-  late DateTime day;
-  late bool isToday;
-  late int type;
-
-  late DateTime today;
-
-  String changedDayWeekday = "";
-  DateTime changedDayDate = DateTime.now();
-
-  final ScrollController _controller = ScrollController();
-
-  @override
-  void initState() {
-    day = getDateOnly(widget.arguments['day']);
-    isToday = widget.arguments['isToday'];
-    type = widget.arguments['type'];
-
-    today = getDateOnly(DateTime.now());
-
-    super.initState();
-  }
-
-  DateTime getDateOnly(DateTime day) {
-    return DateTime(day.year, day.month, day.day);
-  }
-
-  List<Widget> _getAllowedDayList() {
-    List<Widget> allowedDayList = [];
-    List weekdayNameList = ["日", "一", "二", "三", "四", "五", "六"];
-
-    OutlinedButton getDayBtn(int i) {
-      OutlinedButton dayBtn = OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          side: const BorderSide(
-            color: ColorSet.borderColor,
-          ),
-          backgroundColor: (changedDayWeekday == weekdayNameList[i])
-              ? (type == 0)
-                  ? ColorSet.exerciseColor
-                  : ColorSet.meditationColor
-              : ColorSet.backgroundColor,
-        ),
-        onPressed: () {
-          setState(() {
-            changedDayWeekday = weekdayNameList[i];
-            changedDayDate = day
-                .add(Duration(days: (day.weekday == 7) ? 1 : i - day.weekday));
-          });
-        },
-        child: Text(
-          weekdayNameList[i],
-          style: const TextStyle(
-            color: ColorSet.textColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      );
-      return dayBtn;
-    }
-
-    final today = Calendar.todayWeekday % 7;
-    final selected = day.weekday % 7;
-    // if todayWeekday > selectedWeekday, then the selectedDays is in the next week
-    for (int i = (today > selected ? 0 : today); i < 7; i++) {
-      if (i != selected) {
-        allowedDayList.add(getDayBtn(i));
-        allowedDayList.add(const SizedBox(
-          width: 10,
-        ));
-      }
-    }
-    return allowedDayList;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.only(bottom: 20),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          ListTile(
-            contentPadding: const EdgeInsets.only(left: 20, right: 0.0),
-            title: Text(
-              "修改${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫到別天",
-              style: const TextStyle(
-                  color: ColorSet.textColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            ),
-            trailing: Container(
-              padding: const EdgeInsets.only(right: 20, left: 20),
-              /*decoration: BoxDecoration(
-                border: Border.all(color: ColorSet.borderColor, width: 2),
-                color: Colors.transparent,
-                shape: BoxShape.circle,
-              ),*/
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                icon: const Icon(
-                  Icons.close_rounded,
-                  color: ColorSet.iconColor,
-                ),
-                tooltip: "關閉",
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-          ),
-          Text(
-              "你要將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫換到哪天呢？",
-              style: const TextStyle(color: ColorSet.textColor, fontSize: 16)),
-          const SizedBox(height: 10),
-          // FIXME: Add padding between choice and scrollbar
-          SizedBox(
-              height: MediaQuery.of(context).size.width * 0.1,
-              width: MediaQuery.of(context).size.width * 0.85,
-              child: Scrollbar(
-                controller: _controller,
-                thumbVisibility: true,
-                child: ListView(
-                    controller: _controller,
-                    scrollDirection: Axis.horizontal,
-                    children: _getAllowedDayList()),
-              )),
-          const SizedBox(
-            height: 15,
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 20, right: 18),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.only(right: 10, left: 10),
-                backgroundColor: ColorSet.backgroundColor,
-                shadowColor: Colors.transparent,
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () async {
-                // FIXME: 如果修改天數，換到已經有計畫的日子怎麼辦? (現在是直接蓋掉原本的)
-                DateTime originalDate = day;
-                (type == 0)
-                    ? await PlanDB.updateDate(
-                        "workout", originalDate, changedDayDate)
-                    : await PlanDB.updateDate(
-                        "meditation", originalDate, changedDayDate);
-                debugPrint(
-                    "Change $day's ${(type == 0) ? "workout plan" : "meditation plan"} to $changedDayDate 星期$changedDayWeekday.");
-                if (!mounted) return;
-
-                btnOkOnPress() {
-                  Navigator.pushNamed(context, "/");
-                  debugPrint("Change!!!");
-                }
-
-                InformDialog()
-                    .get(context, "修改完成:)",
-                        "已經將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫\n換到 ${changedDayDate.month} / ${changedDayDate.day} 星期$changedDayWeekday囉！",
-                        btnOkOnPress: btnOkOnPress)
-                    .show();
-              },
-              child: const Text(
-                "確定",
-                style: TextStyle(
-                  color: ColorSet.textColor,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ]));
   }
 }

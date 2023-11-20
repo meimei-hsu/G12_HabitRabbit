@@ -112,11 +112,13 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/audios/Meditation_30s.mp3
-
-    - assets/videos/v1.gif
-    - assets/videos/v2.gif
-    - assets/videos/v3.gif
+    - assets/audios/深蹲.mp3
+    - assets/audios/側弓箭步.mp3
+    - assets/audios/上斜伏地挺身.mp3
+    - assets/audios/反向捲腹.mp3
+    - assets/audios/臀橋.mp3
+    - assets/audios/休息.mp3
+    - assets/audios/冥想.mp3
     - assets/videos/深蹲.gif
     - assets/videos/側弓箭步.gif
     - assets/videos/上斜伏地挺身.gif

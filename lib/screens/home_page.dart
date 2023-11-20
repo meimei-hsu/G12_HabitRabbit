@@ -237,33 +237,33 @@ class HomepageState extends State<Homepage> {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
       dialogText =
-          (HomeData.isBefore) ? "沒有運動計畫\n沒有冥想計畫" : "沒有運動計畫\n沒有冥想計畫\n點兔兔新增計畫！";
+          (HomeData.isBefore) ? "今日沒有運動計畫和冥想計畫\n在休息日好好恢復身體吧" : "今日沒有運動和冥想計畫誒\n點兔兔新增計畫！";
     } else if (HomeData.workoutPlan != null &&
         HomeData.meditationPlan == null) {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
       dialogText = (HomeData.isBefore)
-          ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n目前尚未安排任何冥想計畫，點選兔兔新增"
+          ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n今日沒有冥想計畫誒T^T"
           : (HomeData.isToday)
-              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}沒有冥想計畫，\n點選兔兔新增！"
-              : "今日有運動計畫\n記得要來完成噢~\n點選兔兔新增冥想計畫！";
+              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}點選兔兔，新增冥想計畫！"
+              : "今日有運動計畫要完成噢~\n點選兔兔，新增冥想計畫！";
     } else if (HomeData.workoutPlan == null &&
         HomeData.meditationPlan != null) {
       // 運動沒有、冥想有 --> 冥想完成度、新增運動
       // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
       dialogText = (HomeData.isBefore)
-          ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n目前尚未安排任何運動計畫，點選兔兔新增"
+          ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %今日沒有運動計畫誒T^T"
           : (HomeData.isToday)
-              ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "有夠讚！\n" : "讓我們一起加油~\n"}今日尚未安排運動計畫，\n點選兔兔新增"
-              : "今日有冥想計畫\n記得要來完成噢~\n點選兔兔新增運動計畫！";
+              ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "有夠讚！\n" : "我們一起加油~\n"}點選兔兔，新增運動計畫！"
+              : "今日有冥想計畫要完成噢~\n點選兔兔，新增運動計畫！";
     } else {
       // 運動有、冥想有 --> 運動完成度、冥想完成度
       // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
       dialogText = (HomeData.isBefore)
           ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n今日冥想計畫已完成 ${HomeData.meditationProgress} %"
           : (HomeData.isToday)
-              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n今日冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n有夠讚！" : "\n讓我們一起加油~"}"
-              : "今日有運動和冥想計畫\n記得要來完成噢~";
+              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n今日冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n有夠讚！" : "\n我們一起加油~"}"
+              : "今日有運動計畫和冥想計畫\n要完成噢~";
     }
     return dialogText;
   }
@@ -553,41 +553,43 @@ class HomepageState extends State<Homepage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Showcase.withWidget(
-                          key: bubbleKey,
-                          targetBorderRadius: BorderRadius.circular(8.0),
-                          targetPadding: const EdgeInsets.all(5),
-                          overlayColor: ColorSet.hintColor,
-                          overlayOpacity: 0.7,
-                          height: MediaQuery.of(context).size.height * 0.1,
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          container: SpeechBalloon(
-                              color: ColorSet.backgroundColor,
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              height: MediaQuery.of(context).size.height * 0.1,
-                              nipLocation: NipLocation.top,
-                              nipHeight: 25,
-                              borderColor: ColorSet.borderColor,
-                              borderRadius: 20,
-                              borderWidth: 6,
-                              child: Center(
-                                  child: Container(
-                                      padding: const EdgeInsets.only(
-                                          left: 20.0, right: 20.0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            "顯示選取日的計畫完成進度",
-                                            style: tutorialTitleStyle,
-                                          ),
-                                          Text(
-                                            '➤ 點擊螢幕查看下一個',
-                                            style: tutorialDescStyle,
-                                          )
-                                        ],
-                                      )))),
-                          child: GestureDetector(
-                            onTap: addPlan, // Image tapped
+                        key: bubbleKey,
+                        targetBorderRadius: BorderRadius.circular(8.0),
+                        targetPadding: const EdgeInsets.all(5),
+                        overlayColor: ColorSet.hintColor,
+                        overlayOpacity: 0.7,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        container: SpeechBalloon(
+                            color: ColorSet.backgroundColor,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            nipLocation: NipLocation.top,
+                            nipHeight: 25,
+                            borderColor: ColorSet.borderColor,
+                            borderRadius: 20,
+                            borderWidth: 6,
+                            child: Center(
+                                child: Container(
+                                    padding: const EdgeInsets.only(
+                                        left: 20.0, right: 20.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "顯示選取日的計畫完成進度",
+                                          style: tutorialTitleStyle,
+                                        ),
+                                        Text(
+                                          '➤ 點擊螢幕查看下一個',
+                                          style: tutorialDescStyle,
+                                        )
+                                      ],
+                                    )))),
+                        child: GestureDetector(
+                          onTap: addPlan, // Image tapped
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.68,
                             child: BubbleSpecialThree(
                               text:
                                   'Hello ${Data.profile?["userName"]}～\n${getDialogText()}',
@@ -599,7 +601,9 @@ class HomepageState extends State<Homepage> {
                                 //fontWeight: FontWeight.bold,
                               ),
                             ),
-                          )),
+                          ),
+                        ),
+                      ),
                       Expanded(
                           child: Showcase.withWidget(
                         key: rabbitKey,

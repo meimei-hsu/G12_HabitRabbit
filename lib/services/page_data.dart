@@ -73,6 +73,7 @@ class Data {
     print("refreshing data");
     // update UI
     await fetchGame();
+    await fetchPlansAndDurations();
     await HomeData.fetch();
     await StatData.fetch();
     await GameData.fetch();
@@ -145,7 +146,7 @@ class Data {
       temp[habit] = await PlanDB.getTable(habit);
     }
     temp.removeWhere((key, value) => value == null);
-    if (temp.isNotEmpty) plans = temp.cast<String, SplayTreeMap>();
+    plans = (temp.isNotEmpty) ? temp.cast<String, SplayTreeMap>() : null;
   }
 
   static Future<void> fetchDurations() async {
@@ -154,7 +155,7 @@ class Data {
       temp[habit] = await DurationDB.getTable(habit);
     }
     temp.removeWhere((key, value) => value == null);
-    if (temp.isNotEmpty) durations = temp.cast<String, SplayTreeMap>();
+    durations = (temp.isNotEmpty) ? temp.cast<String, SplayTreeMap>() : null;
   }
 
   static Future<void> fetchPlansAndDurations() async {
@@ -390,6 +391,7 @@ class SettingsData {
     if (Data.updatingDB) {
       await Data.fetchClocks();
       await Data.fetchProfile();
+      await Data.fetchGame();
       Data.updatingDB = false;
     }
 
@@ -825,7 +827,7 @@ class CommData {
   static int level = 0;
   static List friends = [];
   static String currentFriend = ""; // the friend that user is checking status
-  static List<Map> globalCharts = [], friendCharts = [];
+  static List<Map> charts = [], friendCharts = [];
 
   static Future<void> fetch() async {
     print("Refreshing CommunityPage...");
@@ -839,13 +841,17 @@ class CommData {
       level = Data.game?["level"];
       friends = Data.game?["friends"]?.split(", ") ?? [];
 
-      globalCharts = [
+      charts = [
         GamificationDB.getChart("level", isGlobal: true),
-        GamificationDB.getChart("workoutGem", isGlobal: true),
-        GamificationDB.getChart("meditationGem", isGlobal: true),
+        GamificationDB.getChart("", isGlobal: true),
+        GamificationDB.getChart("", isGlobal: true),
+        GamificationDB.getChart("", isGlobal: true),
+        GamificationDB.getChart("", isGlobal: true),
         GamificationDB.getChart("level", isGlobal: false),
-        GamificationDB.getChart("workoutGem", isGlobal: false),
-        GamificationDB.getChart("meditationGem", isGlobal: false),
+        GamificationDB.getChart("", isGlobal: false),
+        GamificationDB.getChart("", isGlobal: false),
+        GamificationDB.getChart("", isGlobal: false),
+        GamificationDB.getChart("", isGlobal: false),
       ];
     }
 

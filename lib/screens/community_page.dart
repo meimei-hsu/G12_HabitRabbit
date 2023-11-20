@@ -1,20 +1,21 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import 'package:g12/screens/friend_status_page.dart';
 import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/page_data.dart';
-
-import '../services/database.dart';
+import 'package:g12/services/database.dart';
 
 final List<Widget> tabViews = [
   const FriendListPage(),
   const LeaderboardPage(),
   const TeamChallengePage(),
 ];
+
+int currentTabIndex = 0;
 
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});
@@ -26,18 +27,19 @@ class CommunityPage extends StatefulWidget {
 class CommunityPageState extends State<CommunityPage>
     with TickerProviderStateMixin {
   late TabController _controller;
-  int _currentIndex = 0;
 
   @override
   void initState() {
     _controller = TabController(length: 3, vsync: this);
+    _controller.index = currentTabIndex;
     super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
+    currentTabIndex = _controller.index;
     _controller.dispose();
+    super.dispose();
   }
 
   void refresh() async {
@@ -84,14 +86,15 @@ class CommunityPageState extends State<CommunityPage>
                         indicatorWeight: 3,
                         indicator: const BoxDecoration(
                             border: Border(
-                              bottom: BorderSide(width: 3.0, color: ColorSet.borderColor),
+                              bottom: BorderSide(
+                                  width: 3.0, color: ColorSet.borderColor),
                             ),
                             //borderRadius: BorderRadius.circular(10),
                             color: ColorSet.bottomBarColor),
-                        tabs: const [
+                        tabs: [
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.group,
                                   color: ColorSet.iconColor,
@@ -108,7 +111,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.emoji_events,
                                   color: ColorSet.iconColor,
@@ -125,7 +128,7 @@ class CommunityPageState extends State<CommunityPage>
                           ),
                           Tab(
                             icon: Column(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.sports_kabaddi,
                                   color: ColorSet.iconColor,
@@ -141,11 +144,6 @@ class CommunityPageState extends State<CommunityPage>
                             ),
                           ),
                         ],
-                        onTap: (index) {
-                          setState(() {
-                            _currentIndex = index;
-                          });
-                        },
                       ),
                     ),
                   ),
@@ -289,9 +287,9 @@ class FriendListPageState extends State<FriendListPage> {
           ),
           Container(
               padding: const EdgeInsets.only(top: 20.0, left: 25.0),
-              child: const Row(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: const [
                   Text(
                     '朋友列表',
                     style: TextStyle(
@@ -597,11 +595,11 @@ class LeaderboardPage extends StatefulWidget {
 }
 
 class LeaderboardPageState extends State<LeaderboardPage> {
-  List<int> toggles = [0, 0, 0, 0];
+  List<int> toggles = [for (int i = 0; i < CommData.charts.length ~/ 2; i++) 0];
 
   Map getChart(int index) {
-    if (toggles[index] == 0) index += 3;
-    return Map.from(CommData.globalCharts[index]);
+    if (toggles[index] == 0) index += CommData.charts.length ~/ 2;
+    return Map.from(CommData.charts[index]);
   }
 
   @override
@@ -612,10 +610,10 @@ class LeaderboardPageState extends State<LeaderboardPage> {
         child: ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: 3,
+          itemCount: CommData.charts.length ~/ 2,
           itemBuilder: (BuildContext context, int ordinalNum) {
             Map chart = getChart(ordinalNum);
-            List titles = ["個人等級", "運動寶物", "冥想寶物"];
+            List titles = ["個人等級", "運動累積時間", "冥想累積時間", "運動連續天數", "冥想連續天數"];
             return Container(
               padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 20.0),
               margin: const EdgeInsets.only(right: 20, left: 20),
@@ -640,7 +638,12 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                       initialLabelIndex: toggles[ordinalNum],
                       cornerRadius: 10.0,
                       radiusStyle: true,
-                      labels: const ['好友', '全用戶'],
+                      labels: const ['好友', '全球'],
+                      icons: const [
+                        Icons.people_alt_outlined,
+                        CupertinoIcons.globe,
+                      ],
+                      iconSize: 16,
                       activeBgColors: const [
                         [ColorSet.friendColor],
                         [ColorSet.usersColor]
@@ -753,8 +756,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -775,8 +778,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -797,8 +800,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -819,8 +822,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -841,8 +844,8 @@ final List<Widget> competitionList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',
@@ -866,8 +869,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('初級(Lv1 可選擇)',
@@ -888,8 +891,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('入門(Lv5 可選擇)',
@@ -910,8 +913,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('中級(Lv15 可選擇)',
@@ -932,8 +935,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('進階(Lv20 可選擇)',
@@ -954,8 +957,8 @@ final List<Widget> teamworkList = [
       border: Border.all(color: ColorSet.borderColor, width: 2),
       borderRadius: BorderRadius.circular(16.0),
     ),
-    child: const Column(
-      children: [
+    child: Column(
+      children: const [
         Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text('高級(Lv30 可選擇)',

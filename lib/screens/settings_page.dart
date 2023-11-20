@@ -113,18 +113,18 @@ class SettingsPageState extends State<SettingsPage> {
                         getImageWidthPercentage(),
                   ),
                   const SizedBox(
-                    height: 15,
+                    height: 18,
                   ),
                   Text(
                     Data.profile?["userName"],
                     style: const TextStyle(
                       color: ColorSet.textColor,
-                      fontSize: 22,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(
-                    height: 30,
+                    height: 24,
                   ),
                 ],
               ),
