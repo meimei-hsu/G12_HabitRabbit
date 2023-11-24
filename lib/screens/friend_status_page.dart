@@ -102,7 +102,7 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                   for (int i = 0; i < 3; i++) ...[
                     Container(
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                      width: MediaQuery.of(context).size.width * 0.28,
+                      width: MediaQuery.of(context).size.width * 0.29,
                       decoration: BoxDecoration(
                         color: ColorSet.backgroundColor,
                         border:
@@ -120,8 +120,8 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                 CupertinoIcons.star_circle,
                                 Icons.fitness_center_outlined,
                                 Icons.self_improvement_outlined
-                              ][i]),
-                              const SizedBox(width: 12),
+                              ][i], color: ColorSet.iconColor,),
+                              const SizedBox(width: 10),
                               Text(
                                 ["等級\n資訊", "運動\n寶物", "冥想\n寶物"][i],
                                 style: const TextStyle(
@@ -221,7 +221,7 @@ class FriendStatusPageState extends State<FriendStatusPage> {
                                 ),
                               ),
                               subtitle: LinearPercentIndicator(
-                                width: MediaQuery.of(context).size.width * 0.5,
+                                width: MediaQuery.of(context).size.width * 0.48,
                                 animation: true,
                                 lineHeight: 15.0,
                                 percent: value / goal,
