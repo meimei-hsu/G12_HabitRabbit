@@ -794,7 +794,7 @@ class StatData {
 }
 
 class GameData {
-  static bool showTutorial = true;
+  static bool showTutorial = false;
 
   static int characterLevel = 0;
   static int workoutGem = 0;
