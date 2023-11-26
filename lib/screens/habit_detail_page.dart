@@ -107,7 +107,7 @@ class ExerciseDetailPageState extends State<ExerciseDetailPage> {
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(7.5),
                   child: Image.asset(
-                    "assets/images/Exercise_2.jpg",
+                    "assets/images/Exercise_2.gif",
                     width: MediaQuery.of(context).size.width * 0.8,
                   )),
             ),
@@ -414,7 +414,7 @@ class MeditationDetailPageState extends State<MeditationDetailPage> {
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(7.5),
                     child: Image.asset(
-                      "assets/images/Meditation_2.png",
+                      "assets/images/Meditation_2.gif",
                       width: MediaQuery.of(context).size.width * 0.8,
                     )),
               ),

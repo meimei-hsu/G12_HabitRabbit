@@ -51,8 +51,10 @@ class HomepageState extends State<Homepage> {
         (_) => ShowCaseWidget.of(context)
             .startShowCase([calendarKey, bubbleKey, rabbitKey, bannerKey]),
       );
+
+      Data.isFirstTime = false;
+      GameData.showTutorial = true;
     }
-    Data.isFirstTime = false;
   }
 
   Widget getBanner() {
@@ -123,7 +125,7 @@ class HomepageState extends State<Homepage> {
             setState(() {
               HomeData.isFetchingData = true;
             });
-            Timer(const Duration(seconds: 5), () async {
+            Timer(const Duration(seconds: 2), () async {
               setState(() {
                 HomeData.isFetchingData = false;
               });
@@ -167,6 +169,8 @@ class HomepageState extends State<Homepage> {
         // popup menu dialog
         if (type == 2) {
           InformDialog().get(context, "提醒", "今日沒有計畫喔~\n請點選兔子以新增計畫").show();
+        } else if (HomeData.isBefore) {
+          InformDialog().get(context, ":(", "溯及既往 打咩！").show();
         } else {
           if (!HomeData.isBefore) {
             String title = "$date $typeZH計畫";
@@ -616,54 +620,55 @@ class HomepageState extends State<Homepage> {
                         ),
                       ),
                       Expanded(
-                          child: Showcase.withWidget(
-                        key: rabbitKey,
-                        targetBorderRadius: BorderRadius.circular(8.0),
-                        targetPadding: const EdgeInsets.all(5),
-                        overlayColor: ColorSet.hintColor,
-                        overlayOpacity: 0.7,
-                        height: MediaQuery.of(context).size.height * 0.1,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        container: SpeechBalloon(
-                            color: ColorSet.backgroundColor,
-                            width: MediaQuery.of(context).size.width * 0.75,
-                            height: MediaQuery.of(context).size.height * 0.13,
-                            nipLocation: NipLocation.top,
-                            nipHeight: 25,
-                            borderColor: ColorSet.borderColor,
-                            borderRadius: 20,
-                            borderWidth: 6,
-                            child: Center(
-                                child: Container(
-                                    padding: const EdgeInsets.only(
-                                        left: 20.0, right: 20.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          "點選可以新增計畫，",
-                                          style: tutorialTitleStyle,
-                                        ),
-                                        Text(
-                                          "以培養運動和冥想習慣",
-                                          style: tutorialTitleStyle,
-                                        ),
-                                        Text(
-                                          '➤ 點擊螢幕查看下一個',
-                                          style: tutorialDescStyle,
-                                        )
-                                      ],
-                                    )))),
-                        child: GestureDetector(
-                          onTap: addPlan, // Image tapped
-                          onLongPress: () async => Data.refresh(),
-                          child: Image.asset(
-                            "assets/images/Rabbit_2.png",
-                            width: 125,
-                            height: 150,
+                        child: Showcase.withWidget(
+                          key: rabbitKey,
+                          targetBorderRadius: BorderRadius.circular(8.0),
+                          targetPadding: const EdgeInsets.all(5),
+                          overlayColor: ColorSet.hintColor,
+                          overlayOpacity: 0.7,
+                          height: MediaQuery.of(context).size.height * 0.1,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          container: SpeechBalloon(
+                              color: ColorSet.backgroundColor,
+                              width: MediaQuery.of(context).size.width * 0.75,
+                              height: MediaQuery.of(context).size.height * 0.13,
+                              nipLocation: NipLocation.top,
+                              nipHeight: 25,
+                              borderColor: ColorSet.borderColor,
+                              borderRadius: 20,
+                              borderWidth: 6,
+                              child: Center(
+                                  child: Container(
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20.0),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            "點選可以新增計畫，",
+                                            style: tutorialTitleStyle,
+                                          ),
+                                          Text(
+                                            "以培養運動和冥想習慣",
+                                            style: tutorialTitleStyle,
+                                          ),
+                                          Text(
+                                            '➤ 點擊螢幕查看下一個',
+                                            style: tutorialDescStyle,
+                                          )
+                                        ],
+                                      )))),
+                          child: GestureDetector(
+                            onTap: addPlan, // Image tapped
+                            onLongPress: () async => Data.refresh(),
+                            child: Image.asset(
+                              "assets/images/Rabbit_2.png",
+                              width: 125,
+                              height: 150,
+                            ),
                           ),
                         ),
-                      )),
+                      ),
                     ],
                   ),
                 ),

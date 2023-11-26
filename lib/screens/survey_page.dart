@@ -1009,7 +1009,7 @@ class PartTwoPageState extends State<PartTwoPage> {
       final distance = (position.pixels - destination).round().abs();
       scrollController.animateTo(destination,
           duration: Duration(milliseconds: distance * 2),
-          curve: Curves.easeInOut);
+          curve: (i == 1) ? Curves.fastOutSlowIn : Curves.easeInOut);
     });
   }
 

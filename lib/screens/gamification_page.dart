@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:speech_balloon/speech_balloon.dart';
 
 import 'package:g12/screens/page_material.dart';
+import 'package:g12/services/page_data.dart';
 
-import '../services/page_data.dart';
+// Parameters for this page's tutorial (showcaseview)
+GlobalKey characterKey = GlobalKey();
+GlobalKey weekProgressKey = GlobalKey();
+GlobalKey gemKey = GlobalKey();
+GlobalKey levelKey = GlobalKey();
+GlobalKey allProgressKey = GlobalKey();
 
 class GamificationPage extends StatefulWidget {
   const GamificationPage({super.key});
@@ -13,6 +21,19 @@ class GamificationPage extends StatefulWidget {
 }
 
 class GamificationPageState extends State<GamificationPage> {
+  @override
+  void initState() {
+    super.initState();
+    if (GameData.showTutorial) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => ShowCaseWidget.of(context).startShowCase(
+            [characterKey, weekProgressKey, gemKey, levelKey, allProgressKey]),
+      );
+
+      GameData.showTutorial = false;
+    }
+  }
+
   void refresh() async {
     if (Data.updatingDB || Data.updatingUI[1]) await GameData.fetch();
     setState(() {});
@@ -71,6 +92,11 @@ class GamificationPageState extends State<GamificationPage> {
 class CharacterWidget extends StatelessWidget {
   const CharacterWidget({super.key});
 
+  final TextStyle tutorialTitleStyle = const TextStyle(
+      color: ColorSet.textColor, fontSize: 18, fontWeight: FontWeight.bold);
+  final TextStyle tutorialDescStyle =
+      const TextStyle(color: ColorSet.hintColor, fontSize: 14);
+
   double getImageWidthPercentage() {
     String character = Data.characterName;
     String characterImageURL = Data.characterImageURL;
@@ -116,39 +142,146 @@ class CharacterWidget extends StatelessWidget {
           ),
         ),
         Column(children: [
-          Image.asset(
-            Data.characterImageURL,
-            height: screenHeight * 0.35,
-            width: screenWidth * getImageWidthPercentage(),
+          Showcase.withWidget(
+            key: characterKey,
+            targetBorderRadius: BorderRadius.circular(8.0),
+            targetPadding: const EdgeInsets.all(5),
+            overlayColor: ColorSet.hintColor,
+            overlayOpacity: 0.7,
+            height: MediaQuery.of(context).size.height * 0.1,
+            width: MediaQuery.of(context).size.width * 0.8,
+            container: SpeechBalloon(
+                color: ColorSet.backgroundColor,
+                width: MediaQuery.of(context).size.width * 0.8,
+                height: MediaQuery.of(context).size.height * 0.1,
+                nipLocation: NipLocation.top,
+                nipHeight: 25,
+                borderColor: ColorSet.borderColor,
+                borderRadius: 20,
+                borderWidth: 6,
+                child: Center(
+                    child: Container(
+                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "我是你的小${Data.characterNameZH}，\n請蒐集寶物讓我長大吧！",
+                              style: tutorialTitleStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              '➤ 點擊螢幕查看下一個',
+                              style: tutorialDescStyle,
+                            )
+                          ],
+                        )))),
+            child: Image.asset(
+              Data.characterImageURL,
+              height: screenHeight * 0.35,
+              width: screenWidth * getImageWidthPercentage(),
+            ),
           ),
           Container(
             padding: const EdgeInsets.only(left: 40),
             child: Row(
               children: [
-                SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: FloatingActionButton(
-                    backgroundColor: ColorSet.backgroundColor,
-                    tooltip: "寶物蒐集數量",
-                    onPressed: () {
-                      _showQuizDialog(context);
-                    },
-                    child:
-                        const Icon(Icons.list_alt, color: ColorSet.iconColor),
+                Showcase.withWidget(
+                  key: gemKey,
+                  targetBorderRadius: BorderRadius.circular(8.0),
+                  targetPadding: const EdgeInsets.all(5),
+                  overlayColor: ColorSet.hintColor,
+                  overlayOpacity: 0.7,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  container: SpeechBalloon(
+                      color: ColorSet.backgroundColor,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      nipLocation: NipLocation.top,
+                      nipHeight: 25,
+                      borderColor: ColorSet.borderColor,
+                      borderRadius: 20,
+                      borderWidth: 6,
+                      child: Center(
+                          child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "在這裡查看已蒐集的寶物數量。\n每八個寶物能讓我長大一個階段~",
+                                    style: tutorialTitleStyle,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    '➤ 點擊螢幕查看下一個',
+                                    style: tutorialDescStyle,
+                                  )
+                                ],
+                              )))),
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: FloatingActionButton(
+                      backgroundColor: ColorSet.backgroundColor,
+                      tooltip: "寶物蒐集數量",
+                      onPressed: () {
+                        _showQuizDialog(context);
+                      },
+                      child:
+                          const Icon(Icons.list_alt, color: ColorSet.iconColor),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
-                SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: FloatingActionButton(
-                    backgroundColor: ColorSet.backgroundColor,
-                    tooltip: "人格角色進化",
-                    onPressed: () {
-                      _showGrowDialog(context);
-                    },
-                    child: const Icon(Icons.style, color: ColorSet.iconColor),
+                Showcase.withWidget(
+                  key: levelKey,
+                  targetBorderRadius: BorderRadius.circular(8.0),
+                  targetPadding: const EdgeInsets.all(5),
+                  overlayColor: ColorSet.hintColor,
+                  overlayOpacity: 0.7,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  container: SpeechBalloon(
+                      color: ColorSet.backgroundColor,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      nipLocation: NipLocation.top,
+                      nipHeight: 25,
+                      borderColor: ColorSet.borderColor,
+                      borderRadius: 20,
+                      borderWidth: 6,
+                      child: Center(
+                          child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "在這裡查看我的成長情況。\n我有六個階段等你來解鎖！",
+                                    style: tutorialTitleStyle,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    '➤ 點擊螢幕查看下一個',
+                                    style: tutorialDescStyle,
+                                  )
+                                ],
+                              )))),
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: FloatingActionButton(
+                      backgroundColor: ColorSet.backgroundColor,
+                      tooltip: "人格角色進化",
+                      onPressed: () {
+                        _showGrowDialog(context);
+                      },
+                      child: const Icon(Icons.style, color: ColorSet.iconColor),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -175,11 +308,17 @@ class CharacterWidget extends StatelessWidget {
                   height: 40,
                   child: FloatingActionButton(
                     backgroundColor: ColorSet.backgroundColor,
-                    tooltip: "資訊",
+                    tooltip: "教學",
                     onPressed: () {
-                      _showInfoDialog(context);
+                      ShowCaseWidget.of(context).startShowCase([
+                        characterKey,
+                        weekProgressKey,
+                        gemKey,
+                        levelKey,
+                        allProgressKey
+                      ]);
                     },
-                    child: const Icon(Icons.info_outline,
+                    child: const Icon(Icons.question_mark_outlined,
                         color: ColorSet.iconColor),
                   ),
                 ),
@@ -194,85 +333,167 @@ class CharacterWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: const Text(
-                      '本周運動習慣已達成：',
-                      style: TextStyle(
-                        color: ColorSet.textColor,
-                        fontSize: 16,
+                Showcase.withWidget(
+                  key: weekProgressKey,
+                  targetBorderRadius: BorderRadius.circular(8.0),
+                  targetPadding: const EdgeInsets.all(5),
+                  overlayColor: ColorSet.hintColor,
+                  overlayOpacity: 0.7,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  container: SpeechBalloon(
+                      color: ColorSet.backgroundColor,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      nipLocation: NipLocation.top,
+                      nipHeight: 25,
+                      borderColor: ColorSet.borderColor,
+                      borderRadius: 20,
+                      borderWidth: 6,
+                      child: Center(
+                          child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "本周習慣完成100%時，\n可以獲得運動或冥想寶物。",
+                                    style: tutorialTitleStyle,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    '➤ 點擊螢幕查看下一個',
+                                    style: tutorialDescStyle,
+                                  )
+                                ],
+                              )))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: const Text(
+                            '本周運動習慣已達成：',
+                            style: TextStyle(
+                              color: ColorSet.textColor,
+                              fontSize: 16,
+                            ),
+                          )),
+                      const SizedBox(height: 5),
+                      LinearPercentIndicator(
+                        width: MediaQuery.of(context).size.width * 0.76,
+                        animation: true,
+                        lineHeight: 15.0,
+                        percent: GameData.workoutPercent / 100,
+                        trailing: Text(
+                          "${GameData.workoutPercent.round()}%",
+                          style: const TextStyle(
+                            color: ColorSet.textColor,
+                            fontSize: 12,
+                          ),
+                        ),
+                        barRadius: const Radius.circular(16),
+                        backgroundColor: ColorSet.backgroundColor,
+                        progressColor: ColorSet.textColor,
                       ),
-                    )),
-                const SizedBox(height: 5),
-                LinearPercentIndicator(
-                  width: MediaQuery.of(context).size.width * 0.76,
-                  animation: true,
-                  lineHeight: 15.0,
-                  percent: GameData.workoutPercent / 100,
-                  trailing: Text(
-                    "${GameData.workoutPercent.round()}%",
-                    style: const TextStyle(
-                      color: ColorSet.textColor,
-                      fontSize: 12,
-                    ),
+                      const SizedBox(height: 10),
+                      Container(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: const Text(
+                            '本周冥想習慣已達成：',
+                            style: TextStyle(
+                              color: ColorSet.textColor,
+                              fontSize: 16,
+                            ),
+                          )),
+                      const SizedBox(height: 5),
+                      LinearPercentIndicator(
+                        width: MediaQuery.of(context).size.width * 0.76,
+                        animation: true,
+                        lineHeight: 15.0,
+                        percent: GameData.meditationPercent / 100,
+                        trailing: Text(
+                          "${GameData.meditationPercent.round()}%",
+                          style: const TextStyle(
+                            color: ColorSet.textColor,
+                            fontSize: 12,
+                          ),
+                        ),
+                        barRadius: const Radius.circular(16),
+                        backgroundColor: ColorSet.backgroundColor,
+                        progressColor: ColorSet.textColor,
+                      ),
+                      const SizedBox(height: 10),
+                    ],
                   ),
-                  barRadius: const Radius.circular(16),
-                  backgroundColor: ColorSet.backgroundColor,
-                  progressColor: ColorSet.textColor,
                 ),
-                const SizedBox(height: 10),
-                Container(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: const Text(
-                      '本周冥想習慣已達成：',
-                      style: TextStyle(
-                        color: ColorSet.textColor,
-                        fontSize: 16,
+                Showcase.withWidget(
+                  key: allProgressKey,
+                  targetBorderRadius: BorderRadius.circular(8.0),
+                  targetPadding: const EdgeInsets.all(5),
+                  overlayColor: ColorSet.hintColor,
+                  overlayOpacity: 0.7,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  container: SpeechBalloon(
+                      color: ColorSet.backgroundColor,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      nipLocation: NipLocation.top,
+                      nipHeight: 25,
+                      borderColor: ColorSet.borderColor,
+                      borderRadius: 20,
+                      borderWidth: 6,
+                      child: Center(
+                          child: Container(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 20.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "所有進度達成100%時，\n就可以解鎖我的最終型態喔~",
+                                    style: tutorialTitleStyle,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Text(
+                                    '➤ 點擊螢幕查看下一個',
+                                    style: tutorialDescStyle,
+                                  )
+                                ],
+                              )))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: const Text(
+                            '距離所有習慣養成：',
+                            style: TextStyle(
+                              color: ColorSet.textColor,
+                              fontSize: 16,
+                            ),
+                          )),
+                      const SizedBox(height: 5),
+                      LinearPercentIndicator(
+                        width: MediaQuery.of(context).size.width * 0.76,
+                        animation: true,
+                        lineHeight: 15.0,
+                        percent: GameData.totalPercent / 100,
+                        trailing: Text(
+                          "${GameData.totalPercent.round()}%",
+                          style: const TextStyle(
+                            color: ColorSet.textColor,
+                            fontSize: 12,
+                          ),
+                        ),
+                        barRadius: const Radius.circular(16),
+                        backgroundColor: ColorSet.backgroundColor,
+                        progressColor: ColorSet.textColor,
                       ),
-                    )),
-                const SizedBox(height: 5),
-                LinearPercentIndicator(
-                  width: MediaQuery.of(context).size.width * 0.76,
-                  animation: true,
-                  lineHeight: 15.0,
-                  percent: GameData.meditationPercent / 100,
-                  trailing: Text(
-                    "${GameData.meditationPercent.round()}%",
-                    style: const TextStyle(
-                      color: ColorSet.textColor,
-                      fontSize: 12,
-                    ),
+                    ],
                   ),
-                  barRadius: const Radius.circular(16),
-                  backgroundColor: ColorSet.backgroundColor,
-                  progressColor: ColorSet.textColor,
-                ),
-                const SizedBox(height: 10),
-                Container(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: const Text(
-                      '距離所有習慣養成：',
-                      style: TextStyle(
-                        color: ColorSet.textColor,
-                        fontSize: 16,
-                      ),
-                    )),
-                const SizedBox(height: 5),
-                LinearPercentIndicator(
-                  width: MediaQuery.of(context).size.width * 0.76,
-                  animation: true,
-                  lineHeight: 15.0,
-                  percent: GameData.totalPercent / 100,
-                  trailing: Text(
-                    "${GameData.totalPercent.round()}%",
-                    style: const TextStyle(
-                      color: ColorSet.textColor,
-                      fontSize: 12,
-                    ),
-                  ),
-                  barRadius: const Radius.circular(16),
-                  backgroundColor: ColorSet.backgroundColor,
-                  progressColor: ColorSet.textColor,
                 ),
               ],
             ),
@@ -312,24 +533,6 @@ void _showQuizDialog(BuildContext context) {
       return const Padding(
         padding: EdgeInsets.all(8.0),
         child: QuizDialog(),
-      );
-    },
-  );
-}
-
-void _showInfoDialog(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-          topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-    ),
-    backgroundColor: ColorSet.bottomBarColor,
-    builder: (BuildContext context) {
-      return const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: InfoDialog(arguments: null),
       );
     },
   );

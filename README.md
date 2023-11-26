@@ -13,6 +13,7 @@ A milestone habit App.
     |---UserDB              (database operations for the users table)
     |---ContractDB          (database operations for the contract table)
     |---GamificationDB      (database operations for the gamification table)
+    |---PokeDB              (database operations for the poke notification table)
     |---HabitDB             (database operations for the workouts and meditations table)
     |---PlanDB              (database operations for the workoutPlan and meditationPlan children of the journal table)
     |---Calculator          (statistic calculations for the DurationDB)
@@ -29,6 +30,8 @@ A milestone habit App.
     |---SettingsData        (local variables for SettingsPage)
     |---StatData            (local variables for StatisticPage)
     |---GameData            (local variables for GamificationPage)
+    |---CommData            (local variables for CommunityPage)
+    |---FriendData          (local variables for FriendStatusPage)
 ---authentication.dart
     |---FireAuth            (user authentication by firebase)
     |---Validate            (check if the users' input are correct)
@@ -42,7 +45,6 @@ A milestone habit App.
         |---survey_page.dart
 ---home_page.dart
     |---habit_detail_page.dart
-        |---video_page.dart
         |---exercise_page.dart
             |---countdown_page.dart
     |---statistic_page.dart

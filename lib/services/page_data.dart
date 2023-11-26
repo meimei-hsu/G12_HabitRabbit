@@ -349,19 +349,20 @@ class HomeData {
     }
   }
 
+  // set variables for selectedDay
   static void setSelectedDay() {
-    // set variables for today
-    String tdDate = Calendar.today;
-    var tdDur =
-        Data.durations?["workout"]?[tdDate]?.split(", ")?.map(int.parse);
-    currentIndex = tdDur?.first ?? 0;
-    workoutDuration = tdDur?.last ?? 0;
-    tdDur = Data.durations?["meditation"]?[tdDate]?.split(", ")?.map(int.parse);
-    meditationDuration = tdDur?.last ?? 0;
-
-    // set variables for selectedDay
     String selectedDate = Calendar.dateToString(selectedDay!);
     String today = Calendar.today;
+
+    var duration =
+        Data.durations?["workout"]?[selectedDate]?.split(", ")?.map(int.parse);
+    currentIndex = duration?.first ?? 0;
+    workoutDuration = duration?.last ?? 0;
+    duration = Data.durations?["meditation"]?[selectedDate]
+        ?.split(", ")
+        ?.map(int.parse);
+    meditationDuration = duration?.last ?? 0;
+
     workoutPlan = workoutPlanList[selectedDate];
     workoutType = PlanDB.toPlanType("workout", date: selectedDate, zh: true);
     workoutProgress = workoutProgressList[selectedDate];
@@ -369,6 +370,7 @@ class HomeData {
     meditationType =
         PlanDB.toPlanType("meditation", date: selectedDate, zh: true);
     meditationProgress = meditationProgressList[selectedDate];
+
     isBefore = selectedDate.compareTo(today) == -1;
     isAfter = selectedDate.compareTo(today) == 1;
     isToday = selectedDate.compareTo(today) == 0;
@@ -636,7 +638,11 @@ class StatData {
 
   // 累積時長圖表
   static void setCumulativeTimeData() {
-    Map<String, int> exerciseTypeCountMap = {"cardio": 0, "yoga": 0, "strength": 0};
+    Map<String, int> exerciseTypeCountMap = {
+      "cardio": 0,
+      "yoga": 0,
+      "strength": 0
+    };
     List percentageExerciseList = [];
     var exerciseDuration = Data.durations?["workout"];
     var exercisePlan = Data.plans?["workout"];
@@ -667,7 +673,11 @@ class StatData {
       exerciseTypePercentageMap = {};
     }
 
-    Map<String, int> meditationTypeCountMap = {"mindfulness": 0, "work": 0, "kindness": 0};
+    Map<String, int> meditationTypeCountMap = {
+      "mindfulness": 0,
+      "work": 0,
+      "kindness": 0
+    };
     List percentageMeditationList = [];
     var meditationDuration = Data.durations?["meditation"];
     var meditationPlan = Data.plans?["meditation"];
@@ -746,7 +756,6 @@ class StatData {
     }
   }
 
-
   static setTopInfoData() {
     num height = Data.profile!["height"] / 100;
     int age = Data.profile!["age"];
@@ -785,6 +794,8 @@ class StatData {
 }
 
 class GameData {
+  static bool showTutorial = true;
+
   static int characterLevel = 0;
   static int workoutGem = 0;
   static int meditationGem = 0;
@@ -859,6 +870,15 @@ class CommData {
     }
 
     Data.updatingUI[3] = false;
+  }
+
+  static void addFriend(String userID) {
+    friends.insert(0, userID);
+
+    charts[5] = GamificationDB.getChart("level", isGlobal: false);
+    for (int i = 6; i < 10; i++) {
+      charts[i] = GamificationDB.getChart("", isGlobal: false);
+    }
   }
 }
 

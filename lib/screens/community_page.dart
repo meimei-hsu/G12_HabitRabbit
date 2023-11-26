@@ -9,12 +9,6 @@ import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/page_data.dart';
 import 'package:g12/services/database.dart';
 
-final List<Widget> tabViews = [
-  const FriendListPage(),
-  const LeaderboardPage(),
-  const TeamChallengePage(),
-];
-
 int currentTabIndex = 0;
 
 class CommunityPage extends StatefulWidget {
@@ -44,9 +38,6 @@ class CommunityPageState extends State<CommunityPage>
 
   void refresh() async {
     if (Data.updatingDB || Data.updatingUI[3]) await CommData.fetch();
-    setState(() {
-      tabViews[1] = const LeaderboardPage();
-    });
   }
 
   @override
@@ -91,6 +82,10 @@ class CommunityPageState extends State<CommunityPage>
                             ),
                             //borderRadius: BorderRadius.circular(10),
                             color: ColorSet.bottomBarColor),
+                        onTap: (index) {
+                          // rebuild if data is updated
+                          if (Data.updatingDB) setState(() {});
+                        },
                         tabs: [
                           Tab(
                             icon: Column(
@@ -151,7 +146,11 @@ class CommunityPageState extends State<CommunityPage>
                 Expanded(
                   child: TabBarView(
                     controller: _controller,
-                    children: tabViews,
+                    children: <Widget>[
+                      const FriendListPage(),
+                      LeaderboardPage(key: UniqueKey()), // force rebuilding if setState()
+                      const TeamChallengePage(),
+                    ],
                   ),
                 ),
               ],
@@ -550,13 +549,12 @@ class FriendListPageState extends State<FriendListPage> {
                         ))
                     : ElevatedButton(
                         onPressed: () async {
-                          CommData.friends.insert(0, userID);
+                          CommData.addFriend(userID);
                           await GamificationDB.updateFriend(userID);
+                          setState(() {});
+
                           if (!mounted) return;
                           Navigator.of(context).pop();
-                          setState(() {
-                            tabViews[1] = const LeaderboardPage();
-                          });
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.only(right: 10, left: 10),
@@ -588,7 +586,7 @@ class FriendListPageState extends State<FriendListPage> {
 
 //排行榜
 class LeaderboardPage extends StatefulWidget {
-  const LeaderboardPage({super.key});
+  const LeaderboardPage({Key? key}) : super(key: key);
 
   @override
   LeaderboardPageState createState() => LeaderboardPageState();

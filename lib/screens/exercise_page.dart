@@ -161,7 +161,7 @@ class DoExercisePageState extends State<DoExercisePage> {
           scheduledNotificationDateTime:
               DateTime.now().add(const Duration(seconds: 5)));
       HomeData.fetch();
-      if(!mounted) return;
+      if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
     }
@@ -198,7 +198,7 @@ class DoExercisePageState extends State<DoExercisePage> {
         timer.cancel();
         await audioPlayer.stop();
 
-        if(!mounted) return;
+        if (!mounted) return;
         CongratsDialog.show(context,
             habit: "workout",
             widgetAfterDismiss: Wrap(children: const [
@@ -211,6 +211,8 @@ class DoExercisePageState extends State<DoExercisePage> {
         await audioPlayer.pause();
         //_controller.pause();
       } else {
+        await audioPlayer.play();
+
         // Appbar timer
         totalTime--;
         _progress = (countdownTime - totalTime) / countdownTime;
@@ -250,21 +252,17 @@ class DoExercisePageState extends State<DoExercisePage> {
           _pageController.animateToPage(playIndex,
               duration: const Duration(milliseconds: 300), curve: Curves.ease);
           sport = nameList[playIndex];
-          if (currentIndex >= 1 && currentIndex < totalExerciseItemLength - 1) {
-            //原本: 2, 3
-            // 運動 5 秒後休息 1 秒
-            Timer(const Duration(seconds: 5), () {
-              _pageController.animateToPage(nameList.length + 1,
-                  duration: const Duration(milliseconds: 5),
-                  curve: Curves.ease);
-              sport = sport.replaceAll("運動", "休息");
-              playAudio("休息");
-            });
-          }
           debugPrint(
               "currentIndex: $currentIndex ... sport: $sport ... totalTime: $totalTime");
 
           playAudio(sport);
+        } else if (sport.contains("運動") && countDown == 1) {
+          // 運動 5 秒後休息 1 秒
+          playAudio("休息");
+          _pageController.animateToPage(_getExerciseItemNameList().length + 1,
+              duration: const Duration(milliseconds: 5),
+              curve: Curves.ease);
+          sport = sport.replaceAll("運動", "休息");
         }
       }
       if (totalTime >= 1) setState(() {});
@@ -494,7 +492,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           body: '就快完成了，加油！',
           scheduledNotificationDateTime:
               DateTime.now().add(const Duration(seconds: 3)));
-      if(!mounted) return;
+      if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
     }
@@ -532,7 +530,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         timer.cancel();
         await audioPlayer.stop();
 
-        if(!mounted) return;
+        if (!mounted) return;
         CongratsDialog.show(context,
             habit: "meditation",
             widgetAfterDismiss: Wrap(children: const [
@@ -547,6 +545,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         // Appbar timer
         totalTime--;
         _progress = (countdownTime - totalTime) / countdownTime;
+        await audioPlayer.play();
       }
       if (totalTime >= 1) setState(() {});
     });
