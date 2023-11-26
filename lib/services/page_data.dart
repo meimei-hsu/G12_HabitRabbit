@@ -18,7 +18,7 @@ class Data {
   // updatingUI is true if the five component of the bottom navigation bar needs to be updated
   static List<bool> updatingUI = [false, false, false, false, false];
   static List habitTypes = ["workout", "meditation"];
-  static User? user = FirebaseAuth.instance.currentUser;
+  static User? user;
   static String characterImageURL = "";
   static String characterName = "";
   static String characterNameZH = "";
@@ -446,7 +446,6 @@ class StatData {
   // 體重
   static List<double> weightDataList = [0.0];
   static Map<String, double> weightDataMap = {};
-  static double weight = 0.0;
   static double avgWeight = 0.0;
   static double minY = 0.0;
   static double maxY = 0.0;
@@ -458,25 +457,10 @@ class StatData {
   //連續完成天數
   static List consecutiveExerciseDaysList = [];
   static List consecutiveMeditationDaysList = [];
-  static double continuousExerciseDays = 0.0;
-  static double continuousMeditationDays = 0.0;
 
   //累積時長
-  static Map<String, int> exerciseTypeCountMap = {
-    "cardio": 0,
-    "yoga": 0,
-    "strength": 0,
-  };
   static Map<String, double> exerciseTypePercentageMap = {};
-  static List percentageExerciseList = [];
-
-  static Map<String, int> meditationTypeCountMap = {
-    "mindfulness": 0,
-    "work": 0,
-    "kindness": 0,
-  };
   static Map<String, double> meditationTypePercentageMap = {};
-  static List percentageMeditationList = [];
 
   // 每週成功天數
   static List exerciseWeekDaysList = [];
@@ -523,42 +507,6 @@ class StatData {
     isFetchingData = false;
   }
 
-  static setTopInfoData() {
-    num height = Data.profile!["height"] / 100;
-    int age = Data.profile!["age"];
-    List cv = [];
-    if (Data.profile!["gender"] == "男") {
-      if (age < 40) cv = [10, 21, 26];
-      if (age >= 40 && age < 60) cv = [11, 22, 27];
-      if (age >= 60) cv = [13, 24, 29];
-    } else {
-      if (age < 40) cv = [20, 24, 39];
-      if (age >= 40 && age < 60) cv = [21, 25, 40];
-      if (age >= 60) cv = [22, 26, 41];
-    }
-    bmi = Data.weights!.values.last / pow(height, 2);
-    if (bmi <= cv[0]) bmiStandard = "消瘦";
-    if (bmi > cv[0] && bmi <= cv[1]) bmiStandard = "標準";
-    if (bmi > cv[1] && bmi <= cv[2]) bmiStandard = "微胖";
-    if (bmi > cv[2]) bmiStandard = "肥胖";
-
-    maxWorkoutConsecutiveDays = (consecutiveExerciseDaysList.isEmpty)
-        ? 0
-        : List<double>.generate(consecutiveExerciseDaysList.length,
-            (index) => consecutiveExerciseDaysList[index][2]).reduce(max);
-    maxMeditationConsecutiveDays = (consecutiveMeditationDaysList.isEmpty)
-        ? 0
-        : List<double>.generate(consecutiveMeditationDaysList.length,
-            (index) => consecutiveExerciseDaysList[index][2]).reduce(max);
-
-    Data.durations?["workout"]?.forEach((key, value) {
-      workoutAccumulatedTime += int.parse(value.split(", ")[0]);
-    });
-    Data.durations?["meditation"]?.forEach((key, value) {
-      meditationAccumulatedTime += int.parse(value.split(", ")[0]);
-    });
-  }
-
   // 體重圖表
   static void setWeightData() {
     var weight = Data.weights; // Fetch user's data from firebase
@@ -599,6 +547,8 @@ class StatData {
       }
       exerciseCompletionRateMap.removeWhere((key, value) =>
           Calendar.daysComing().contains(Calendar.dateToString(key)));
+    } else {
+      exerciseCompletionRateMap = {};
     }
 
     var meditationDuration = Data.durations?["meditation"];
@@ -610,11 +560,14 @@ class StatData {
       }
       meditationCompletionRateMap.removeWhere((key, value) =>
           Calendar.daysComing().contains(Calendar.dateToString(key)));
+    } else {
+      meditationCompletionRateMap = {};
     }
   }
 
   // 連續成功天數圖表
   static void setConsecutiveDaysData() {
+    double continuousExerciseDays = 0.0;
     var exerciseDuration = Data.durations?["workout"];
     if (exerciseDuration != null) {
       DateTime? startDate;
@@ -643,8 +596,11 @@ class StatData {
             .add([startDate, endDate, continuousExerciseDays]);
       }
       continuousExerciseDays = 0;
+    } else {
+      consecutiveExerciseDaysList = [];
     }
 
+    double continuousMeditationDays = 0.0;
     var meditationDuration = Data.durations?["meditation"];
     if (meditationDuration != null) {
       DateTime? startDate;
@@ -673,11 +629,15 @@ class StatData {
             .add([startDate, endDate, continuousMeditationDays]);
       }
       continuousMeditationDays = 0;
+    } else {
+      consecutiveMeditationDaysList = [];
     }
   }
 
   // 累積時長圖表
   static void setCumulativeTimeData() {
+    Map<String, int> exerciseTypeCountMap = {"cardio": 0, "yoga": 0, "strength": 0};
+    List percentageExerciseList = [];
     var exerciseDuration = Data.durations?["workout"];
     var exercisePlan = Data.plans?["workout"];
     if (exerciseDuration != null && exercisePlan != null) {
@@ -703,8 +663,12 @@ class StatData {
           }
         }
       }
+    } else {
+      exerciseTypePercentageMap = {};
     }
 
+    Map<String, int> meditationTypeCountMap = {"mindfulness": 0, "work": 0, "kindness": 0};
+    List percentageMeditationList = [];
     var meditationDuration = Data.durations?["meditation"];
     var meditationPlan = Data.plans?["meditation"];
     if (meditationDuration != null && meditationPlan != null) {
@@ -730,6 +694,8 @@ class StatData {
           }
         }
       }
+    } else {
+      meditationTypePercentageMap = {};
     }
   }
 
@@ -778,6 +744,43 @@ class StatData {
     if (meditationDays.isNotEmpty) {
       maxMeditationMonthDays = meditationDays.reduce(max) + 5;
     }
+  }
+
+
+  static setTopInfoData() {
+    num height = Data.profile!["height"] / 100;
+    int age = Data.profile!["age"];
+    List cv = [];
+    if (Data.profile!["gender"] == "男") {
+      if (age < 40) cv = [10, 21, 26];
+      if (age >= 40 && age < 60) cv = [11, 22, 27];
+      if (age >= 60) cv = [13, 24, 29];
+    } else {
+      if (age < 40) cv = [20, 24, 39];
+      if (age >= 40 && age < 60) cv = [21, 25, 40];
+      if (age >= 60) cv = [22, 26, 41];
+    }
+    bmi = Data.weights!.values.last / pow(height, 2);
+    if (bmi <= cv[0]) bmiStandard = "消瘦";
+    if (bmi > cv[0] && bmi <= cv[1]) bmiStandard = "標準";
+    if (bmi > cv[1] && bmi <= cv[2]) bmiStandard = "微胖";
+    if (bmi > cv[2]) bmiStandard = "肥胖";
+
+    maxWorkoutConsecutiveDays = (consecutiveExerciseDaysList.isEmpty)
+        ? 0
+        : List<double>.generate(consecutiveExerciseDaysList.length,
+            (index) => consecutiveExerciseDaysList[index][2]).reduce(max);
+    maxMeditationConsecutiveDays = (consecutiveMeditationDaysList.isEmpty)
+        ? 0
+        : List<double>.generate(consecutiveMeditationDaysList.length,
+            (index) => consecutiveExerciseDaysList[index][2]).reduce(max);
+
+    Data.durations?["workout"]?.forEach((key, value) {
+      workoutAccumulatedTime += int.parse(value.split(", ")[0]);
+    });
+    Data.durations?["meditation"]?.forEach((key, value) {
+      meditationAccumulatedTime += int.parse(value.split(", ")[0]);
+    });
   }
 }
 

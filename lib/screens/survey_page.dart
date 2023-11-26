@@ -425,7 +425,7 @@ class QuestionsWidget extends StatelessWidget {
           physics: const ClampingScrollPhysics(),
           slivers: [
             for (int i = 0; i < (index == 3 ? 3 : 2); i++) ...[
-              // 第四題有三小題
+              // 第四頁有三小題
               SliverList(
                 delegate: SliverChildListDelegate(
                   [
@@ -1349,7 +1349,7 @@ class ResultPage extends StatefulWidget {
 }
 
 class ResultPageState extends State<ResultPage> {
-  bool isProcessing = false;
+  bool isUpdating = false;
   String character = "";
   late Widget imageWidget;
 
@@ -1420,7 +1420,7 @@ class ResultPageState extends State<ResultPage> {
                 const SizedBox(height: 20),
                 imageWidget,
                 const SizedBox(height: 20),
-                isProcessing
+                isUpdating
                     ? Center(
                         child: LoadingAnimationWidget.horizontalRotatingDots(
                           color: ColorSet.bottomBarColor,
@@ -1436,7 +1436,7 @@ class ResultPageState extends State<ResultPage> {
                         ),
                         onPressed: () async {
                           setState(() {
-                            isProcessing = true;
+                            isUpdating = true;
                           });
 
                           if (Data.isFirstTime) {
@@ -1454,17 +1454,18 @@ class ResultPageState extends State<ResultPage> {
                             await GamificationDB.insert(userInfo, character);
                             await Data.init();
                           }
+
                           if (!mounted) return;
                           Navigator.pushNamedAndRemoveUntil(
                               context, '/', (Route<dynamic> route) => false);
 
                           setState(() {
-                            isProcessing = false;
+                            isUpdating = false;
                           });
                         },
                         child: const Text("確認"),
                       ),
-                isProcessing
+                isUpdating
                     ? const Text("個人化中",
                         style: TextStyle(color: ColorSet.hintColor))
                     : Container(),

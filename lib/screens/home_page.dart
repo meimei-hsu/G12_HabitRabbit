@@ -14,10 +14,6 @@ import 'package:g12/services/plan_algo.dart';
 import 'package:g12/services/page_data.dart';
 import 'package:g12/services/database.dart';
 
-// TODO: Delete after page testing
-import 'package:firebase_auth/firebase_auth.dart';
-import 'exercise_page.dart';
-
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
@@ -32,7 +28,7 @@ class HomepageState extends State<Homepage> {
   GlobalKey bannerKey = GlobalKey();
 
   // banner's controller
-  int selectedPage = 0;
+  int bannerPage = 0;
   PageController controller = PageController();
 
   Color selectedColor = (DateTime(HomeData.selectedDay!.year,
@@ -68,7 +64,7 @@ class HomepageState extends State<Homepage> {
     return GestureDetector(
       onTap: () {
         int type = (imgNames.length > 1)
-            ? selectedPage
+            ? bannerPage
             : ["Exercise_1.jpg", "Meditation_1.jpg", "Rest.PNG"]
                 .indexOf(imgNames.first);
 
@@ -87,7 +83,7 @@ class HomepageState extends State<Homepage> {
       onLongPress: () {
         // selected plan's information
         int type = (imgNames.length > 1)
-            ? selectedPage
+            ? bannerPage
             : ["Exercise_1.jpg", "Meditation_1.jpg", "Rest.PNG"]
                 .indexOf(imgNames.first);
         String typeZH = (type == 0) ? "運動" : "冥想";
@@ -191,14 +187,26 @@ class HomepageState extends State<Homepage> {
             margin: const EdgeInsets.only(left: 0, right: 0),
             decoration: BoxDecoration(
               border: Border.all(color: ColorSet.borderColor, width: 1.5),
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+              boxShadow: [
+                BoxShadow(
+                  color: ColorSet.borderColor.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 8,
+                  offset: const Offset(0, 5), // changes position of shadow
+                ),
+              ],
             ),
             child: PageView.builder(
               controller: controller,
-              onPageChanged: (int page) => setState(() => selectedPage = page),
+              onPageChanged: (int page) => setState(() => bannerPage = page),
               itemCount: imgNames.length,
               itemBuilder: (BuildContext context, int index) {
-                return Image.asset("assets/images/${imgNames[index]}",
-                    fit: BoxFit.fill);
+                return ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                  child: Image.asset("assets/images/${imgNames[index]}",
+                      fit: BoxFit.fill),
+                );
               },
             ),
           ),
@@ -208,14 +216,14 @@ class HomepageState extends State<Homepage> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24),
                   child: PageViewDotIndicator(
-                    currentItem: selectedPage,
+                    currentItem: bannerPage,
                     count: imgNames.length,
                     unselectedColor: Colors.black26,
                     selectedColor: Colors.blueGrey,
                     duration: const Duration(milliseconds: 200),
                     boxShape: BoxShape.circle,
                     onItemClicked: (index) {
-                      setState(() => selectedPage = index);
+                      setState(() => bannerPage = index);
                       controller.animateToPage(
                         index,
                         duration: const Duration(milliseconds: 200),
@@ -236,8 +244,9 @@ class HomepageState extends State<Homepage> {
     if (HomeData.workoutPlan == null && HomeData.meditationPlan == null) {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
-      dialogText =
-          (HomeData.isBefore) ? "今日沒有運動計畫和冥想計畫\n在休息日好好恢復身體吧" : "今日沒有運動和冥想計畫誒\n點兔兔新增計畫！";
+      dialogText = (HomeData.isBefore)
+          ? "今日無運動計畫和冥想計畫\n在休息日好好恢復身體吧"
+          : "今日沒有運動和冥想計畫誒\n點兔兔新增計畫！";
     } else if (HomeData.workoutPlan != null &&
         HomeData.meditationPlan == null) {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
@@ -475,8 +484,7 @@ class HomepageState extends State<Homepage> {
                                 color: ColorSet.borderColor.withOpacity(0.5),
                                 spreadRadius: 2,
                                 blurRadius: 8,
-                                offset: const Offset(
-                                    0, 5), // changes position of shadow
+                                offset: const Offset(0, 5),
                               ),
                             ],
                           ),
@@ -539,6 +547,9 @@ class HomepageState extends State<Homepage> {
                                 ? ColorSet.buttonColor
                                 : ColorSet.backgroundColor;
                           });
+                          // 換頁時banner顯示第一頁
+                          bannerPage = 0;
+                          controller.jumpToPage(0);
                         },
                         onPageChanged: (focusedDay) {
                           // 選第2頁的日期時不會跳回第一頁
@@ -696,64 +707,6 @@ class HomepageState extends State<Homepage> {
                                   ],
                                 )))),
                     child: getBanner()),
-                const SizedBox(height: 5),
-                Row(children: [
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/questionnaire",
-                            arguments: {"part": 0});
-                      },
-                      icon: const Icon(Icons.sticky_note_2_outlined, size: 40)),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/contract/initial",
-                            arguments: {});
-                      },
-                      icon:
-                          const Icon(Icons.monetization_on_outlined, size: 40)),
-                  IconButton(
-                      onPressed: () {
-                        ErrorDialog().get(context, "警告:(", "溯及既往 打咩！").show();
-                      },
-                      icon: const Icon(Icons.notifications_none_outlined,
-                          size: 40)),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/pay', arguments: {
-                          'user': FirebaseAuth.instance.currentUser,
-                          'money': "100",
-                        });
-                      },
-                      icon: const Icon(Icons.credit_card_outlined, size: 40)),
-                  IconButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                            isDismissible: false,
-                            isScrollControlled: true,
-                            enableDrag: false,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(20),
-                                  topLeft: Radius.circular(20)),
-                            ),
-                            backgroundColor: ColorSet.bottomBarColor,
-                            context: context,
-                            builder: (context) {
-                              return Wrap(children: const [
-                                FeedbackBottomSheet(
-                                  arguments: {"type": 0},
-                                )
-                              ]);
-                            });
-                      },
-                      icon: const Icon(Icons.accessibility_outlined, size: 40)),
-                  IconButton(
-                      onPressed: () {
-                        ShowCaseWidget.of(context).startShowCase(
-                            [calendarKey, bubbleKey, rabbitKey, bannerKey]);
-                      },
-                      icon: const Icon(Icons.question_mark_outlined, size: 40)),
-                ])
               ],
             ),
     ));

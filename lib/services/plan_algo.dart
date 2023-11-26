@@ -8,24 +8,28 @@ import 'package:g12/services/page_data.dart';
 class PlanAlgo {
   // Execute when user register an account.
   static initialize() async {
+    Map<String, String> workoutPlan = {}, meditationPlan = {};
+
     for (bool thisWeek in [true, false]) {
       await PlanData.fetch(habit: "workout", thisWeek: thisWeek);
       var skd = await WorkoutAlgorithm.arrangeSchedule();
-      var plan = await WorkoutAlgorithm.arrangePlan(skd);
-      if (plan.isNotEmpty) await PlanDB.update("workout", plan);
+      workoutPlan.addAll(await WorkoutAlgorithm.arrangePlan(skd));
     }
+    if (workoutPlan.isNotEmpty) await PlanDB.update("workout", workoutPlan);
 
     for (bool thisWeek in [true, false]) {
       await PlanData.fetch(habit: "meditation", thisWeek: thisWeek);
       var skd = await MeditationAlgorithm.arrangeSchedule();
-      var plan = await MeditationAlgorithm.arrangePlan(skd);
-      if (plan.isNotEmpty) await PlanDB.update("meditation", plan);
+      meditationPlan.addAll(await MeditationAlgorithm.arrangePlan(skd));
     }
+    if (meditationPlan.isNotEmpty) await PlanDB.update("meditation", meditationPlan);
   }
 
   // Start point of the planning algorithm
   // Execute when user login or after giving feedback.
   static execute() async {
+    Map<String, String> workoutPlan = {}, meditationPlan = {};
+
     // Check if user has no plan within two weeks
     Map<String, bool> check = {
       "workoutThisWeek": false,
@@ -61,13 +65,13 @@ class PlanAlgo {
       if (thisWeek) {
         await PlanData.fetch(habit: "workout", thisWeek: true);
         var skd = await WorkoutAlgorithm.arrangeSchedule();
-        var plan = await WorkoutAlgorithm.arrangePlan(skd);
-        if (plan.isNotEmpty) await PlanDB.update("workout", plan);
+        workoutPlan.addAll(await WorkoutAlgorithm.arrangePlan(skd));
       }
       await PlanData.fetch(habit: "workout", thisWeek: false);
       var skd = await WorkoutAlgorithm.arrangeSchedule();
-      var plan = await WorkoutAlgorithm.arrangePlan(skd);
-      if (plan.isNotEmpty) await PlanDB.update("workout", plan);
+      workoutPlan.addAll(await WorkoutAlgorithm.arrangePlan(skd));
+      // update to firebase
+      if (workoutPlan.isNotEmpty) await PlanDB.update("workout", workoutPlan);
     } else {
       print("Not the time to generate a workout plan.");
     }
@@ -88,13 +92,13 @@ class PlanAlgo {
       if (thisWeek) {
         await PlanData.fetch(habit: "meditation", thisWeek: true);
         var skd = await MeditationAlgorithm.arrangeSchedule();
-        var plan = await MeditationAlgorithm.arrangePlan(skd);
-        if (plan.isNotEmpty) await PlanDB.update("meditation", plan);
+        meditationPlan.addAll(await MeditationAlgorithm.arrangePlan(skd));
       }
       await PlanData.fetch(habit: "meditation", thisWeek: false);
       var skd = await MeditationAlgorithm.arrangeSchedule();
-      var plan = await MeditationAlgorithm.arrangePlan(skd);
-      if (plan.isNotEmpty) await PlanDB.update("meditation", plan);
+      meditationPlan.addAll(await MeditationAlgorithm.arrangePlan(skd));
+      // update to firebase
+      if (meditationPlan.isNotEmpty) await PlanDB.update("meditation", meditationPlan);
     } else {
       print("Not the time to generate a meditation plan.");
     }
