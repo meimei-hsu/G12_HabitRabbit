@@ -9,8 +9,6 @@ import 'package:g12/screens/page_material.dart';
 import 'package:g12/services/page_data.dart';
 import 'package:g12/services/database.dart';
 
-int currentTabIndex = 0;
-
 class CommunityPage extends StatefulWidget {
   const CommunityPage({super.key});
 
@@ -25,13 +23,13 @@ class CommunityPageState extends State<CommunityPage>
   @override
   void initState() {
     _controller = TabController(length: 3, vsync: this);
-    _controller.index = currentTabIndex;
+    _controller.index = CommData.currentTabIndex;
     super.initState();
   }
 
   @override
   void dispose() {
-    currentTabIndex = _controller.index;
+    CommData.currentTabIndex = _controller.index;
     _controller.dispose();
     super.dispose();
   }

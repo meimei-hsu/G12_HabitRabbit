@@ -25,6 +25,7 @@ class Data {
   static String workoutGemImageUrl = "";
   static String meditationGemImageUrl = "";
 
+  static Map? habits;
   // general database records:
   static Map? profile; // whole user profile from UserDB
   static Map? game; // user's gamification data from GamificationDB
@@ -35,7 +36,6 @@ class Data {
   // specific database records:
   static SplayTreeMap? weights; // user's every weight record
   static Map? predClocks; // user's every clock record
-  static Map? habits;
 
   static Future<bool> init() async {
     print("initializing data");
@@ -194,6 +194,52 @@ class Data {
     }
     temp.removeWhere((key, value) => value == null);
     if (temp.isNotEmpty) predClocks = temp;
+  }
+
+  static void clear() {
+    // clear the data
+    characterImageURL = "";
+    characterName = "";
+    characterNameZH = "";
+    workoutGemImageUrl = "";
+    meditationGemImageUrl = "";
+
+    profile = null;
+    game = null;
+    community = null;
+    contract = null;
+    plans = null;
+    durations = null;
+    weights = null;
+    predClocks = null;
+    habits = null;
+
+    StatData.maxWorkoutConsecutiveDays = 0.0;
+    StatData.maxMeditationConsecutiveDays = 0.0;
+    StatData.workoutAccumulatedTime = 0.0;
+    StatData.meditationAccumulatedTime = 0.0;
+    StatData.exerciseCompletionRateMap = {};
+    StatData.meditationCompletionRateMap = {};
+    StatData.consecutiveExerciseDaysList = [];
+    StatData.consecutiveMeditationDaysList = [];
+    StatData.exerciseTypePercentageMap = {};
+    StatData.meditationTypePercentageMap = {};
+    StatData.exerciseWeekDaysList = [];
+    StatData.meditationWeekDaysList = [];
+    StatData.maxExerciseWeekDays = 0.0;
+    StatData.maxMeditationWeekDays = 0.0;
+    StatData.exerciseMonthDaysList = [];
+    StatData.meditationMonthDaysList = [];
+    StatData.maxExerciseMonthDays = 0.0;
+    StatData.maxMeditationMonthDays = 0.0;
+
+    // reset the index
+    CommData.currentTabIndex = 0 ;
+    StatData.planProgress = 0;
+    StatData.consecutiveDays = 0;
+    StatData.accumulatedTime = 0;
+    StatData.weekDays = 0;
+    StatData.monthDays = 0;
   }
 }
 
@@ -837,6 +883,8 @@ class GameData {
 }
 
 class CommData {
+  static int currentTabIndex = 0; // index of the current tab bar controller
+
   static String socialCode = "";
   static int level = 0;
   static List friends = [];

@@ -587,10 +587,15 @@ class PartOnePageState extends State<PartOnePage> {
   }
 
   @override
+  void initState() {
+    userInfo["gender"] = ""; // reset to default value
+    super.initState();
+  }
+
+  @override
   void dispose() {
     heightController.dispose();
     weightController.dispose();
-    userInfo["gender"] = ""; // reset to default value
     super.dispose();
   }
 

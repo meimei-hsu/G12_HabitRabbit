@@ -340,6 +340,7 @@ class SettingsPageState extends State<SettingsPage> {
                 SettingsItem(
                   onTap: () async {
                     btnOkOnPress() async {
+                      Data.clear();
                       await FirebaseAuth.instance.signOut();
                       if (!mounted) return;
                       Navigator.popAndPushNamed(context, '/register');
