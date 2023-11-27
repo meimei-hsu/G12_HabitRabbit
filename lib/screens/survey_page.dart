@@ -602,11 +602,12 @@ class PartOnePageState extends State<PartOnePage> {
         backgroundColor: ColorSet.backgroundColor,
         body: WillPopScope(
           onWillPop: () async => (Data.isFirstTime)
-              ? ConfirmDialog()
-                  .get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
-                      () => Navigator.pop(context, true),
-                      btnCancelOnPress: () => false)
-                  .show() as bool
+              ? ConfirmDialog().get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
+                  () {
+                  Data.user?.delete();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/register', ModalRoute.withName('/'));
+                }, btnCancelOnPress: () => false).show() as bool
               : true,
           child: ListView(
             controller: _scrollController,
@@ -880,11 +881,12 @@ class PartTwoPageState extends State<PartTwoPage> {
         backgroundColor: ColorSet.backgroundColor,
         body: WillPopScope(
           onWillPop: () async => (Data.isFirstTime)
-              ? ConfirmDialog()
-                  .get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
-                      () => Navigator.pop(context, true),
-                      btnCancelOnPress: () => false)
-                  .show() as bool
+              ? ConfirmDialog().get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
+                  () {
+                  Data.user?.delete();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/register', ModalRoute.withName('/'));
+                }, btnCancelOnPress: () => false).show() as bool
               : true,
           child: Column(
             children: [
@@ -1183,11 +1185,12 @@ class PartThreePageState extends State<PartThreePage>
         backgroundColor: ColorSet.backgroundColor,
         body: WillPopScope(
           onWillPop: () async => (Data.isFirstTime)
-              ? ConfirmDialog()
-                  .get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
-                      () => Navigator.pop(context, true),
-                      btnCancelOnPress: () => false)
-                  .show() as bool
+              ? ConfirmDialog().get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
+                  () {
+                  Data.user?.delete();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/register', ModalRoute.withName('/'));
+                }, btnCancelOnPress: () => false).show() as bool
               : true,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(35, 80, 35, 80),
