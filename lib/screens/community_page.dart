@@ -273,7 +273,7 @@ class FriendListPageState extends State<FriendListPage> {
                     cursorColor: ColorSet.errorColor,
                     style: const TextStyle(
                       color: ColorSet.textColor,
-                      fontSize: 14,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                       height: 1,
                     ),

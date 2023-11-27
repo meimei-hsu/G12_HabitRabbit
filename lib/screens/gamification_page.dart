@@ -153,7 +153,7 @@ class CharacterWidget extends StatelessWidget {
             container: SpeechBalloon(
                 color: ColorSet.backgroundColor,
                 width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.height * 0.1,
+                height: MediaQuery.of(context).size.height * 0.13,
                 nipLocation: NipLocation.top,
                 nipHeight: 25,
                 borderColor: ColorSet.borderColor,
@@ -196,13 +196,14 @@ class CharacterWidget extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * 0.8,
                   container: SpeechBalloon(
                       color: ColorSet.backgroundColor,
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.1,
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      height: MediaQuery.of(context).size.height * 0.13,
                       nipLocation: NipLocation.top,
                       nipHeight: 25,
                       borderColor: ColorSet.borderColor,
                       borderRadius: 20,
                       borderWidth: 6,
+                      offset: const Offset(-120, 0),
                       child: Center(
                           child: Container(
                               padding: const EdgeInsets.only(
@@ -247,12 +248,13 @@ class CharacterWidget extends StatelessWidget {
                   container: SpeechBalloon(
                       color: ColorSet.backgroundColor,
                       width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.1,
+                      height: MediaQuery.of(context).size.height * 0.13,
                       nipLocation: NipLocation.top,
                       nipHeight: 25,
                       borderColor: ColorSet.borderColor,
                       borderRadius: 20,
                       borderWidth: 6,
+                      offset: const Offset(-60, 0),
                       child: Center(
                           child: Container(
                               padding: const EdgeInsets.only(
@@ -344,7 +346,7 @@ class CharacterWidget extends StatelessWidget {
                   container: SpeechBalloon(
                       color: ColorSet.backgroundColor,
                       width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.1,
+                      height: MediaQuery.of(context).size.height * 0.13,
                       nipLocation: NipLocation.top,
                       nipHeight: 25,
                       borderColor: ColorSet.borderColor,
@@ -358,7 +360,7 @@ class CharacterWidget extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    "本周習慣完成100%時，\n可以獲得運動或冥想寶物。",
+                                    "本週習慣完成100%時，\n可以獲得運動或冥想寶物。",
                                     style: tutorialTitleStyle,
                                     textAlign: TextAlign.center,
                                   ),
@@ -439,7 +441,7 @@ class CharacterWidget extends StatelessWidget {
                   container: SpeechBalloon(
                       color: ColorSet.backgroundColor,
                       width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.1,
+                      height: MediaQuery.of(context).size.height * 0.13,
                       nipLocation: NipLocation.top,
                       nipHeight: 25,
                       borderColor: ColorSet.borderColor,
@@ -458,7 +460,7 @@ class CharacterWidget extends StatelessWidget {
                                     textAlign: TextAlign.center,
                                   ),
                                   Text(
-                                    '➤ 點擊螢幕查看下一個',
+                                    '➤ 點擊螢幕完成教學',
                                     style: tutorialDescStyle,
                                   )
                                 ],

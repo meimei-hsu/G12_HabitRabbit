@@ -431,8 +431,8 @@ class StatisticPageState extends State<StatisticPage> {
                                       drawHorizontalLine: true,
                                       getDrawingHorizontalLine: (value) {
                                         return FlLine(
-                                          color: ColorSet.textColor,
-                                          strokeWidth: 0.6,
+                                          color: ColorSet.hintColor.withOpacity(0.6),
+                                          strokeWidth: 0.8,
                                         );
                                       },
                                       checkToShowHorizontalLine: (value) {
@@ -482,10 +482,10 @@ class StatisticPageState extends State<StatisticPage> {
                                     // borderData: 邊框數據
                                     borderData: FlBorderData(
                                         show: true,
-                                        border: const Border(
+                                        border: Border(
                                             bottom: BorderSide(
-                                          color: ColorSet.textColor,
-                                          width: 0.6,
+                                          color: ColorSet.hintColor.withOpacity(0.6),
+                                          width: 0.8,
                                         ))),
                                     // lineBarsData: 數線資料
                                     lineBarsData: [

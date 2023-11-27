@@ -298,7 +298,7 @@ class LoginFormState extends State<LoginForm> {
                                 child: const Text(
                                   '註冊',
                                   style: TextStyle(
-                                      color: ColorSet.buttonColor,
+                                      color: ColorSet.errorColor,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -621,7 +621,7 @@ class SignupFormState extends State<SignupForm> {
                                         child: const Text(
                                           '登入',
                                           style: TextStyle(
-                                              color: ColorSet.buttonColor,
+                                              color: ColorSet.errorColor,
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold),
                                         ),

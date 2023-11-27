@@ -334,7 +334,7 @@ class OptionsWidget extends StatelessWidget {
           ? Center(
               child: Text(
                 option.text,
-                style: const TextStyle(color: ColorSet.textColor, fontSize: 20),
+                style: const TextStyle(color: ColorSet.textColor, fontSize: 19),
                 softWrap: true,
               ),
             )
@@ -342,7 +342,7 @@ class OptionsWidget extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 option.text,
-                style: const TextStyle(color: ColorSet.textColor, fontSize: 20),
+                style: const TextStyle(color: ColorSet.textColor, fontSize: 19),
               )
             ]),
     );
@@ -360,7 +360,7 @@ class OptionsWidget extends StatelessWidget {
                   option.description,
                   style: const TextStyle(
                       color: ColorSet.textColor,
-                      fontSize: 16,
+                      fontSize: 15,
                       fontStyle: FontStyle.italic),
                 ),
               )),
@@ -434,7 +434,7 @@ class QuestionsWidget extends StatelessWidget {
                       style: const TextStyle(
                         color: ColorSet.textColor,
                         fontWeight: FontWeight.bold,
-                        fontSize: 24,
+                        fontSize: 22,
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -618,10 +618,10 @@ class PartOnePageState extends State<PartOnePage> {
             controller: _scrollController,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(35, 75, 35, 0),
+                padding: const EdgeInsets.fromLTRB(35, 50, 35, 0),
                 child: Container(
                   alignment: Alignment.center,
-                  height: MediaQuery.of(context).size.height * 0.7,
+                  height: MediaQuery.of(context).size.height * 0.75,
                   decoration: BoxDecoration(
                     border: Border.all(color: ColorSet.borderColor, width: 2),
                     borderRadius: BorderRadius.circular(20),
@@ -641,14 +641,22 @@ class PartOnePageState extends State<PartOnePage> {
                         ),
                         const SizedBox(height: 12),
                         Padding(
-                          padding: const EdgeInsets.only(left: 30),
+                          padding: const EdgeInsets.only(left: 30, right: 30),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: getBackgroundColor(
-                                      "gender", "男"), // 按鈕顏色設定
+                              Expanded(
+                                  child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  side: const BorderSide(
+                                    color: ColorSet.borderColor,
+                                  ),
+                                  backgroundColor:
+                                      getBackgroundColor("gender", "男"),
+                                  minimumSize: const Size.fromHeight(40),
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -664,31 +672,40 @@ class PartOnePageState extends State<PartOnePage> {
                                     fontSize: 18,
                                   ),
                                 ),
-                              ),
+                              )),
                               const SizedBox(width: 25),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      getBackgroundColor("gender", "女"),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    userInfo['gender'] = "女";
-                                    isComplete = checkCompletion();
-                                  });
-                                },
-                                child: Text(
-                                  "女",
-                                  style: TextStyle(
-                                    color: getForegroundColor("gender", "女"),
-                                    fontSize: 18,
+                              Expanded(
+                                child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    side: const BorderSide(
+                                      color: ColorSet.borderColor,
+                                    ),
+                                    backgroundColor:
+                                        getBackgroundColor("gender", "女"),
+                                    minimumSize: const Size.fromHeight(40),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      userInfo['gender'] = "女";
+                                      isComplete = checkCompletion();
+                                    });
+                                  },
+                                  child: Text(
+                                    "女",
+                                    style: TextStyle(
+                                      color: getForegroundColor("gender", "女"),
+                                      fontSize: 18,
+                                    ),
                                   ),
                                 ),
-                              ),
+                              )
                             ],
                           ),
                         ),
-                        const SizedBox(height: 36),
+                        const SizedBox(height: 30),
                         Padding(
                           padding: const EdgeInsets.only(left: 20),
                           child: Text(
@@ -698,15 +715,16 @@ class PartOnePageState extends State<PartOnePage> {
                         ),
                         const SizedBox(height: 12),
                         Padding(
-                          padding: const EdgeInsets.only(left: 30),
+                          padding: const EdgeInsets.only(left: 30, right: 30),
                           child: Container(
                             width: 250,
-                            height: 50,
+                            height: 55,
                             decoration: BoxDecoration(
                               color: ColorSet.backgroundColor,
-                              border: Border.all(color: Colors.transparent),
+                              border: Border.all(color: ColorSet.borderColor),
                               borderRadius: BorderRadius.circular(15),
                             ),
+                            // FIXME: border color
                             child: DatePickerCupertino(
                               hintText: '請選擇日期',
                               style: const TextStyle(
@@ -733,13 +751,14 @@ class PartOnePageState extends State<PartOnePage> {
                         ),
                         const SizedBox(height: 12),
                         Padding(
-                          padding: const EdgeInsets.only(left: 30),
+                          padding: const EdgeInsets.only(left: 30, right: 30),
                           child: Container(
                             width: 250,
-                            decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                                color: ColorSet.backgroundColor),
+                            decoration: BoxDecoration(
+                              color: ColorSet.backgroundColor,
+                              border: Border.all(color: ColorSet.borderColor),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
                             child: TextField(
                               decoration: const InputDecoration(
                                 contentPadding: EdgeInsets.symmetric(
@@ -778,13 +797,14 @@ class PartOnePageState extends State<PartOnePage> {
                         ),
                         const SizedBox(height: 12),
                         Padding(
-                          padding: const EdgeInsets.only(left: 30),
+                          padding: const EdgeInsets.only(left: 30, right: 30),
                           child: Container(
                             width: 250,
-                            decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                                color: ColorSet.backgroundColor),
+                            decoration: BoxDecoration(
+                              color: ColorSet.backgroundColor,
+                              border: Border.all(color: ColorSet.borderColor),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
                             child: TextField(
                               decoration: const InputDecoration(
                                 contentPadding: EdgeInsets.symmetric(

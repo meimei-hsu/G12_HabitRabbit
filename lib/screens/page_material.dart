@@ -22,7 +22,7 @@ class ColorSet {
   static const Color iconColor = Color(0xFF2F4F4F);
   static const Color borderColor = Color(0xFF2F4F4F);
   static const Color buttonColor = Color(0xFFFAE5DA);
-  static const Color errorColor = Color(0xFFFAE5DA);
+  static const Color errorColor = Color(0xFFEEB3B2);
   static const Color hintColor = Color(0xFFCAD2D2);
 }
 
