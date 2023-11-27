@@ -317,7 +317,7 @@ class SettingsPageState extends State<SettingsPage> {
                       if (success == true) {
                         InformDialog().get(context, "提示:)", "密碼已更新！").show();
                       } else if (success == false) {
-                        ErrorDialog().get(context, "警告:(", "密碼錯誤QQ").show();
+                        ErrorDialog().get(context, "錯誤:(", "密碼不正確QQ").show();
                       }
                     });
                   },
@@ -346,7 +346,7 @@ class SettingsPageState extends State<SettingsPage> {
                     }
 
                     ConfirmDialog()
-                        .get(context, '提示:)', "確定登出嗎？", btnOkOnPress)
+                        .get(context, '提醒', "確定要登出嗎？", btnOkOnPress)
                         .show();
                   },
                   icons: Icons.exit_to_app_rounded,

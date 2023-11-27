@@ -95,8 +95,8 @@ class HomepageState extends State<Homepage> {
         // functions
         changeDate() {
           if (!HomeData.isAfter && HomeData.selectedDay?.weekday == 6) {
-            InformDialog()
-                .get(context, "警告:(", "今天已經星期六囉~\n無法再將計畫換到別天了！")
+            ErrorDialog()
+                .get(context, "錯誤:(", "今天已經星期六囉~\n無法再將計畫換到別天了！")
                 .show();
           } else {
             showModalBottomSheet(
@@ -131,7 +131,7 @@ class HomepageState extends State<Homepage> {
               });
               if (!mounted) return;
               InformDialog()
-                  .get(context, "完成重新生成:)",
+                  .get(context, "完成計畫重新生成",
                       "${(HomeData.isToday) ? "今天" : date}的$typeZH計畫\n已經重新生成囉！")
                   .show();
             });
@@ -170,7 +170,7 @@ class HomepageState extends State<Homepage> {
         if (type == 2) {
           InformDialog().get(context, "提醒", "今日沒有計畫喔~\n請點選兔子以新增計畫").show();
         } else if (HomeData.isBefore) {
-          InformDialog().get(context, ":(", "溯及既往 打咩！").show();
+          ErrorDialog().get(context, ":(", "溯及既往 打咩！").show();
         } else {
           if (!HomeData.isBefore) {
             String title = "$date $typeZH計畫";
@@ -178,7 +178,7 @@ class HomepageState extends State<Homepage> {
             List<Function> functions = [changeDate, regenerate, delete];
             MenuDialog().get(context, title, funcNames, functions).show();
           } else {
-            InformDialog().get(context, "錯誤:(", "無法修改以前的計畫").show();
+            ErrorDialog().get(context, "錯誤:(", "無法修改以前的計畫").show();
           }
         }
       },
@@ -299,7 +299,7 @@ class HomepageState extends State<Homepage> {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
       (HomeData.isBefore)
-          ? InformDialog().get(context, ":(", "溯及既往 打咩！").show()
+          ? ErrorDialog().get(context, ":(", "溯及既往 打咩！").show()
           : showModalBottomSheet(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -322,7 +322,7 @@ class HomepageState extends State<Homepage> {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
       (HomeData.isBefore)
-          ? InformDialog().get(context, ":(", "溯及既往 打咩！").show()
+          ? ErrorDialog().get(context, ":(", "溯及既往 打咩！").show()
           : showModalBottomSheet(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -345,7 +345,7 @@ class HomepageState extends State<Homepage> {
       // 運動沒有、冥想有 --> 冥想完成度、新增運動
       // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
       (HomeData.isBefore)
-          ? ErrorDialog().get(context, "警告:(", "溯及既往 打咩！").show()
+          ? ErrorDialog().get(context, ":(", "溯及既往 打咩！").show()
           : showModalBottomSheet(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -1138,7 +1138,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
                 }
 
                 InformDialog()
-                    .get(context, "修改完成:)",
+                    .get(context, "完成修改計畫日期",
                         "已經將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫\n換到 ${changedDayDate.month} / ${changedDayDate.day} 星期$changedDayWeekday囉！",
                         btnOkOnPress: btnOkOnPress)
                     .show();

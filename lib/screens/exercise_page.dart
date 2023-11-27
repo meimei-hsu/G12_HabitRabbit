@@ -503,7 +503,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
 
     AwesomeDialog dlg = ConfirmDialog().get(
         context,
-        "退出計畫",
+        "提示:)",
         "目前冥想已經完成 ${(_progress.toDouble() * 100).round()}% 囉！\n請問今天會回來繼續完成嗎？'",
         btnYesOnPress,
         btnCancelOnPress: btnNoOnPress,
