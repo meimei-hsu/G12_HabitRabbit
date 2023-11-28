@@ -77,26 +77,25 @@ class Data {
 
   static void refresh() async {
     print("refreshing data");
-    // update UI
-    await fetchGame();
-    await fetchPlansAndDurations();
-    await HomeData.fetch();
-    await StatData.fetch();
-    await GameData.fetch();
-    await SettingsData.fetch();
-    await CommData.fetch();
-
     // notify the user if he/she is poked
     String? friendID = await PokeDB.getPoke();
     if (friendID != null) {
       NotificationService().scheduleNotification(
-          title: '你被戳了',
-          body:
-              '你的朋友${community?[friendID]?["userName"] ?? ""}戳了戳你，趕快回來與他一起培養習慣吧！',
-          scheduledNotificationDateTime:
-              DateTime.now().add(const Duration(seconds: 1)));
+          title: '你被戳了👋',
+          body: '你的朋友${community?[friendID]?["userName"] ?? ""}戳了戳你，'
+              '趕快回來與他一起培養習慣吧！',
+          scheduledNotificationDateTime: DateTime.now());
       await PokeDB.delete();
     }
+
+    // update UI
+    await fetchGame();
+    await fetchPlansAndDurations();
+    await HomeData.fetch();
+    StatData.fetch();
+    GameData.fetch();
+    SettingsData.fetch();
+    CommData.fetch();
   }
 
   static Future<void> fetchCharacter() async {

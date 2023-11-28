@@ -156,10 +156,10 @@ class DoExercisePageState extends State<DoExercisePage> {
       });
       canExit = true;
       NotificationService().scheduleNotification(
-          title: '該開始運動囉',
-          body: '就快完成了，加油！',
+          title: '該繼續運動囉🔥',
+          body: '已經完成${(currentIndex / 5 * HomeData.workoutDuration).round()}%了，加油！',
           scheduledNotificationDateTime:
-              DateTime.now().add(const Duration(seconds: 5)));
+              DateTime.now().add(const Duration(seconds: 3)));
       HomeData.fetch();
       if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(
@@ -487,11 +487,12 @@ class DoMeditationPageState extends State<DoMeditationPage> {
       await DurationDB.update("meditation",
           {Calendar.today: (HomeData.meditationDuration * _progress).round()});
       canExit = true;
+
       NotificationService().scheduleNotification(
-          title: '該開始冥想囉',
-          body: '就快完成了，加油！',
+          title: '該繼續冥想囉🔥',
+          body: '已經完成${(HomeData.meditationDuration * _progress).round()}%了，加油！',
           scheduledNotificationDateTime:
-              DateTime.now().add(const Duration(seconds: 3)));
+          DateTime.now().add(const Duration(seconds: 3)));
       if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
