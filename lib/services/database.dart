@@ -441,7 +441,10 @@ class ContractDB {
   }
 
   // Delete data from userID
-  static Future<bool> delete() async => await DB.delete(db, uid);
+  static Future<bool> delete() async {
+    if (Data.contract != null) return await DB.delete(db, uid);
+    return true;
+  }
   // Delete workout contract from userID
   static Future<bool> deleteWorkout() async =>
       await DB.delete(db, "$uid/workout");

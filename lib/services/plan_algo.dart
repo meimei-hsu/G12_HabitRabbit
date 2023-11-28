@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:g12/services/database.dart';
@@ -8,6 +9,8 @@ import 'package:g12/services/page_data.dart';
 class PlanAlgo {
   // Execute when user register an account.
   static initialize() async {
+    await Data.fetchHabits();
+
     Map<String, String> workoutPlan = {}, meditationPlan = {};
 
     for (bool thisWeek in [true, false]) {
@@ -23,11 +26,27 @@ class PlanAlgo {
       meditationPlan.addAll(await MeditationAlgorithm.arrangePlan(skd));
     }
     if (meditationPlan.isNotEmpty) await PlanDB.update("meditation", meditationPlan);
+
+    Data.plans = {
+      "workout": SplayTreeMap.of(workoutPlan),
+      "meditation": SplayTreeMap.of(meditationPlan)
+    };
+    Data.durations = {
+      "workout": SplayTreeMap.of(workoutPlan
+          .map((k, v) => MapEntry(k, "0, ${PlanData.habitDuration}"))),
+      "meditation": SplayTreeMap.of(meditationPlan
+          .map((k, v) => MapEntry(k, "0, ${PlanData.habitDuration}")))
+    };
   }
 
   // Start point of the planning algorithm
   // Execute when user login or after giving feedback.
   static execute() async {
+    if (Data.updatingDB) {
+      await Data.fetchProfile();
+      Data.updatingDB = false;
+    }
+
     Map<String, String> workoutPlan = {}, meditationPlan = {};
 
     // Check if user has no plan within two weeks

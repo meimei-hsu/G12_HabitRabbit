@@ -258,7 +258,6 @@ class LoginFormState extends State<LoginForm> {
                                     } else {
                                       if (user != null) {
                                         await Data.init();
-                                        await PlanAlgo.execute();
                                         if (!mounted) return;
                                         Navigator.pushNamedAndRemoveUntil(
                                             context,

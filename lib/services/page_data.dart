@@ -43,27 +43,33 @@ class Data {
     if (Data.user != null) {
       // fetch indispensable data from database
       await fetchProfile();
-      await fetchGame();
-      if (profile == null || game == null) {
+      if (profile == null) {
+        await PlanDB.deleteAll();
         await user?.delete();
         return false;
       }
+
+      // fetch data for the planning algorithm
+      /*if (isFirstTime) await PlanAlgo.initialize();*/
+      if (!isFirstTime) {
+        await fetchHabits();
+        await fetchPlansAndDurations();
+        await PlanAlgo.execute();
+      }
+
       // fetch other data from database
+      await fetchGame();
       await fetchCharacter();
       await fetchWeights();
       await fetchClocks();
       await fetchContract();
-      await fetchHabits();
-      if (isFirstTime) await PlanAlgo.initialize();
-      await fetchPlansAndDurations();
-      if (!isFirstTime) await PlanAlgo.execute();
 
       // update UI
       await HomeData.fetch();
-      await StatData.fetch();
-      await GameData.fetch();
-      await SettingsData.fetch();
-      await CommData.fetch();
+      StatData.fetch();
+      GameData.fetch();
+      SettingsData.fetch();
+      CommData.fetch();
       return true;
     }
     return false;
@@ -198,6 +204,10 @@ class Data {
 
   static void clear() {
     // clear the data
+    isFirstTime = false;
+    updatingDB = false;
+    updatingUI = [false, false, false, false, false];
+
     characterImageURL = "";
     characterName = "";
     characterNameZH = "";
@@ -234,7 +244,7 @@ class Data {
     StatData.maxMeditationMonthDays = 0.0;
 
     // reset the index
-    CommData.currentTabIndex = 0 ;
+    CommData.currentTabIndex = 0;
     StatData.planProgress = 0;
     StatData.consecutiveDays = 0;
     StatData.accumulatedTime = 0;
@@ -263,11 +273,6 @@ class PlanData {
 
   static Future<void> fetch(
       {required String habit, bool thisWeek = true}) async {
-    if (Data.updatingDB) {
-      await Data.fetchProfile();
-      Data.updatingDB = false;
-    }
-
     habitIDs = HabitDB.categorize(habit, Data.habits?[habit])!;
     planVariables = UserDB.toPlanVariables(Data.profile, habit);
     processData(habit: habit, data: planVariables, thisWeek: thisWeek);

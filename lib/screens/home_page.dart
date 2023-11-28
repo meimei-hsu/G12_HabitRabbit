@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
+import 'package:flutter/services.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -660,7 +661,10 @@ class HomepageState extends State<Homepage> {
                                       )))),
                           child: GestureDetector(
                             onTap: addPlan, // Image tapped
-                            onLongPress: () async => Data.refresh(),
+                            onLongPress: () {
+                              HapticFeedback.lightImpact();
+                              Data.refresh();
+                            },
                             child: Image.asset(
                               "assets/images/Rabbit_2.png",
                               width: 125,

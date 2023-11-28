@@ -1569,13 +1569,14 @@ class ChangeProfileBottomSheetState extends State<ChangeProfileBottomSheet> {
                           if (!mounted) return;
                           Navigator.pop(context, true);
                         } else {
+                          Navigator.popAndPushNamed(context, '/register');
+                          // delete user's data
                           await UserDB.delete();
                           await ContractDB.delete();
                           await GamificationDB.delete();
                           await PlanDB.deleteAll();
                           await Data.user?.delete();
-                          if (!mounted) return;
-                          Navigator.popAndPushNamed(context, '/register');
+                          Data.clear();
                         }
                       } catch (e) {
                         if (!mounted) return;

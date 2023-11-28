@@ -35,7 +35,7 @@ class DB {
     final DatabaseReference ref = FirebaseDatabase.instance.ref(path);
     try {
       await ref.set(data);
-      Data.updatingDB = true;
+      if(!Data.isFirstTime) Data.updatingDB = true;
       return true;
     } catch (error) {
       print("DB.insert: $error");
@@ -50,7 +50,7 @@ class DB {
     try {
       print("(update) $path: $data");
       await ref.update(Map<String, Object>.from(data));
-      Data.updatingDB = true;
+      if(!Data.isFirstTime) Data.updatingDB = true;
       return true;
     } catch (error) {
       print("DB.update: $error");
@@ -64,7 +64,7 @@ class DB {
     try {
       print("(delete) $path: $id");
       await ref.remove();
-      Data.updatingDB = true;
+      if(!Data.isFirstTime) Data.updatingDB = true;
       return true;
     } catch (error) {
       print("DB.delete: $error");

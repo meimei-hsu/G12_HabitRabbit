@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:datepicker_cupertino/datepicker_cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,26 +10,12 @@ import 'dart:async';
 import 'package:g12/services/database.dart';
 import 'package:g12/services/page_data.dart';
 import 'package:g12/screens/page_material.dart';
+import 'package:g12/services/plan_algo.dart';
 
 //////////////////////////////  Data Type  /////////////////////////////////////
 
 // Map of the user's information based on their answers
-Map userInfo = {
-  "gender": "",
-  "birthday": "",
-  "height": "",
-  "weight": "",
-  "neuroticism": 0,
-  "conscientiousness": 0,
-  "openness": 0,
-  "agreeableness": 0,
-  "strengthLiking": 40,
-  "cardioLiking": 40,
-  "yogaLiking": 40,
-  "mindfulnessLiking": 40,
-  "workLiking": 40,
-  "kindnessLiking": 40,
-};
+Map userInfo = {};
 
 // List of questions in part two
 final questions_2 = [
@@ -37,7 +25,7 @@ final questions_2 = [
       options: [
         Option(question: 0, text: "15分鐘", data: 15),
         Option(question: 0, text: "30分鐘", data: 30),
-        Option(question: 0, text: "40分鐘", data: 45),
+        Option(question: 0, text: "45分鐘", data: 45),
         Option(question: 0, text: "60分鐘", data: 60),
       ],
     ),
@@ -588,7 +576,23 @@ class PartOnePageState extends State<PartOnePage> {
 
   @override
   void initState() {
-    userInfo["gender"] = ""; // reset to default value
+    // reset to default value
+    userInfo = {
+      "gender": "",
+      "birthday": "",
+      "height": "",
+      "weight": "",
+      "neuroticism": Random().nextBool() ? 1 : -1,
+      "conscientiousness": Random().nextBool() ? 1 : -1,
+      "openness": Random().nextBool() ? 1 : -1,
+      "agreeableness": Random().nextBool() ? 1 : -1,
+      "strengthLiking": 40,
+      "cardioLiking": 40,
+      "yogaLiking": 40,
+      "mindfulnessLiking": 40,
+      "workLiking": 40,
+      "kindnessLiking": 40,
+    };
     super.initState();
   }
 
@@ -609,6 +613,7 @@ class PartOnePageState extends State<PartOnePage> {
           onWillPop: () async => (Data.isFirstTime)
               ? ConfirmDialog().get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
                   () {
+                  PlanDB.deleteAll();
                   Data.user?.delete();
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/register', ModalRoute.withName('/'));
@@ -853,6 +858,17 @@ class PartOnePageState extends State<PartOnePage> {
                 child: IconButton(
                   onPressed: () {
                     if (isComplete) {
+                      // speed up the registration (ignore the characteristic variables for this time)
+                      WeightDB.update({
+                        Calendar.dateToString(DateTime.now()):
+                            (userInfo["weight"]).toDouble()
+                      });
+                      for (String habit in Data.habitTypes) {
+                        ClockDB.update(habit, {
+                          for (int i = 0; i < 7; i++) "forecast_$i": "09:00"
+                        });
+                      }
+
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -908,6 +924,7 @@ class PartTwoPageState extends State<PartTwoPage> {
           onWillPop: () async => (Data.isFirstTime)
               ? ConfirmDialog().get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
                   () {
+                  PlanDB.deleteAll();
                   Data.user?.delete();
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/register', ModalRoute.withName('/'));
@@ -959,6 +976,12 @@ class PartTwoPageState extends State<PartTwoPage> {
                           if (pageController.page == 3) {
                             // update the data into userInfo
                             processInput();
+
+                            // speed up the registration (ignore the characteristic variables for this time)
+                            Data.profile = Map.from(userInfo);
+                            // no need of `await` since the code should be continue executing
+                            PlanAlgo.initialize();
+
                             // clear the answers
                             for (int i = 0; i < 4; i++) {
                               for (Question q in questions_2[i]) {
@@ -1212,6 +1235,7 @@ class PartThreePageState extends State<PartThreePage>
           onWillPop: () async => (Data.isFirstTime)
               ? ConfirmDialog().get(context, "確認退出", "此時離開頁面則視為註冊失敗，是否仍要退出？",
                   () {
+                  PlanDB.deleteAll();
                   Data.user?.delete();
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/register', ModalRoute.withName('/'));
@@ -1467,21 +1491,9 @@ class ResultPageState extends State<ResultPage> {
                             isUpdating = true;
                           });
 
-                          if (Data.isFirstTime) {
-                            await UserDB.insert(userInfo);
-                            await WeightDB.update({
-                              Calendar.dateToString(DateTime.now()):
-                                  (userInfo["weight"]).toDouble()
-                            });
-                            for (String habit in Data.habitTypes) {
-                              await ClockDB.update(habit, {
-                                for (int i = 0; i < 7; i++)
-                                  "forecast_$i": "09:00"
-                              });
-                            }
-                            await GamificationDB.insert(userInfo, character);
-                            await Data.init();
-                          }
+                          await UserDB.insert(userInfo);
+                          await GamificationDB.insert(userInfo, character);
+                          await Data.init();
 
                           if (!mounted) return;
                           Navigator.pushNamedAndRemoveUntil(
