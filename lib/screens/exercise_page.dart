@@ -142,7 +142,7 @@ class DoExercisePageState extends State<DoExercisePage> {
           backgroundColor: ColorSet.bottomBarColor,
           context: context,
           builder: (context) {
-            return Wrap(children: const [
+            return const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -157,7 +157,8 @@ class DoExercisePageState extends State<DoExercisePage> {
       canExit = true;
       NotificationService().scheduleNotification(
           title: '該繼續運動囉🔥',
-          body: '已經完成${(currentIndex / 5 * HomeData.workoutDuration).round()}%了，加油！',
+          body:
+              '已經完成${(currentIndex / 5 * HomeData.workoutDuration).round()}%了，加油！',
           scheduledNotificationDateTime:
               DateTime.now().add(const Duration(seconds: 3)));
       HomeData.fetch();
@@ -201,7 +202,7 @@ class DoExercisePageState extends State<DoExercisePage> {
         if (!mounted) return;
         CongratsDialog.show(context,
             habit: "workout",
-            widgetAfterDismiss: Wrap(children: const [
+            widgetAfterDismiss: const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -260,8 +261,7 @@ class DoExercisePageState extends State<DoExercisePage> {
           // 運動 5 秒後休息 1 秒
           playAudio("休息");
           _pageController.animateToPage(_getExerciseItemNameList().length + 1,
-              duration: const Duration(milliseconds: 5),
-              curve: Curves.ease);
+              duration: const Duration(milliseconds: 5), curve: Curves.ease);
           sport = sport.replaceAll("運動", "休息");
         }
       }
@@ -475,7 +475,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           backgroundColor: ColorSet.bottomBarColor,
           context: context,
           builder: (context) {
-            return Wrap(children: const [
+            return const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
@@ -490,9 +490,10 @@ class DoMeditationPageState extends State<DoMeditationPage> {
 
       NotificationService().scheduleNotification(
           title: '該繼續冥想囉🔥',
-          body: '已經完成${(HomeData.meditationDuration * _progress).round()}%了，加油！',
+          body:
+              '已經完成${(HomeData.meditationDuration * _progress).round()}%了，加油！',
           scheduledNotificationDateTime:
-          DateTime.now().add(const Duration(seconds: 3)));
+              DateTime.now().add(const Duration(seconds: 3)));
       if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(
           context, '/', (Route<dynamic> route) => false);
@@ -534,7 +535,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         if (!mounted) return;
         CongratsDialog.show(context,
             habit: "meditation",
-            widgetAfterDismiss: Wrap(children: const [
+            widgetAfterDismiss: const Wrap(children: [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )

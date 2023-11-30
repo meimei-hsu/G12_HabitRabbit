@@ -146,7 +146,8 @@ class CommunityPageState extends State<CommunityPage>
                     controller: _controller,
                     children: <Widget>[
                       const FriendListPage(),
-                      LeaderboardPage(key: UniqueKey()), // force rebuilding if setState()
+                      LeaderboardPage(key: UniqueKey()),
+                      // force rebuilding if setState()
                       const TeamChallengePage(),
                     ],
                   ),
@@ -665,11 +666,11 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                         )
                       : Column(children: [
                           SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.33,
                             child: ListView.separated(
                               shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
                               padding: const EdgeInsets.only(
-                                  left: 40.0, top: 10.0, right: 40.0),
+                                  left: 30.0, top: 10.0, right: 30.0),
                               itemCount: chart.length,
                               itemBuilder: (BuildContext context, int index) {
                                 final String uid = chart.keys.toList()[index];
@@ -682,7 +683,7 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                     : ColorSet.backgroundColor;
 
                                 return Container(
-                                  height: 30,
+                                  height: 35,
                                   decoration: BoxDecoration(
                                     color: containerColor,
                                     border: Border.all(
@@ -696,7 +697,7 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                       '${chart[uid][0]}'.padLeft(2, "  "),
                                       style: const TextStyle(
                                         color: ColorSet.textColor,
-                                        fontSize: 16,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -717,7 +718,7 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                                       chart[uid][2],
                                       style: const TextStyle(
                                         color: ColorSet.textColor,
-                                        fontSize: 16,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),

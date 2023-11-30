@@ -617,8 +617,9 @@ class ChangeDayAndNotificationTimeBottomSheetState
     List<Widget> btnList = [];
 
     for (int i = 0; i < 7; i++) {
-      btnList.add(
-        OutlinedButton(
+      btnList.add(Container(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: OutlinedButton(
           style: OutlinedButton.styleFrom(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),
@@ -660,7 +661,7 @@ class ChangeDayAndNotificationTimeBottomSheetState
             ),
           ),
         ),
-      );
+      ));
       if (i != 6) {
         btnList.add(const SizedBox(
           width: 10,
@@ -671,14 +672,15 @@ class ChangeDayAndNotificationTimeBottomSheetState
   }
 
   List<Widget> _getTimeBtnList() {
-    List<OutlinedButton> btnList = [];
+    List<Widget> btnList = [];
 
     for (int index in notificationSelectedDays) {
       String weekday = "星期${notificationWeekdayNameList[index]}";
       String selectedTime =
           forecast["forecast_$index"] ?? Calendar.timeToString(TimeOfDay.now());
-      btnList.add(
-        OutlinedButton(
+      btnList.add(Container(
+        padding: const EdgeInsets.only(right: 10),
+        child: OutlinedButton(
           onPressed: () async {
             final TimeOfDay? time = await showTimePicker(
               context: context,
@@ -741,7 +743,7 @@ class ChangeDayAndNotificationTimeBottomSheetState
             ],
           ),
         ),
-      );
+      ));
     }
     return btnList;
   }
@@ -841,11 +843,13 @@ class ChangeDayAndNotificationTimeBottomSheetState
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.1,
+                      height: MediaQuery.of(context).size.width * 0.13,
                       width: MediaQuery.of(context).size.width * 0.85,
                       child: Scrollbar(
                         controller: _dayController,
                         thumbVisibility: true,
+                        radius: const Radius.circular(100),
+                        thickness: 3,
                         child: ListView(
                             controller: _dayController,
                             scrollDirection: Axis.horizontal,
@@ -855,8 +859,8 @@ class ChangeDayAndNotificationTimeBottomSheetState
               )),
           const SizedBox(height: 10),
           Container(
-            padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-            margin: const EdgeInsets.only(right: 15, left: 15),
+            padding: const EdgeInsets.fromLTRB(15.0, 10.0, 5.0, 10.0),
+            margin: const EdgeInsets.only(right: 10, left: 10),
             decoration: BoxDecoration(
               border: Border.all(color: ColorSet.borderColor, width: 3),
               borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -875,6 +879,8 @@ class ChangeDayAndNotificationTimeBottomSheetState
                   child: Scrollbar(
                     controller: _notificationController,
                     thumbVisibility: true,
+                    radius: const Radius.circular(100),
+                    thickness: 3,
                     child: ListView(
                         controller: _notificationController,
                         scrollDirection: Axis.vertical,

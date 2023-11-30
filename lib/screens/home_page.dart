@@ -927,9 +927,6 @@ class AddPlanBottomSheetState extends State<AddPlanBottomSheet> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(right: 10, left: 10),
-                // FIXME: 感覺白底按鈕不是很明顯？還是加邊框？
-                //side: const BorderSide(color: ColorSet.borderColor, width: 2),
-                //BorderSide(color: (planToAdd == 0)?ColorSet.exerciseColor:ColorSet.meditationColor, width: 3),
                 backgroundColor: (planToAdd == 0)
                     // FIXME: 需要區分exercise和meditation顏色嗎
                     ? ColorSet.backgroundColor
@@ -1049,8 +1046,12 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
     // if todayWeekday > selectedWeekday, then the selectedDays is in the next week
     for (int i = (today > selected ? 0 : today); i < 7; i++) {
       if (i != selected) {
-        allowedDayList.add(getDayBtn(i));
-        allowedDayList.add(const SizedBox(width: 10));
+        allowedDayList.add(Container(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: getDayBtn(i)));
+        if (i != 6) {
+          allowedDayList.add(const SizedBox(width: 10));
+        }
       }
     }
     return allowedDayList;
@@ -1097,13 +1098,14 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
               "你要將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫換到哪天呢？",
               style: const TextStyle(color: ColorSet.textColor, fontSize: 16)),
           const SizedBox(height: 10),
-          // FIXME: Add padding between choice and scrollbar
           SizedBox(
-              height: MediaQuery.of(context).size.width * 0.1,
+              height: MediaQuery.of(context).size.width * 0.13,
               width: MediaQuery.of(context).size.width * 0.85,
               child: Scrollbar(
                 controller: _controller,
                 thumbVisibility: true,
+                radius: const Radius.circular(100),
+                thickness: 3,
                 child: ListView(
                     controller: _controller,
                     scrollDirection: Axis.horizontal,
@@ -1118,7 +1120,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(right: 10, left: 10),
                 backgroundColor: ColorSet.backgroundColor,
-                shadowColor: Colors.transparent,
+                shadowColor: ColorSet.borderColor,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
