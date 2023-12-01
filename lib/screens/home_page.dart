@@ -258,26 +258,26 @@ class HomepageState extends State<Homepage> {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
       dialogText = (HomeData.isBefore)
-          ? "$date運動計畫已完成 ${HomeData.workoutProgress} %\n今日沒有冥想計畫欸T^T"
+          ? "$date運動計畫已完成 ${HomeData.workoutProgress}%\n$date沒有冥想計畫欸T^T"
           : (HomeData.isToday)
-              ? "$date運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}點選兔兔，新增冥想計畫！"
+              ? "$date運動計畫已完成 ${HomeData.workoutProgress}%\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}點選兔兔，新增冥想計畫！"
               : "$date有運動計畫要完成噢~\n點選兔兔，新增冥想計畫！";
     } else if (HomeData.workoutPlan == null &&
         HomeData.meditationPlan != null) {
       // 運動沒有、冥想有 --> 冥想完成度、新增運動
       // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
       dialogText = (HomeData.isBefore)
-          ? "$date冥想計畫已完成 ${HomeData.meditationProgress} %\n今日沒有運動計畫欸T^T"
+          ? "$date冥想計畫已完成 ${HomeData.meditationProgress}%\n$date沒有運動計畫欸T^T"
           : (HomeData.isToday)
-              ? "$date冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "有夠讚！\n" : "我們一起加油~\n"}點選兔兔，新增運動計畫！"
+              ? "$date冥想計畫已完成 ${HomeData.meditationProgress}%\n${(HomeData.meditationProgress == 100) ? "有夠讚！\n" : "我們一起加油~\n"}點選兔兔，新增運動計畫！"
               : "$date有冥想計畫要完成噢~\n點選兔兔，新增運動計畫！";
     } else {
       // 運動有、冥想有 --> 運動完成度、冥想完成度
       // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
       dialogText = (HomeData.isBefore)
-          ? "$date運動計畫已完成 ${HomeData.workoutProgress} %\n今日冥想計畫已完成 ${HomeData.meditationProgress} %"
+          ? "$date運動計畫已完成 ${HomeData.workoutProgress}%\n$date冥想計畫已完成 ${HomeData.meditationProgress}%"
           : (HomeData.isToday)
-              ? "$date運動計畫已完成 ${HomeData.workoutProgress} %\n$date冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n有夠讚！" : "\n我們一起加油~"}"
+              ? "$date運動計畫已完成 ${HomeData.workoutProgress}%\n$date冥想計畫已完成 ${HomeData.meditationProgress}%${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n有夠讚！" : "\n我們一起加油~"}"
               : "$date有運動計畫和冥想計畫\n要完成噢~";
     }
     return dialogText;
@@ -606,7 +606,7 @@ class HomepageState extends State<Homepage> {
                         child: GestureDetector(
                           onTap: addPlan, // Image tapped
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.685,
+                            width: MediaQuery.of(context).size.width * 0.68,
                             child: BubbleSpecialThree(
                               text:
                                   'Hello ${Data.profile?["userName"]}～\n${getDialogText()}',
