@@ -142,7 +142,7 @@ class HomepageState extends State<Homepage> {
               .get(
                   context,
                   "你確定嗎？",
-                  "確定要重新生成\n${(HomeData.isToday) ? "今天" : date}的$typeZH計畫嗎？",
+                  "確定要重新生成\n${(HomeData.isToday) ? "今天" : "${date} "}的$typeZH計畫嗎？",
                   btnOkOnPress)
               .show();
         }
@@ -162,7 +162,7 @@ class HomepageState extends State<Homepage> {
               .get(
                   context,
                   "你確定嗎？",
-                  "確定要刪除\n${(HomeData.isToday) ? "今天" : date}的$typeZH計畫嗎？",
+                  "確定要刪除\n${(HomeData.isToday) ? "今天" : "${date} "}的$typeZH計畫嗎？",
                   btnOkOnPress)
               .show();
         }
@@ -245,39 +245,40 @@ class HomepageState extends State<Homepage> {
 
   String getDialogText() {
     String dialogText = "";
+    String date = (HomeData.time == "今天")?HomeData.time:"${HomeData.time.replaceAll(" ", "").split("/")[1]} 日";
 
     if (HomeData.workoutPlan == null && HomeData.meditationPlan == null) {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
       // 今天之後 --> 新增；之前 --> 沒有
       dialogText = (HomeData.isBefore)
-          ? "今日無運動計畫和冥想計畫\n在休息日好好恢復身體吧"
-          : "今日沒有運動和冥想計畫誒\n點兔兔新增計畫！";
+          ? "$date無運動計畫和冥想計畫\n在休息日好好恢復身體吧！"
+          : "$date沒有運動和冥想計畫噢\n點兔兔新增計畫！";
     } else if (HomeData.workoutPlan != null &&
         HomeData.meditationPlan == null) {
       // 運動有、冥想沒有 --> 運動完成度、新增冥想
       // 今天之後 --> 運動完成度、新增冥想；之前 --> 運動完成度、沒有冥想
       dialogText = (HomeData.isBefore)
-          ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n今日沒有冥想計畫誒T^T"
+          ? "$date運動計畫已完成 ${HomeData.workoutProgress} %\n今日沒有冥想計畫欸T^T"
           : (HomeData.isToday)
-              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}點選兔兔，新增冥想計畫！"
-              : "今日有運動計畫要完成噢~\n點選兔兔，新增冥想計畫！";
+              ? "$date運動計畫已完成 ${HomeData.workoutProgress} %\n${(HomeData.workoutProgress == 100) ? "很棒噢~~\n" : "繼續加油加油~~\n"}點選兔兔，新增冥想計畫！"
+              : "$date有運動計畫要完成噢~\n點選兔兔，新增冥想計畫！";
     } else if (HomeData.workoutPlan == null &&
         HomeData.meditationPlan != null) {
       // 運動沒有、冥想有 --> 冥想完成度、新增運動
       // 今天之後 --> 冥想完成度、新增運動；之前 --> 冥想完成度、沒有運動
       dialogText = (HomeData.isBefore)
-          ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %今日沒有運動計畫誒T^T"
+          ? "$date冥想計畫已完成 ${HomeData.meditationProgress} %\n今日沒有運動計畫欸T^T"
           : (HomeData.isToday)
-              ? "今日冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "有夠讚！\n" : "我們一起加油~\n"}點選兔兔，新增運動計畫！"
-              : "今日有冥想計畫要完成噢~\n點選兔兔，新增運動計畫！";
+              ? "$date冥想計畫已完成 ${HomeData.meditationProgress} %\n${(HomeData.meditationProgress == 100) ? "有夠讚！\n" : "我們一起加油~\n"}點選兔兔，新增運動計畫！"
+              : "$date有冥想計畫要完成噢~\n點選兔兔，新增運動計畫！";
     } else {
       // 運動有、冥想有 --> 運動完成度、冥想完成度
       // 今天之後 --> 運動完成度、冥想完成度；之前 --> 運動完成度、冥想完成度
       dialogText = (HomeData.isBefore)
-          ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n今日冥想計畫已完成 ${HomeData.meditationProgress} %"
+          ? "$date運動計畫已完成 ${HomeData.workoutProgress} %\n今日冥想計畫已完成 ${HomeData.meditationProgress} %"
           : (HomeData.isToday)
-              ? "今日運動計畫已完成 ${HomeData.workoutProgress} %\n今日冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n有夠讚！" : "\n我們一起加油~"}"
-              : "今日有運動計畫和冥想計畫\n要完成噢~";
+              ? "$date運動計畫已完成 ${HomeData.workoutProgress} %\n$date冥想計畫已完成 ${HomeData.meditationProgress} %${(HomeData.workoutProgress == 100 && HomeData.meditationProgress == 100) ? "\n有夠讚！" : "\n我們一起加油~"}"
+              : "$date有運動計畫和冥想計畫\n要完成噢~";
     }
     return dialogText;
   }
@@ -605,7 +606,7 @@ class HomepageState extends State<Homepage> {
                         child: GestureDetector(
                           onTap: addPlan, // Image tapped
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.68,
+                            width: MediaQuery.of(context).size.width * 0.685,
                             child: BubbleSpecialThree(
                               text:
                                   'Hello ${Data.profile?["userName"]}～\n${getDialogText()}',
@@ -613,7 +614,7 @@ class HomepageState extends State<Homepage> {
                               tail: true,
                               textStyle: const TextStyle(
                                 color: ColorSet.textColor,
-                                fontSize: 18,
+                                fontSize: 16.5,
                                 //fontWeight: FontWeight.bold,
                               ),
                             ),
