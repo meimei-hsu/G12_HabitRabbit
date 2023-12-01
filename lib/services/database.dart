@@ -568,10 +568,10 @@ class GamificationDB {
 
   static Future<bool> updateFriend(String newFriend) async {
     String? myFriends = Data.game?["friends"];
-    myFriends = (myFriends != null) ? "$newFriend, $myFriends" : newFriend;
+    myFriends = (myFriends != "") ? "$newFriend, $myFriends" : newFriend;
 
     String? theirFriends = Data.community?[newFriend]["friends"];
-    theirFriends = (theirFriends != null) ? "$uid, $theirFriends" : uid;
+    theirFriends = (theirFriends != "") ? "$uid, $theirFriends" : uid;
 
     return await DB.update("$db/$uid", {"friends": myFriends}) &&
         await DB.update("$db/$newFriend", {"friends": theirFriends});
