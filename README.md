@@ -1,6 +1,16 @@
 # G12
 
-A milestone habit App.
+A keystone habit App.
+
+## Description
+Habit Rabbit 基於人格分析理論規劃專屬你的習慣養成方案，給予有針對性的智慧建議，協助你有效達成目標。
+瑣事交給我們，習慣養成交給你，一起收獲規律運動與冥想的好處！
+
+Habit Rabbit 的四大功能：
+📌 演算法客製計畫
+📌 八大人格性格分類
+📌 遊戲化習慣養成
+📌 承諾合約自我約束
 
 ## Class Diagram
 
@@ -10,15 +20,15 @@ A milestone habit App.
     |---JournalDB           (database operations for JournalDB)
 ---database.dart
     |---Calendar            (get the days of the current and following weeks)
-    |---UserDB              (database operations for the users table)
-    |---ContractDB          (database operations for the contract table)
-    |---GamificationDB      (database operations for the gamification table)
-    |---PokeDB              (database operations for the poke notification table)
-    |---HabitDB             (database operations for the workouts and meditations table)
-    |---PlanDB              (database operations for the workoutPlan and meditationPlan children of the journal table)
+    |---UserDB              (operations for the users table)
+    |---ContractDB          (operations for the contract table)
+    |---GamificationDB      (operations for the gamification table)
+    |---PokeDB              (operations for the poke notification table)
+    |---HabitDB             (operations for the workouts and meditations table)
+    |---PlanDB              (operations for the plan children of the journal table)
     |---Calculator          (statistic calculations for the DurationDB)
-    |---DurationDB          (database operations for the workoutDuration and meditationDuration children of the journal table)
-    |---WeightDB            (database operations for the weight children of the journal table)
+    |---DurationDB          (operations for the duration children of the journal table)
+    |---WeightDB            (operations for the weight children of the journal table)
 ---plan_algo.dart
     |---PlanAlgo            (execute point of the planning algorithm)
     |---WorkoutAlgorithm    (generate plan from the workout planning algorithm)
@@ -57,15 +67,3 @@ A milestone habit App.
 ---routes.dart
 ---page_material.dart
 ```
-
-## Version Control
-
-General situations:
-
-- `git pull` → (conflict) → `git stash` → `git pull` → `git stash pop`
-
-- `git pull` → (no conflict) → `git commit` → `git push`
-
-If you forgot to pull before commit: 
-
-- `git commit` → (conflict) → `git reset --soft HEAD~1` → `git stash` → `git pull` → `git stash pop`

@@ -142,7 +142,7 @@ class DoExercisePageState extends State<DoExercisePage> {
           backgroundColor: ColorSet.bottomBarColor,
           context: context,
           builder: (context) {
-            return const Wrap(children: [
+            return Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -202,7 +202,7 @@ class DoExercisePageState extends State<DoExercisePage> {
         if (!mounted) return;
         CongratsDialog.show(context,
             habit: "workout",
-            widgetAfterDismiss: const Wrap(children: [
+            widgetAfterDismiss: Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 0},
               )
@@ -475,7 +475,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
           backgroundColor: ColorSet.bottomBarColor,
           context: context,
           builder: (context) {
-            return const Wrap(children: [
+            return Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )
@@ -535,7 +535,7 @@ class DoMeditationPageState extends State<DoMeditationPage> {
         if (!mounted) return;
         CongratsDialog.show(context,
             habit: "meditation",
-            widgetAfterDismiss: const Wrap(children: [
+            widgetAfterDismiss: Wrap(children: const [
               FeedbackBottomSheet(
                 arguments: {"type": 1},
               )

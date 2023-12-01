@@ -1287,9 +1287,9 @@ class PartThreePageState extends State<PartThreePage>
                                 return Transform.translate(
                                   offset: Offset(
                                       -10 + controller.value * -50, 0), // X軸位移
-                                  child: const Row(
+                                  child: Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    children: [
+                                    children: const [
                                       Icon(
                                         FontAwesomeIcons.angleDoubleLeft,
                                         color: ColorSet.textColor,
@@ -1319,9 +1319,9 @@ class PartThreePageState extends State<PartThreePage>
                                 return Transform.translate(
                                   offset: Offset(
                                       10 + controller.value * 50, 0), // X軸位移
-                                  child: const Row(
+                                  child: Row(
                                     mainAxisSize: MainAxisSize.min,
-                                    children: [
+                                    children: const [
                                       Text(
                                         '是 Yes',
                                         style: TextStyle(
