@@ -666,7 +666,9 @@ class LeaderboardPageState extends State<LeaderboardPage> {
                         )
                       : Column(children: [
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.33,
+                            height: (chart.length > 6)
+                                ? MediaQuery.of(context).size.height * 0.33
+                                : null,
                             child: ListView.separated(
                               shrinkWrap: true,
                               padding: const EdgeInsets.only(
