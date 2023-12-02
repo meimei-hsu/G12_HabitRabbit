@@ -1007,7 +1007,7 @@ class ChangeLikingBottomSheetState extends State<ChangeLikingBottomSheet> {
               : ColorSet.backgroundColor,
           onChanged: (value) {
             setState(() {
-              likings[keys[i]] = value * 20;
+              likings[keys[i]] = (value * 20).round();
             });
           },
         ),
