@@ -25,7 +25,8 @@ class PlanAlgo {
       var skd = await MeditationAlgorithm.arrangeSchedule();
       meditationPlan.addAll(await MeditationAlgorithm.arrangePlan(skd));
     }
-    if (meditationPlan.isNotEmpty) await PlanDB.update("meditation", meditationPlan);
+    if (meditationPlan.isNotEmpty)
+      await PlanDB.update("meditation", meditationPlan);
 
     Data.plans = {
       "workout": SplayTreeMap.of(workoutPlan),
@@ -68,56 +69,42 @@ class PlanAlgo {
       if (b.contains(1)) check["${habit}NextWeek"] = true;
     }
 
-    // Check condition before generating new plans.
-    bool? thisWeek;
-    if (check["workoutNextWeek"]! == false) {
-      thisWeek = false;
-      print("Generate next week's workout plan.");
-    }
-    if (check["workoutThisWeek"]! == false || Data.isFirstTime) {
-      thisWeek = true;
-      print("Generate this week's workout plan.");
-    }
-
     // Execute planning algorithm to generate new plans.
-    if (thisWeek != null) {
-      if (thisWeek) {
-        await PlanData.fetch(habit: "workout", thisWeek: true);
-        var skd = await WorkoutAlgorithm.arrangeSchedule();
-        workoutPlan.addAll(await WorkoutAlgorithm.arrangePlan(skd));
-      }
+    if (check["workoutThisWeek"] == false) {
+      print("Generate this week's workout plan.");
+      await PlanData.fetch(habit: "workout", thisWeek: true);
+      var skd = await WorkoutAlgorithm.arrangeSchedule();
+      workoutPlan.addAll(await WorkoutAlgorithm.arrangePlan(skd));
+    }
+    if (check["workoutNextWeek"] == false) {
+      print("Generate next week's workout plan.");
       await PlanData.fetch(habit: "workout", thisWeek: false);
       var skd = await WorkoutAlgorithm.arrangeSchedule();
       workoutPlan.addAll(await WorkoutAlgorithm.arrangePlan(skd));
+    }
+    if (workoutPlan.isNotEmpty) {
       // update to firebase
-      if (workoutPlan.isNotEmpty) await PlanDB.update("workout", workoutPlan);
+      await PlanDB.update("workout", workoutPlan);
     } else {
       print("Not the time to generate a workout plan.");
     }
 
-    // Check condition before generating new plans
-    thisWeek = null;
-    if (check["meditationNextWeek"]! == false) {
-      thisWeek = false;
-      print("Generate next week's meditation plan.");
-    }
-    if (check["meditationThisWeek"]! == false || Data.isFirstTime) {
-      thisWeek = true;
-      print("Generate this week's meditation plan.");
-    }
-
     // Execute planning algorithm to generate new plans.
-    if (thisWeek != null) {
-      if (thisWeek) {
-        await PlanData.fetch(habit: "meditation", thisWeek: true);
-        var skd = await MeditationAlgorithm.arrangeSchedule();
-        meditationPlan.addAll(await MeditationAlgorithm.arrangePlan(skd));
-      }
+    if (check["meditationThisWeek"]! == false) {
+      print("Generate this week's meditation plan.");
+      await PlanData.fetch(habit: "meditation", thisWeek: true);
+      var skd = await MeditationAlgorithm.arrangeSchedule();
+      meditationPlan.addAll(await MeditationAlgorithm.arrangePlan(skd));
+    }
+    if (check["meditationNextWeek"]! == false) {
+      print("Generate next week's meditation plan.");
       await PlanData.fetch(habit: "meditation", thisWeek: false);
       var skd = await MeditationAlgorithm.arrangeSchedule();
       meditationPlan.addAll(await MeditationAlgorithm.arrangePlan(skd));
+    }
+    if (meditationPlan.isNotEmpty) {
       // update to firebase
-      if (meditationPlan.isNotEmpty) await PlanDB.update("meditation", meditationPlan);
+      await PlanDB.update("meditation", meditationPlan);
     } else {
       print("Not the time to generate a meditation plan.");
     }

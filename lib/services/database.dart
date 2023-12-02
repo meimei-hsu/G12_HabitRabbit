@@ -445,6 +445,7 @@ class ContractDB {
     if (Data.contract != null) return await DB.delete(db, uid);
     return true;
   }
+
   // Delete workout contract from userID
   static Future<bool> deleteWorkout() async =>
       await DB.delete(db, "$uid/workout");
@@ -514,7 +515,9 @@ class GamificationDB {
       // TODO: "運動累積時間", "冥想累積時間", "運動最大連續天數", "冥想最大連續天數" 排行榜
       List keys = (isGlobal)
           ? Data.community?.keys.toList() ?? []
-          : [uid, ...CommData.friends];
+          : CommData.friends.isNotEmpty
+              ? [uid, ...CommData.friends]
+              : [];
       keys.shuffle();
 
       Map chart = {};
