@@ -142,7 +142,7 @@ class HomepageState extends State<Homepage> {
               .get(
                   context,
                   "你確定嗎？",
-                  "確定要重新生成\n${(HomeData.isToday) ? "今天" : "${date} "}的$typeZH計畫嗎？",
+                  "確定要重新生成\n${(HomeData.isToday) ? "今天" : "$date "}的$typeZH計畫嗎？",
                   btnOkOnPress)
               .show();
         }
@@ -162,7 +162,7 @@ class HomepageState extends State<Homepage> {
               .get(
                   context,
                   "你確定嗎？",
-                  "確定要刪除\n${(HomeData.isToday) ? "今天" : "${date} "}的$typeZH計畫嗎？",
+                  "確定要刪除\n${(HomeData.isToday) ? "今天" : "$date "}的$typeZH計畫嗎？",
                   btnOkOnPress)
               .show();
         }
@@ -245,7 +245,9 @@ class HomepageState extends State<Homepage> {
 
   String getDialogText() {
     String dialogText = "";
-    String date = (HomeData.time == "今天")?HomeData.time:"${HomeData.time.replaceAll(" ", "").split("/")[1]} 日";
+    String date = (HomeData.time == "今天")
+        ? HomeData.time
+        : "${HomeData.time.replaceAll(" ", "").split("/")[1]} 日";
 
     if (HomeData.workoutPlan == null && HomeData.meditationPlan == null) {
       // 運動沒有、冥想沒有 --> 新增運動 + 冥想
@@ -979,11 +981,12 @@ class ChangeDayBottomSheet extends StatefulWidget {
 }
 
 class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
+  late DateTime today;
   late DateTime day;
   late bool isToday;
   late int type;
 
-  late DateTime today;
+  bool isProcessing = false;
 
   String changedDayWeekday = "";
   DateTime changedDayDate = DateTime.now();
@@ -992,11 +995,12 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
 
   @override
   void initState() {
+    today = getDateOnly(DateTime.now());
     day = getDateOnly(widget.arguments['day']);
     isToday = widget.arguments['isToday'];
     type = widget.arguments['type'];
 
-    today = getDateOnly(DateTime.now());
+    isProcessing = false;
 
     super.initState();
   }
@@ -1027,8 +1031,7 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
         onPressed: () {
           setState(() {
             changedDayWeekday = weekdayNameList[i];
-            changedDayDate = day
-                .add(Duration(days: (day.weekday == 7) ? 1 : i - day.weekday));
+            changedDayDate = day.add(Duration(days: i - day.weekday % 7));
           });
         },
         child: Text(
@@ -1042,14 +1045,15 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
       return dayBtn;
     }
 
-    final today = Calendar.todayWeekday % 7;
+    final now = today.weekday % 7;
     final selected = day.weekday % 7;
-    // if todayWeekday > selectedWeekday, then the selectedDays is in the next week
-    for (int i = (today > selected ? 0 : today); i < 7; i++) {
+    final diff = day.difference(today).inDays;
+    // if todayWeekday > selectedWeekday || difference >= 7, then the selectedDays is in next week
+    // if todayWeekday <= selectedWeekday && difference < 7, then the selectedDays is in this week
+    for (int i = (now <= selected && diff < 7) ? now : 0; i < 7; i++) {
       if (i != selected) {
         allowedDayList.add(Container(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: getDayBtn(i)));
+            padding: const EdgeInsets.only(bottom: 10), child: getDayBtn(i)));
         if (i != 6) {
           allowedDayList.add(const SizedBox(width: 10));
         }
@@ -1117,48 +1121,57 @@ class ChangeDayBottomSheetState extends State<ChangeDayBottomSheet> {
           ),
           Container(
             padding: const EdgeInsets.only(left: 20, right: 18),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.only(right: 10, left: 10),
-                backgroundColor: ColorSet.backgroundColor,
-                shadowColor: ColorSet.borderColor,
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () async {
-                // FIXME: 如果修改天數，換到已經有計畫的日子怎麼辦? (現在是直接蓋掉原本的)
-                DateTime originalDate = day;
-                (type == 0)
-                    ? await PlanDB.updateDate(
-                        "workout", originalDate, changedDayDate)
-                    : await PlanDB.updateDate(
-                        "meditation", originalDate, changedDayDate);
-                debugPrint(
-                    "Change $day's ${(type == 0) ? "workout plan" : "meditation plan"} to $changedDayDate 星期$changedDayWeekday.");
-                if (!mounted) return;
+            child: isProcessing
+                ? Center(
+                    child: LoadingAnimationWidget.horizontalRotatingDots(
+                      color: ColorSet.hintColor,
+                      size: 50,
+                    ),
+                  )
+                : ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.only(right: 10, left: 10),
+                      backgroundColor: ColorSet.backgroundColor,
+                      shadowColor: ColorSet.borderColor,
+                      minimumSize: const Size.fromHeight(50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () async {
+                      setState(() => isProcessing = true);
+                      // FIXME: 如果修改天數，換到已經有計畫的日子怎麼辦? (現在是直接蓋掉原本的)
+                      DateTime originalDate = day;
+                      (type == 0)
+                          ? await PlanDB.updateDate(
+                              "workout", originalDate, changedDayDate)
+                          : await PlanDB.updateDate(
+                              "meditation", originalDate, changedDayDate);
+                      debugPrint(
+                          "Change $day's ${(type == 0) ? "workout plan" : "meditation plan"} to $changedDayDate 星期$changedDayWeekday.");
+                      setState(() => isProcessing = false);
+                      if (!mounted) return;
 
-                btnOkOnPress() {
-                  Navigator.pushNamed(context, "/");
-                  debugPrint("Change!!!");
-                }
+                      btnOkOnPress() {
+                        Navigator.pushNamed(context, "/");
+                        debugPrint("Change!!!");
+                      }
 
-                InformDialog()
-                    .get(context, "完成修改計畫日期",
-                        "已經將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫\n換到 ${changedDayDate.month} / ${changedDayDate.day} 星期$changedDayWeekday囉！",
-                        btnOkOnPress: btnOkOnPress)
-                    .show();
-              },
-              child: const Text(
-                "確定",
-                style: TextStyle(
-                  color: ColorSet.textColor,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+                      InformDialog()
+                          .get(context, "完成修改計畫日期",
+                              "已經將${(isToday) ? "今天" : " ${day.month} / ${day.day} "}的${(type == 0) ? "運動" : "冥想"}計畫\n換到 ${changedDayDate.month} / ${changedDayDate.day} 星期$changedDayWeekday囉！",
+                              btnOkOnPress: btnOkOnPress)
+                          .show();
+                    },
+                    child: const Text(
+                      "確定",
+                      style: TextStyle(
+                        color: ColorSet.textColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
           ),
         ],
       ),
