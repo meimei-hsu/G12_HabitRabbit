@@ -265,7 +265,7 @@ class OptionsWidget extends StatelessWidget {
             Flexible(
               child: Row(children: [
                 options[2 * i],
-                const SizedBox(height: 10), // crossAxisSpacing
+                const SizedBox(height: 10, width: 10,),
                 options[2 * i + 1]
               ]),
             ),
@@ -727,7 +727,7 @@ class PartOnePageState extends State<PartOnePage> {
                             decoration: BoxDecoration(
                               color: ColorSet.backgroundColor,
                               border: Border.all(color: ColorSet.borderColor),
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             // FIXME: border color
                             child: DatePickerCupertino(
@@ -762,7 +762,7 @@ class PartOnePageState extends State<PartOnePage> {
                             decoration: BoxDecoration(
                               color: ColorSet.backgroundColor,
                               border: Border.all(color: ColorSet.borderColor),
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             child: TextField(
                               decoration: const InputDecoration(
@@ -808,7 +808,7 @@ class PartOnePageState extends State<PartOnePage> {
                             decoration: BoxDecoration(
                               color: ColorSet.backgroundColor,
                               border: Border.all(color: ColorSet.borderColor),
-                              borderRadius: BorderRadius.circular(15),
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             child: TextField(
                               decoration: const InputDecoration(
@@ -933,7 +933,7 @@ class PartTwoPageState extends State<PartTwoPage> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(35, 75, 35, 0),
+                padding: const EdgeInsets.fromLTRB(30, 75, 30, 0),
                 child: Container(
                   height: MediaQuery.of(context).size.height * 0.7,
                   decoration: BoxDecoration(
@@ -1242,7 +1242,7 @@ class PartThreePageState extends State<PartThreePage>
                 }, btnCancelOnPress: () => false).show() as bool
               : true,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(35, 80, 35, 80),
+            padding: const EdgeInsets.fromLTRB(30, 80, 30, 80),
             child: Container(
               alignment: Alignment.center,
               height: MediaQuery.of(context).size.height * 0.75,

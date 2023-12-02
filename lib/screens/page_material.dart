@@ -163,7 +163,7 @@ class ConfirmDialog {
           btnOkOnPress();
         },
         btnCancelText: (options != null) ? options[1] : '取消',
-        btnCancelColor: ColorSet.backgroundColor,
+        btnCancelColor: ColorSet.bottomBarColor,
         btnCancelOnPress: () {
           (btnCancelOnPress != null) ? btnCancelOnPress() : null;
         });
